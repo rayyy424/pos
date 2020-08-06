@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/app/Http/Controllers/Controller.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/app/Http/routes.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/config/database.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/app/Http/Controllers/Auth/PasswordController.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/app/Http/Controllers/HomeController.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/app/Http/Controllers/WelcomeController.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/public/index.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/resources/views/home.blade.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/resources/views/auth/login.blade.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/app/Http/Kernel.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/app/Http/Controllers/StaffController.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/resources/views/app.blade.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/resources/views/auth/register.blade.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/app/Http/Controllers/Auth/AuthController.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/app/Http/Controllers/InternController.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/resources/views/intern.blade.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/resources/views/auth/reset.blade.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/resources/views/welcome.blade.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/resources/views/staff.blade.php</file>
+            <file>file:/Applications/AMPPS/www/laravel-trackeronthego/index.php</file>
+        </group>
+    </open-files>
+</project-private>
