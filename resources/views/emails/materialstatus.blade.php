@@ -39,11 +39,6 @@
                                                           <td style="width:10%;text-align:center;">:</td>
                                                           <td style="width:45%;text-align:left;">{{$materialdetail->Name}}</td>
                                                       </tr>
-                                                      <tr valign="top">
-                                                        <td style="width:45%;text-align:right;;">Project Name</td>
-                                                        <td style="width:10%;text-align:center;">:</td>
-                                                        <td style="width:45%;text-align:left;">{{$materialdetail->Project_Name}}</td>
-                                                        </tr>
                                                         <tr valign="top">
                                                             <td style="width:45%;text-align:right;;">Site Name</td>
                                                             <td style="width:10%;text-align:center;">:</td>

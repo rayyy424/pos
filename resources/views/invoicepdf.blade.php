@@ -338,10 +338,10 @@
 				</div>
 				<div class="row">
 					<div class="title5">
-						DEPT
+						COMPANY
 					</div>
 					<div class="data5">
-						: GENSET
+						: SPEED FREAK
 					</div>
 				</div>
 				<div class="row">

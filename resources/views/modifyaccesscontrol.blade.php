@@ -114,7 +114,7 @@
 
               <h3 class="profile-username text-center">{{ $access->Name }}</h3>
 
-              <p class="text-muted text-center">{{ $access->Department }} - {{ $access->Position }}</p>
+              <p class="text-muted text-center">{{ $access->Position }}</p>
 
             </div>
             <!-- /.box-body -->
@@ -184,7 +184,6 @@
           <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
               <li class="active"><a href="#resourcemanagement" data-toggle="tab">Resource Management</a></li>
-              <li><a href="#projectmanagement" data-toggle="tab">Project Management</a></li>
               <li><a href="#salesmanagement" data-toggle="tab">Sales Management</a></li>
             </ul>
 
@@ -683,31 +682,6 @@
 
               </div>
 
-              <div class="tab-pane" id="projectmanagement">
-
-                <div class="box box-solid box-success">
-                  <div class="box-header">
-                    Role
-                  </div>
-                  <div class="box-body">
-
-                    <div class="form-group">
-                      <label>Project Management : </label><br>
-                      <label>
-                        <input type="radio" name="Project_Manager" class="flat-blue" value="1" <?php if($access->Project_Manager == "Yes") { echo 'checked="checked"'; } ?>>
-                        Yes
-                      </label>
-                      <label>
-                        <input type="radio" name="Project_Manager" class="flat-blue" value="0" <?php if($access->Project_Manager == "No") { echo 'checked="checked"'; } ?>>
-                        No
-                      </label>
-                    </div>
-
-                  </div>
-                </div>
-
-              </div>
-
               <div class="tab-pane" id="salesmanagement">
               </div>
             </div>
@@ -723,7 +697,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -885,7 +859,6 @@
       Timesheet_4th_Approval=$('input[name=Timesheet_4th_Approval]:checked').val();
       Timesheet_5th_Approval=$('input[name=Timesheet_5th_Approval]:checked').val();
       Timesheet_Final_Approval=$('input[name=Timesheet_Final_Approval]:checked').val();
-      Project_Manager=$('input[name=Project_Manager]:checked').val();
 
       $.ajax({
                   url: "{{ url('/accesscontrol/update') }}",
@@ -929,7 +902,6 @@
                     // Timesheet_4th_Approval:Timesheet_4th_Approval,
                     // Timesheet_5th_Approval:Timesheet_5th_Approval,
                     // Timesheet_Final_Approval:Timesheet_Final_Approval,
-                    Project_Manager:Project_Manager},
 
                   success: function(response){
                     if (response==1)
@@ -1024,7 +996,6 @@
         // Timesheet_4th_Approval=$('input[name=Timesheet_4th_Approval]:checked').val();
         // Timesheet_5th_Approval=$('input[name=Timesheet_5th_Approval]:checked').val();
         // Timesheet_Final_Approval=$('input[name=Timesheet_Final_Approval]:checked').val();
-        Project_Manager=$('input[name=Project_Manager]:checked').val();
 
         $.ajax({
                     url: "{{ url('/accesscontrol/savetemplate') }}",
@@ -1069,7 +1040,6 @@
                       // Timesheet_4th_Approval:Timesheet_4th_Approval,
                       // Timesheet_5th_Approval:Timesheet_5th_Approval,
                       // Timesheet_Final_Approval:Timesheet_Final_Approval,
-                      Project_Manager:Project_Manager},
 
                     success: function(response){
 

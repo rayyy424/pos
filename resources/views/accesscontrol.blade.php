@@ -2218,17 +2218,6 @@
                              Additionals
                            </div>
                            <div class="box-body">
-                             <div class="form-group">
-                               <label>View Department Attendance Summary : </label><span class="text-muted"> Permission to view department attendance summary</span><br>
-                               <label>
-                                 <input type="radio" name="View_Department_Attendance_Summary" class="flat-green" value="1" <?php if($access->View_Department_Attendance_Summary == "Yes") { echo 'checked="checked"'; } ?>>
-                                 Yes
-                               </label>
-                               <label>
-                                 <input type="radio" name="View_Department_Attendance_Summary" class="flat-green" value="0" <?php if($access->View_Department_Attendance_Summary == "No") { echo 'checked="checked"'; } ?>>
-                                 No
-                               </label>
-                             </div>
 
                              <div class="form-group">
                                <label>View Incentive Summary : </label><span class="text-muted"> Permission to view incentive summary</span><br>
@@ -2484,54 +2473,6 @@
                          <div class="box-body">
 
                            <div class="form-group">
-                             <label>Create Project : </label><span class="text-muted"> Permission to create new project</span><br>
-                             <label>
-                               <input type="radio" name="Create_Project" class="flat-green" value="1" <?php if($access->Create_Project == "Yes") { echo 'checked="checked"'; } ?>>
-                               Yes
-                             </label>
-                             <label>
-                               <input type="radio" name="Create_Project" class="flat-green" value="0" <?php if($access->Create_Project == "No") { echo 'checked="checked"'; } ?>>
-                               No
-                             </label>
-                           </div>
-
-                           <div class="form-group">
-                             <label>Create Project Code : </label><span class="text-muted"> Permission to create new project code</span><br>
-                             <label>
-                               <input type="radio" name="Create_Project_Code" class="flat-green" value="1" <?php if($access->Create_Project_Code == "Yes") { echo 'checked="checked"'; } ?>>
-                               Yes
-                             </label>
-                             <label>
-                               <input type="radio" name="Create_Project_Code" class="flat-green" value="0" <?php if($access->Create_Project_Code == "No") { echo 'checked="checked"'; } ?>>
-                               No
-                             </label>
-                           </div>
-
-                           <div class="form-group">
-                             <label>Project Manager : </label><span class="text-muted"> Project Manager Role</span><br>
-                             <label>
-                               <input type="radio" name="Project_Manager" class="flat-green" value="1" <?php if($access->Project_Manager == "Yes") { echo 'checked="checked"'; } ?>>
-                               Yes
-                             </label>
-                             <label>
-                               <input type="radio" name="Project_Manager" class="flat-green" value="0" <?php if($access->Project_Manager == "No") { echo 'checked="checked"'; } ?>>
-                               No
-                             </label>
-                           </div>
-
-                           <div class="form-group">
-                             <label>View Project List : </label><span class="text-muted"> Permission to view project list</span><br>
-                             <label>
-                               <input type="radio" name="View_Project_List" class="flat-green" value="1" <?php if($access->View_Project_List == "Yes") { echo 'checked="checked"'; } ?>>
-                               Yes
-                             </label>
-                             <label>
-                               <input type="radio" name="View_Project_List" class="flat-green" value="0" <?php if($access->View_Project_List == "No") { echo 'checked="checked"'; } ?>>
-                               No
-                             </label>
-                           </div>
-
-                           <div class="form-group">
                              <label>Tracker Management : </label><span class="text-muted"> Permission to manage tracker</span><br>
                              <label>
                                <input type="radio" name="Tracker_Management" class="flat-green" value="1" <?php if($access->Tracker_Management == "Yes") { echo 'checked="checked"'; } ?>>
@@ -2604,18 +2545,6 @@
                            </div>
 
                            <div class="form-group">
-                             <label>Edit Project Code : </label><span class="text-muted"> Permission to Edit Project Code</span><br>
-                             <label>
-                               <input type="radio" name="Edit_Project_Code" class="flat-green" value="1" <?php if($access->Edit_Project_Code == "Yes") { echo 'checked="checked"'; } ?>>
-                               Yes
-                             </label>
-                             <label>
-                               <input type="radio" name="Edit_Project_Code" class="flat-green" value="0" <?php if($access->Edit_Project_Code == "No") { echo 'checked="checked"'; } ?>>
-                               No
-                             </label>
-                           </div>
-
-                           <div class="form-group">
                              <label>Import Tracker : </label><span class="text-muted"> Permission to import tracker data</span><br>
                              <label>
                                <input type="radio" name="Import_Tracker" class="flat-green" value="1" <?php if($access->Import_Tracker == "Yes") { echo 'checked="checked"'; } ?>>
@@ -2623,18 +2552,6 @@
                              </label>
                              <label>
                                <input type="radio" name="Import_Tracker" class="flat-green" value="0" <?php if($access->Import_Tracker == "No") { echo 'checked="checked"'; } ?>>
-                               No
-                             </label>
-                           </div>
-
-                           <div class="form-group" style="display:none;">
-                             <label>Project Requirement : </label><span class="text-muted"> Permission to set project requirement</span><br>
-                             <label>
-                               <input type="radio" name="Project_Requirement" class="flat-green" value="1" <?php if($access->Project_Requirement == "Yes") { echo 'checked="checked"'; } ?>>
-                               Yes
-                             </label>
-                             <label>
-                               <input type="radio" name="Project_Requirement" class="flat-green" value="0" <?php if($access->Project_Requirement == "No") { echo 'checked="checked"'; } ?>>
                                No
                              </label>
                            </div>
@@ -2736,18 +2653,6 @@
                            </div>
 
                            <div class="form-group">
-                             <label>Project Access : </label><span class="text-muted"> Permission to set account project access</span><br>
-                             <label>
-                               <input type="radio" name="Project_Access" class="flat-green" value="1" <?php if($access->Project_Access == "Yes") { echo 'checked="checked"'; } ?>>
-                               Yes
-                             </label>
-                             <label>
-                               <input type="radio" name="Project_Access" class="flat-green" value="0" <?php if($access->Project_Access == "No") { echo 'checked="checked"'; } ?>>
-                               No
-                             </label>
-                           </div>
-
-                           <div class="form-group">
                              <label>Template Access : </label><span class="text-muted"> Permission to set account template access</span><br>
                              <label>
                                <input type="radio" name="Template_Access" class="flat-green" value="1" <?php if($access->Template_Access == "Yes") { echo 'checked="checked"'; } ?>>
@@ -2783,24 +2688,24 @@
                                 </label>
                               </div>
                               <div class="form-group">
-                              <label>Genset System : </label><span class="text-muted"> </span><br>
+                              <label>SpeedFreak System : </label><span class="text-muted"> </span><br>
                               <label>
-                                <input type="radio" name="Genset" class="flat-green" value="1" <?php if($access->Genset == "Yes") { echo 'checked="checked"'; } ?>>
+                                <input type="radio" name="Speedfreak" class="flat-green" value="1" <?php if($access->Speedfreak == "Yes") { echo 'checked="checked"'; } ?>>
                                 Yes
                               </label>
                               <label>
-                                <input type="radio" name="Genset" class="flat-green" value="0" <?php if($access->Genset== "No") { echo 'checked="checked"'; } ?>>
+                                <input type="radio" name="Speedfreak" class="flat-green" value="0" <?php if($access->Speedfreak== "No") { echo 'checked="checked"'; } ?>>
                                 No
                               </label>
                             </div>
                              <div class="form-group">
-                              <label>Genset Summary Report : </label><span class="text-muted"> </span><br>
+                              <label>SpeedFreak Summary Report : </label><span class="text-muted"> </span><br>
                               <label>
-                                <input type="radio" name="Genset_Summary" class="flat-green" value="1" <?php if($access->Genset_Summary == "Yes") { echo 'checked="checked"'; } ?>>
+                                <input type="radio" name="Speedfreak_Summary" class="flat-green" value="1" <?php if($access->Speedfreak_Summary == "Yes") { echo 'checked="checked"'; } ?>>
                                 Yes
                               </label>
                               <label>
-                                <input type="radio" name="Genset_Summary" class="flat-green" value="0" <?php if($access->Genset_Summary== "No") { echo 'checked="checked"'; } ?>>
+                                <input type="radio" name="Speedfreak_Summary" class="flat-green" value="0" <?php if($access->Speedfreak_Summary== "No") { echo 'checked="checked"'; } ?>>
                                 No
                               </label>
                             </div>
@@ -2816,7 +2721,7 @@
                               </label>
                             </div>
                             <div class="form-group">
-                              <label>Update Genset Inventory : </label><span class="text-muted"> </span><br>
+                              <label>Update Speedfreak Inventory : </label><span class="text-muted"> </span><br>
                               <label>
                                 <input type="radio" name="Update_Inventory" class="flat-green" value="1" <?php if($access->Update_Inventory == "Yes") { echo 'checked="checked"'; } ?>>
                                 Yes
@@ -3909,8 +3814,8 @@
       Quotation_Approval=$('input[name=Quotation_Approval]:checked').val();
       Upload_Quotation=$('input[name=Upload_Quotation]:checked').val();
       Recall_MR=$('input[name=Recall_MR]:checked').val();
-      Genset=$('input[name=Genset]:checked').val();
-      Genset_Summary=$('input[name=Genset_Summary]:checked').val();
+      Speedfreak=$('input[name=Speedfreak]:checked').val();
+      Speedfreak_Summary=$('input[name=Speedfreak_Summary]:checked').val();
       Delete_RQO=$('input[name=Delete_RQO]:checked').val();
       View_All_Branch=$('input[name=View_All_Branch]:checked').val();
       Update_Inventory=$('input[name=Update_Inventory]:checked').val();
@@ -4082,8 +3987,8 @@
                     Quotation_Approval:Quotation_Approval,
                     Upload_Quotation:Upload_Quotation,
                     Recall_MR:Recall_MR,
-                    Genset:Genset,
-                    Genset_Summary:Genset_Summary,
+                    Speedfreak:Speedfreak,
+                    Speedfreak_Summary:Speedfreak_Summary,
                     Delete_RQO:Delete_RQO,
                     View_All_Branch:View_All_Branch,
                     Update_Inventory:Update_Inventory,
@@ -4296,8 +4201,8 @@
         Quotation_Approval=$('input[name=Quotation_Approval]:checked').val();
         Upload_Quotation=$('input[name=Upload_Quotation]:checked').val();
         Recall_MR=$('input[name=Recall_MR]:checked').val();
-        Genset=$('input[name=Genset]:checked').val();
-        Genset_Summary=$('input[name=Genset_Summary]:checked').val();
+        Speedfreak=$('input[name=Speedfreak]:checked').val();
+        Speedfreak_Summary=$('input[name=Speedfreak_Summary]:checked').val();
         Delete_RQO=$('input[name=Delete_RQO]:checked').val();
         View_All_Branch=$('input[name=View_All_Branch]:checked').val();
         Update_Inventory=$('input[name=Update_Inventory]:checked').val();
@@ -4469,8 +4374,8 @@
                       Quotation_Approval:Quotation_Approval,
                       Upload_Quotation:Upload_Quotation,
                       Recall_MR:Recall_MR,
-                      Genset:Genset,
-                      Genset_Summary:Genset_Summary,
+                      Speedfreak:Speedfreak,
+                      Speedfreak_Summary:Speedfreak_Summary,
                       Delete_RQO:Delete_RQO,
                       View_All_Branch:View_All_Branch,
                       Update_Inventory:Update_Inventory,

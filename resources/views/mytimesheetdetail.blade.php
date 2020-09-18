@@ -84,28 +84,6 @@
 
                                         ],
                                },{
-                                      label: "Project Code:",
-                                      name: "timesheetitems.Project_Code_Id",
-                                      type:  'select',
-                                      options: [
-                                          { label :"", value: "0" },
-                                          @foreach($projectcodes as $projectcode)
-                                              { label :"{{$projectcode->Project_Code}}", value: "{{$projectcode->Id}}" },
-                                          @endforeach
-
-                                      ],
-                               },{
-                                      label: "Project Name:",
-                                      name: "timesheetitems.ProjectId",
-                                      type:  'select',
-                                      options: [
-                                          { label :"", value: "0" },
-                                          @foreach($projects as $project)
-                                              { label :"{{$project->Project_Name}}", value: "{{$project->Id}}" },
-                                          @endforeach
-
-                                      ],
-                               },{
                                       label: "Site Name:",
                                       name: "timesheetitems.Site_Name"
                                },{
@@ -200,12 +178,8 @@
                                            { data: "timesheetitems.Id"},
                                            { data: "timesheetitems.Date_Time"},
                                            { data: "timesheetitems.Leader_Member"},
-                                           { data: "projectcodes.Project_Code", editField: "timesheetitems.Project_Code_Id" },
-                                           { data: "projects.Project_Name", editField: "timesheetitems.ProjectId" },
                                            { data: "timesheetitems.Site_Name"},
                                            { data: "timesheetitems.State"},
-                                           //Field::inst( 'timesheetitems.Project_Manager' ),
-                                           { data: "pm.Name"},
                                            { data: "timesheetitems.Check_In_Type"},
                                            { data: "timesheetitems.Time_In"},
                                            { data: "timesheetitems.Time_Out"},
@@ -535,7 +509,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -577,7 +551,6 @@
     });
 
     timesheetitemid=data.timesheetitems.Id;
-    userid=data.projects.Project_Manager;
     status="Pending Review";
 
     if (userid)
@@ -585,7 +558,7 @@
       $.ajax({
                   url: "{{ url('/timesheet/newtimesheetitemstatus') }}",
                   method: "POST",
-                  data: {TimesheetItemId:timesheetitemid,UserId:userid,Status:status},
+                  data: {TimesheetItemId:timesheetitemid,Status:status},
 
                   success: function(response){
 
@@ -612,11 +585,8 @@
       timein=$('[name="Time_In"]').val();
       timeout=$('[name="Time_Out"]').val();
       leadermember=$($('input[name=Leader_Member]:checked')).val();
-      projectcode=$('[name="Project_Code"]').val();
-      project=$('[name="Project"]').val();
       sitename=$('[name="Site_Name"]').val();
       state=$('[name="State"]').val();
-      projectmanager=$('[name="Project_Manager"]').val();
       checkintype=$('[name="Check_In_Type"]').val();
       reason=$($('input[name=Rush_Report]:checked')).val() + " " + $($('input[name=KPI_Test]:checked')).val() + " " +$($('input[name=Tuning_Verify]:checked')).val();
       remarks=$('[name="Remarks"]').val();
@@ -624,7 +594,7 @@
       $.ajax({
                   url: "{{ url('/mytimesheet/new') }}",
                   method: "POST",
-                  data: {Date:date,Time_In:timein,Time_Out:timeout,Leader_Member:leadermember,Project_Code:projectcode,Project:project,Site_Name:sitename,State:state,Project_Manager:projectmanager,Check_In_Type:checkintype,Reason:reason,Remarks:remarks},
+                  data: {Date:date,Time_In:timein,Time_Out:timeout,Leader_Member:leadermember,Site_Name:sitename,State:state,Check_In_Type:checkintype,Reason:reason,Remarks:remarks},
 
                   success: function(response){
 
@@ -640,11 +610,8 @@
                         document.getElementById("Time_In").value = ''
                         document.getElementById("Time_Out").value = ''
 
-                        document.getElementById("Project_Code").value = ''
-                        document.getElementById("Project").value = ''
                         document.getElementById("Site_Name").value = ''
                         document.getElementById("State").value = ''
-                        $("#Project_Manager").val("").change();
                         $("#Check_In_Type").val("").change();
 
                         document.getElementById("Rush_Report").checked=false;

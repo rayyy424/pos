@@ -77,7 +77,6 @@
                                { data: "Name",title:"Name"},
                                { data: "Grade",title:"Grade"},
                                { data: "Position",title:"Position"},
-                               { data: "Department",title:"Department"},
                                @foreach($entitlementLeaveTypes as $type)
                                 {
                                   data: '{{ str_replace(" ", "_", $type) }}',
@@ -245,21 +244,6 @@
                            <div class="form-group">
                              <label>Reason : </label>
                              <textarea class="form-control" rows="3" name="Reason" id="Reason" placeholder="Enter your reason here ...">{!! old('Reason') !!}</textarea>
-                           </div>
-
-                           <div class="form-group">
-                             <label>Project : </label>
-
-                             <select class="form-control select2" id="Project" name="Project" style="width: 100%;">
-                               <option></option>
-
-                               @foreach ($projects as $project)
-
-                                   <option  value="{{$project->Id}}">{{$project->Project_Name}}</option>
-
-                               @endforeach
-
-                               </select>
                            </div>
 
                            <div class="form-group">
@@ -516,7 +500,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -843,7 +827,6 @@ function applyleave() {
 
             $("#Leave_Type").val("").change();
             $("#Approver").val("").change();
-            $("#Project").val("").change();
             // document.getElementById("Leave_Term_2").checked=false;
             // document.getElementById("Leave_Term_3").checked=false;
             // document.getElementById("Leave_Term_1").checked=true;

@@ -79,16 +79,6 @@
                                             { label :"Total", value: "Total" },
 
                                         ],
-                                },{
-                                        label: "Project Name :",
-                                        name: "chartviews.ProjectId",
-                                        type:  'select',
-                                        options: [
-                                            { label :"", value: "" },
-                                            @foreach($projects as $project)
-                                                { label :"{{$project->Project_Name}}", value: "{{$project->Id}}" },
-                                            @endforeach
-                                        ],
                                 }
 
 
@@ -117,7 +107,7 @@
                               sortable: false,
                               "render": function ( data, type, full, meta ) {
 
-                                 return "<a href='{{ url('/chartcolumn') }}/"+full.chartviews.Id+"/"+full.chartviews.ProjectId+"'>View</a>";
+                                 return "<a href='{{ url('/chartcolumn') }}/"+full.chartviews.Id+"'>View</a>";
 
                               }
                             },
@@ -125,7 +115,6 @@
                            { data: "chartviews.Id", title:""},
                            { data: "chartviews.Chart_View_Name", title:"Chart_View_Name" },
                            { data: "chartviews.Chart_View_Type", title:"Chart_View_Type" },
-                           { data: "projects.Project_Name", title:"Project_Name", editField: "chartviews.ProjectId"},
                            { data: "users.Name" , title:'Created_By'}
 
                    ],
@@ -300,7 +289,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

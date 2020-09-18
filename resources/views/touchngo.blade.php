@@ -205,9 +205,6 @@
                                     tags: true
                                   }
                           },{
-                                  label: "Project_Code:",
-                                  name: "reload.Project_Code"
-                          },{
                                     label: "Balance_Before:",
                                     name: "reload.Balance_Before",
                                     attr: {
@@ -393,7 +390,7 @@
                      {data:'touchngo.Registered_Name', title:"Registered Name"},
                      {data:'touchngo.Plusmiles_Register', title:"Plusmiles Register"},
                      {data:'users.Name', editField: "touchngo.UserId",title:"Custodian"},
-                     {data:'users.Department', title:"Department"},
+                     {data:'users.Position', title:"Position"},
                      {data:'touchngo.Date_Provide', title:"Date Provide"},
                      {data:'touchngo.Date_Return', title:"Date Return"},
                      {data:'touchngo.Date_Terminate', title:"Date Terminate"},
@@ -457,10 +454,9 @@
                           {data:'reload.Id'},
                           {data:'reload.Card_No', title:"Card No"},
                           {data:'users.Name', editField: "reload.Request_By",title:"Request By"},
-                          {data:'reload.Project_Code', title:"Project Code"},
-                          {data:'users.Department', title:"Department"},
+                          {data:'users.Position', title:"Position"},
                           {data:'reloadBy.Name', editField: "reload.Reload_By",title:"Reload By"},
-                          {data:'reloadBy.Department', title:"Department"},
+                          {data:'reloadBy.Position', title:"Position"},
                           {data:'reload.Date_Reload', title:"Date Reload"},
                           {data:'reload.Balance_Before', title:"Balance Before"},
                           {data:'reload.Total_Reload', title:"Total Reload"},
@@ -1026,7 +1022,7 @@
 
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

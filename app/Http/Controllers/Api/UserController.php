@@ -52,12 +52,12 @@ class UserController extends Controller {
 
     if($stafflist)
     {
-      Mail::send('emails.probationnotification', ['stafflist'=>$stafflist], function($message) use ($emails,$NotificationSubject)
-      {
-        $emails = array_filter($emails);
-        array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-        $message->to($emails)->subject($NotificationSubject.' ['.date('d-M-Y').']');
-      });
+      // Mail::send('emails.probationnotification', ['stafflist'=>$stafflist], function($message) use ($emails,$NotificationSubject)
+      // {
+      //   $emails = array_filter($emails);
+      //   array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+      //   $message->to($emails)->subject($NotificationSubject.' ['.date('d-M-Y').']');
+      // });
     }
 	}
 
@@ -96,12 +96,12 @@ class UserController extends Controller {
 
     if($stafflist)
     {
-      Mail::send('emails.confirmationnotification', ['stafflist'=>$stafflist, 'startDate' => $startDate, 'endDate' => $endDate], function($message) use ($emails,$NotificationSubject, $startDate, $endDate)
-      {
-        array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-        $emails = array_filter($emails);
-        $message->to($emails)->subject($NotificationSubject.' ['.$startDate.' - '. $endDate .']');
-      });
+      // Mail::send('emails.confirmationnotification', ['stafflist'=>$stafflist, 'startDate' => $startDate, 'endDate' => $endDate], function($message) use ($emails,$NotificationSubject, $startDate, $endDate)
+      // {
+      //   array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+      //   $emails = array_filter($emails);
+      //   $message->to($emails)->subject($NotificationSubject.' ['.$startDate.' - '. $endDate .']');
+      // });
 
       return 1;
     }

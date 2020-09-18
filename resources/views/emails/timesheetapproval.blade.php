@@ -34,7 +34,6 @@
 
                                                       <tr>
                                                         <th style="text-align:center;white-space: nowrap;">Date</th>
-                                                        <th style="text-align:center;white-space: nowrap;">Project Name</th>
                                                         <th style="text-align:center;white-space: nowrap;">Check In Type</th>
                                                         <th style="text-align:center;white-space: nowrap;">Time In</th>
                                                         <th style="text-align:center;white-space: nowrap;">Time Out</th>
@@ -47,8 +46,6 @@
 
                                                         <tr valign="top">
                                                             <td style="text-align:center;white-space: nowrap;">{{$timesheet->Date}}</td>
-
-                                                            <td style="text-align:center;white-space: nowrap;">{{$timesheet->Project_Name}}</td>
 
                                                             <td style="text-align:center;white-space: nowrap;">{{$timesheet->Check_In_Type}}</td>
 

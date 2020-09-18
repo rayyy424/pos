@@ -62,7 +62,7 @@
           var all;
           var financeadmin;
           var engineering;
-          var byproject;
+          var bytype;
           var byperson;
           var byperson2;
 
@@ -161,19 +161,17 @@
 
                         });
 
-                byproject =  $('#byproject').dataTable( {
+                bytype =  $('#bytype').dataTable( {
 
                              dom: "fBrtip",
                              bAutoWidth: true,
-                             rowId:"projects.Id",
-                             //rowId:"projects.Project_Name",
-                             //aaSorting:false,
+                             rowId:"claims.Id",
                              columnDefs: [{ "visible": false, "targets": [1] },{"className": "dt-left", "targets": 2},{"className": "dt-right", "targets": "_all"}],
                              bScrollCollapse: true,
                              columns: [
                                { data: "","render":"", title:"No"},
-                               { data: "projects.Id"},
-                               { data: "projects.Project_Name"},
+                               { data: "claims.Id"},
+                               { data: "claims.Expenses_Type"},
                                 { data: "Total_Petrol_SmartPay"},
                                 { data: "Total_Claim_With_SmartPay"},
                                 { data: "Total_Claim_Without_SmartPay"},
@@ -394,8 +392,8 @@
 
                      } );
 
-                     byproject.api().on( 'order.dt search.dt', function () {
-                         byproject.api().column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+                     bytype.api().on( 'order.dt search.dt', function () {
+                         bytype.api().column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
                              cell.innerHTML = i+1;
                          } );
                      } ).draw();
@@ -414,33 +412,33 @@
 
 
 
-                     $(".byproject thead input").keyup ( function () {
+                     $(".bytype thead input").keyup ( function () {
 
                              /* Filter on the column (the index) of this element */
-                             if ($('#byproject').length > 0)
+                             if ($('#bytype').length > 0)
                              {
 
-                                 var colnum=document.getElementById('byproject').rows[0].cells.length;
+                                 var colnum=document.getElementById('bytype').rows[0].cells.length;
 
                                  if (this.value=="[empty]")
                                  {
 
-                                    byproject.fnFilter( '^$', this.name,true,false );
+                                    bytype.fnFilter( '^$', this.name,true,false );
                                  }
                                  else if (this.value=="[nonempty]")
                                  {
 
-                                    byproject.fnFilter( '^(?=\\s*\\S).*$', this.name,true,false );
+                                    bytype.fnFilter( '^(?=\\s*\\S).*$', this.name,true,false );
                                  }
                                  else if (this.value.startsWith("!")==true && this.value.length>1)
                                  {
 
-                                    byproject.fnFilter( '^(?'+ this.value +').*', this.name,true,false );
+                                    bytype.fnFilter( '^(?'+ this.value +').*', this.name,true,false );
                                  }
                                  else if (this.value.startsWith("!")==false)
                                  {
 
-                                     byproject.fnFilter( this.value, this.name,true,false );
+                                     bytype.fnFilter( this.value, this.name,true,false );
                                  }
                              }
 
@@ -714,7 +712,7 @@
         <div class="col-md-6">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Admin, Sales, HR and Finance Department Claim Summary</h3>
+              <h3 class="box-title">Admin, Sales, HR and Finance Claim Summary</h3>
             </div>
             <div class="box-body">
 
@@ -786,7 +784,7 @@
         <div class="col-md-6">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Engineering Department Claim Summary</h3>
+              <h3 class="box-title">Engineering Claim Summary</h3>
             </div>
             <div class="box-body">
 
@@ -862,7 +860,7 @@
             <ul class="nav nav-tabs">
               <li class="active"><a href="#person" data-toggle="tab" id="persontab">Staff Claim Breakdown</a></li>
               <li><a href="#person2" data-toggle="tab" id="person2tab">Staff Claim Total</a></li>
-              <li><a href="#project" data-toggle="tab" id="projecttab">Project Claim Breakdown</a></li>
+              <li><a href="#type" data-toggle="tab" id="typetab">Type Claim Breakdown</a></li>
             </ul>
 
             <div class="tab-content">
@@ -1021,13 +1019,13 @@
 
                </div>
 
-               <div class="tab-pane" id="project">
-                 <table id="byproject" class="byproject" cellspacing="0" width="100%" padding="30px" style="font-size: 13px;">
+               <div class="tab-pane" id="type">
+                 <table id="bytype" class="bytype" cellspacing="0" width="100%" padding="30px" style="font-size: 13px;">
                    <thead>
-                     @if($byproject)
+                     @if($bytype)
                      <tr class="search">
 
-                       @foreach($byproject as $key=>$value)
+                       @foreach($bytype as $key=>$value)
 
                          @if ($key==0)
                            <?php $i = 0; ?>
@@ -1052,7 +1050,7 @@
                        @endif
                        <tr>
 
-                         @foreach($byproject as $key=>$value)
+                         @foreach($bytype as $key=>$value)
 
                            @if ($key==0)
                                  <td></td>
@@ -1069,14 +1067,14 @@
                    <tbody>
 
                      <?php $i = 0; ?>
-                     @foreach($byproject as $project)
+                     @foreach($bytype as $type)
 
                            <tr id="row_{{ $i }}" >
                                <td></td>
-                               @foreach($project as $key=>$value)
+                               @foreach($type as $key=>$value)
                                  <td>
-                                   @if($key=="Project_Name")
-                                       <a href="{{ url('/') }}/projectclaimbreakdown2/{{$project->Id}}/{{$month}}/{{$year}}" target="_blank">{{$value}}</a>
+                                   @if($key=="Expenses_Type")
+                                       <a href="{{ url('/') }}/projectclaimbreakdown2/{{$month}}/{{$year}}" target="_blank">{{$value}}</a>
                                      @elseif(is_numeric($value))
                                       {{ number_format($value,2,".",",") }}
                                     @elseif($value=="")
@@ -1106,7 +1104,7 @@
 
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -1309,7 +1307,7 @@
 
   }
 
-  function projectclaimbreakdown(projectid)
+  function projectclaimbreakdown()
   {
 
       $('#chartpopup').modal('show');
@@ -1324,9 +1322,7 @@
        $.ajax({
                   url: "{{ url('projectclaimbreakdown') }}",
                   method: "POST",
-                  data: {
-                    Id:projectid
-                  },
+                  data: {},
                   success: function(response){
                     if (response==0)
                     {

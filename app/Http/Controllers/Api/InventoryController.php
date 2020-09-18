@@ -13,13 +13,13 @@ class InventoryController extends Controller {
 
 	public function tresholdnotification()
 	{
-		$item = DB::table('gensetinventory')
+		$item = DB::table('speedfreakinventory')
 		->select('name','machinery_no','qty_balance','balance_treshold')
 		->whereRaw('qty_balance < balance_treshold')
-		->groupby('gensetinventory.Id')
+		->groupby('speedfreakinventory.Id')
 		->get();
 
-		$count = DB::table('gensetinventory')
+		$count = DB::table('speedfreakinventory')
 		->select(DB::raw('COUNT(Id) as count'))
 		->whereRaw('qty_balance < balance_treshold')
 		->first();
@@ -47,12 +47,12 @@ class InventoryController extends Controller {
                 }
             }
 
-            Mail::send('emails.tresholdnotification', ['item' => $item , 'count'=>$count], function($message) use ($emails,$NotificationSubject)
-            {
-                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                $emails = array_filter($emails);
-                $message->to($emails)->subject($NotificationSubject.' [System: TresholdNotification]');
-            });
+            // Mail::send('emails.tresholdnotification', ['item' => $item , 'count'=>$count], function($message) use ($emails,$NotificationSubject)
+            // {
+            //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+            //     $emails = array_filter($emails);
+            //     $message->to($emails)->subject($NotificationSubject.' [System: TresholdNotification]');
+            // });
 		}
 
 		return 1;

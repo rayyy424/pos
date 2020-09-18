@@ -87,7 +87,6 @@
           },
           { data: 'deliveryform.Id', title:'ID'},
           { data:'deliveryform.DO_No', title:'DO No'},
-          { data:'projects.Project_Name', title:'Project Name'},
           { data:'deliveryform.delivery_date', title:'Delivery Date'},
           { data: 'companies.Company_Name', title:'Company Name'},
           { data:'deliveryform.Purpose', title:'Purpose'},
@@ -208,7 +207,7 @@
   
   <footer class="main-footer">
       <div class="pull-right hidden-xs">
-        <b>Version</b> 2.0.1
+        <b>Version</b> 1.0.0
       </div>
       <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
   </footer>

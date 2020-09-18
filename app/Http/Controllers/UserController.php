@@ -30,12 +30,11 @@ class UserController extends Controller {
 	public function index($start = null, $end = null, $type = null)
 	{
 		$me = (new CommonController)->get_current_user();
-		$users = DB::table('users')->select('users.Id','files.Web_Path','users.Status','users.StaffId as Staff_ID','users.Name','users.NRIC','users.Joining_Date','users.Confirmation_Date','users.Resignation_Date','users.Position','users.Contact_No_1','users.Nationality','users.Grade','users.Company','users.Department','users.Category','users.Entitled_for_OT','users.Working_Days','holidayterritories.Name as HolidayTerritory','users.Ext_No','users.Company_Email','users.Nick_Name','users.User_Type','users.Personal_Email', 'users.Contact_No_2','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.DOB','users.Place_Of_Birth','users.Race','users.Religion','users.Passport_No','users.Gender','users.Marital_Status','superior.Name as Superior','team.Name as TeamMember','users.Internship_Start_Date','users.Internship_End_Date','users.Bank_Name','users.Bank_Account_No','users.EPF_No','users.SOCSO_No','users.Income_Tax_No','users.Emergency_Contact_Person','users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Address','users.Driving_License','users.Car_Owner','users.Criminal_Activity')
+		$users = DB::table('users')->select('users.Id','files.Web_Path','users.Status','users.StaffId as Staff_ID','users.Name','users.NRIC','users.Joining_Date','users.Confirmation_Date','users.Resignation_Date','users.Position','users.Contact_No_1','users.Nationality','users.Grade','users.Company','users.Entitled_for_OT','users.Working_Days','holidayterritories.Name as HolidayTerritory','users.Ext_No','users.Company_Email','users.Nick_Name','users.User_Type','users.Personal_Email', 'users.Contact_No_2','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.DOB','users.Place_Of_Birth','users.Race','users.Religion','users.Passport_No','users.Gender','users.Marital_Status','superior.Name as Superior','users.Internship_Start_Date','users.Internship_End_Date','users.Bank_Name','users.Bank_Account_No','users.EPF_No','users.SOCSO_No','users.Income_Tax_No','users.Emergency_Contact_Person','users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Address','users.Driving_License','users.Car_Owner','users.Criminal_Activity')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
 		->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="User"'))
 		->leftJoin('users as superior','superior.Id','=','users.SuperiorId')
 		->leftJoin('holidayterritories','holidayterritories.Id','=','users.HolidayTerritoryId')
-		->leftJoin('users as team','team.Id','=','users.Team')
 		->orderBy('users.Id')
 		->get();
 
@@ -55,29 +54,24 @@ class UserController extends Controller {
 		->orderBy('Option','asc')
 		->get();
 
-		$projects = DB::table('projects')
-		->where('projects.Project_Name','like','%department%')
-		->get();
-
 		$holidayterritories = DB::table('holidayterritories')->select('holidayterritories.Id','holidayterritories.Name')->get();
 
 		// Mail::send('emails.welcome', ['key' => 'value'], function($message)
 		// {
 		//     $message->to('shhau@softoya.com', 'Hau')->subject('Welcome!');
 		// });
-    return view('user', ['me' => $me,'users' => $users,'options' =>$options,'resigned'=>false,'projects'=>$projects, 'holidayterritories' => $holidayterritories, 'start' => $start, 'end' => $end, 'type' => $type]);
+    return view('user', ['me' => $me,'users' => $users,'options' =>$options,'resigned'=>false, 'holidayterritories' => $holidayterritories, 'start' => $start, 'end' => $end, 'type' => $type]);
 //		return view('Staff');
 	}
 
 	public function resigned($start = null, $end = null,$type = null)
 	{
 		$me = (new CommonController)->get_current_user();
-		$users = DB::table('users')->select('users.Id','files.Web_Path','users.Status','users.StaffId as Staff_ID','users.Name','users.NRIC','users.Joining_Date','users.Confirmation_Date','users.Resignation_Date','users.Position','users.Contact_No_1','users.Nationality','users.Grade','users.Company','users.Department','users.Category','users.Working_Days','holidayterritories.Name as HolidayTerritory','users.Ext_No','users.Company_Email','users.Nick_Name','users.User_Type','users.Personal_Email', 'users.Contact_No_2','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.DOB','users.Place_Of_Birth','users.Race','users.Religion','users.Passport_No','users.Gender','users.Marital_Status','superior.Name as Superior','team.Name as TeamMember','users.Internship_Start_Date','users.Internship_End_Date','users.Bank_Name','users.Bank_Account_No','users.EPF_No','users.SOCSO_No','users.Income_Tax_No','users.Emergency_Contact_Person','users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Address','users.Driving_License','users.Car_Owner','users.Criminal_Activity')
+		$users = DB::table('users')->select('users.Id','files.Web_Path','users.Status','users.StaffId as Staff_ID','users.Name','users.NRIC','users.Joining_Date','users.Confirmation_Date','users.Resignation_Date','users.Position','users.Contact_No_1','users.Nationality','users.Grade','users.Company','users.Working_Days','holidayterritories.Name as HolidayTerritory','users.Ext_No','users.Company_Email','users.Nick_Name','users.User_Type','users.Personal_Email', 'users.Contact_No_2','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.DOB','users.Place_Of_Birth','users.Race','users.Religion','users.Passport_No','users.Gender','users.Marital_Status','superior.Name as Superior','users.Internship_Start_Date','users.Internship_End_Date','users.Bank_Name','users.Bank_Account_No','users.EPF_No','users.SOCSO_No','users.Income_Tax_No','users.Emergency_Contact_Person','users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Address','users.Driving_License','users.Car_Owner','users.Criminal_Activity')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
 		->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="User"'))
 		->leftJoin('users as superior','superior.Id','=','users.SuperiorId')
 		->leftJoin('holidayterritories','holidayterritories.Id','=','users.HolidayTerritoryId')
-		->leftJoin('users as team','team.Id','=','users.Team')
 		->where('users.Resignation_Date', '!=','')
 		->orderBy('users.Id')
 		->get();
@@ -88,17 +82,13 @@ class UserController extends Controller {
 		->orderBy('Option','asc')
 		->get();
 
-		$projects = DB::table('projects')
-		->where('projects.Project_Name','like','%department%')
-		->get();
-
 		$holidayterritories = DB::table('holidayterritories')->select('holidayterritories.Id','holidayterritories.Name')->get();
 		// Mail::send('emails.welcome', ['key' => 'value'], function($message)
 		// {
 		//     $message->to('shhau@softoya.com', 'Hau')->subject('Welcome!');
 		// });
 
-    return view('user', ['me' => $me,'users' => $users,'options' =>$options,'resigned'=>true,'projects'=>$projects, 'holidayterritories' => $holidayterritories, 'start' => $start, 'end' => $end, 'type'=>$type]);
+    return view('user', ['me' => $me,'users' => $users,'options' =>$options,'resigned'=>true, 'holidayterritories' => $holidayterritories, 'start' => $start, 'end' => $end, 'type'=>$type]);
 //		return view('Staff');
 	}
 
@@ -123,7 +113,7 @@ class UserController extends Controller {
 
 
 		$users = DB::table('users')
-		->select('users.Id','users.StaffId as Staff_ID','users.Name','users.Department','users.Position','users.Joining_Date','users.Nationality',DB::raw('(SELECT SUM(Amount) FROM staffexpenses a WHERE a.UserId=users.Id AND a.Year='.$year.') AS Total_Expenses'))
+		->select('users.Id','users.StaffId as Staff_ID','users.Name','users.Position','users.Joining_Date','users.Nationality',DB::raw('(SELECT SUM(Amount) FROM staffexpenses a WHERE a.UserId=users.Id AND a.Year='.$year.') AS Total_Expenses'))
 		->orderBy('users.Name')
 		->get();
 
@@ -166,7 +156,7 @@ class UserController extends Controller {
 
 		$users = DB::table('users')
 		->select(
-			'users.Id','users.StaffId as Staff_ID','users.Name','users.Department','users.Position','users.Joining_Date','users.Nationality',
+			'users.Id','users.StaffId as Staff_ID','users.Name','users.Position','users.Joining_Date','users.Nationality',
 			DB::raw('(
 				SELECT SUM(FinalAmount) FROM staffdeductions a
 				WHERE a.UserId=users.Id
@@ -246,7 +236,7 @@ class UserController extends Controller {
 
 
 		$record = DB::table('staffdeductions')
-		->select('staffdeductions.Id','staffdeductions.UserId','staffdeductions.Date','staffdeductions.Type','staffdeductions.Description','staffdeductions.Amount','staffdeductions.Amount','staffdeductions.FinalAmount','users.StaffId as Staff_ID','users.Name','users.Department','users.Position','users.Joining_Date','users.Nationality','users.Name as Created_By','staffdeductions.created_at')
+		->select('staffdeductions.Id','staffdeductions.UserId','staffdeductions.Date','staffdeductions.Type','staffdeductions.Description','staffdeductions.Amount','staffdeductions.Amount','staffdeductions.FinalAmount','users.StaffId as Staff_ID','users.Name','users.Position','users.Joining_Date','users.Nationality','users.Name as Created_By','staffdeductions.created_at')
 		->leftJoin('users','staffdeductions.UserId','=','users.Id')
 		->leftJoin('users as creator','staffdeductions.created_by','=','creator.Id')
 		->where(DB::raw('str_to_date(staffdeductions.Date,"%d-%M-%Y")'), '>=', DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
@@ -304,7 +294,7 @@ class UserController extends Controller {
 		$total = DB::table('staffdeductions')
 		->leftJoin('users','staffdeductions.UserId','=','users.Id')
 		->select(
-			'users.Name','users.Company','users.Department',
+			'users.Name','users.Company','users.Position',
 			DB::raw('SUM(CASE WHEN staffdeductions.Type = "STAFF LOAN" THEN staffdeductions.FinalAmount ELSE 0 END) as Staff_Loan_Total'),
 			DB::raw('SUM(CASE WHEN staffdeductions.Type = "PRE-SAVING SCHEME" THEN staffdeductions.FinalAmount ELSE 0 END) as Presaving_Scheme_Total'),
 
@@ -394,7 +384,7 @@ class UserController extends Controller {
 			}
 
 			$presaving = DB::table('presaving')
-			->select('presaving.Id','users.StaffId as Staff_ID','users.Name','users.Department','users.Position','users.Joining_Date','users.Nationality','users.Passport_No','presaving.Presaving_Scheme','presaving.Presaving_Start_On','presaving.Presaving_End_Date','presaving.Presaving_Monthly_Amount',DB::raw('"" AS Total_Saving'),DB::raw('"" AS Total_Withdraw'),
+			->select('presaving.Id','users.StaffId as Staff_ID','users.Name','users.Position','users.Joining_Date','users.Nationality','users.Passport_No','presaving.Presaving_Scheme','presaving.Presaving_Start_On','presaving.Presaving_End_Date','presaving.Presaving_Monthly_Amount',DB::raw('"" AS Total_Saving'),DB::raw('"" AS Total_Withdraw'),
 			DB::raw('"" As CarryForward'),
 			DB::raw('"" AS Total_Balance'),'presaving.created_at','presaving.updated_at','creator.Name as Creator')
 			->leftJoin('users','presaving.UserId','=','users.Id')
@@ -405,7 +395,7 @@ class UserController extends Controller {
 			$users = DB::table('users')
 			->get();
 
-			$users = collect($users)->groupBy('Department');
+			$users = collect($users)->groupBy('Position');
 
 			return view('presaving', ['me' => $me,'presaving' => $presaving,'users'=>$users,'year'=>$year]);
 
@@ -416,7 +406,7 @@ class UserController extends Controller {
 			$me = (new CommonController)->get_current_user();
 
 			$presaving = DB::table('presaving')
-			->select('presaving.Id','users.StaffId as Staff_ID','users.Name','users.Department','users.Position','users.Joining_Date','users.Nationality','users.Passport_No','presaving.Presaving_Scheme','presaving.Presaving_Start_On',DB::raw('"" AS Total_Saving'),'presaving.created_at','presaving.updated_at')
+			->select('presaving.Id','users.StaffId as Staff_ID','users.Name','users.Position','users.Joining_Date','users.Nationality','users.Passport_No','presaving.Presaving_Scheme','presaving.Presaving_Start_On',DB::raw('"" AS Total_Saving'),'presaving.created_at','presaving.updated_at')
 			->leftJoin('users','presaving.UserId','=','users.Id')
 			->where('presaving.Id', '=',$id)
 			->orderBy('users.Name')
@@ -454,12 +444,12 @@ class UserController extends Controller {
 
 		}
 
-		public function staffloanold()
+	public function staffloanold()
 	{
 		$me = (new CommonController)->get_current_user();
 
 		$loans = DB::table('staffloan')
-		->select('staffloan.Id','users.StaffId as Staff_ID','users.Name','users.Department','staffloan.Reason','staffloan.Date_Approved','staffloan.Repayment_Start_On','staffloan.Amount',DB::raw('"" AS Total_Paid'),DB::raw('"" AS Total_Paid_Month'),DB::raw('"" AS Outstanding_Balance'),'staffloan.created_at','staffloan.updated_at')
+		->select('staffloan.Id','users.StaffId as Staff_ID','users.Name','users.Position','staffloan.Reason','staffloan.Date_Approved','staffloan.Repayment_Start_On','staffloan.Amount',DB::raw('"" AS Total_Paid'),DB::raw('"" AS Total_Paid_Month'),DB::raw('"" AS Outstanding_Balance'),'staffloan.created_at','staffloan.updated_at')
 		->leftJoin('users','staffloan.UserId','=','users.Id')
 		->orderBy('users.Name')
 		->get();
@@ -480,7 +470,7 @@ class UserController extends Controller {
 			// $end = date('d-M-Y', strtotime($end . " +19 days"));
 		}
 		$loans = DB::table('staffloans')
-		->select('staffloans.Id','users.StaffId as Staff_ID','users.Name','users.Department','staffloans.Purpose','staffloans.Date','staffloanstatuses.update_at','staffloans.Total_Requested','staffloans.Total_Approved',DB::raw('"" as Total_Paid'),DB::raw('"" as Outstanding'),'staffloans.Approver','staffloans.created_at','staffloans.updated_at','us.StaffId as USStaff_ID','us.Name')
+		->select('staffloans.Id','users.StaffId as Staff_ID','users.Name','users.Position','staffloans.Purpose','staffloans.Date','staffloanstatuses.update_at','staffloans.Total_Requested','staffloans.Total_Approved',DB::raw('"" as Total_Paid'),DB::raw('"" as Outstanding'),'staffloans.Approver','staffloans.created_at','staffloans.updated_at','us.StaffId as USStaff_ID','us.Name')
 		->leftJoin('users','staffloans.UserId','=','users.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,StaffLoanId from staffloanstatuses Group By StaffLoanId) as max'), 'max.StaffLoanId', '=', 'staffloans.Id')
 		->leftJoin('staffloanstatuses','max.maxid','=','staffloanstatuses.Id')
@@ -541,7 +531,7 @@ class UserController extends Controller {
 			->get();
 
 			$users = DB::table('users')->where('active', 1)->get();
-			$users_depts = collect($users)->groupBy('Department')->all();
+			$users_pos = collect($users)->groupBy('Position')->all();
 			return view('staffloan2',['me'=>$me, 'end'=>$end,'staffloans'=>$staffloans,'all'=>$all, 'allfinal'=>$allfinal]);
 		}
 
@@ -550,7 +540,7 @@ class UserController extends Controller {
 			$me = (new CommonController)->get_current_user();
 
 			$staffloan = DB::table('staffloan')
-			->select('staffloan.Id','users.StaffId as Staff_ID','users.Name','users.Department','staffloan.Reason','staffloan.Date_Approved','staffloan.Repayment_Start_On','staffloan.Amount',DB::raw('"" AS Total_Paid'),DB::raw('"" AS Outstanding_Balance'),'staffloan.created_at','staffloan.updated_at')
+			->select('staffloan.Id','users.StaffId as Staff_ID','users.Name','staffloan.Reason','staffloan.Date_Approved','staffloan.Repayment_Start_On','staffloan.Amount',DB::raw('"" AS Total_Paid'),DB::raw('"" AS Outstanding_Balance'),'staffloan.created_at','staffloan.updated_at')
 			->leftJoin('users','staffloan.UserId','=','users.Id')
 			->where('staffloan.Id', '=',$id)
 			->orderBy('users.Name')
@@ -626,11 +616,6 @@ class UserController extends Controller {
 					'UserId' => $input["UserId"]
 				));
 
-		DB::table('userprojects')
-					->insert(array(
-					'UserId' => $input["UserId"]
-				));
-
 		$approveduser = DB::table('users')
 		->where('Id', "=",$input["UserId"])
 		->first();
@@ -650,12 +635,12 @@ class UserController extends Controller {
 
 		}
 
-		Mail::send('emails.accountapproved', ['me'=>$me,'user'=>$approveduser,'password'=>$password], function($message) use ($emails,$approveduser,$NotificationSubject)
-		{
-				$emails = array_filter($emails);
-				array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-				$message->to($emails)->subject($NotificationSubject.' ['.$approveduser->Name.']');
-		});
+		// Mail::send('emails.accountapproved', ['me'=>$me,'user'=>$approveduser,'password'=>$password], function($message) use ($emails,$approveduser,$NotificationSubject)
+		// {
+		// 		$emails = array_filter($emails);
+		// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+		// 		$message->to($emails)->subject($NotificationSubject.' ['.$approveduser->Name.']');
+		// });
 
 		return 1;
 	}
@@ -800,18 +785,8 @@ class UserController extends Controller {
 	{
 		$me = (new CommonController)->get_current_user();
 
-		// $user = DB::table('users')->select('users.Id','users.StaffId as Staff_ID','Name','Nick_Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Country_Base','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Department','Position','superior.Id as SuperiorId','superior.Name as Superior','Joining_Date','Resignation_Date','Emergency_Contact_Person',
-		// 'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','files.Web_Path','users.Detail_Approved_On','users.Status','users.Comment')
-		// // ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
-    // ->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="User"'))
-		// ->leftJoin('users as superior','superior.Id','=','users.SuperiorId')
-		// ->where('users.Id', '=', $me->UserId)
-		// ->first();
-
-		$user = DB::table('users')->select('users.Id','users.StaffId as Staff_ID','users.Name','users.Nick_Name','users.Password','users.User_Type','users.Company_Email','users.Personal_Email','users.Contact_No_1','users.Contact_No_2','users.Nationality','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.DOB','users.Place_Of_Birth','users.Race','users.Religion','users.Bank_Name','users.Bank_Account_No','users.Acc_Holder_Name','users.EPF_No','users.SOCSO_No','users.Income_Tax_No','users.Driving_License','users.Car_Owner','users.Criminal_Activity',
-		'users.Team','users.NRIC','users.Passport_No','users.Union_No','users.Gender','users.Marital_Status','users.Department','users.Category','users.Entitled_for_OT','users.Working_Days','users.Position','users.Grade','superior.Id as SuperiorId','superior.Name as Superior','users.Joining_Date','users.Confirmation_Date','users.Resignation_Date','users.Emergency_Contact_Person',
-		'users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Person_2','users.Emergency_Contact_No_2','users.Emergency_Contact_Relationship_2','users.Emergency_Contact_Address','files.Web_Path','users.Detail_Approved_On','users.Status','users.Comment','users.House_Phone_No','users.ticket_team','users.team_leader')
+		$user = DB::table('users')->select('users.Id','users.StaffId as Staff_ID','users.Name','users.Nick_Name','users.Password','users.User_Type','users.Company_Email','users.Personal_Email','users.Contact_No_1','users.Contact_No_2','users.Nationality','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.DOB','users.Place_Of_Birth','users.Race','users.Religion','users.Bank_Name','users.Bank_Account_No','users.Acc_Holder_Name','users.EPF_No','users.SOCSO_No','users.Income_Tax_No','users.Driving_License','users.Car_Owner','users.Criminal_Activity','users.NRIC','users.Passport_No','users.Union_No','users.Gender','users.Marital_Status','users.Entitled_for_OT','users.Working_Days','users.Position','users.Grade','superior.Id as SuperiorId','superior.Name as Superior','users.Joining_Date','users.Confirmation_Date','users.Resignation_Date','users.Emergency_Contact_Person',
+		'users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Person_2','users.Emergency_Contact_No_2','users.Emergency_Contact_Relationship_2','users.Emergency_Contact_Address','files.Web_Path','users.Detail_Approved_On','users.Status','users.Comment','users.House_Phone_No')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
 	    ->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="User"'))
@@ -827,33 +802,6 @@ class UserController extends Controller {
 
 		$input = $request->all();
 		$changedcolumn="";
-
-		$ticket_team = "";
-
-		if(isset($input['ticket_team']))
-		{
-			if($input['ticket_team'] != "")
-			{
-				foreach($input['ticket_team'] as $tk => $tv)
-				{
-					$ticket_team .= $tv.",";
-				}
-
-			}
-		}
-
-		if(isset($input['ticket_team']))
-		{
-			$team_leader = "";
-			if($input['team_leader'] != "")
-			{
-				foreach($input['team_leader'] as $tk => $tv)
-				{
-					$team_leader .= $tv.",";
-				}
-
-			}
-		}
 
 		foreach($input as $name => $value)
 		{
@@ -929,13 +877,10 @@ class UserController extends Controller {
 							// "Driving_License" => $input["Driving_License"],
 							// "Car_Owner" => $input["Car_Owner"],
 							// "Criminal_Activity" => $input["Criminal_Activity"],
-							// "Team" => $input["Team"],
 							"NRIC" => $input["NRIC"],
 							"Passport_No" => $input["Passport_No"],
 							"Union_No" => $input["Union_No"],
 							"Company" => $input["Company"],
-							"Department" => $input["Department"],
-							"Category" => $input["Category"],
 							// "Entitled_for_OT" => $input["Entitled_for_OT"],
 							"Position" => $input["Position"],
 							// "Grade" => $input["Grade"],
@@ -948,8 +893,6 @@ class UserController extends Controller {
 							"Emergency_Contact_Person_2" => $input["Emergency_Contact_Person_2"],
 							"Emergency_Contact_Relationship_2" => $input["Emergency_Contact_Relationship_2"],
 							"Emergency_Contact_No_2" => $input["Emergency_Contact_No_2"],
-							// "ticket_team" => $ticket_team,
-							// "team_leader" => $team_leader,
 							// "Emergency_Contact_Address" => $input["Emergency_Contact_Address"],
 							"Status" => "Pending Account Detail Approval"
 					));
@@ -960,50 +903,50 @@ class UserController extends Controller {
 						]
 					);
 
-					if ($result)
-					{
+					// if ($result)
+					// {
 
-						if ($input["Company_Email"]!="")
-						{
-							array_push($emails,$input["Company_Email"]);
-						}
+					// 	if ($input["Company_Email"]!="")
+					// 	{
+					// 		array_push($emails,$input["Company_Email"]);
+					// 	}
 
-						if ($input["Personal_Email"]!="")
-						{
-							array_push($emails,$input["Personal_Email"]);
-						}
+					// 	if ($input["Personal_Email"]!="")
+					// 	{
+					// 		array_push($emails,$input["Personal_Email"]);
+					// 	}
 
-							$notify = DB::table('users')
-							->where('Admin', "=",1)
-							->get();
+					// 		$notify = DB::table('users')
+					// 		->where('Admin', "=",1)
+					// 		->get();
 
-						foreach ($notify as $user) {
-							if ($user->Company_Email!="")
-							{
-								array_push($emails,$user->Company_Email);
-							}
+					// 	foreach ($notify as $user) {
+					// 		if ($user->Company_Email!="")
+					// 		{
+					// 			array_push($emails,$user->Company_Email);
+					// 		}
 
-							else
-							{
-								array_push($emails,$user->Personal_Email);
-							}
+					// 		else
+					// 		{
+					// 			array_push($emails,$user->Personal_Email);
+					// 		}
 
-						}
+					// 	}
 
-						if ($me->UserId==$input["UserId"])
-						{
-							Mail::send('emails.accountdetailpendingapproval', ['detail'=>$input], function($message) use ($emails,$input,$NotificationSubject)
-							{
+					// 	if ($me->UserId==$input["UserId"])
+					// 	{
+					// 		Mail::send('emails.accountdetailpendingapproval', ['detail'=>$input], function($message) use ($emails,$input,$NotificationSubject)
+					// 		{
 
-									$emails = array_filter($emails);
-									array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-									$message->to($emails)->subject($NotificationSubject.' ['.$input["Name"].']');
+					// 				$emails = array_filter($emails);
+					// 				array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+					// 				$message->to($emails)->subject($NotificationSubject.' ['.$input["Name"].']');
 
-							});
-						}
+					// 		});
+					// 	}
 
 
-					}
+					// }
 
 		}
 		else {
@@ -1039,12 +982,9 @@ class UserController extends Controller {
 							// "Driving_License" => $input["Driving_License"],
 							// "Car_Owner" => $input["Car_Owner"],
 							// "Criminal_Activity" => $input["Criminal_Activity"],
-							// "Team" => $input["Team"],
 							"NRIC" => $input["NRIC"],
 							"Passport_No" => $input["Passport_No"],
 							"Company" => $input["Company"],
-							"Department" => $input["Department"],
-							"Category" => $input["Category"],
 							"Entitled_for_OT" => $input["Entitled_for_OT"],
 							"Working_Days" => $input["Working_Days"],
 							"Position" => $input["Position"],
@@ -1060,8 +1000,6 @@ class UserController extends Controller {
 							"Emergency_Contact_Relationship_2" => $input["Emergency_Contact_Relationship_2"],
 							"Emergency_Contact_No_2" => $input["Emergency_Contact_No_2"],
 							"HolidayTerritoryId" => $input["HolidayTerritoryId"],
-							'ticket_team' => $ticket_team,
-							'team_leader' => $team_leader
 
 					));
 
@@ -1100,7 +1038,7 @@ class UserController extends Controller {
 						"Status" => "Account Detail Approved"
 				));
 
-		$targetuser = DB::table('users')->select('users.Id','users.StaffId as Staff_ID','Name','Nick_Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Country_Base','Home_Base','DOB','Place_Of_Birth','Race','Religion','Bank_Name','Bank_Account_No','Acc_Holder_Name','Driving_License','Car_Owner','Criminal_Activity','Team','Income_Tax_No','EPF_No','SOCSO_No','NRIC','Passport_No','Gender','Marital_Status','Department','Working_Days','Position','Grade','Joining_Date','Resignation_Date','Emergency_Contact_Person',
+		$targetuser = DB::table('users')->select('users.Id','users.StaffId as Staff_ID','Name','Nick_Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Country_Base','Home_Base','DOB','Place_Of_Birth','Race','Religion','Bank_Name','Bank_Account_No','Acc_Holder_Name','Driving_License','Car_Owner','Criminal_Activity','Income_Tax_No','EPF_No','SOCSO_No','NRIC','Passport_No','Gender','Marital_Status','Working_Days','Position','Grade','Joining_Date','Resignation_Date','Emergency_Contact_Person',
 		'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','files.Web_Path','Detail_Approved_On','users.Status')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
@@ -1166,12 +1104,12 @@ class UserController extends Controller {
 
 					}
 
-					Mail::send('emails.accountdetailapproved', ['user'=>$targetuser], function($message) use ($emails,$targetuser,$NotificationSubject)
-					{
-							$emails = array_filter($emails);
-							array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-							$message->to($emails)->subject($NotificationSubject.' ['.$targetuser->Name.']');
-					});
+					// Mail::send('emails.accountdetailapproved', ['user'=>$targetuser], function($message) use ($emails,$targetuser,$NotificationSubject)
+					// {
+					// 		$emails = array_filter($emails);
+					// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+					// 		$message->to($emails)->subject($NotificationSubject.' ['.$targetuser->Name.']');
+					// });
 
 				}
 
@@ -1197,7 +1135,7 @@ class UserController extends Controller {
 						"Comment" => $input["Comment"]
 				));
 
-		$targetuser = DB::table('users')->select('users.Id','users.StaffId as Staff_ID','Name','Nick_Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Country_Base','Home_Base','DOB','Place_Of_Birth','Race','Religion','Bank_Name','Bank_Account_No','Acc_Holder_Name','EPF_No','SOCSO_No','Income_Tax_No','Driving_License','Car_Owner','Criminal_Activity','users.Team','NRIC','Passport_No','Gender','Marital_Status','Department','Working_Days','Position','Grade','Joining_Date','Resignation_Date','Emergency_Contact_Person',
+		$targetuser = DB::table('users')->select('users.Id','users.StaffId as Staff_ID','Name','Nick_Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Country_Base','Home_Base','DOB','Place_Of_Birth','Race','Religion','Bank_Name','Bank_Account_No','Acc_Holder_Name','EPF_No','SOCSO_No','Income_Tax_No','Driving_License','Car_Owner','Criminal_Activity','NRIC','Passport_No','Gender','Marital_Status','Working_Days','Position','Grade','Joining_Date','Resignation_Date','Emergency_Contact_Person',
 		'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','files.Web_Path','Detail_Approved_On','users.Status')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
@@ -1258,12 +1196,12 @@ class UserController extends Controller {
 
 					}
 
-					Mail::send('emails.accountdetailrejected', ['user'=>$targetuser,'comment'=>$input["Comment"]], function($message) use ($emails,$targetuser,$NotificationSubject)
-					{
-							$emails = array_filter($emails);
-							array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-							$message->to($emails)->subject($NotificationSubject.'['.$targetuser->Name.']');
-					});
+					// Mail::send('emails.accountdetailrejected', ['user'=>$targetuser,'comment'=>$input["Comment"]], function($message) use ($emails,$targetuser,$NotificationSubject)
+					// {
+					// 		$emails = array_filter($emails);
+					// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+					// 		$message->to($emails)->subject($NotificationSubject.'['.$targetuser->Name.']');
+					// });
 
 				}
 
@@ -1327,8 +1265,8 @@ class UserController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 
-		$user = DB::table('users')->select('users.Id','users.StaffId as Staff_ID','users.Name','users.Nick_Name','users.Password','users.User_Type','users.Company_Email','users.Personal_Email','users.Contact_No_1','users.Contact_No_2','users.Nationality','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.DOB','users.Place_Of_Birth','users.Race','users.Religion','users.Bank_Name','users.Bank_Account_No','users.EPF_No','users.SOCSO_No','users.Income_Tax_No','users.Driving_License','users.Car_Owner','users.Criminal_Activity','users.Team','users.NRIC','users.Passport_No','users.Union_No','users.Gender','users.Marital_Status','users.Company','users.Department','users.Category','users.Entitled_for_OT','users.Working_Days','users.Position','users.Grade','superior.Id as SuperiorId','superior.Name as Superior','users.Joining_Date','users.Confirmation_Date','users.Resignation_Date','users.Emergency_Contact_Person',
-		'users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Person_2','users.Emergency_Contact_No_2','users.Emergency_Contact_Relationship_2','users.Emergency_Contact_Address','files.Web_Path','users.Detail_Approved_On','users.Status','users.Comment','users.House_Phone_No','users.Company', 'users.HolidayTerritoryId','users.ticket_team','users.team_leader','users.Acc_Holder_Name')
+		$user = DB::table('users')->select('users.Id','users.StaffId as Staff_ID','users.Name','users.Nick_Name','users.Password','users.User_Type','users.Company_Email','users.Personal_Email','users.Contact_No_1','users.Contact_No_2','users.Nationality','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.DOB','users.Place_Of_Birth','users.Race','users.Religion','users.Bank_Name','users.Bank_Account_No','users.EPF_No','users.SOCSO_No','users.Income_Tax_No','users.Driving_License','users.Car_Owner','users.Criminal_Activity','users.NRIC','users.Passport_No','users.Union_No','users.Gender','users.Marital_Status','users.Company','users.Entitled_for_OT','users.Working_Days','users.Position','users.Grade','superior.Id as SuperiorId','superior.Name as Superior','users.Joining_Date','users.Confirmation_Date','users.Resignation_Date','users.Emergency_Contact_Person',
+		'users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Person_2','users.Emergency_Contact_No_2','users.Emergency_Contact_Relationship_2','users.Emergency_Contact_Address','files.Web_Path','users.Detail_Approved_On','users.Status','users.Comment','users.House_Phone_No','users.Company', 'users.HolidayTerritoryId','users.Acc_Holder_Name')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
     	->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="User"'))
@@ -1408,7 +1346,7 @@ class UserController extends Controller {
 		->where('certificates.UserId', '=', $user->Id)
 		->orderBy('certificates.Id','desc')
 		->get();
-		$salary = DB::table('salary')->select('salary.Id','salary.Salary','salary.Remarks','users.Name','salary.created_at as Adjustment_Date')
+		$salary = DB::table('salary')->select('salary.Id','salary.Salary','salary.Remarks','users.Name','salary.created_at')
 		->leftJoin('users','users.Id','=','salary.Created_By')
 		->where('salary.UserId', '=', $user->Id)
 		->orderBy('salary.Id','desc')
@@ -1433,9 +1371,6 @@ class UserController extends Controller {
 		->orderBy('Option','asc')
 		->get();
 
-		$teamuser = DB::table("users")
-		->get();
-
 		if ($user->Detail_Approved_On=="0000-00-00 00:00:00")
 		{
 			$interval="-1";
@@ -1450,33 +1385,16 @@ class UserController extends Controller {
 
 		}
 
-		$projects = DB::table('projects')
-		->where('projects.Project_Name','like','%department%')
-		->get();
-
 		$holidayterritories = DB::table('holidayterritories')->select('holidayterritories.Id','holidayterritories.Name')->get();
 
-		//kp add user team
-		$ticket_team = DB::table('options')
-		->where('Table','Genset')
-		->where('Field','Ticket Type')
-		->select('Option')
-		->get();
-
-		$team_leader = DB::table('options')
-		->where('Table','Genset')
-		->where('Field','Ticket Type')
-		->select('Option')
-		->get();
-
     return view('userdetail', ['UserId' => $Id , 'me' => $me, 'user' =>$user,'changes' =>$changed, 'resumes'=>$resumes,'employmenthistories' => $employmenthistories, 'experiences' => $experiences, 'licenses' => $licenses, 'qualifications' => $qualifications, 'references' => $references, 'skills' => $skills, 'trainings' => $trainings,'certificates' => $certificates,
-		 'options' => $options,'interval' =>$interval,'superior' =>$superior,'salary'=>$salary,'review'=>$review,'family'=>$family,'language'=>$language, 'teamuser'=>$teamuser,'projects'=>$projects, 'holidayterritories' => $holidayterritories, 'ticket_team'=>$ticket_team, 'team_leader'=>$team_leader]);
+		 'options' => $options,'interval' =>$interval,'superior' =>$superior,'salary'=>$salary,'review'=>$review,'family'=>$family,'language'=>$language,'holidayterritories' => $holidayterritories]);
 //		return view('Staff');
 	}
 	public function contractordetail($Id)
 	{
 		$me = (new CommonController)->get_current_user();
-		$user = DB::table('users')->select('users.Id','users.StaffId as Staff_ID','Name','Password','Company','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Country_Base','Home_Base','DOB','Place_Of_Birth','Race','Religion','Bank_Name','Bank_Account_No','EPF_No','SOCSO_No','Income_Tax_No','Driving_License','Car_Owner','Criminal_Activity','Team','NRIC','Passport_No','Gender','Marital_Status','Department','Position','Grade','Joining_Date','Resignation_Date','Emergency_Contact_Person',
+		$user = DB::table('users')->select('users.Id','users.StaffId as Staff_ID','Name','Password','Company','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Country_Base','Home_Base','DOB','Place_Of_Birth','Race','Religion','Bank_Name','Bank_Account_No','EPF_No','SOCSO_No','Income_Tax_No','Driving_License','Car_Owner','Criminal_Activity','NRIC','Passport_No','Gender','Marital_Status','Position','Grade','Joining_Date','Resignation_Date','Emergency_Contact_Person',
 		'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','files.Web_Path')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
     ->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="User"'))
@@ -1525,7 +1443,7 @@ class UserController extends Controller {
 	{
 		$me = (new CommonController)->get_current_user();
 
-		$user = DB::table('users')->select('users.Id','users.StaffId as Staff_ID','users.Name','users.Nick_Name','users.Password','users.User_Type','users.Company_Email','users.Personal_Email','users.Contact_No_1','users.Contact_No_2','users.Nationality','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.DOB','users.Place_Of_Birth','users.Race','users.Religion','users.Bank_Name','users.Bank_Account_No','users.Acc_Holder_Name','users.EPF_No','users.SOCSO_No','users.Income_Tax_No','users.Driving_License','users.Car_Owner','users.Criminal_Activity','users.Team','users.NRIC','users.Passport_No','users.Union_No','users.Gender','users.Marital_Status','users.Company','users.Department','users.Category','users.Entitled_for_OT','users.Working_Days','users.Position','users.Grade','superior.Id as SuperiorId','superior.Name as Superior','users.Joining_Date','users.Confirmation_Date','users.Resignation_Date','users.Emergency_Contact_Person',
+		$user = DB::table('users')->select('users.Id','users.StaffId as Staff_ID','users.Name','users.Nick_Name','users.Password','users.User_Type','users.Company_Email','users.Personal_Email','users.Contact_No_1','users.Contact_No_2','users.Nationality','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.DOB','users.Place_Of_Birth','users.Race','users.Religion','users.Bank_Name','users.Bank_Account_No','users.Acc_Holder_Name','users.EPF_No','users.SOCSO_No','users.Income_Tax_No','users.Driving_License','users.Car_Owner','users.Criminal_Activity','users.NRIC','users.Passport_No','users.Union_No','users.Gender','users.Marital_Status','users.Company','users.Entitled_for_OT','users.Working_Days','users.Position','users.Grade','superior.Id as SuperiorId','superior.Name as Superior','users.Joining_Date','users.Confirmation_Date','users.Resignation_Date','users.Emergency_Contact_Person',
 		'users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Person_2','users.Emergency_Contact_No_2','users.Emergency_Contact_Relationship_2','users.Emergency_Contact_Address','files.Web_Path','users.Detail_Approved_On','users.Status','users.Comment','users.House_Phone_No','users.Company')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
@@ -1633,10 +1551,6 @@ class UserController extends Controller {
 		->orderBy('Option','asc')
 		->get();
 
-		$teamuser = DB::table("users")
-		->get();
-
-
 		if ($user->Detail_Approved_On=="0000-00-00 00:00:00")
 		{
 			$interval="-1";
@@ -1651,19 +1565,15 @@ class UserController extends Controller {
 
 		}
 
-		$projects = DB::table('projects')
-		->where('projects.Project_Name','like','%department%')
-		->get();
-
      return view('myprofile', ['UserId' => $me->UserId , 'me' => $me, 'user' =>$user,'changes' =>$changed, 'resumes' =>$resumes,'employmenthistories' => $employmenthistories, 'experiences' => $experiences, 'licenses' => $licenses, 'qualifications' => $qualifications,
 		 'references' => $references, 'skills' => $skills, 'trainings' => $trainings,'certificates' => $certificates, 'review'=>$review, 'salary'=>$salary,
-	 	 'options' => $options,'interval' =>$interval,'superior' =>$superior,'family'=>$family,'language'=>$language, 'teamuser'=>$teamuser,'projects'=>$projects]);
+	 	 'options' => $options,'interval' =>$interval,'superior' =>$superior,'family'=>$family,'language'=>$language]);
 //		return view('Staff');
 	}
 	public function resumeview1($userid)
 	{
 		$me = (new CommonController)->get_current_user();
-		$user = DB::table('users')->select('users.Id','StaffId', 'Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Country_Base','Home_Base','DOB','Place_Of_Birth','Race','Religion','Bank_Name','Bank_Account_No','EPF_No','SOCSO_No','Income_Tax_No','Driving_License','Car_Owner','Criminal_Activity','Team','NRIC','Passport_No','Gender','Marital_Status','Department','Position','Grade','Joining_Date','Resignation_Date','Emergency_Contact_Person',
+		$user = DB::table('users')->select('users.Id','StaffId', 'Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Country_Base','Home_Base','DOB','Place_Of_Birth','Race','Religion','Bank_Name','Bank_Account_No','EPF_No','SOCSO_No','Income_Tax_No','Driving_License','Car_Owner','Criminal_Activity','NRIC','Passport_No','Gender','Marital_Status','Position','Grade','Joining_Date','Resignation_Date','Emergency_Contact_Person',
 		'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','files.Web_Path')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
@@ -1731,7 +1641,7 @@ class UserController extends Controller {
 	public function resumeview2($userid)
 	{
 		$me = (new CommonController)->get_current_user();
-		$user = DB::table('users')->select('users.Id','StaffId', 'Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Country_Base','Home_Base','DOB','Place_Of_Birth','Race','Religion','Bank_Name','Bank_Account_No','EPF_No','SOCSO_No','Income_Tax_No','Driving_License','Car_Owner','Criminal_Activity','Team','NRIC','Passport_No','Gender','Marital_Status','Department','Position','Grade','Joining_Date','Resignation_Date','Emergency_Contact_Person',
+		$user = DB::table('users')->select('users.Id','StaffId', 'Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Country_Base','Home_Base','DOB','Place_Of_Birth','Race','Religion','Bank_Name','Bank_Account_No','EPF_No','SOCSO_No','Income_Tax_No','Driving_License','Car_Owner','Criminal_Activity','NRIC','Passport_No','Gender','Marital_Status','Position','Grade','Joining_Date','Resignation_Date','Emergency_Contact_Person',
 		'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','files.Web_Path')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
@@ -1799,7 +1709,7 @@ class UserController extends Controller {
 	public function resumeview3($userid)
 	{
 		$me = (new CommonController)->get_current_user();
-		$user = DB::table('users')->select('users.Id','StaffId', 'Nick_Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Country_Base','Home_Base','DOB','Place_Of_Birth','Race','Religion','Bank_Name','Bank_Account_No','EPF_No','SOCSO_No','Income_Tax_No','Driving_License','Car_Owner','Criminal_Activity','Team','NRIC','Passport_No','Gender','Marital_Status','Department','Position','Grade','Joining_Date','Resignation_Date','Emergency_Contact_Person',
+		$user = DB::table('users')->select('users.Id','StaffId', 'Nick_Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Country_Base','Home_Base','DOB','Place_Of_Birth','Race','Religion','Bank_Name','Bank_Account_No','EPF_No','SOCSO_No','Income_Tax_No','Driving_License','Car_Owner','Criminal_Activity','NRIC','Passport_No','Gender','Marital_Status','Position','Grade','Joining_Date','Resignation_Date','Emergency_Contact_Person',
 		'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','files.Web_Path')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
@@ -1939,122 +1849,13 @@ class UserController extends Controller {
 			}
 	}
 
-	public function allocation()
-	{
-		$me = (new CommonController)->get_current_user();
-
-		$allocations=DB::table('users')
-		->select('users.Id','userability.Ability','users.StaffId', 'users.Name','users.Position','users.Grade','users.User_Type','users.Home_Base', 'projects.Project_Name','userprojects.Assigned_As','userprojects.Start_Date','userprojects.End_Date')
-		->leftJoin('userprojects', 'userprojects.UserId', '=', 'users.Id')
-		->leftJoin('projects', 'userprojects.ProjectId', '=', 'projects.Id')
-		->leftJoin('userability','users.Id','=','userability.UserId')
-		->get();
-
-		$summary = DB::select("
-			SELECT userprojects.ProjectId, projects.Project_Name,SUM(case when users.User_Type = 'Staff' then 1 else 0 end) as Staff,SUM(case when users.User_Type = 'Assistant Engineer' then 1 else 0 end) as Interns, SUM(case when users.Position = 'DTA' then 1 else 0 end) as DTA, SUM(case when users.Position = 'DTE' then 1 else 0 end) as DTE
-			FROM userprojects
-			LEFT JOIN projects ON projects.Id=userprojects.ProjectId
-			LEFT JOIN users ON users.Id=userprojects.UserId
-			GROUP BY userprojects.ProjectId
-	   ");
-
-		 $projects = DB::table('projects')
-     ->get();
-
-		 $assigned_as = DB::table('userability')
-		 ->get();
-
-		 $options= DB::table('options')
-	 		->whereIn('Table', ["users","userability"])
-	 		->orderBy('Table','asc')
-	 		->orderBy('Option','asc')
-	 		->get();
-		 //dd($data);
-
-		 return view('allocation', ['me'=>$me, 'allocations'=>$allocations,'summary'=>$summary, 'projects'=>$projects, 'assigned_as'=>$assigned_as, 'options'=>$options]);
-
-
-	}
-
-	public function resourcesummary()
-	{
-		$me = (new CommonController)->get_current_user();
-
-		$allocations=DB::table('users')
-		->select('userprojects.Id','users.StaffId', 'users.Name','users.Position','users.Grade','users.User_Type','users.Home_Base', 'projects.Project_Name')
-		->leftJoin('userprojects', 'userprojects.UserId', '=', 'users.Id')
-		->leftJoin('projects', 'userprojects.ProjectId', '=', 'projects.Id')
-		->get();
-
-
-		// $summary = DB::select("
-		// 	SELECT userprojects.ProjectId, projects.Project_Name,SUM(case when users.User_Type = 'Staff' then 1 else 0 end) as Staff,SUM(case when users.User_Type = 'Assistant Engineer' then 1 else 0 end) as Interns, SUM(case when users.Position = 'DTA' then 1 else 0 end) as DTA, SUM(case when users.Position = 'DTE' then 1 else 0 end) as DTE
-		// 	FROM userprojects
-		// 	LEFT JOIN projects ON projects.Id=userprojects.ProjectId
-		// 	LEFT JOIN users ON users.Id=userprojects.UserId
-		// 	GROUP BY userprojects.ProjectId
-		//
-	  //  ");
-
-		$summary = DB::select("
-			SELECT userprojects.ProjectId, projects.Project_Name,SUM(case when users.User_Type = 'Staff' then 1 else 0 end) as Staff,SUM(case when users.User_Type = 'Assistant Engineer' then 1 else 0 end) as Interns, SUM(case when users.Position = 'DTA' then 1 else 0 end) as DTA, SUM(case when users.Position = 'DTE' then 1 else 0 end) as DTE
-			FROM projects
-			LEFT JOIN userprojects ON projects.Id=userprojects.ProjectId
-			LEFT JOIN users ON users.Id=userprojects.UserId
-			GROUP BY projects.Id
-
-	   ");
-
-		 $projects = DB::table('projects')
-     ->get();
-
-		 $projectname = DB::table('projects')
-		 ->select('Project_Name')
-     ->get();
-
-		 foreach($projectname as $key => $quote){
- 			$r[]=$quote->Project_Name;
- 			$title = implode(',', $r);
- 		}
-
-		$data1="";
-		$data2="";
-		$data3="";
-		$data4="";
-
-		foreach($summary as $key => $quote){
-			$a[]=$quote->Staff;
-			$data1= implode(',', $a);
-		}
-
-		foreach($summary as $key => $quote){
-			$b[]=$quote->Interns;
-			$data2= implode(',', $b);
-		}
-
-		foreach($summary as $key => $quote){
-			$c[]=$quote->DTA;
-			$data3= implode(',', $c);
-		}
-
-		foreach($summary as $key => $quote){
-			$d[]=$quote->DTE;
-			$data4= implode(',', $d);
-		}
-
-		return view('resourcesummary', ['me'=>$me, 'allocations'=>$allocations,'summary'=>$summary, 'projects'=>$projects, 'title'=>$title, 'data1'=>$data1, 'data2'=>$data2, 'data3'=>$data3, 'data4'=>$data4]);
-	}
-
 		public function viewlisttype(Request $request)
 		{
 			$me = (new CommonController)->get_current_user();
 			$input = $request->all();
 
 			$namelist=DB::table('users')
-			->select('users.Id','users.StaffId', 'users.Name','users.Position','users.Grade','users.User_Type','users.Home_Base', 'userprojects.ProjectId','projects.Project_Name')
-			->leftJoin('userprojects', 'userprojects.UserId', '=', 'users.Id')
-			->leftJoin('projects', 'userprojects.ProjectId', '=', 'projects.Id')
-			->where('projects.Id', $input["ProjectId"])
+			->select('users.Id','users.StaffId', 'users.Name','users.Position','users.Grade','users.User_Type','users.Home_Base')
 			->where('users.User_Type', $input["User_Type"])
 			->get();
 
@@ -2067,10 +1868,7 @@ class UserController extends Controller {
 			$input = $request->all();
 
 			$namelist=DB::table('users')
-			->select('users.Id','users.StaffId', 'users.Name','users.Position','users.Grade','users.User_Type','users.Home_Base', 'userprojects.ProjectId','projects.Project_Name')
-			->leftJoin('userprojects', 'userprojects.UserId', '=', 'users.Id')
-			->leftJoin('projects', 'userprojects.ProjectId', '=', 'projects.Id')
-			->where('projects.Id', $input["ProjectId"])
+			->select('users.Id','users.StaffId', 'users.Name','users.Position','users.Grade','users.User_Type','users.Home_Base')
 			->where('users.Position', $input["Position"])
 			->get();
 
@@ -2178,16 +1976,13 @@ class UserController extends Controller {
 			->where('users.Id','=',$me->UserId)
 			->get();
 
-			$projects = DB::table('projects')
-      ->get();
-
 			$options= DB::table('options')
 			->whereIn('Table', ["users"])
 			->orderBy('Table','asc')
 			->orderBy('Option','asc')
 			->get();
 
-			return view('myadvancerequest',['advance'=>$advance,'me'=>$me,'users'=>$users, 'projects'=>$projects,'options'=>$options]);
+			return view('myadvancerequest',['advance'=>$advance,'me'=>$me,'users'=>$users,'options'=>$options]);
 
 		}
 
@@ -2204,8 +1999,7 @@ class UserController extends Controller {
 
 				->leftJoin('users as applicant', 'request.UserId', '=', 'applicant.Id')
 				->leftJoin('users as approver', 'requeststatuses.UserId', '=', 'approver.Id')
-				->leftJoin('projects', 'request.ProjectId', '=', 'projects.Id')
-				->select('request.Id','requeststatuses.Id as StatusId','request.Request_type','request.Others','request.Start_Date','request.End_Date', 'request.Remarks','request.created_at as Application_Date','projects.Project_Name','approver.Name as Approver','requeststatuses.Request_status as Status','requeststatuses.updated_at as Review_Date','requeststatuses.Comment')
+				->select('request.Id','requeststatuses.Id as StatusId','request.Request_type','request.Others','request.Start_Date','request.End_Date', 'request.Remarks','request.created_at as Application_Date','approver.Name as Approver','requeststatuses.Request_status as Status','requeststatuses.updated_at as Review_Date','requeststatuses.Comment')
 				->where('request.UserId', '=', $me->UserId)
 				->orderBy('request.Id','desc')
 				->get();
@@ -2215,22 +2009,16 @@ class UserController extends Controller {
 				->orderBy('Option','asc')
 				->get();
 
-				$projects = DB::table('projects')
-				->get();
-
 		        $approver = DB::table('approvalsettings')
 		            ->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		            ->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		            // ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
-								->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+					->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 		            ->where('approvalsettings.Type', '=', 'Request')
 		            ->orderBy('approvalsettings.Country','asc')
-		            // ->orderBy('projects.Project_Name','asc')
 		            ->orderBy('approvalsettings.Level','asc')
-		            ->groupBy('approvalsettings.Country','projects.Project_Name','users.Id')
+		            ->groupBy('approvalsettings.Country','users.Id')
 		            ->get();
 
-			return view('myrequest', ['me' => $me,'approver'=> $approver, 'myrequest' => $myrequest,'approver' => $approver, 'options' =>$options, 'projects' =>$projects]);
+			return view('myrequest', ['me' => $me,'approver'=> $approver, 'myrequest' => $myrequest,'approver' => $approver, 'options' =>$options]);
 
 		}
 
@@ -2265,7 +2053,6 @@ class UserController extends Controller {
 
 			    $id=DB::table('request')->insertGetId([
 			    	'UserId' => $me->UserId,
-					'ProjectId' => $input["Project"],
 			        'Request_Type' => $input["Request_Type"],
 			        'Others' => $input["Others"],
 					'Start_Date' => $input["Start_Date"],
@@ -2283,7 +2070,6 @@ class UserController extends Controller {
 		          	->leftJoin('requeststatuses', 'request.Id', '=', 'requeststatuses.RequestId')
 		          	->leftJoin('users as applicant', 'request.UserId', '=', 'applicant.Id')
 		          	->leftJoin('users as approver', 'requeststatuses.UserId', '=', 'approver.Id')
-		          	// ->leftJoin('projects', 'request.ProjectId', '=', 'projects.Id')
 		          	->select('applicant.Name','request.Request_Type','request.Others','request.Start_Date','request.End_Date','approver.Name as Approver', 'request.Remarks as Remarks')
 		          	->orderBy('requeststatuses.Id','desc')
 		          	->where('request.Id', '=',$id)
@@ -2326,12 +2112,12 @@ class UserController extends Controller {
 
 		        }
 
-		        Mail::send('emails.requestapplication', ['requestdetail' => $requestdetail], function($message) use ($emails,$me,$NotificationSubject)
-		        {
-		            array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-		            $emails = array_filter($emails);
-		            $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
-		        });
+		        // Mail::send('emails.requestapplication', ['requestdetail' => $requestdetail], function($message) use ($emails,$me,$NotificationSubject)
+		        // {
+		        //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+		        //     $emails = array_filter($emails);
+		        //     $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+		        // });
 
 		        return 1;
 		    }
@@ -2353,7 +2139,6 @@ class UserController extends Controller {
 			->leftJoin('requeststatuses', 'request.Id', '=', 'requeststatuses.RequestId')
 			->leftJoin('users as applicant', 'request.UserId', '=', 'applicant.Id')
 			->leftJoin('users as approver', 'requeststatuses.UserId', '=', 'approver.Id')
-			// ->leftJoin('projects', 'request.ProjectId', '=', 'projects.Id')
 			->select('applicant.Name','requeststatuses.UserId as ApproverId','request.Request_Type','request.Others','request.Start_Date','request.End_Date','approver.Name as Approver', 'request.Remarks as Remarks')
 			->orderBy('requeststatuses.Id','desc')
 			->where('request.Id', '=',$input["Id"])
@@ -2412,18 +2197,17 @@ class UserController extends Controller {
 				->leftJoin('requeststatuses', 'request.Id', '=', 'requeststatuses.RequestId')
 				->leftJoin('users as applicant', 'request.UserId', '=', 'applicant.Id')
 				->leftJoin('users as approver', 'requeststatuses.UserId', '=', 'approver.Id')
-				// ->leftJoin('projects', 'request.ProjectId', '=', 'projects.Id')
 				->select('applicant.Name','request.Request_Type','request.Others','request.Start_Date','request.End_Date','approver.Name as Approver', 'request.Remarks as Remarks')
 				->orderBy('requeststatuses.Id','desc')
 				->where('request.Id', '=',$input["Id"])
 				->first();
 
-				Mail::send('emails.requestcancel', ['requestdetail' => $requestdetail], function($message) use ($emails,$me,$NotificationSubject)
-				{
-						$emails = array_filter($emails);
-						array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-						$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
-				});
+				// Mail::send('emails.requestcancel', ['requestdetail' => $requestdetail], function($message) use ($emails,$me,$NotificationSubject)
+				// {
+				// 		$emails = array_filter($emails);
+				// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+				// 		$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+				// });
 
 				return 1;
 			}
@@ -2443,7 +2227,6 @@ class UserController extends Controller {
 				$input = $request->all();
 
 				$rules = array(
-					'ProjectId' => 'Required',
 					'Purpose'     => 'Required',
 					'Start_Date'       => 'Required',
 					'End_Date'  =>'Required',
@@ -2452,7 +2235,6 @@ class UserController extends Controller {
 					);
 
 					$messages = array(
-						'ProjectId.required' => 'The Project field is required',
 						'Purpose.required'     => 'The Purpose field is required',
 						'Start_Date.required'       => 'The Start Date field is required',
 						'End_Date.required'  =>'The End Date field is required',
@@ -2462,23 +2244,18 @@ class UserController extends Controller {
 
 						$approver = DB::table('approvalsettings')
 						->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-						->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-						->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+						->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 						->where('approvalsettings.Type', '=', 'Claim')
-						->where('approvalsettings.ProjectId', '<>', '0')
 						->orderBy('approvalsettings.Country','asc')
-						->orderBy('projects.Project_Name','asc')
 						->orderByRaw("FIELD(approvalsettings.Level , '1st Approval', '2nd Approval', '3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
 						->get();
 
 						$mylevel = DB::table('approvalsettings')
 						->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-						->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-						->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+						->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 						->where('approvalsettings.Type', '=', 'Claim')
 						->where('approvalsettings.UserId', '=', $me->UserId)
 						->orderBy('approvalsettings.Country','asc')
-						->orderBy('projects.Project_Name','asc')
 						->orderByRaw("FIELD(approvalsettings.Level , 'Final Approval', '5th Approval', '4th Approval','3rd Approval','2nd Approval','1st Approval') ASC")
 						->get();
 
@@ -2491,7 +2268,6 @@ class UserController extends Controller {
 
 									$id=DB::table('advances')->insertGetId(
 										['UserId' => $me->UserId,
-										 'ProjectId' => $input["ProjectId"],
 										 'Purpose' => $input["Purpose"],
 										 'Start_Date' => $input["Start_Date"],
 										 'End_Date' => $input["End_Date"],
@@ -2609,22 +2385,21 @@ class UserController extends Controller {
 										}
 
 										$advance = DB::table('advances')
-										->select('advancestatuses.Status','advances.Id','users.Name','users.Bank_Account_No','users.Position','projects.Project_Name','advances.Purpose','advances.Destination','advances.Start_Date','advances.End_Date','advances.Mode_Of_Transport','advances.Car_No','approver.Name as Approver',DB::raw('Format((advances.Total_Requested),2) as Total_Requested'))
+										->select('advancestatuses.Status','advances.Id','users.Name','users.Bank_Account_No','users.Position','advances.Purpose','advances.Destination','advances.Start_Date','advances.End_Date','advances.Mode_Of_Transport','advances.Car_No','approver.Name as Approver',DB::raw('Format((advances.Total_Requested),2) as Total_Requested'))
 										->leftJoin('users','users.Id','=','advances.UserId')
-										->leftJoin('projects','projects.Id','=','advances.ProjectId')
 										->leftJoin('advancestatuses','advances.Id','=','advancestatuses.AdvanceId')
 										->leftJoin('users as approver','approver.Id','=','advancestatuses.UserId')
 										->where('advances.Id','=',$id)
 										->get();
 
 
-										Mail::send('emails.advancerequest', ['me' => $me,'advance' => $advance], function($message) use ($emails,$me,$NotificationSubject)
-										{
-												$emails = array_filter($emails);
-												array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-												$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+										// Mail::send('emails.advancerequest', ['me' => $me,'advance' => $advance], function($message) use ($emails,$me,$NotificationSubject)
+										// {
+										// 		$emails = array_filter($emails);
+										// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+										// 		$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
 
-										});
+										// });
 
 										return 1;
 									}
@@ -2680,21 +2455,20 @@ class UserController extends Controller {
 					}
 
 					$advance = DB::table('advances')
-					->select('advancestatuses.Status','advances.Id','users.Name','users.Bank_Account_No','users.Position','projects.Project_Name','advances.Purpose','advances.Destination','advances.Start_Date','advances.End_Date','advances.Mode_Of_Transport','advances.Car_No','approver.Name as Approver',DB::raw('Format((advances.Total_Requested),2) as Total_Requested'))
+					->select('advancestatuses.Status','advances.Id','users.Name','users.Bank_Account_No','users.Position','advances.Purpose','advances.Destination','advances.Start_Date','advances.End_Date','advances.Mode_Of_Transport','advances.Car_No','approver.Name as Approver',DB::raw('Format((advances.Total_Requested),2) as Total_Requested'))
 					->leftJoin('users','users.Id','=','advances.UserId')
-					->leftJoin('projects','projects.Id','=','advances.ProjectId')
 					->leftJoin('advancestatuses','advances.Id','=','advancestatuses.AdvanceId')
 					->leftJoin('users as approver','approver.Id','=','advancestatuses.UserId')
 					->where('advances.Id','=',$advanceid)
 					->get();
 
-					Mail::send('emails.advance', ['me' => $me,'advance' => $advance], function($message) use ($emails,$me,$NotificationSubject)
-					{
-							$emails = array_filter($emails);
-							array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-							$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+					// Mail::send('emails.advance', ['me' => $me,'advance' => $advance], function($message) use ($emails,$me,$NotificationSubject)
+					// {
+					// 		$emails = array_filter($emails);
+					// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+					// 		$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
 
-					});
+					// });
 				}
 
 
@@ -2722,8 +2496,7 @@ class UserController extends Controller {
 					->leftJoin('requeststatuses', 'requeststatuses.Id', '=', DB::raw('max.`maxid`'))
 					->leftJoin('users as applicant', 'request.UserId', '=', 'applicant.Id')
 					->leftJoin('users as approver', 'requeststatuses.UserId', '=', 'approver.Id')
-					->leftJoin('projects', 'projects.Id', '=', 'request.ProjectId')
-					->select('request.Id','requeststatuses.Id as StatusId','applicant.Name as Applicant','applicant.Department','request.Approver as Approver_Id','request.Request_type','request.Others', 'request.Start_Date','request.End_Date','request.Remarks','request.created_at as Application_Date','projects.Project_Name','approver.Name as Approver','requeststatuses.Request_status as Status','requeststatuses.updated_at as Review_Date','requeststatuses.Comment')
+					->select('request.Id','requeststatuses.Id as StatusId','applicant.Name as Applicant','applicant.Position','request.Approver as Approver_Id','request.Request_type','request.Others', 'request.Start_Date','request.End_Date','request.Remarks','request.created_at as Application_Date','approver.Name as Approver','requeststatuses.Request_status as Status','requeststatuses.updated_at as Review_Date','requeststatuses.Comment')
 					->where('requeststatuses.UserId', '=', $me->UserId)
 					->orderBy('request.Id','desc')
 					->get();
@@ -2733,8 +2506,7 @@ class UserController extends Controller {
 					->leftJoin('requeststatuses', 'requeststatuses.Id', '=', DB::raw('max.`maxid`'))
 					->leftJoin('users as applicant', 'request.UserId', '=', 'applicant.Id')
 					->leftJoin('users as approver', 'requeststatuses.UserId', '=', 'approver.Id')
-					->leftJoin('projects', 'projects.Id', '=', 'request.ProjectId')
-					->select('request.Id','requeststatuses.Id as StatusId','applicant.Name as Applicant','applicant.Department','request.Approver as Approver_Id','request.Request_type','request.Others', 'request.Start_Date','request.End_Date', 'request.Remarks','request.created_at as Application_Date','projects.Project_Name','approver.Name as Approver','requeststatuses.Request_status as Status','requeststatuses.updated_at as Review_Date','requeststatuses.Comment')
+					->select('request.Id','requeststatuses.Id as StatusId','applicant.Name as Applicant','applicant.Position','request.Approver as Approver_Id','request.Request_type','request.Others', 'request.Start_Date','request.End_Date', 'request.Remarks','request.created_at as Application_Date','approver.Name as Approver','requeststatuses.Request_status as Status','requeststatuses.updated_at as Review_Date','requeststatuses.Comment')
 					->orderBy('request.Id','desc')
 					->get();
 
@@ -2743,33 +2515,28 @@ class UserController extends Controller {
 				->leftJoin('requeststatuses', 'requeststatuses.Id', '=', DB::raw('max.`maxid`'))
 				->leftJoin('users as applicant', 'request.UserId', '=', 'applicant.Id')
 				->leftJoin('users as approver', 'requeststatuses.UserId', '=', 'approver.Id')
-				->leftJoin('projects', 'projects.Id', '=', 'request.ProjectId')
-				->select('request.Id','requeststatuses.Id as StatusId','applicant.Name as Applicant','applicant.Department','request.Approver as Approver_Id','request.Request_type','request.Others', 'request.Start_Date','request.End_Date', 'request.Remarks','request.created_at as Application_Date','projects.Project_Name','approver.Name as Approver','requeststatuses.Request_status as Status','requeststatuses.updated_at as Review_Date','requeststatuses.Comment')
+				->select('request.Id','requeststatuses.Id as StatusId','applicant.Name as Applicant','applicant.Position','request.Approver as Approver_Id','request.Request_type','request.Others', 'request.Start_Date','request.End_Date', 'request.Remarks','request.created_at as Application_Date','approver.Name as Approver','requeststatuses.Request_status as Status','requeststatuses.updated_at as Review_Date','requeststatuses.Comment')
 				->where('requeststatuses.Request_status', 'like','%Final Approved%')
 				->orderBy('request.Id','desc')
 				->get();
 
 				$approver = DB::table('approvalsettings')
 				->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-				->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-				->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+				->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 				->where('approvalsettings.Type', '=', 'Request')
 				->orderBy('approvalsettings.Country','asc')
-				->orderBy('projects.Project_Name','asc')
 				->orderBy('approvalsettings.Level','asc')
-				->groupBy('approvalsettings.Country','projects.Project_Name','users.Id')
+				->groupBy('approvalsettings.Country','users.Id')
 				->get();
 
 				$mylevel = DB::table('approvalsettings')
 				->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-				->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-				->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+				->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 				->where('approvalsettings.Type', '=', 'Request')
 				->where('approvalsettings.UserId', '=', $me->UserId)
 
 				// ->orderBy('approvalsettings.Level','Final Approval","5th Approval","4th Approval","3rd Approval","2nd Approval","1st Approval")
 				->orderByRaw("FIELD(approvalsettings.Level , 'Final Approval', '5th Approval', '4th Approval','3rd Approval','2nd Approval','1st Approval') ASC")
-				->orderBy('projects.Project_Name','asc')
 				->first();
 
 				return view('requestmanagement', ['me' => $me,'allrequest' => $allrequest,'request' => $request,'finalapprovedrequest'=>$finalapprovedrequest,'approver' => $approver,'mylevel' => $mylevel,'start'=>$start,'end'=>$end ]);
@@ -2835,8 +2602,6 @@ class UserController extends Controller {
 	    	->leftJoin('requeststatuses', 'requeststatuses.Id', '=', DB::raw('max.`maxid`'))
 	    	->leftJoin('users as applicant', 'request.UserId', '=', 'applicant.Id')
 	    	->leftJoin('users as approver', 'requeststatuses.UserId', '=', 'approver.Id')
-	    	// ->leftJoin('projects', 'request.ProjectId', '=', 'projects.Id')
-	    	// ->select('requeststatuses.Id','request.Id as RequestId','request.UserId as ApplicantId','applicant.Name','request.Leave_Type','request.Leave_Term','request.Start_Date','request.End_Date','request.No_of_Days','request.Reason','request.created_at as Application_Date','projects.Project_Name','approver.Id as ApproverId','approver.Name as Approver','requeststatuses.Request_status as Status','requeststatuses.Comment','requeststatuses.updated_at as Review_Date')
 	    	->select('request.Id as RequestId','requeststatuses.Id as StatusId','request.Start_Date','request.End_Date','request.Approver as ApproverId','request.Request_type','request.Others', 'request.Remarks','request.created_at as Application_Date','approver.Name as Approver','requeststatuses.Request_status as Status','requeststatuses.updated_at as Review_Date','requeststatuses.Comment', 'request.UserId as ApplicantId')
 	    	->orderBy('request.Id','desc')
 	    	->whereIn('request.Id', $Ids)
@@ -2844,13 +2609,9 @@ class UserController extends Controller {
 
 	    	$approver = DB::table('approvalsettings')
 	    	->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-	    	->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-	    	// ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
 	    	->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 	    	->where('approvalsettings.Type', '=', 'Request')
-	    	->where('approvalsettings.ProjectId', '<>', '0')
 	    	->orderBy('approvalsettings.Country','asc')
-	    	->orderBy('projects.Project_Name','asc')
 	    	->orderByRaw("FIELD(approvalsettings.Level , '1st Approval','2nd Approval','3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
 	    	->get();
 
@@ -3057,22 +2818,19 @@ class UserController extends Controller {
 	    			->leftJoin('requeststatuses', 'requeststatuses.Id', '=', DB::raw('max.`maxid`'))
 	    			->leftJoin('users as applicant', 'request.UserId', '=', 'applicant.Id')
 	    			->leftJoin('users as approver', 'requeststatuses.UserId', '=', 'approver.Id')
-	    			// ->leftJoin('projects', 'request.ProjectId', '=', 'projects.Id')
-	    			// ->select('requeststatuses.Id','request.Id as RequestId','request.UserId as ApplicantId','applicant.Name','request.Leave_Type','request.Leave_Term','request.Start_Date','request.End_Date','request.No_of_Days','request.Reason','request.created_at as Application_Date','projects.Project_Name','approver.Id as ApproverId','approver.Name as Approver','requeststatuses.Request_status as Status','requeststatuses.Comment','requeststatuses.updated_at as Review_Date')
-	    			// ->select('request.Id','requeststatuses.Id as StatusId','request.Approver as Approver_Id','request.Request_type','request.Others', 'request.Remarks','request.created_at as Application_Date','approver.Name as Approver','requeststatuses.Request_status as Status','requeststatuses.updated_at as Review_Date','requeststatuses.Comment', 'applicant.Name')
 	    			->select('request.Request_type as Type','request.Others', 'request.Remarks','request.created_at as Application_Date','approver.Name as Approver','requeststatuses.Request_status as Status','requeststatuses.updated_at as Review_Date','requeststatuses.Comment', 'applicant.Name')
 	    			->orderBy('request.Id','desc')
 	    			->where('request.Id','=', $request->RequestId)
 	    			->first();
 
-	    			Mail::send('emails.requeststatus', ['me' => $me,'requestdetail' => $requestdetail], function($message) use ($me,$emails,$requestdetail,$NotificationSubject)
-	    			{
-	    					$emails = array_filter($emails);
+	    			// Mail::send('emails.requeststatus', ['me' => $me,'requestdetail' => $requestdetail], function($message) use ($me,$emails,$requestdetail,$NotificationSubject)
+	    			// {
+	    			// 		$emails = array_filter($emails);
 
-	    					array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-	    					$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+	    			// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+	    			// 		$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
 
-	    			});
+	    			// });
 
 	    		}
 	    		else {
@@ -3103,7 +2861,6 @@ class UserController extends Controller {
 	    		// ->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Request"'))
 	    		->leftJoin('users as applicant', 'request.UserId', '=', 'applicant.Id')
 	    		->leftJoin('users as approver', 'requeststatuses.UserId', '=', 'approver.Id')
-	    		//->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
 	    		->select('request.Id','requeststatuses.Id as StatusId','request.Approver as Approver_Id','request.Request_type','request.Others', 'request.Remarks','request.created_at as Application_Date','approver.Name as Approver','requeststatuses.Request_status','requeststatuses.updated_at as Review_Date','requeststatuses.Comment')
 	    		->orderBy('requeststatuses.Id','desc')
 	    		->whereIn('request.Id', $Ids)
@@ -3185,12 +2942,12 @@ class UserController extends Controller {
 
 	    			//array_push($emails,"latifah@pronetwork.com.my");
 
-	    			Mail::send('emails.requestredirected', ['requestdetail' => $requestdetail,'from'=>$me->Name], function($message) use ($emails,$requestdetail,$NotificationSubject)
-	    			{
-	    					array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-	    					$emails = array_filter($emails);
-	    					$message->to($emails)->subject($NotificationSubject.' ['.$requestdetail->Name.']');
-	    			});
+	    			// Mail::send('emails.requestredirected', ['requestdetail' => $requestdetail,'from'=>$me->Name], function($message) use ($emails,$requestdetail,$NotificationSubject)
+	    			// {
+	    			// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+	    			// 		$emails = array_filter($emails);
+	    			// 		$message->to($emails)->subject($NotificationSubject.' ['.$requestdetail->Name.']');
+	    			// });
 
 	    			return 1;
 	    		}
@@ -3209,8 +2966,7 @@ class UserController extends Controller {
 	    		->leftJoin('requeststatuses', 'requeststatuses.Id', '=', DB::raw('max.`maxid`'))
 	    		->leftJoin('users as applicant', 'request.UserId', '=', 'applicant.Id')
 	    		->leftJoin('users as approver', 'requeststatuses.UserId', '=', 'approver.Id')
-	    		->leftJoin('projects', 'projects.Id', '=', 'request.ProjectId')
-	    		->select('request.Id','applicant.Name','requeststatuses.Id as StatusId','request.Approver as Approver_Id','request.Request_type','request.Others', 'request.Remarks','request.Start_Date','request.End_Date','request.created_at','projects.Project_Name','approver.Name as Approver','requeststatuses.Request_status','requeststatuses.updated_at as Review_Date','requeststatuses.Comment')
+	    		->select('request.Id','applicant.Name','requeststatuses.Id as StatusId','request.Approver as Approver_Id','request.Request_type','request.Others', 'request.Remarks','request.Start_Date','request.End_Date','request.created_at','approver.Name as Approver','requeststatuses.Request_status','requeststatuses.updated_at as Review_Date','requeststatuses.Comment')
 	    		->where('request.Id', '=', $id)
 	    		->orderBy('request.Id','desc')
 	    		->first();
@@ -3279,9 +3035,8 @@ class UserController extends Controller {
 			$me = (new CommonController)->get_current_user();
 
 			$advance = DB::table('advances')
-			->select('advancestatuses.Status','advances.Id','users.Name','users.Bank_Account_No','users.Position','projects.Project_Name','advances.Purpose','advances.Destination','advances.Start_Date','advances.End_Date','advances.Mode_Of_Transport','advances.Car_No','approver.Name as Approver',DB::raw('Format((advances.Total_Requested),2) as Total_Requested'))
+			->select('advancestatuses.Status','advances.Id','users.Name','users.Bank_Account_No','users.Position','advances.Purpose','advances.Destination','advances.Start_Date','advances.End_Date','advances.Mode_Of_Transport','advances.Car_No','approver.Name as Approver',DB::raw('Format((advances.Total_Requested),2) as Total_Requested'))
 			->leftJoin('users','users.Id','=','advances.UserId')
-			->leftJoin('projects','projects.Id','=','advances.ProjectId')
 			->leftJoin('advancestatuses','advances.Id','=','advancestatuses.AdvanceId')
 			->leftJoin('users as approver','approver.Id','=','advancestatuses.UserId')
 			->where('advances.Id','=',$advanceid)
@@ -3300,12 +3055,10 @@ class UserController extends Controller {
 
 			$mylevel = DB::table('approvalsettings')
 			->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-			->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-			->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+			->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 			->where('approvalsettings.Type', '=', 'Claim')
 			->where('approvalsettings.UserId', '=', $me->UserId)
 			->orderBy('approvalsettings.Country','asc')
-			->orderBy('projects.Project_Name','asc')
 			// ->orderBy('approvalsettings.Level','Final Approval","5th Approval","4th Approval","3rd Approval","2nd Approval","1st Approval")
 			->orderByRaw("FIELD(approvalsettings.Level , 'Final Approval', '5th Approval', '4th Approval','3rd Approval','2nd Approval','1st Approval') ASC")
 			->first();
@@ -3407,22 +3160,21 @@ class UserController extends Controller {
 											}
 
 											$advance = DB::table('advances')
-											->select('advancestatuses.Status','advances.Id','users.Name','users.Bank_Account_No','users.Position','projects.Project_Name','advances.Purpose','advances.Destination','advances.Start_Date','advances.End_Date','advances.Mode_Of_Transport','advances.Car_No','approver.Name as Approver',DB::raw('Format((advances.Total_Requested),2) as Total_Requested'))
+											->select('advancestatuses.Status','advances.Id','users.Name','users.Bank_Account_No','users.Position','advances.Purpose','advances.Destination','advances.Start_Date','advances.End_Date','advances.Mode_Of_Transport','advances.Car_No','approver.Name as Approver',DB::raw('Format((advances.Total_Requested),2) as Total_Requested'))
 											->leftJoin('users','users.Id','=','advances.UserId')
-											->leftJoin('projects','projects.Id','=','advances.ProjectId')
 											->leftJoin('advancestatuses','advances.Id','=','advancestatuses.AdvanceId')
 											->leftJoin('users as approver','approver.Id','=','advancestatuses.UserId')
 											->where('advances.Id','=',$input["AdvanceId"])
 											->get();
 
 
-											Mail::send('emails.advanceapproved', ['me' => $me,'advance' => $advance], function($message) use ($emails,$me,$NotificationSubject)
-											{
-													$emails = array_filter($emails);
-													array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-													$message->to($emails)->subject($NotificationSubject.' ['.$advance->Name.']');
+											// Mail::send('emails.advanceapproved', ['me' => $me,'advance' => $advance], function($message) use ($emails,$me,$NotificationSubject)
+											// {
+											// 		$emails = array_filter($emails);
+											// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+											// 		$message->to($emails)->subject($NotificationSubject.' ['.$advance->Name.']');
 
-											});
+											// });
 
 											return 1;
 										}
@@ -3469,9 +3221,8 @@ class UserController extends Controller {
 
 
 			$advances = DB::table('advances')
-			->select('advancestatuses.Status','advances.Id as advanceid','users.Name','users.Bank_Account_No','users.Position','projects.Project_Name','advances.Purpose','advances.Destination','advances.Start_Date','advances.End_Date','advances.Mode_Of_Transport','advances.Car_No','approver.Name as Approver',DB::raw('Format((advances.Total_Requested),2) as Total_Requested'))
+			->select('advancestatuses.Status','advances.Id as advanceid','users.Name','users.Bank_Account_No','users.Position','advances.Purpose','advances.Destination','advances.Start_Date','advances.End_Date','advances.Mode_Of_Transport','advances.Car_No','approver.Name as Approver',DB::raw('Format((advances.Total_Requested),2) as Total_Requested'))
 			->leftJoin('users','users.Id','=','advances.UserId')
-			->leftJoin('projects','projects.Id','=','advances.ProjectId')
 			->leftJoin('advancestatuses','advances.Id','=','advancestatuses.AdvanceId')
 			->leftJoin('users as approver','approver.Id','=','advancestatuses.UserId')
 			->where('advances.Id','=',$input["AdvanceId"])
@@ -3497,9 +3248,8 @@ class UserController extends Controller {
 			{
 
 				$advances = DB::table('advances')
-				->select('advancestatuses.Status','advances.Id as advanceid','users.Name','users.Bank_Account_No','users.Position','projects.Project_Name','advances.Purpose','advances.Destination','advances.Start_Date','advances.End_Date','advances.Mode_Of_Transport','advances.Car_No','approver.Name as Approver',DB::raw('Format((advances.Total_Requested),2) as Total_Requested'))
+				->select('advancestatuses.Status','advances.Id as advanceid','users.Name','users.Bank_Account_No','users.Position','advances.Purpose','advances.Destination','advances.Start_Date','advances.End_Date','advances.Mode_Of_Transport','advances.Car_No','approver.Name as Approver',DB::raw('Format((advances.Total_Requested),2) as Total_Requested'))
 				->leftJoin('users','users.Id','=','advances.UserId')
-				->leftJoin('projects','projects.Id','=','advances.ProjectId')
 				->leftJoin('advancestatuses','advances.Id','=','advancestatuses.AdvanceId')
 				->leftJoin('users as approver','approver.Id','=','advancestatuses.UserId')
 				->where('advances.Id','=',$input["AdvanceId"])
@@ -3548,12 +3298,12 @@ class UserController extends Controller {
 
 				}
 
-				Mail::send('emails.advanceredirected', ['me'=>$me,'advances' => $advances], function($message) use ($emails,$me,$NotificationSubject)
-				{
-						$emails = array_filter($emails);
-						array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-						$message->to($emails)->subject($NotificationSubject);
-				});
+				// Mail::send('emails.advanceredirected', ['me'=>$me,'advances' => $advances], function($message) use ($emails,$me,$NotificationSubject)
+				// {
+				// 		$emails = array_filter($emails);
+				// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+				// 		$message->to($emails)->subject($NotificationSubject);
+				// });
 
 				return 1;
 			}
@@ -3574,9 +3324,8 @@ class UserController extends Controller {
 			$input = $request->all();
 
 			$advances = DB::table('advances')
-			->select('advancestatuses.Status','advances.Id as advanceid','advancestatuses.UserId','users.Name','users.Bank_Account_No','users.Position','projects.Project_Name','advances.Purpose','advances.Destination','advances.Start_Date','advances.End_Date','advances.Mode_Of_Transport','advances.Car_No','approver.Name as Approver',DB::raw('Format((advances.Total_Requested),2) as Total_Requested'))
+			->select('advancestatuses.Status','advances.Id as advanceid','advancestatuses.UserId','users.Name','users.Bank_Account_No','users.Position','advances.Purpose','advances.Destination','advances.Start_Date','advances.End_Date','advances.Mode_Of_Transport','advances.Car_No','approver.Name as Approver',DB::raw('Format((advances.Total_Requested),2) as Total_Requested'))
 			->leftJoin('users','users.Id','=','advances.UserId')
-			->leftJoin('projects','projects.Id','=','advances.ProjectId')
 			->leftJoin('advancestatuses','advances.Id','=','advancestatuses.AdvanceId')
 			->leftJoin('users as approver','approver.Id','=','advancestatuses.UserId')
 			->where('advances.Id','=',$input["AdvanceId"])
@@ -3584,12 +3333,9 @@ class UserController extends Controller {
 
 			$approver = DB::table('approvalsettings')
 			->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-			->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-			->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+			->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 			->where('approvalsettings.Type', '=', 'Claim')
-			->where('approvalsettings.ProjectId', '<>', '0')
 			->orderBy('approvalsettings.Country','asc')
-			->orderBy('projects.Project_Name','asc')
 			->orderByRaw("FIELD(approvalsettings.Level , '1st Approval','2nd Approval','3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
 			->get();
 
@@ -3606,7 +3352,7 @@ class UserController extends Controller {
 
 					foreach ($approver as $user) {
 
-							if (!empty($user->Id) && $user->Project_Name==$advance->Project_Name && $advance->UserId != $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($advance->Status, FILTER_SANITIZE_NUMBER_INT))
+							if (!empty($user->Id) && $advance->UserId != $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($advance->Status, FILTER_SANITIZE_NUMBER_INT))
 							{
 
 								DB::table('advancestatuses')->insert(
@@ -3622,13 +3368,13 @@ class UserController extends Controller {
 
 								break;
 							}
-							elseif (!empty($user->Id) && $user->Project_Name==$advance->Project_Name && $advance->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($advance->Status, FILTER_SANITIZE_NUMBER_INT))
+							elseif (!empty($user->Id) && $advance->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($advance->Status, FILTER_SANITIZE_NUMBER_INT))
 							{
 								# code...
 									$submitted=true;
 									array_push($emaillist,$user->Id);
 							}
-							elseif (!empty($user->Id) && $user->Project_Name==$advance->Project_Name && $advance->UserId == $user->Id && $advance->Status=="Recalled")
+							elseif (!empty($user->Id) && $advance->UserId == $user->Id && $advance->Status=="Recalled")
 							{
 
 								DB::table('advancestatuses')->insert(
@@ -3643,7 +3389,7 @@ class UserController extends Controller {
 
 								break;
 							}
-							elseif (!empty($user->Id) && $user->Project_Name==$advance->Project_Name && $advance->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($advance->Status, FILTER_SANITIZE_NUMBER_INT))
+							elseif (!empty($user->Id) && $advance->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($advance->Status, FILTER_SANITIZE_NUMBER_INT))
 							{
 								# code...
 									$submitted=true;
@@ -3651,7 +3397,7 @@ class UserController extends Controller {
 									array_push($emaillist,$user->Id);
 									array_push($emaillist,$advance->UserId);
 							}
-							elseif (!empty($user->Id) && $user->Project_Name==$advance->Project_Name && $advance->UserId != $user->Id && $user->Level=="Final Approval")
+							elseif (!empty($user->Id) && $advance->UserId != $user->Id && $user->Level=="Final Approval")
 							{
 
 								DB::table('advancestatuses')->insert(
@@ -3755,21 +3501,20 @@ class UserController extends Controller {
 
 
 				$advances = DB::table('advances')
-				->select('advancestatuses.Status','advances.Id as advanceid','advancestatuses.UserId','users.Name','users.Bank_Account_No','users.Position','projects.Project_Name','advances.Purpose','advances.Destination','advances.Start_Date','advances.End_Date','advances.Mode_Of_Transport','advances.Car_No','approver.Name as Approver',DB::raw('Format((advances.Total_Requested),2) as Total_Requested'))
+				->select('advancestatuses.Status','advances.Id as advanceid','advancestatuses.UserId','users.Name','users.Bank_Account_No','users.Position','advances.Purpose','advances.Destination','advances.Start_Date','advances.End_Date','advances.Mode_Of_Transport','advances.Car_No','approver.Name as Approver',DB::raw('Format((advances.Total_Requested),2) as Total_Requested'))
 				->leftJoin('users','users.Id','=','advances.UserId')
-				->leftJoin('projects','projects.Id','=','advances.ProjectId')
 				->leftJoin('advancestatuses','advances.Id','=','advancestatuses.AdvanceId')
 				->leftJoin('users as approver','approver.Id','=','advancestatuses.UserId')
 				->where('advances.Id','=',$input["AdvanceId"])
 				->get();
 
-				Mail::send('emails.advanceapproval2', ['me' => $me,'advances' => $advances], function($message) use ($emails,$advances,$NotificationSubject)
-				{
-						$emails = array_filter($emails);
-						array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-						$message->to($emails)->subject($NotificationSubject);
+				// Mail::send('emails.advanceapproval2', ['me' => $me,'advances' => $advances], function($message) use ($emails,$advances,$NotificationSubject)
+				// {
+				// 		$emails = array_filter($emails);
+				// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+				// 		$message->to($emails)->subject($NotificationSubject);
 
-				});
+				// });
 
 				return 1;
 			}
@@ -3881,9 +3626,6 @@ class UserController extends Controller {
 			->where('users.Id','=',$me->UserId)
 			->first();
 
-			$projects = DB::table('projects')
-		     ->get();
-
 			$options= DB::table('options')
 			->whereIn('Table', ["users"])
 			->orderBy('Table','asc')
@@ -3891,16 +3633,15 @@ class UserController extends Controller {
 			->get();
 
 			$myloan = DB::table('staffloans')
-			->select('staffloans.Id','staffloanstatuses.Status','staffloans.Type','staffloans.Date',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'),DB::raw('Format((staffloans.Total_Approved),2) as Total_Approved'),'projects.Project_Name','approver.Name as Approver')
+			->select('staffloans.Id','staffloanstatuses.Status','staffloans.Type','staffloans.Date',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'),DB::raw('Format((staffloans.Total_Approved),2) as Total_Approved'),'approver.Name as Approver')
 			->leftJoin('users','users.Id','=','staffloans.UserId')
-			->leftJoin('projects','projects.Id','=','staffloans.ProjectId')
 			->leftJoin( DB::raw('(select Max(Id) as maxid,StaffLoanId from staffloanstatuses Group By StaffLoanId) as max'), 'max.StaffLoanId', '=', 'staffloans.Id')
 			->leftJoin('staffloanstatuses', 'staffloanstatuses.Id', '=', DB::raw('max.`maxid`'))
 			->leftJoin('users as approver','approver.Id','=','staffloanstatuses.UserId')
 			->where('staffloans.UserId', '=', $me->UserId)
 			->get();
 
-			return view('myloanrequest',['loan'=> [],'me'=>$me,'type'=>'personal','user'=>$user, 'projects'=>$projects,'options'=>$options,'myloan'=>$myloan]);
+			return view('myloanrequest',['loan'=> [],'me'=>$me,'type'=>'personal','user'=>$user,'options'=>$options,'myloan'=>$myloan]);
 
 		}
 
@@ -3972,18 +3713,17 @@ class UserController extends Controller {
 					->leftJoin('staffloanstatuses', 'staffloans.Id', '=', 'staffloanstatuses.StaffLoanId')
 					->leftJoin('users as applicant', 'staffloans.UserId', '=', 'applicant.Id')
 					->leftJoin('users as approver', 'staffloanstatuses.UserId', '=', 'approver.Id')
-					->leftJoin('projects', 'staffloans.ProjectId', '=', 'projects.Id')
-					->select('applicant.Name', 'projects.Project_Name as Project_Name' ,'staffloans.Purpose')
+					->select('applicant.Name','staffloans.Purpose')
 					->orderBy('staffloanstatuses.Id','desc')
 					->where('staffloans.Id', '=',$input["Id"])
 					->first();
 
-					Mail::send('emails.staffloancancel', ['staffloandetail' => $staffloandetail], function($message) use ($emails,$me,$NotificationSubject)
-					{
-							$emails = array_filter($emails);
-							array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-							$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
-					});
+					// Mail::send('emails.staffloancancel', ['staffloandetail' => $staffloandetail], function($message) use ($emails,$me,$NotificationSubject)
+					// {
+					// 		$emails = array_filter($emails);
+					// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+					// 		$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+					// });
 
 					return 1;
 				}
@@ -4006,13 +3746,11 @@ class UserController extends Controller {
 
 
 				$rules = array(
-					'ProjectId' => 'Required',
 					'Bank_Account_No' => 'Required',
 					'Purpose' => 'Required',
 					);
 
 				$messages = array(
-					'ProjectId.required' => 'The Project field is required',
 					'Bank_Account_No.required' => 'The Bank Account No field is required',
 					'Purpose.required' => 'The Purpose field is required'
 
@@ -4021,23 +3759,18 @@ class UserController extends Controller {
 
 				$approver = DB::table('approvalsettings')
 				->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-				->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-				->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+				->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 				->where('approvalsettings.Type', '=', 'Loan')
-				->where('approvalsettings.ProjectId', '=', $input["ProjectId"])
 				->orderBy('approvalsettings.Country','asc')
-				->orderBy('projects.Project_Name','asc')
 				->orderByRaw("FIELD(approvalsettings.Level , '1st Approval', '2nd Approval', '3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
 				->first();
 
 				$mylevel = DB::table('approvalsettings')
 				->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-				->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-				->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+				->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 				->where('approvalsettings.Type', '=', 'Loan')
 				->where('approvalsettings.UserId', '=', $me->UserId)
 				->orderBy('approvalsettings.Country','asc')
-				->orderBy('projects.Project_Name','asc')
 				->orderByRaw("FIELD(approvalsettings.Level , 'Final Approval', '5th Approval', '4th Approval','3rd Approval','2nd Approval','1st Approval') ASC")
 				->get();
 
@@ -4048,7 +3781,6 @@ class UserController extends Controller {
 
 							$id=DB::table('staffloans')->insertGetId(
 								['UserId' => $me->UserId,
-								 'ProjectId' => $input["ProjectId"],
 								 'Date' => $today,
 								 'Type' => $input["Type"],
 								 'Total_Requested' => $input["Total_Requested"],
@@ -4123,22 +3855,21 @@ class UserController extends Controller {
 								}
 
 								$staffloan = DB::table('staffloans')
-								->select('staffloanstatuses.Status','staffloans.Id','users.Name','staffloans.Bank_Account_No','users.Position','projects.Project_Name','staffloans.Date','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'))
+								->select('staffloanstatuses.Status','staffloans.Id','users.Name','staffloans.Bank_Account_No','users.Position','staffloans.Date','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'))
 								->leftJoin('users','users.Id','=','staffloans.UserId')
-								->leftJoin('projects','projects.Id','=','staffloans.ProjectId')
 								->leftJoin('staffloanstatuses','staffloans.Id','=','staffloanstatuses.StaffLoanId')
 								->leftJoin('users as approver','approver.Id','=','staffloanstatuses.UserId')
 								->where('staffloans.Id','=',$id)
 								->get();
 
 
-								Mail::send('emails.staffloanrequest', ['me' => $me,'staffloan' => $staffloan], function($message) use ($emails,$me,$NotificationSubject)
-								{
-										array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-										$emails = array_filter($emails);
-										$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+								// Mail::send('emails.staffloanrequest', ['me' => $me,'staffloan' => $staffloan], function($message) use ($emails,$me,$NotificationSubject)
+								// {
+								// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+								// 		$emails = array_filter($emails);
+								// 		$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
 
-								});
+								// });
 
 								return 1;
 							}
@@ -4194,9 +3925,8 @@ class UserController extends Controller {
 					}
 
 					$staffloan = DB::table('staffloans')
-					->select('staffloanstatuses.Status','staffloans.Id','users.Name','users.Bank_Account_No','users.Position','projects.Project_Name','staffloans.Destination','staffloans.Date','staffloans.Mode_Of_Transport','staffloans.Car_No','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'))
+					->select('staffloanstatuses.Status','staffloans.Id','users.Name','users.Bank_Account_No','users.Position','staffloans.Destination','staffloans.Date','staffloans.Mode_Of_Transport','staffloans.Car_No','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'))
 					->leftJoin('users','users.Id','=','staffloans.UserId')
-					->leftJoin('projects','projects.Id','=','staffloans.ProjectId')
 					->leftJoin('staffloanstatuses','staffloans.Id','=','staffloanstatuses.StaffLoanId')
 					->leftJoin('users as approver','approver.Id','=','staffloanstatuses.UserId')
 					->where('staffloans.Id','=',$staffloanid)
@@ -4261,7 +3991,7 @@ class UserController extends Controller {
 
 
 			$users = DB::table('users')->where('active', 1)->get();
-			$users_depts = collect($users)->groupBy('Department')->all();
+			$users_pos = collect($users)->groupBy('Position')->all();
 			return view('staffloanmanagement',['me'=>$me, 'start'=>$start, 'end'=>$end,'staffloans'=>$staffloans,'all'=>$all, 'allfinal'=>$allfinal]);
 		}
 
@@ -4270,10 +4000,9 @@ class UserController extends Controller {
 			$me = (new CommonController)->get_current_user();
 
 			$staffloan = DB::table('staffloans')
-			->select('staffloanstatuses.Status','staffloans.Id','users.Name','users.Bank_Account_No','users.Position','staffloans.ProjectId','projects.Project_Name','staffloans.Purpose','staffloans.Date','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'),'staffloans.Total_Approved','staffloans.Repayment','staffloans.Repayment_1','staffloans.Repayment_2','staffloans.Repayment_3','staffloans.Repayment_4','approver.Id as approverId','users.Acc_Holder_Name','users.Bank_Name','users.Department','staffloans.Status as PaidStatus')
+			->select('staffloanstatuses.Status','staffloans.Id','users.Name','users.Bank_Account_No','users.Position','staffloans.Purpose','staffloans.Date','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'),'staffloans.Total_Approved','staffloans.Repayment','staffloans.Repayment_1','staffloans.Repayment_2','staffloans.Repayment_3','staffloans.Repayment_4','approver.Id as approverId','users.Acc_Holder_Name','users.Bank_Name','staffloans.Status as PaidStatus')
 			->leftJoin('users','users.Id','=','staffloans.UserId')
 			->leftJoin( DB::raw('(select Max(Id) as maxid,StaffLoanId from staffloanstatuses Group By StaffLoanId) as max'), 'max.StaffLoanId', '=', 'staffloans.Id')
-			->leftJoin('projects','projects.Id','=','staffloans.ProjectId')
 			->leftJoin('staffloanstatuses', 'staffloanstatuses.Id', '=', DB::raw('max.`maxid`'))
 			->leftJoin('users as approver','approver.Id','=','staffloanstatuses.UserId')
 			->where('staffloans.Id','=',$staffloanid)
@@ -4306,24 +4035,19 @@ class UserController extends Controller {
 			$approver = DB::table('users')
 			->leftJoin('accesscontroltemplates', 'users.AccessControlTemplateId', '=', 'accesscontroltemplates.Id')
 			->leftJoin('approvalsettings', 'users.Id', '=', 'approvalsettings.UserId')
-			->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-			->select('users.Id','users.Name','approvalsettings.Type','approvalsettings.Level','projects.Project_Name')
+			->select('users.Id','users.Name','approvalsettings.Type','approvalsettings.Level')
 			->where('accesscontroltemplates.Approve_Staff_Loan', '=', 1)
 			->where('approvalsettings.Type','=','Loan')
 			->whereRaw($cond)
-			// ->where('projects.Project_Name', '=', $me->Department )
 			->get();
 
 			// dd($approver);
 			$mylevel = DB::table('approvalsettings')
 			->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-			->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-			->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+			->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 			->where('approvalsettings.Type', '=', 'Loan')
 			->where('approvalsettings.UserId', '=', $me->UserId)
-			// ->where('approvalsettings.ProjectId', '=', $staffloan[0]->ProjectId)
 			->orderBy('approvalsettings.Country','asc')
-			->orderBy('projects.Project_Name','asc')
 			// ->orderBy('approvalsettings.Level','Final Approval","5th Approval","4th Approval","3rd Approval","2nd Approval","1st Approval")
 			->orderByRaw("FIELD(approvalsettings.Level , 'Final Approval', '5th Approval', '4th Approval','3rd Approval','2nd Approval','1st Approval') ASC")
 			->first();
@@ -4569,9 +4293,8 @@ class UserController extends Controller {
 										$input = $request->all();
 
 										$staffloans = DB::table('staffloans')
-										->select('staffloanstatuses.Status','staffloans.Id','staffloanstatuses.Id as StatusId','staffloanstatuses.UserId','users.Name','staffloans.Bank_Account_No','users.Position','projects.Project_Name','staffloans.Purpose','staffloans.Date','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'))
+										->select('staffloanstatuses.Status','staffloans.Id','staffloanstatuses.Id as StatusId','staffloanstatuses.UserId','users.Name','staffloans.Bank_Account_No','users.Position','staffloans.Purpose','staffloans.Date','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'))
 										->leftJoin('users','users.Id','=','staffloans.UserId')
-										->leftJoin('projects','projects.Id','=','staffloans.ProjectId')
 										->leftJoin('staffloanstatuses','staffloans.Id','=','staffloanstatuses.StaffLoanId')
 										->leftJoin('users as approver','approver.Id','=','staffloanstatuses.UserId')
 										->where('staffloans.Id','=',$input["StaffLoanId"])
@@ -4579,12 +4302,9 @@ class UserController extends Controller {
 
 										$approver = DB::table('approvalsettings')
 										->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-										->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-										->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+										->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 										->where('approvalsettings.Type', '=', 'StaffLoan')
-										->where('approvalsettings.ProjectId', '<>', '0')
 										->orderBy('approvalsettings.Country','asc')
-										->orderBy('projects.Project_Name','asc')
 										->orderByRaw("FIELD(approvalsettings.Level , '1st Approval','2nd Approval','3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
 										->get();
 
@@ -4603,7 +4323,7 @@ class UserController extends Controller {
 
 												foreach ($approver as $user) {
 
-														if (!empty($user->Id) && $user->Project_Name==$staffloan->Project_Name && $staffloan->UserId != $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($staffloan->Status, FILTER_SANITIZE_NUMBER_INT))
+														if (!empty($user->Id) && $staffloan->UserId != $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($staffloan->Status, FILTER_SANITIZE_NUMBER_INT))
 														{
 
 															DB::table('staffloanstatuses')->insert(
@@ -4619,7 +4339,7 @@ class UserController extends Controller {
 
 															break;
 														}
-														elseif (!empty($user->Id) && $user->Project_Name==$staffloan->Project_Name && $staffloan->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($staffloan->Status, FILTER_SANITIZE_NUMBER_INT))
+														elseif (!empty($user->Id) && $staffloan->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($staffloan->Status, FILTER_SANITIZE_NUMBER_INT))
 														{
 															# code...
 																$submitted=true;
@@ -4627,7 +4347,7 @@ class UserController extends Controller {
 
 																break;
 														}
-														elseif (!empty($user->Id) && $user->Project_Name==$staffloan->Project_Name && $staffloan->UserId == $user->Id && $staffloan->Status=="Recalled")
+														elseif (!empty($user->Id) && $staffloan->UserId == $user->Id && $staffloan->Status=="Recalled")
 														{
 
 															DB::table('staffloanstatuses')->insert(
@@ -4642,7 +4362,7 @@ class UserController extends Controller {
 
 															break;
 														}
-														elseif (!empty($user->Id) && $user->Project_Name==$staffloan->Project_Name && $staffloan->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($staffloan->Status, FILTER_SANITIZE_NUMBER_INT))
+														elseif (!empty($user->Id) && $staffloan->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($staffloan->Status, FILTER_SANITIZE_NUMBER_INT))
 														{
 															# code...
 																$submitted=true;
@@ -4652,7 +4372,7 @@ class UserController extends Controller {
 
 																break;
 														}
-														elseif (!empty($user->Id) && $user->Project_Name==$staffloan->Project_Name && $staffloan->UserId != $user->Id && $user->Level=="Final Approval")
+														elseif (!empty($user->Id) && $staffloan->UserId != $user->Id && $user->Level=="Final Approval")
 														{
 
 															DB::table('staffloanstatuses')->insert(
@@ -4756,21 +4476,20 @@ class UserController extends Controller {
 
 
 											$staffloans = DB::table('staffloans')
-											->select('staffloanstatuses.Status','staffloans.Id as staffloanid','staffloanstatuses.UserId','users.Name','staffloans.Bank_Account_No','users.Position','projects.Project_Name','staffloans.Purpose','staffloans.Date','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'))
+											->select('staffloanstatuses.Status','staffloans.Id as staffloanid','staffloanstatuses.UserId','users.Name','staffloans.Bank_Account_No','users.Position','staffloans.Purpose','staffloans.Date','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'))
 											->leftJoin('users','users.Id','=','staffloans.UserId')
-											->leftJoin('projects','projects.Id','=','staffloans.ProjectId')
 											->leftJoin('staffloanstatuses','staffloans.Id','=','staffloanstatuses.StaffLoanId')
 											->leftJoin('users as approver','approver.Id','=','staffloanstatuses.UserId')
 											->where('staffloans.Id','=',$input["StaffLoanId"])
 											->get();
 
-											Mail::send('emails.staffloanapproval2', ['me' => $me,'staffloans' => $staffloans], function($message) use ($emails,$staffloans,$NotificationSubject)
-											{
-													array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-													$emails = array_filter($emails);
-													$message->to($emails)->subject($NotificationSubject);
+											// Mail::send('emails.staffloanapproval2', ['me' => $me,'staffloans' => $staffloans], function($message) use ($emails,$staffloans,$NotificationSubject)
+											// {
+											// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+											// 		$emails = array_filter($emails);
+											// 		$message->to($emails)->subject($NotificationSubject);
 
-											});
+											// });
 
 											return 1;
 										}
@@ -4806,9 +4525,8 @@ class UserController extends Controller {
 						$input = $request->all();
 
 						$staffloans = DB::table('staffloans')
-						->select('staffloanstatuses.Status','staffloans.Id','staffloanstatuses.Id as StatusId','staffloanstatuses.UserId','users.Name','staffloans.Bank_Account_No','users.Position','projects.Project_Name','staffloans.Purpose','staffloans.Date','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'))
+						->select('staffloanstatuses.Status','staffloans.Id','staffloanstatuses.Id as StatusId','staffloanstatuses.UserId','users.Name','staffloans.Bank_Account_No','users.Position','staffloans.Purpose','staffloans.Date','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'))
 						->leftJoin('users','users.Id','=','staffloans.UserId')
-						->leftJoin('projects','projects.Id','=','staffloans.ProjectId')
 						->leftJoin('staffloanstatuses','staffloans.Id','=','staffloanstatuses.StaffLoanId')
 						->leftJoin('users as approver','approver.Id','=','staffloanstatuses.UserId')
 						->where('staffloans.Id','=',$input["StaffLoanId"])
@@ -4816,12 +4534,9 @@ class UserController extends Controller {
 
 						$approver = DB::table('approvalsettings')
 						->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-						->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-						->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+						->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 						->where('approvalsettings.Type', '=', 'StaffLoan')
-						->where('approvalsettings.ProjectId', '<>', '0')
 						->orderBy('approvalsettings.Country','asc')
-						->orderBy('projects.Project_Name','asc')
 						->orderByRaw("FIELD(approvalsettings.Level , '1st Approval','2nd Approval','3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
 						->get();
 
@@ -4838,7 +4553,7 @@ class UserController extends Controller {
 
 								foreach ($approver as $user) {
 
-										if (!empty($user->Id) && $user->Project_Name==$staffloan->Project_Name && $staffloan->UserId != $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($staffloan->Status, FILTER_SANITIZE_NUMBER_INT))
+										if (!empty($user->Id) && $staffloan->UserId != $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($staffloan->Status, FILTER_SANITIZE_NUMBER_INT))
 										{
 
 											DB::table('staffloanstatuses')->insert(
@@ -4854,13 +4569,13 @@ class UserController extends Controller {
 
 											break;
 										}
-										elseif (!empty($user->Id) && $user->Project_Name==$staffloan->Project_Name && $staffloan->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($staffloan->Status, FILTER_SANITIZE_NUMBER_INT))
+										elseif (!empty($user->Id) && $staffloan->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($staffloan->Status, FILTER_SANITIZE_NUMBER_INT))
 										{
 											# code...
 												$submitted=true;
 												array_push($emaillist,$user->Id);
 										}
-										elseif (!empty($user->Id) && $user->Project_Name==$staffloan->Project_Name && $staffloan->UserId == $user->Id && $staffloan->Status=="Recalled")
+										elseif (!empty($user->Id) && $staffloan->UserId == $user->Id && $staffloan->Status=="Recalled")
 										{
 
 											DB::table('staffloanstatuses')->insert(
@@ -4875,7 +4590,7 @@ class UserController extends Controller {
 
 											break;
 										}
-										elseif (!empty($user->Id) && $user->Project_Name==$staffloan->Project_Name && $staffloan->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($staffloan->Status, FILTER_SANITIZE_NUMBER_INT))
+										elseif (!empty($user->Id) && $staffloan->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($staffloan->Status, FILTER_SANITIZE_NUMBER_INT))
 										{
 											# code...
 												$submitted=true;
@@ -4883,7 +4598,7 @@ class UserController extends Controller {
 												array_push($emaillist,$user->Id);
 												array_push($emaillist,$staffloan->UserId);
 										}
-										elseif (!empty($user->Id) && $user->Project_Name==$staffloan->Project_Name && $staffloan->UserId != $user->Id && $user->Level=="Final Approval")
+										elseif (!empty($user->Id) && $staffloan->UserId != $user->Id && $user->Level=="Final Approval")
 										{
 
 											DB::table('staffloanstatuses')->insert(
@@ -4987,21 +4702,20 @@ class UserController extends Controller {
 
 
 							$staffloans = DB::table('staffloans')
-							->select('staffloanstatuses.Status','staffloans.Id as staffloanid','staffloanstatuses.UserId','users.Name','staffloans.Bank_Account_No','users.Position','projects.Project_Name','staffloans.Purpose','staffloans.Date','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'))
+							->select('staffloanstatuses.Status','staffloans.Id as staffloanid','staffloanstatuses.UserId','users.Name','staffloans.Bank_Account_No','users.Position','staffloans.Purpose','staffloans.Date','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'))
 							->leftJoin('users','users.Id','=','staffloans.UserId')
-							->leftJoin('projects','projects.Id','=','staffloans.ProjectId')
 							->leftJoin('staffloanstatuses','staffloans.Id','=','staffloanstatuses.StaffLoanId')
 							->leftJoin('users as approver','approver.Id','=','staffloanstatuses.UserId')
 							->where('staffloans.Id','=',$input["StaffLoanId"])
 							->get();
 
-							Mail::send('emails.staffloanapproval2', ['me' => $me,'staffloans' => $staffloans], function($message) use ($emails,$staffloans,$NotificationSubject)
-							{
-									$emails = array_filter($emails);
-									array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-									$message->to($emails)->subject($NotificationSubject);
+							// Mail::send('emails.staffloanapproval2', ['me' => $me,'staffloans' => $staffloans], function($message) use ($emails,$staffloans,$NotificationSubject)
+							// {
+							// 		$emails = array_filter($emails);
+							// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+							// 		$message->to($emails)->subject($NotificationSubject);
 
-							});
+							// });
 
 							return 1;
 						}
@@ -5021,9 +4735,8 @@ class UserController extends Controller {
 
 
 			$staffloans = DB::table('staffloans')
-			->select('staffloanstatuses.Status','staffloans.Id as staffloanid','users.Name','staffloans.Bank_Account_No','users.Position','projects.Project_Name','staffloans.Purpose','staffloans.Date','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'))
+			->select('staffloanstatuses.Status','staffloans.Id as staffloanid','users.Name','staffloans.Bank_Account_No','users.Position','staffloans.Purpose','staffloans.Date','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'))
 			->leftJoin('users','users.Id','=','staffloans.UserId')
-			->leftJoin('projects','projects.Id','=','staffloans.ProjectId')
 			->leftJoin('staffloanstatuses','staffloans.Id','=','staffloanstatuses.StaffLoanId')
 			->leftJoin('users as approver','approver.Id','=','staffloanstatuses.UserId')
 			->where('staffloans.Id','=',$input["StaffLoanId"])
@@ -5049,9 +4762,8 @@ class UserController extends Controller {
 			{
 
 				$staffloans = DB::table('staffloans')
-				->select('staffloanstatuses.Status','staffloans.Id as staffloanid','users.Name','staffloans.Bank_Account_No','users.Position','projects.Project_Name','staffloans.Purpose','staffloans.Date','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'))
+				->select('staffloanstatuses.Status','staffloans.Id as staffloanid','users.Name','staffloans.Bank_Account_No','users.Position','staffloans.Purpose','staffloans.Date','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'))
 				->leftJoin('users','users.Id','=','staffloans.UserId')
-				->leftJoin('projects','projects.Id','=','staffloans.ProjectId')
 				->leftJoin('staffloanstatuses','staffloans.Id','=','staffloanstatuses.StaffLoanId')
 				->leftJoin('users as approver','approver.Id','=','staffloanstatuses.UserId')
 				->where('staffloans.Id','=',$input["StaffLoanId"])
@@ -5100,12 +4812,12 @@ class UserController extends Controller {
 
 				}
 
-				Mail::send('emails.staffloanredirected', ['me'=>$me,'staffloans' => $staffloans], function($message) use ($emails,$me,$NotificationSubject)
-				{
-						$emails = array_filter($emails);
-						array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-						$message->to($emails)->subject($NotificationSubject);
-				});
+				// Mail::send('emails.staffloanredirected', ['me'=>$me,'staffloans' => $staffloans], function($message) use ($emails,$me,$NotificationSubject)
+				// {
+				// 		$emails = array_filter($emails);
+				// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+				// 		$message->to($emails)->subject($NotificationSubject);
+				// });
 
 				return 1;
 			}
@@ -5171,16 +4883,14 @@ class UserController extends Controller {
 
 		}
 
-
 		public function myloandetail($staffloanid)
 		{
 			$me = (new CommonController)->get_current_user();
 
 			$staffloan = DB::table('staffloans')
-			->select('staffloanstatuses.Status','staffloans.Id','users.Name','staffloans.Bank_Account_No','users.Position','projects.Project_Name','staffloans.Purpose','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'),'staffloans.Total_Approved')
+			->select('staffloanstatuses.Status','staffloans.Id','users.Name','staffloans.Bank_Account_No','users.Position','staffloans.Purpose','approver.Name as Approver',DB::raw('Format((staffloans.Total_Requested),2) as Total_Requested'),'staffloans.Total_Approved')
 			->leftJoin('users','users.Id','=','staffloans.UserId')
 			->leftJoin( DB::raw('(select Max(Id) as maxid,StaffLoanId from staffloanstatuses Group By StaffLoanId) as max'), 'max.StaffLoanId', '=', 'staffloans.Id')
-			->leftJoin('projects','projects.Id','=','staffloans.ProjectId')
 			->leftJoin('staffloanstatuses', 'staffloanstatuses.Id', '=', DB::raw('max.`maxid`'))
 			->leftJoin('users as approver','approver.Id','=','staffloanstatuses.UserId')
 			->where('staffloans.Id','=',$staffloanid)
@@ -5200,6 +4910,967 @@ class UserController extends Controller {
 
 		}
 
+		public function companyloan($end=null)
+	{
+		$me = (new CommonController)->get_current_user();
+		if ($end==null)
+		{
+			$end=date('d-M-Y', strtotime('last day of this month'));
+			// $end = date('d-M-Y', strtotime($end . " +19 days"));
+		}
+		$loans = DB::table('companyloans')
+		->select('companyloans.Id','company.Register_Num as Company_Register_Num','company.Company_Name','company.Branch','companyloans.Purpose','companyloans.Date','companyloanstatuses.update_at','companyloans.Total_Requested','companyloans.Total_Approved',DB::raw('"" as Total_Paid'),DB::raw('"" as Outstanding'),'companyloans.Approver','companyloans.created_at','companyloans.updated_at','com.Register_Num as ComRegister_Num','us.Name')
+		->leftJoin('company','companyloans.CompanyId','=','company.Id')
+		->leftJoin( DB::raw('(select Max(Id) as maxid,CompanyLoanId from companyloanstatuses Group By CompanyLoanId) as max'), 'max.CompanyLoanId', '=', 'companyloans.Id')
+		->leftJoin('companyloanstatuses','max.maxid','=','companyloanstatuses.Id')
+		->where(DB::raw("str_to_date(companyloans.Date,'%d-%M-%Y')"),"str_to_date('".$end."','%d-%M-%Y')")
+		->leftJoin('company as com','com.Id','=','companyloans.CompanyId')
+		->leftJoin('users as us','us.Id','=','companyloanstatuses.UserId')
+
+		->orderBy('company.Company_Name')
+		->get();
+
+		$companies = DB::table('company')
+		->get();
+
+    	return view('companyloan', ['me' => $me,'loans' => $loans,'companies'=>$companies,'end'=>$end]);
+
+	}
+
+		public function companyloanmanagement($start=null,$end=null)
+		{
+			$me=(new CommonController)->get_current_user();
+
+			if ($start==null)
+			{
+				$start=date('d-M-Y', strtotime('first day of last month'));
+				// $start=date('d-M-Y', strtotime($start,' +16 days'));
+				$start = date('d-M-Y', strtotime($start . " +20 days"));
+			}
+			if ($end==null)
+			{
+				$end=date('d-M-Y', strtotime('first day of this month'));
+				$end = date('d-M-Y', strtotime($end . " +19 days"));
+			}
+
+			$all = DB::table('companyloans')
+			->select('companyloans.Id','companyloanstatuses.Status','company.Company_Name','companyloans.Date',DB::raw('Format((companyloans.Total_Requested),2) as Total_Requested'),DB::raw('Format((companyloans.Total_Approved),2) as Total_Approved'),'approver.Name as Approver')
+			->leftJoin('company','company.Id','=','companyloans.CompanyId')
+			->leftJoin( DB::raw('(select Max(Id) as maxid,CompanyLoanId from companyloanstatuses Group By CompanyLoanId) as max'), 'max.CompanyLoanId', '=', 'companyloans.Id')
+			->leftJoin('companyloanstatuses', 'companyloanstatuses.Id', '=', DB::raw('max.`maxid`'))
+			->leftJoin('users as approver','approver.Id','=','companyloanstatuses.UserId')
+			->whereRaw("str_to_date(companyloans.Date,'%d-%M-%Y') between str_to_date('".$start."','%d-%M-%Y') AND str_to_date('".$end."','%d-%M-%Y')")
+			->get();
+
+			$companyloans = DB::table('companyloans')
+			->select('companyloans.Id','companyloanstatuses.Status','company.Company_Name','companyloans.Date',DB::raw('Format((companyloans.Total_Requested),2) as Total_Requested'),DB::raw('Format((companyloans.Total_Approved),2) as Total_Approved'),'approver.Name as Approver')
+			->leftJoin('company','company.Id','=','companyloans.CompanyId')
+			->leftJoin( DB::raw('(select Max(Id) as maxid,CompanyLoanId from companyloanstatuses Group By CompanyLoanId) as max'), 'max.CompanyLoanId', '=', 'companyloans.Id')
+			->leftJoin('companyloanstatuses', 'companyloanstatuses.Id', '=', DB::raw('max.`maxid`'))
+			->leftJoin('users as approver','approver.Id','=','companyloanstatuses.UserId')
+			->where('companyloanstatuses.UserId', '=', $me->UserId)
+			->get();
+
+			$allfinal = DB::table('companyloans')
+			->select('companyloans.Id','companyloanstatuses.Status','company.Company_Name','companyloans.Date',DB::raw('Format((companyloans.Total_Requested),2) as Total_Requested'),DB::raw('Format((companyloans.Total_Approved),2) as Total_Approved'),'approver.Name as Approver','companyloans.Status as PaidStatus')
+			->leftJoin('company','company.Id','=','companyloans.CompanyId')
+			->leftJoin( DB::raw('(select Max(Id) as maxid,CompanyLoanId from companyloanstatuses Group By CompanyLoanId) as max'), 'max.CompanyLoanId', '=', 'companyloans.Id')
+			->leftJoin('companyloanstatuses', 'companyloanstatuses.Id', '=', DB::raw('max.`maxid`'))
+			->leftJoin('users as approver','approver.Id','=','companyloanstatuses.UserId')
+			->where('companyloanstatuses.Status','=','Final Approved')
+			->get();
+
+
+
+			$users = DB::table('users')->where('active', 1)->get();
+			$users_pos = collect($users)->groupBy('Position')->all();
+			return view('companyloanmanagement',['me'=>$me, 'start'=>$start, 'end'=>$end,'companyloans'=>$companyloans,'all'=>$all, 'allfinal'=>$allfinal]);
+		}
+
+		public function companyloandetail($companyloanid)
+		{
+			$me = (new CommonController)->get_current_user();
+
+			$companyloan = DB::table('companyloans')
+			->select('companyloanstatuses.Status','companyloans.Id','company.Company_Name','company.bank_acct as Bank_Account_No', 'company.Person_In_Charge' , 'company.Contact_No' ,'companyloans.Purpose','companyloans.Date','approver.Name as Approver',DB::raw('Format((companyloans.Total_Requested),2) as Total_Requested'),'companyloans.Total_Approved','companyloans.Repayment','companyloans.Repayment_1','companyloans.Repayment_2','companyloans.Repayment_3','companyloans.Repayment_4','approver.Id as approverId','company.Company_Account','company.bank as Bank_Name','company.Branch','companyloans.Status as PaidStatus')
+			->leftJoin('company','company.Id','=','companyloans.CompanyId')
+			->leftJoin( DB::raw('(select Max(Id) as maxid,CompanyLoanId from companyloanstatuses Group By CompanyLoanId) as max'), 'max.CompanyLoanId', '=', 'companyloans.Id')
+			->leftJoin('companyloanstatuses', 'companyloanstatuses.Id', '=', DB::raw('max.`maxid`'))
+			->leftJoin('users as approver','approver.Id','=','companyloanstatuses.UserId')
+			->where('companyloans.Id','=',$companyloanid)
+			->get();
+
+
+
+			$cond = 1;
+			if( strpos($companyloan[0]->Status,'1st') !== false )
+			{
+				$cond = "approvalsettings.Level NOT LIKE '%1st%' ";
+			}
+
+			$installments = DB::table('companyloaninstallments')
+			->select('companyloaninstallments.Id','companyloaninstallments.CompanyLoanId','companyloaninstallments.Payment_Date','companyloaninstallments.Amount','companyloaninstallments.Paid','companyloaninstallments.created_at','companyloaninstallments.updated_at')
+			->where('companyloaninstallments.CompanyLoanId', '=',$companyloanid)
+			->orderBy('companyloaninstallments.Payment_Date')
+			->get();
+
+			$myattachment = DB::table('files')
+			->where('TargetId', '=', $companyloanid)
+			->where('Type', '=', 'Company Loan')
+			->get();
+
+			$companyloandetails = DB::table('companyloandetails')
+			->select('Type','Days',DB::raw('Format((Allowance),2) as Allowance'),DB::raw('Format((Total),2) as Total'))
+			->where('CompanyLoanId','=',$companyloanid)
+			->get();
+
+			$approver = DB::table('users')
+			->leftJoin('accesscontroltemplates', 'users.AccessControlTemplateId', '=', 'accesscontroltemplates.Id')
+			->leftJoin('approvalsettings', 'users.Id', '=', 'approvalsettings.UserId')
+			->select('users.Id','users.Name','approvalsettings.Type','approvalsettings.Level')
+			->where('accesscontroltemplates.Approve_Staff_Loan', '=', 1)
+			->where('approvalsettings.Type','=','Loan')
+			->whereRaw($cond)
+			->get();
+
+			// dd($approver);
+			$mylevel = DB::table('approvalsettings')
+			->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
+			->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
+			->where('approvalsettings.Type', '=', 'Loan')
+			->where('approvalsettings.UserId', '=', $me->UserId)
+			->orderBy('approvalsettings.Country','asc')
+			// ->orderBy('approvalsettings.Level','Final Approval","5th Approval","4th Approval","3rd Approval","2nd Approval","1st Approval")
+			->orderByRaw("FIELD(approvalsettings.Level , 'Final Approval', '5th Approval', '4th Approval','3rd Approval','2nd Approval','1st Approval') ASC")
+			->first();
+
+			// dd($staffloandetails);
+
+			return view('companyloandetail',['companyloan'=>$companyloan,'me'=>$me, 'companyloandetails'=>$companyloandetails, 'companyloanid'=>$companyloanid, 'approver'=>$approver, 'mylevel'=>$mylevel,'myattachment'=>$myattachment, 'installments' => $installments,'companyloanid'=>$companyloanid]);
+
+		}
+
+		public function approvecompanyloan(Request $request)
+		{
+				$me=(new CommonController)->get_current_user();
+
+				$input = $request->all();
+				$rules = array(
+					'Total_Approved' => 'Required'
+					);
+
+					$messages = array(
+						'Total_Approved.required' => 'The Total Approved amount field is required'
+						);
+
+
+							$validator = Validator::make($input, $rules,$messages);
+
+							if ($validator->passes())
+							{
+
+								DB::table('companyloans')
+											->where('Id', $input["CompanyLoanId"])
+											->update(array(
+											'Total_Approved' =>  $input["Total_Approved"],
+											"Repayment_1" => $input["Repayment_1"],
+											"Repayment_2" => $input["Repayment_2"],
+											"Repayment_3" => $input["Repayment_3"],
+											"Repayment_4" => $input["Repayment_4"],
+											"Approver" => $input["Approver"]
+										));
+
+								// DB::table('staffloanstatuses')
+								// 			->where('StaffLoanId', $input["StaffLoanId"])
+								// 			->update(array(
+								// 			'Status' =>  $input["Status"]
+								// 		));
+									if( strpos($input['Status'],"Final Approved") === false)
+									{
+										DB::table('companyloanstatuses')
+											->insert([
+											'UserId' => $me->UserId,
+											'CompanyLoanId' => $input["CompanyLoanId"],
+											'Status' =>  $input["Status"],
+											'update_at' => DB::raw('NOW()')
+										]);
+
+										DB::table('companyloanstatuses')
+											->insert([
+											'UserId' => $me->UserId,
+											'CompanyLoanId' => $input["CompanyLoanId"],
+											'Status' =>  "Pending Final Approval",
+											'update_at' => DB::raw('NOW()')
+										]);
+
+									}
+									else
+									{
+										DB::table('companyloanstatuses')
+											->where('CompanyLoanId', $input["CompanyLoanId"])
+											->insert([
+											'UserId' => $me->UserId,
+											'CompanyLoanId' => $input["CompanyLoanId"],
+											'Status' =>  $input["Status"],
+											'update_at' => DB::raw('NOW()')
+										]);
+									}
+
+										if(str_contains($input["Status"],"Approved"))
+										{
+
+											$companyloan = DB::table('companyloans')
+											->where('Id','=',$input["CompanyLoanId"])
+											->first();
+
+											$dayth            = date('d');
+											$start            = strtotime('today');
+
+											if($dayth>20)
+											{
+												// 19 1st month
+												$firstMonthStart  = strtotime("+18 day", strtotime("first day of next month", $start));
+												// 19 2nd month
+												$secondMonthStart = strtotime("+1 month", $firstMonthStart);
+												// 19 3nd month
+												$thirdMonthStart = strtotime("+1 month", $secondMonthStart);
+												// 19 4nd month
+												$fourthMonthStart = strtotime("+1 month", $thirdMonthStart);
+
+											}
+											else {
+												// 19 1st month
+												$firstMonthStart  = strtotime("+18 day", strtotime("first day of this month", $start));
+												// 19 2nd month
+												$secondMonthStart = strtotime("+1 month", $firstMonthStart);
+												// 19 3nd month
+												$thirdMonthStart = strtotime("+1 month", $secondMonthStart);
+												// 19 4nd month
+												$fourthMonthStart = strtotime("+1 month", $thirdMonthStart);
+
+											}
+
+												//clear all previous staffloaninstallments and staffdeductions
+												DB::table('companyloaninstallments')
+												->where('CompanyLoanId', '=', $input["CompanyLoanId"])
+												->delete();
+
+												DB::table('companydeductions')
+												->whereRaw('TableRowId not in (select Id from companyloaninstallments)')
+												->where('Type', '=', 'COMPANY LOAN')
+												->delete();
+
+												if($input["Repayment_1"]>0)
+												{
+
+													$id=DB::table('companyloaninstallments')->insertGetId(
+														['CompanyLoanId' => $input["CompanyLoanId"],
+														 'Payment_Date' => date('d-M-Y',$firstMonthStart),
+														 'Amount' => $input["Repayment_1"]
+														]
+													);
+
+													$insertid=DB::table('companydeductions')->insertGetId(
+														['CompanyId' => $companyloan->CompanyId,
+														 'Type' => "COMPANY LOAN",
+														 'Month' => date('M Y',$firstMonthStart),
+														 'Date' => date('d-M-Y',$firstMonthStart),
+														 'Amount' => $input["Repayment_1"],
+														 'FinalAmount' => $input["Repayment_1"],
+														 'Description' => "[FROM LOAN RECORD]",
+														 'TableRowId' => $id,
+														 'created_at' =>date('Y-m-d H:i:s'),
+														 'created_by' =>$me->UserId
+
+														]
+													);
+												}
+
+												if($input["Repayment_2"]>0)
+												{
+													$id=DB::table('companyloaninstallments')->insertGetId(
+														['CompanyLoanId' => $input["CompanyLoanId"],
+														 'Payment_Date' => date('d-M-Y',$secondMonthStart),
+														 'Amount' => $input["Repayment_2"]
+														]
+													);
+
+													$insertid=DB::table('companydeductions')->insertGetId(
+														['CompanyId' => $companyloan->CompanyId,
+														 'Type' => "COMPANY LOAN",
+														 'Month' => date('M Y',$secondMonthStart),
+														 'Date' => date('d-M-Y',$secondMonthStart),
+														 'Amount' => $input["Repayment_2"],
+														 'FinalAmount' => $input["Repayment_2"],
+														 'Description' => "[FROM LOAN RECORD]",
+														 'TableRowId' => $id,
+														 'created_at' =>date('Y-m-d H:i:s'),
+														 'created_by' =>$me->UserId
+
+														]
+													);
+												}
+
+												if($input["Repayment_3"]>0)
+												{
+													$id=DB::table('companyloaninstallments')->insertGetId(
+														['CompanyLoanId' => $input["CompanyLoanId"],
+														 'Payment_Date' => date('d-M-Y',$thirdMonthStart),
+														 'Amount' => $input["Repayment_3"]
+														]
+													);
+
+													$insertid=DB::table('companydeductions')->insertGetId(
+														['CompanyId' => $companyloan->CompanyId,
+														 'Type' => "COMPANY LOAN",
+														 'Month' => date('M Y',$thirdMonthStart),
+														 'Date' => date('d-M-Y',$thirdMonthStart),
+														 'Amount' => $input["Repayment_3"],
+														 'FinalAmount' => $input["Repayment_3"],
+														 'Description' => "[FROM LOAN RECORD]",
+														 'TableRowId' => $id,
+														 'created_at' =>date('Y-m-d H:i:s'),
+														 'created_by' =>$me->UserId
+
+														]
+													);
+												}
+
+												if($input["Repayment_4"]>0)
+												{
+													$id=DB::table('companyloaninstallments')->insertGetId(
+														['CompanyLoanId' => $input["CompanyLoanId"],
+														 'Payment_Date' => date('d-M-Y',$fourthMonthStart),
+														 'Amount' => $input["Repayment_4"]
+														]
+													);
+
+													$insertid=DB::table('companydeductions')->insertGetId(
+														['CompanyId' => $companyloan->CompanyId,
+														 'Type' => "COMPANY LOAN",
+														 'Month' => date('M Y',$fourthMonthStart),
+														 'Date' => date('d-M-Y',$fourthMonthStart),
+														 'Amount' => $input["Repayment_4"],
+														 'FinalAmount' => $input["Repayment_4"],
+														 'Description' => "[FROM LOAN RECORD]",
+														 'TableRowId' => $id,
+														 'created_at' =>date('Y-m-d H:i:s'),
+														 'created_by' =>$me->UserId
+
+														]
+													);
+												}
+
+										}
+										else {
+											// do nothing
+										}
+
+										$input = $request->all();
+
+										$companyloans = DB::table('companyloans')
+										->select('companyloanstatuses.Status','companyloans.Id','companyloanstatuses.Id as StatusId','companyloanstatuses.UserId','company.Company_Name','companyloans.Bank_Account_No','company.Person_In_Charge','company.Contact_No','companyloans.Purpose','companyloans.Date','approver.Name as Approver',DB::raw('Format((companyloans.Total_Requested),2) as Total_Requested'))
+										->leftJoin('company','company.Id','=','companyloans.CompanyId')
+										->leftJoin('companyloanstatuses','companyloans.Id','=','companyloanstatuses.CompanyLoanId')
+										->leftJoin('users as approver','approver.Id','=','companyloanstatuses.UserId')
+										->where('companyloans.Id','=',$input["CompanyLoanId"])
+										->get();
+
+										$approver = DB::table('approvalsettings')
+										->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
+										->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
+										->where('approvalsettings.Type', '=', 'StaffLoan')
+										->orderBy('approvalsettings.Country','asc')
+										->orderByRaw("FIELD(approvalsettings.Level , '1st Approval','2nd Approval','3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
+										->get();
+
+										$submittedfornextapproval=false;
+										$final=false;
+
+										$emaillist=array();
+										array_push($emaillist,$me->UserId);
+
+										foreach ($companyloans as $companyloan) {
+											# code...
+											$submitted=false;
+
+											if ((strpos($companyloan->Status, 'Rejected') === false) && $companyloan->Status!="Final Approved")
+											{
+
+												foreach ($approver as $user) {
+
+														if (!empty($user->Id) && $companyloan->UserId != $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($companyloan->Status, FILTER_SANITIZE_NUMBER_INT))
+														{
+
+															DB::table('companyloanstatuses')->insert(
+																['CompanyLoanId' => $companyloan->Id,
+																 'UserId' => $user->Id,
+																 'Status' => "Pending Approval"
+																]
+															);
+															$submitted=true;
+															$submittedfornextapproval=true;
+															array_push($emaillist,$user->Id);
+															array_push($emaillist,$companyloan->UserId);
+
+															break;
+														}
+														elseif (!empty($user->Id) && $companyloan->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($companyloan->Status, FILTER_SANITIZE_NUMBER_INT))
+														{
+															# code...
+																$submitted=true;
+																array_push($emaillist,$user->Id);
+
+																break;
+														}
+														elseif (!empty($user->Id) && $companyloan->UserId == $user->Id && $companyloan->Status=="Recalled")
+														{
+
+															DB::table('companyloanstatuses')->insert(
+																['CompanyLoanId' => $companyloan->Id,
+																 'UserId' => $user->Id,
+																 'Status' => "Pending Approval"
+																]
+															);
+															$submitted=true;
+															$submittedfornextapproval=true;
+															array_push($emaillist,$user->Id);
+
+															break;
+														}
+														elseif (!empty($user->Id) && $companyloan->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($companyloan->Status, FILTER_SANITIZE_NUMBER_INT))
+														{
+															# code...
+																$submitted=true;
+																$submittedfornextapproval=true;
+																array_push($emaillist,$user->Id);
+																array_push($emaillist,$companyloan->UserId);
+
+																break;
+														}
+														elseif (!empty($user->Id) && $companyloan->UserId != $user->Id && $user->Level=="Final Approval")
+														{
+
+															DB::table('companyloanstatuses')->insert(
+																['CompanyLoanId' => $companyloan->Id,
+																 'UserId' => $user->Id,
+																 'Status' => "Pending Approval"
+																]
+															);
+															$submitted=true;
+															$submittedfornextapproval=true;
+															array_push($emaillist,$user->Id);
+															array_push($emaillist,$companyloan->UserId);
+
+															break;
+														}
+														else {
+
+														}
+
+													}
+
+											}
+											elseif ($companyloan->Status=="Final Approved" ||$companyloan->Status=="Final Approved with Special Attention" || $companyloan->Status=="Final Rejected")
+											{
+												$final=true;
+												array_push($emaillist,$companyloan->UserId);
+
+												break;
+											}
+
+										}
+
+										if($final)
+										{
+
+											DB::table('companyloanstatuses')
+														->where('Id', $companyloan->StatusId)
+														->update(array(
+														'Status' =>  $companyloan->Status
+													));
+
+													array_push($emaillist,$companyloan->UserId);
+
+										}
+
+										if (count($emaillist)>0)
+										{
+
+											$notify = DB::table('users')
+											->whereIn('Id', $emaillist)
+											->get();
+
+											if($final)
+											{
+
+												$subscribers = DB::table('notificationtype')
+												->leftJoin('notificationsubscriber','notificationtype.Id','=','notificationsubscriber.NotificationTypeId')
+												->leftJoin('users','users.Id','=','notificationsubscriber.UserId')
+												->where('notificationtype.Id','=',61)
+												->get();
+
+											}
+											else {
+												# code...
+
+												$subscribers = DB::table('notificationtype')
+												->leftJoin('notificationsubscriber','notificationtype.Id','=','notificationsubscriber.NotificationTypeId')
+												->leftJoin('users','users.Id','=','notificationsubscriber.UserId')
+												->where('notificationtype.Id','=',59)
+												->get();
+											}
+
+											$emails = array();
+
+											foreach ($subscribers as $subscriber) {
+												$NotificationSubject=$subscriber->Notification_Subject;
+												if ($subscriber->Company_Email!="")
+												{
+													array_push($emails,$subscriber->Company_Email);
+												}
+
+												else
+												{
+													array_push($emails,$subscriber->Personal_Email);
+												}
+
+											}
+
+											foreach ($notify as $user) {
+												if ($user->Company_Email!="")
+												{
+													array_push($emails,$user->Company_Email);
+												}
+
+												else
+												{
+													array_push($emails,$user->Personal_Email);
+												}
+
+											}
+
+
+											$companyloans = DB::table('companyloans')
+											->select('companyloanstatuses.Status','companyloans.Id as companyloanid','companyloanstatuses.UserId','company.Company_Name','companyloans.Bank_Account_No','company.Person_In_Charge','company.Contact_No','companyloans.Purpose','companyloans.Date','approver.Name as Approver',DB::raw('Format((companyloans.Total_Requested),2) as Total_Requested'))
+											->leftJoin('company','company.Id','=','companyloans.CompanyId')
+											->leftJoin('companyloanstatuses','companyloans.Id','=','companyloanstatuses.CompanyLoanId')
+											->leftJoin('users as approver','approver.Id','=','companyloanstatuses.UserId')
+											->where('companyloans.Id','=',$input["CompanyLoanId"])
+											->get();
+
+											// Mail::send('emails.companyloanapproval2', ['me' => $me,'companyloans' => $companyloans], function($message) use ($emails,$companyloans,$NotificationSubject)
+											// {
+											// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+											// 		$emails = array_filter($emails);
+											// 		$message->to($emails)->subject($NotificationSubject);
+
+											// });
+
+											return 1;
+										}
+										else {
+											return 0;
+										}
+							}
+
+				else {
+
+					return json_encode($validator->errors()->toArray());
+				}
+
+		}
+
+		public function rejectcompanyloan(Request $request)
+		{
+				$me=(new CommonController)->get_current_user();
+
+				$input = $request->all();
+
+				$id = DB::table('companyloanstatuses')
+							->where('CompanyLoanId', $input["CompanyLoanId"])
+							->update(array(
+							'Status' =>  'Rejected'
+						));
+
+						$emaillist=array();
+						array_push($emaillist,$me->UserId);
+
+						$input = $request->all();
+
+						$companyloans = DB::table('companyloans')
+						->select('companyloanstatuses.Status','companyloans.Id','companyloanstatuses.Id as StatusId','companyloanstatuses.UserId','company.Company_Name','companyloans.Bank_Account_No','company.Person_In_Charge','company.Contact_No','companyloans.Purpose','companyloans.Date','approver.Name as Approver',DB::raw('Format((companyloans.Total_Requested),2) as Total_Requested'))
+						->leftJoin('company','company.Id','=','companyloans.CompanyId')
+						->leftJoin('companyloanstatuses','companyloans.Id','=','companyloanstatuses.CompanyLoanId')
+						->leftJoin('users as approver','approver.Id','=','companyloanstatuses.UserId')
+						->where('companyloans.Id','=',$input["CompanyLoanId"])
+						->get();
+
+						$approver = DB::table('approvalsettings')
+						->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
+						->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
+						->where('approvalsettings.Type', '=', 'StaffLoan')
+						->orderBy('approvalsettings.Country','asc')
+						->orderByRaw("FIELD(approvalsettings.Level , '1st Approval','2nd Approval','3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
+						->get();
+
+
+						$submittedfornextapproval=false;
+						$final=false;
+
+						foreach ($companyloans as $companyloan) {
+							# code...
+							$submitted=false;
+
+							if ((strpos($companyloan->Status, 'Rejected') === false) && $companyloan->Status!="Final Approved")
+							{
+
+								foreach ($approver as $user) {
+
+										if (!empty($user->Id) && $companyloan->UserId != $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($companyloan->Status, FILTER_SANITIZE_NUMBER_INT))
+										{
+
+											DB::table('companyloanstatuses')->insert(
+												['CompanyLoanId' => $companyloan->Id,
+												 'UserId' => $user->Id,
+												 'Status' => "Pending Approval"
+												]
+											);
+											$submitted=true;
+											$submittedfornextapproval=true;
+											array_push($emaillist,$user->Id);
+											array_push($emaillist,$companyloan->UserId);
+
+											break;
+										}
+										elseif (!empty($user->Id) && $companyloan->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($companyloan->Status, FILTER_SANITIZE_NUMBER_INT))
+										{
+											# code...
+												$submitted=true;
+												array_push($emaillist,$user->Id);
+										}
+										elseif (!empty($user->Id) && $companyloan->UserId == $user->Id && $companyloan->Status=="Recalled")
+										{
+
+											DB::table('companyloanstatuses')->insert(
+												['CompanyLoanId' => $companyloan->Id,
+												 'UserId' => $user->Id,
+												 'Status' => "Pending Approval"
+												]
+											);
+											$submitted=true;
+											$submittedfornextapproval=true;
+											array_push($emaillist,$user->Id);
+
+											break;
+										}
+										elseif (!empty($user->Id) && $companyloan->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($companyloan->Status, FILTER_SANITIZE_NUMBER_INT))
+										{
+											# code...
+												$submitted=true;
+												$submittedfornextapproval=true;
+												array_push($emaillist,$user->Id);
+												array_push($emaillist,$companyloan->UserId);
+										}
+										elseif (!empty($user->Id) && $companyloan->UserId != $user->Id && $user->Level=="Final Approval")
+										{
+
+											DB::table('companyloanstatuses')->insert(
+												['CompanyLoanId' => $companyloan->Id,
+												 'UserId' => $user->Id,
+												 'Status' => "Pending Approval"
+												]
+											);
+											$submitted=true;
+											$submittedfornextapproval=true;
+											array_push($emaillist,$user->Id);
+											array_push($emaillist,$companyloan->UserId);
+
+											break;
+										}
+										else {
+
+										}
+
+									}
+
+
+								array_push($emaillist,$companyloan->UserId);
+							}
+							elseif ($companyloan->Status=="Final Approved" ||$companyloan->Status=="Final Approved with Special Attention" || $companyloan->Status=="Final Rejected")
+							{
+								$final=true;
+								array_push($emaillist,$companyloan->UserId);
+							}
+
+						}
+
+						if($final)
+						{
+
+							DB::table('companyloanstatuses')
+										->where('Id', $companyloan->StatusId)
+										->update(array(
+										'Status' =>  $companyloan->Status
+									));
+
+									array_push($emaillist,$companyloan->UserId);
+
+						}
+
+						if (count($emaillist)>0)
+						{
+
+							$notify = DB::table('users')
+							->whereIn('Id', $emaillist)
+							->get();
+
+							if($final)
+							{
+
+								$subscribers = DB::table('notificationtype')
+								->leftJoin('notificationsubscriber','notificationtype.Id','=','notificationsubscriber.NotificationTypeId')
+								->leftJoin('users','users.Id','=','notificationsubscriber.UserId')
+								->where('notificationtype.Id','=',61)
+								->get();
+
+							}
+							else {
+								# code...
+
+								$subscribers = DB::table('notificationtype')
+								->leftJoin('notificationsubscriber','notificationtype.Id','=','notificationsubscriber.NotificationTypeId')
+								->leftJoin('users','users.Id','=','notificationsubscriber.UserId')
+								->where('notificationtype.Id','=',59)
+								->get();
+							}
+
+							$emails = array();
+
+							foreach ($subscribers as $subscriber) {
+								$NotificationSubject=$subscriber->Notification_Subject;
+								if ($subscriber->Company_Email!="")
+								{
+									array_push($emails,$subscriber->Company_Email);
+								}
+
+								else
+								{
+									array_push($emails,$subscriber->Personal_Email);
+								}
+
+							}
+
+							foreach ($notify as $user) {
+								if ($user->Company_Email!="")
+								{
+									array_push($emails,$user->Company_Email);
+								}
+
+								else
+								{
+									array_push($emails,$user->Personal_Email);
+								}
+
+							}
+
+
+							$companyloans = DB::table('companyloans')
+							->select('companyloanstatuses.Status','companyloans.Id as companyloanid','companyloanstatuses.UserId','company.Company_Name','companyloans.Bank_Account_No','company.Person_In_Charge','company.Contact_No','companyloans.Purpose','companyloans.Date','approver.Name as Approver',DB::raw('Format((companyloans.Total_Requested),2) as Total_Requested'))
+							->leftJoin('company','company.Id','=','companyloans.CompanyId')
+							->leftJoin('companyloanstatuses','companyloans.Id','=','companyloanstatuses.CompanyLoanId')
+							->leftJoin('users as approver','approver.Id','=','companyloanstatuses.UserId')
+							->where('companyloans.Id','=',$input["CompanyLoanId"])
+							->get();
+
+							// Mail::send('emails.staffloanapproval2', ['me' => $me,'staffloans' => $staffloans], function($message) use ($emails,$companyloans,$NotificationSubject)
+							// {
+							// 		$emails = array_filter($emails);
+							// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+							// 		$message->to($emails)->subject($NotificationSubject);
+
+							// });
+
+							return 1;
+						}
+						else {
+							return 0;
+						}
+
+		}
+
+		public function redirectcompanyloan(Request $request)
+		{
+
+			$me = (new CommonController)->get_current_user();
+
+			$input = $request->all();
+
+
+			$companyloans = DB::table('companyloans')
+			->select('companyloanstatuses.Status','companyloans.Id as companyloanid','company.Company_Name','companyloans.Bank_Account_No','company.Person_In_Charge','company.Contact_No','companyloans.Purpose','companyloans.Date','approver.Name as Approver',DB::raw('Format((companyloans.Total_Requested),2) as Total_Requested'))
+			->leftJoin('company','company.Id','=','companyloans.CompanyId')
+			->leftJoin('companyloanstatuses','companyloans.Id','=','companyloanstatuses.CompanyLoanId')
+			->leftJoin('users as approver','approver.Id','=','companyloanstatuses.UserId')
+			->where('companyloans.Id','=',$input["CompanyLoanId"])
+			->get();
+
+			$companyloandetails = DB::table('companyloandetails')
+			->select('Type','Days',DB::raw('Format((Allowance),2) as Allowance'),DB::raw('Format((Total),2) as Total'))
+			->where('CompanyLoanId','=',$input["CompanyLoanId"])
+			->get();
+
+			foreach ($companyloans as $companyloan) {
+
+				# code...
+				$id=DB::table('companyloanstatuses')->insertGetId(
+					['CompanyLoanId' => $companyloan->companyloanid,
+					 'UserId' => $input["Approver"],
+					 'Status' => "Pending Approval"
+					]
+				);
+			}
+
+			if ($id>0)
+			{
+
+				$companyloans = DB::table('companyloans')
+				->select('companyloanstatuses.Status','companyloans.Id as companyloanid','company.Company_Name','companyloans.Bank_Account_No','company.Person_In_Charge','company.Contact_No','companyloans.Purpose','companyloans.Date','approver.Name as Approver',DB::raw('Format((companyloans.Total_Requested),2) as Total_Requested'))
+				->leftJoin('company','company.Id','=','companyloans.CompanyId')
+				->leftJoin('companyloanstatuses','companyloans.Id','=','companyloanstatuses.CompanyLoanId')
+				->leftJoin('users as approver','approver.Id','=','companyloanstatuses.UserId')
+				->where('companyloans.Id','=',$input["CompanyLoanId"])
+				->get();
+
+				$companyloandetails = DB::table('companyloandetails')
+				->select('Type','Days',DB::raw('Format((Allowance),2) as Allowance'),DB::raw('Format((Total),2) as Total'))
+				->where('CompanyLoanId','=',$input["CompanyLoanId"])
+				->get();
+
+				$notify = DB::table('users')
+				->whereIn('Id', [$me->UserId, $input["Approver"]])
+				->get();
+
+				$subscribers = DB::table('notificationtype')
+				->leftJoin('notificationsubscriber','notificationtype.Id','=','notificationsubscriber.NotificationTypeId')
+				->leftJoin('users','users.Id','=','notificationsubscriber.UserId')
+				->where('notificationtype.Id','=',60)
+				->get();
+
+				$emails = array();
+
+				foreach ($subscribers as $subscriber) {
+					$NotificationSubject=$subscriber->Notification_Subject;
+					if ($subscriber->Company_Email!="")
+					{
+						array_push($emails,$subscriber->Company_Email);
+					}
+
+					else
+					{
+						array_push($emails,$subscriber->Personal_Email);
+					}
+
+				}
+
+				foreach ($notify as $user) {
+					if ($user->Company_Email!="")
+					{
+						array_push($emails,$user->Company_Email);
+					}
+					else if($user->Personal_Email!="")
+					{
+						array_push($emails,$user->Personal_Email);
+					}
+
+				}
+
+				// Mail::send('emails.staffloanredirected', ['me'=>$me,'staffloans' => $staffloans], function($message) use ($emails,$me,$NotificationSubject)
+				// {
+				// 		$emails = array_filter($emails);
+				// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+				// 		$message->to($emails)->subject($NotificationSubject);
+				// });
+
+				return 1;
+			}
+			else {
+				return 0;
+			}
+
+		}
+
+		public function companyloandeletereceipt(Request $request)
+		{
+			$input = $request->all();
+
+			return DB::table('files')
+			->where('Id', '=', $input["Id"])
+			->delete();
+
+		}
+
+		public function companyloanuploadreceipt(Request $request)
+		{
+			$filenames="";
+			$input = $request->all();
+			$insertid=$input["CompanyLoanId"];
+			$type="Company Loan";
+			$uploadcount=count($request->file('receipt'));
+
+
+
+			if ($request->hasFile('receipt')) {
+				for($i=0; $i<$uploadcount; $i++) {
+
+						# code...
+						$file = $request->file('receipt')[$i];
+						$destinationPath=public_path()."/private/upload/Company Loan";
+						$extension = $file->getClientOriginalExtension();
+						$originalName=$file->getClientOriginalName();
+						$fileSize=$file->getSize();
+						$fileName=time()."_".$i."_".$uploadcount.".".$extension;
+						$upload_success = $file->move($destinationPath, $fileName);
+						$insert=DB::table('files')->insertGetId(
+							['Type' => $type,
+							 'TargetId' => $insertid,
+							 'File_Name' => $originalName,
+							 'File_Size' => $fileSize,
+							 'Web_Path' => '/private/upload/Company Loan/'.$fileName
+							]
+						);
+
+						if ($i == ($uploadcount-1)) {
+							$filenames.= $insert."|".url('/private/upload/Company Loan/'.$fileName)."|" .$originalName;
+						} else {
+							$filenames.= $insert."|".url('/private/upload/Company Loan/'.$fileName)."|" .$originalName.",";
+						}
+
+				}
+				return $filenames;
+					//return '/private/upload/'.$fileName;
+			}
+			else {
+				return 0;
+			}
+
+		}
+
+		public function companyupdateBankIn(Request $request)
+		{
+			$me=(new CommonController)->get_current_user();
+			$input = $request->all();
+			// dd($input)
+
+			$updateBank=DB::table('companyloans')
+			->where('Id',$input["CompanyLoanId"])
+			->update(array(
+				'Status' => $input['Status']
+			));
+
+			return 1;
+
+		}
 
 		public function mypayslip()
 		{
@@ -5242,315 +5913,6 @@ class UserController extends Controller {
 
 		}
 
-		public function ewallet($start=null, $end=null,$includeResigned=null)
-		{
-			$me = (new CommonController)->get_current_user();
-		if ($start==null)
-		{
-			$start=date('d-M-Y', strtotime('first day of last month'));
-			// $start=date('d-M-Y', strtotime($start,' +16 days'));
-			$start = date('d-M-Y', strtotime($start . " +20 days"));
-		}
-		if ($end==null)
-		{
-			$end=date('d-M-Y', strtotime('first day of this month'));
-			$end = date('d-M-Y', strtotime($end . " +19 days"));
-		}
-
-
-		$expenses = DB::table('ewallet')
-			->select(DB::raw('Sum(ewallet.Amount) as total'),DB::raw('IF(ewallet.Expenses_Type != "",ewallet.Expenses_Type,"EMPTY") as Expenses_Type'))
-			->where('Type','=','Expenses')
-			->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),">=",DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-      		->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-			->groupBy('ewallet.Expenses_Type')
-			->get();
-		$fion=DB::table('fionrecord')
-		->select(
-			DB::Raw('SUM(IF(fionrecord.Type = "Starting Balance",fionrecord.Amount,0)) as cash_on_hand'),
-			DB::Raw('SUM(IF(fionrecord.Type= "Reimburse",fionrecord.Amount,0)) as reimburse'),
-			DB::Raw('SUM(IF(fionrecord.Type= "Submission Acct",fionrecord.Amount,0)) as submission_acct')
-		)
-		->whereRaw('str_to_date("'.$end.'","%d-%M-%Y")')
-		->get();
-
-		$fiontopup = DB::table('ewallet')
-		->select(
-		DB::raw('SUM(Amount) as `Total_TopUp`'))
-		->where('Type','=','Top-up')
-		->get();
-
-		$ewalletData=DB::Table('ewallet')
-		->select(
-			DB::Raw('SUM(IF(ewallet.verified_by = 0 AND ewallet.Type = "Expenses",ewallet.Amount,0)) as not_verified'),
-			DB::Raw('SUM(IF(ewallet.verified_by <> 0 AND ewallet.Type = "Expenses",ewallet.Amount,0)) as verified')
-		)
-		->whereRaw('str_to_date(ewallet.Date,"%d-%M-%Y") between str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date("'.$end.'","%d-%M-%Y")')
-
-		->get();
-
-		$verified=DB::Table('ewallet')
-		->select(
-			DB::Raw('SUM(Amount) as verified')
-		)
-		->where('ewallet.verified_by','>','0')
-		->whereRaw('str_to_date(ewallet.Date,"%d-%M-%Y") <= str_to_date("'.$end.'","%d-%M-%Y")')
-		->first();
-
-		// $expenses = DB::table('options')
-		// ->leftJoin('ewallet','ewallet.Expenses_Type','=','options.Option')
-		// ->select(DB::raw('Sum(ewallet.Amount) as total'),'options.Option','ewallet.Date')
-		// ->where('Table','=','ewallet')
-		// ->where('Field','=','Expenses_Type')
-		// ->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),">=",DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-  //       ->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-		// ->groupBy('options.Option')
-		// ->get();
-
-		// Requested by Afiqin to remove restriction 18 Feb 2020
-			// if($me->UserId == 656)
-			// {
-			// 	$ewallet = DB::table('users')
-			// 	->select('users.Id','users.StaffId','users.Company','users.Name','users.Department','users.Position',
-			// 	DB::raw('(select SUM(Amount) FROM ewallet Where Type="Top-up" and ewallet.UserId=users.Id) as `Total_TopUp`'),
-			// 	DB::raw('(select SUM(Amount) FROM ewallet Where Type!="Top-up" and ewallet.UserId=users.Id) as `Total_Expenses`'),
-			// 	DB::raw('(select SUM(Amount) FROM ewallet Where Type="Top-up" and ewallet.UserId=users.Id and str_to_date(ewallet.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") and str_to_date(ewallet.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")) as `Current_TopUp`'),
-			// 	DB::raw('(select SUM(Amount) FROM ewallet Where Type!="Top-up" and ewallet.UserId=users.Id and str_to_date(ewallet.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") and str_to_date(ewallet.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")) as `Current_Expenses`'),
-			// 	DB::raw('(select SUM(Amount) FROM ewallet Where Type="Top-up" and ewallet.UserId=users.Id)-(select SUM(Amount) FROM ewallet Where Type!="Top-up" and ewallet.UserId=users.Id) as Balance'))
-			// 	->orderBy('users.Name')
-			// 	->where('users.Department','=','MY_Department_LOG')
-			// 	->get();
-			// }
-			// else
-			// {
-			$filter="1";
-
-			if($includeResigned && $includeResigned!="false")
-			{
-				$filter='1';
-			}
-			else {
-				$filter='users.Resignation_Date = ""';
-			}
-
-			$ewallet = DB::table('users')
-			->select('users.Id','users.StaffId','users.Company','users.Name','users.Department','users.Position',
-			DB::raw('(select SUM(Amount) FROM ewallet Where Type="Top-up" and ewallet.UserId=users.Id) as `Total_TopUp`'),
-			DB::raw('(select SUM(Amount) FROM ewallet Where Type!="Top-up" and ewallet.UserId=users.Id and ewallet.Expenses_Type!="Shell Card") as `Total_Expenses`'),
-			DB::raw('(select SUM(Amount) FROM ewallet Where Type="Top-up" and ewallet.UserId=users.Id and str_to_date(ewallet.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") and str_to_date(ewallet.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")) as `Current_TopUp`'),
-			DB::raw('(select SUM(Amount) FROM ewallet Where Type!="Top-up" and ewallet.UserId=users.Id and str_to_date(ewallet.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") and str_to_date(ewallet.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y") and ewallet.Expenses_Type!="Shell Card" ) as `Current_Expenses`'),
-			DB::raw('(select SUM(Amount) FROM ewallet Where Type="Top-up" and ewallet.UserId=users.Id)-(select SUM(Amount) FROM ewallet Where Type!="Top-up" and ewallet.UserId=users.Id AND Expenses_Type!="Shell Card") as Balance'))
-			->whereRaw($filter)
-			->whereRaw('(select SUM(Amount) FROM ewallet Where Type!="Top-up" and ewallet.UserId=users.Id and ewallet.Expenses_Type!="Shell Card")>0')
-			->orderBy('users.Name')
-			->get();
-
-			$ewallet2 = DB::table('users')
-			->select('users.Id','users.StaffId','users.Company','users.Name','users.Department','users.Position',
-			DB::raw('(select SUM(Amount) FROM ewallet Where Type="Top-up" and ewallet.UserId=users.Id) as `Total_TopUp`'),
-			DB::raw('(select SUM(Amount) FROM ewallet Where Type!="Top-up" and ewallet.UserId=users.Id and ewallet.Expenses_Type!="Shell Card") as `Total_Expenses`'),
-			DB::raw('(select SUM(Amount) FROM ewallet Where Type="Top-up" and ewallet.UserId=users.Id and str_to_date(ewallet.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") and str_to_date(ewallet.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")) as `Current_TopUp`'),
-			DB::raw('(select SUM(Amount) FROM ewallet Where Type!="Top-up" and ewallet.UserId=users.Id and str_to_date(ewallet.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") and str_to_date(ewallet.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y") and ewallet.Expenses_Type!="Shell Card" ) as `Current_Expenses`'),
-			DB::raw('(select SUM(Amount) FROM ewallet Where Type="Top-up" and ewallet.UserId=users.Id)-(select SUM(Amount) FROM ewallet Where Type!="Top-up" and ewallet.UserId=users.Id AND Expenses_Type!="Shell Card") as Balance'))
-			// ->whereRaw($filter)
-			// ->whereRaw('(select SUM(Amount) FROM ewallet Where Type!="Top-up" and ewallet.UserId=users.Id and ewallet.Expenses_Type!="Shell Card")>0')
-			->orderBy('users.Name')
-			->get();
-
-
-
-			// }
-			$collection=collect($ewallet2);
-
-			return view('ewallet', ['me' => $me,'ewallet' => $ewallet,'start'=>$start,'end'=>$end,'expenses'=>$expenses,'fion'=>$fion,'collection'=>$collection,'ewalletData'=>$ewalletData,'fiontopup'=>$fiontopup,'verified'=>$verified,'includeResigned'=>$includeResigned]);
-
-		}
-
-		public function ewalletdetails($type,$start,$end,$userid=null)
-		{
-			$me = (new CommonController)->get_current_user();
-
-			if ($start==null)
-			{
-				$start=date('d-M-Y', strtotime('first day of last month'));
-				// $start=date('d-M-Y', strtotime($start,' +16 days'));
-				$start = date('d-M-Y', strtotime($start . " +20 days"));
-			}
-			if ($end==null)
-			{
-				$end=date('d-M-Y', strtotime('first day of this month'));
-				$end = date('d-M-Y', strtotime($end . " +19 days"));
-			}
-
-			if($type == "EMPTY")
-			{
-				$type = "";
-			}
-
-			if($userid == null)
-			{
-
-				$ewalletrecord = DB::table('ewallet')
-				->select('ewallet.Id','ewallet.Date','projects.Project_Name','tracker.Project_Code','ewallet.Amount','ewallet.Remarks','ewallet.created_at','ewallet.updated_at','creator.Name as Created_By','creator.Company')
-				->leftJoin('projects','ewallet.ProjectId','=','projects.Id')
-				->leftJoin('tracker','ewallet.TrackerId','=','tracker.Id')
-				->leftJoin('users as creator','ewallet.created_by','=','creator.Id')
-				->where('ewallet.Expenses_Type','=',$type)
-				->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),">=",DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-		  		->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-				->orderByRaw('str_to_date(ewallet.Date,"%d-%M-%Y") DESC')
-				->get();
-			}
-			else
-			{
-				$ewalletrecord = DB::table('ewallet')
-				->select('ewallet.Id','ewallet.Date','projects.Project_Name','tracker.Project_Code','ewallet.Amount','ewallet.Remarks','ewallet.created_at','ewallet.updated_at','creator.Name as Created_By','creator.Company')
-				->leftJoin('projects','ewallet.ProjectId','=','projects.Id')
-				->leftJoin('tracker','ewallet.TrackerId','=','tracker.Id')
-				->leftJoin('users as creator','ewallet.created_by','=','creator.Id')
-				->where('ewallet.Expenses_Type','=',$type)
-				->where('ewallet.UserId','=',$userid)
-				->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),">=",DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-		  		->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-				->orderByRaw('str_to_date(ewallet.Date,"%d-%M-%Y") DESC')
-				->get();
-
-			}
-
-			$files = DB::table('files')->select('Id', 'TargetId', 'Web_Path')->where('Type', 'fionrecord')->get();
-					$filesByGroup = collect($files)->groupBy('TargetId')->toArray();
-
-			return view('ewalletdetails', ['me' => $me,'ewalletrecord'=>$ewalletrecord,'type'=>$type,'start'=>$start,'end'=>$end,'filesByGroup'=>$filesByGroup,'userid'=>$userid]);
-
-		}
-
-		public function ewalletsummarybreakdown($start,$end,$type)
-		{
-			$me = (new CommonController)->get_current_user();
-
-			if ($start==null)
-			{
-				$start=date('d-M-Y', strtotime('first day of last month'));
-				// $start=date('d-M-Y', strtotime($start,' +16 days'));
-				$start = date('d-M-Y', strtotime($start . " +20 days"));
-			}
-			if ($end==null)
-			{
-				$end=date('d-M-Y', strtotime('first day of this month'));
-				$end = date('d-M-Y', strtotime($end . " +19 days"));
-			}
-
-			switch ($type) {
-				case 'Top Up to Fion':
-					// code...
-					$ewalletrecord = DB::table('fionrecord')
-					->select('fionrecord.Id','fionrecord.Date','fionrecord.Type','fionrecord.Amount','fionrecord.Remarks','fionrecord.created_at','fionrecord.updated_at','creator.Name as Created_By','creator.Company')
-					->leftJoin('users as creator','fionrecord.created_by','=','creator.Id')
-					->where(DB::raw('str_to_date(fionrecord.Date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-					->where('Type','=','Starting Balance')
-					->orderByRaw('str_to_date(fionrecord.Date,"%d-%M-%Y") DESC')
-					->get();
-
-					break;
-
-				case 'Fion Top Up to Staff':
-					// code...
-					$ewalletrecord = DB::table('ewallet')
-					->select('ewallet.Id','ewallet.Date','projects.Project_Name','tracker.Project_Code','ewallet.Amount','ewallet.Remarks','ewallet.created_at','ewallet.updated_at','creator.Name as Created_By','creator.Company')
-					->leftJoin('projects','ewallet.ProjectId','=','projects.Id')
-					->leftJoin('tracker','ewallet.TrackerId','=','tracker.Id')
-					->leftJoin('users as creator','ewallet.created_by','=','creator.Id')
-
-			  	->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-					->where('ewallet.Type','=','Top-up')
-					->orderByRaw('str_to_date(ewallet.Date,"%d-%M-%Y") DESC')
-					->get();
-					break;
-
-				case 'Staff Resits':
-					// code...
-					$ewalletrecord = DB::table('ewallet')
-					->select('ewallet.Id','ewallet.Date','projects.Project_Name','tracker.Project_Code','ewallet.Amount','ewallet.Remarks','ewallet.created_at','ewallet.updated_at','creator.Name as Created_By','creator.Company')
-					->leftJoin('projects','ewallet.ProjectId','=','projects.Id')
-					->leftJoin('tracker','ewallet.TrackerId','=','tracker.Id')
-					->leftJoin('users as creator','ewallet.created_by','=','creator.Id')
-					->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),">=",DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-			  	->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-					->where('ewallet.Type','=','Expenses')
-					->orderByRaw('str_to_date(ewallet.Date,"%d-%M-%Y") DESC')
-					->get();
-
-					break;
-
-				case 'Not Verified':
-					// code...
-					$ewalletrecord = DB::table('ewallet')
-					->select('ewallet.Id','ewallet.Date','projects.Project_Name','tracker.Project_Code','ewallet.Amount','ewallet.Remarks','ewallet.created_at','ewallet.updated_at','creator.Name as Created_By','creator.Company')
-					->leftJoin('projects','ewallet.ProjectId','=','projects.Id')
-					->leftJoin('tracker','ewallet.TrackerId','=','tracker.Id')
-					->leftJoin('users as creator','ewallet.created_by','=','creator.Id')
-					->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),">=",DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-			  	->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-					->where('ewallet.Type','=','Expenses')
-					->where('verified_at','=','0000-00-00 00:00:00')
-					->orderByRaw('str_to_date(ewallet.Date,"%d-%M-%Y") DESC')
-					->get();
-					break;
-
-				case 'Verified':
-					// code...
-					$ewalletrecord = DB::table('ewallet')
-					->select('ewallet.Id','ewallet.Date','projects.Project_Name','tracker.Project_Code','ewallet.Amount','ewallet.Remarks','ewallet.created_at','ewallet.updated_at','creator.Name as Created_By','creator.Company')
-					->leftJoin('projects','ewallet.ProjectId','=','projects.Id')
-					->leftJoin('tracker','ewallet.TrackerId','=','tracker.Id')
-					->leftJoin('users as creator','ewallet.created_by','=','creator.Id')
-					->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),">=",DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-			  	->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-					->where('ewallet.Type','=','Expenses')
-					->where('ewallet.verified_by','>','0')
-					->orderByRaw('str_to_date(ewallet.Date,"%d-%M-%Y") DESC')
-					->get();
-
-					break;
-
-				case 'Reimbursed to Fion':
-						// code...
-						$ewalletrecord = DB::table('fionrecord')
-						->select('fionrecord.Id','fionrecord.Date','fionrecord.Type','fionrecord.Amount','fionrecord.Remarks','fionrecord.created_at','fionrecord.updated_at','creator.Name as Created_By','creator.Company')
-						->leftJoin('users as creator','fionrecord.created_by','=','creator.Id')
-				  	->where(DB::raw('str_to_date(fionrecord.Date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-						->where('Type','=','Reimburse')
-						->orderByRaw('str_to_date(fionrecord.Date,"%d-%M-%Y") DESC')
-						->get();
-						break;
-
-				case 'Submission Acct':
-						// code...
-						$ewalletrecord = DB::table('fionrecord')
-						->select('fionrecord.Id','fionrecord.Date','fionrecord.Type','fionrecord.Amount','fionrecord.Remarks','fionrecord.created_at','fionrecord.updated_at','creator.Name as Created_By','creator.Company')
-						->leftJoin('users as creator','fionrecord.created_by','=','creator.Id')
-				  	->where(DB::raw('str_to_date(fionrecord.Date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-						->where('Type','=','Submission Acct')
-						->orderByRaw('str_to_date(fionrecord.Date,"%d-%M-%Y") DESC')
-						->get();
-						break;
-
-					case 'Total':
-							// code...
-							$ewalletrecord = DB::table('fionrecord')
-							->select('fionrecord.Id','fionrecord.Date','fionrecord.Type','fionrecord.Amount','fionrecord.Remarks','fionrecord.created_at','fionrecord.updated_at','creator.Name as Created_By','creator.Company')
-							->leftJoin('users as creator','fionrecord.created_by','=','creator.Id')
-					  	->where(DB::raw('str_to_date(fionrecord.Date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-							->where('Type','=','Starting Balance')
-							->orderByRaw('str_to_date(fionrecord.Date,"%d-%M-%Y") DESC')
-							->get();
-							break;
-			}
-
-			return view('ewalletsummarybreakdown', ['me' => $me,'ewalletrecord'=>$ewalletrecord,'type'=>$type,'start'=>$start,'end'=>$end]);
-
-		}
-
 		public function fionrecord($start=null, $end=null)
 		{
 			$me = (new CommonController)->get_current_user();
@@ -5581,196 +5943,6 @@ class UserController extends Controller {
 			return view('fionrecord', ['me' => $me,'fionrecord' => $fionrecord,'start'=>$start,'end'=>$end,'filesByGroup'=>$filesByGroup]);
 
 		}
-
-		public function ewalletrecord($userid,$start=null, $end=null)
-		{
-			$me = (new CommonController)->get_current_user();
-
-			if ($start==null)
-			{
-				$start=date('d-M-Y', strtotime('first day of last month'));
-				// $start=date('d-M-Y', strtotime($start,' +16 days'));
-				$start = date('d-M-Y', strtotime($start . " +20 days"));
-			}
-			if ($end==null)
-			{
-				$end=date('d-M-Y', strtotime('first day of this month'));
-				$end = date('d-M-Y', strtotime($end . " +19 days"));
-			}
-
-			$ewallet = DB::table('users')
-			->select('users.Id','users.StaffId as Staff_ID','users.Name','users.Department','users.Position',
-			DB::raw('(select IF(SUM(Amount),SUM(Amount),0) FROM ewallet Where Type="Top-up" and ewallet.UserId=users.Id) as `Total_Top-Up`'),
-			DB::raw('(select IF(SUM(Amount),SUM(Amount),0) FROM ewallet Where Type!="Top-up" and ewallet.UserId=users.Id AND str_to_date(ewallet.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") and ewallet.Expenses_Type!="Shell Card" and str_to_date(ewallet.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")) as `Total_Expenses`'),
-			DB::raw('(select IF(SUM(Amount),SUM(Amount),0) FROM ewallet Where Type="Top-up" and ewallet.UserId=users.Id)-(select IF(SUM(Amount),SUM(Amount),0) FROM ewallet Where Type!="Top-up" and ewallet.UserId=users.Id AND Expenses_Type!="Shell Card") as Balance'))
-			->where('users.Id', '=',$userid)
-			->orderBy('users.Name')
-			->first();
-
-		// $expenses = DB::table('options')
-		// ->leftJoin('ewallet','ewallet.Expenses_Type','=','options.Option')
-		// ->select(DB::raw('Sum(ewallet.Amount) as total'),'options.Option','ewallet.Date')
-		// ->where('Table','=','ewallet')
-		// ->where('Field','=','Expenses_Type')
-		// ->where('ewallet.UserId', '=',$userid)
-		// ->groupBy('options.Option')
-		// ->get();
-
-			$expenses = DB::table('ewallet')
-			->select(DB::raw('Sum(ewallet.Amount) as total'),'ewallet.Expenses_Type')
-			->where('ewallet.UserId', '=',$userid)
-			->whereRaw('str_to_date(ewallet.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") and str_to_date(ewallet.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")')
-			->where('Type','=','Expenses')
-			->where('Expenses_Type','<>',"Shell Card")
-			->groupBy('ewallet.Expenses_Type')
-			->get();
-
-			$projects = DB::table('projects')
-			->where('projects.Project_Name','not like','%department%')
-			->get();
-
-			$sitelist = DB::table('tracker')
-			->select('Id','ProjectId','Project_Code',DB::raw('`Site ID` as site_id'),DB::raw('`Site LRD` as site_lrd'),DB::raw('`Site Name` as site_name'))
-			->get();
-
-			$ewalletrecord = DB::table('ewallet')
-			->select('ewallet.Id','ewallet.Date','projects.Project_Name','tracker.Project_Code','ewallet.Type','ewallet.Expenses_Type','ewallet.Amount','ewallet.Remarks','ewallet.created_at','ewallet.updated_at','creator.Name as Created_By')
-			->leftJoin('projects','ewallet.ProjectId','=','projects.Id')
-			->leftJoin('tracker','ewallet.TrackerId','=','tracker.Id')
-			->leftJoin('users as creator','ewallet.created_by','=','creator.Id')
-			->where('ewallet.UserId', '=',$userid)
-			->where('ewallet.Expenses_Type', '!=','Shell Card')
-			->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),">=",DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-	  	->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-			->orderByRaw('str_to_date(ewallet.Date,"%d-%M-%Y") DESC')
-			->get();
-
-			$options= DB::table('options')
-			->whereIn('Table', ["ewallet"])
-			->orderBy('Table','asc')
-			->orderBy('Option','asc')
-			->get();
-
-			$files = DB::table('files')->select('Id', 'TargetId', 'Web_Path')->where('Type', 'eWallet')->get();
-        	$filesByGroup = collect($files)->groupBy('TargetId')->toArray();
-
-			return view('ewalletrecord', ['me' => $me,'ewallet'=>$ewallet,'ewalletrecord' => $ewalletrecord,'userid'=>$userid,'projects'=>$projects,'sitelist'=>$sitelist,'options'=>$options,'filesByGroup' => $filesByGroup,'expenses'=>$expenses,'userid'=>$userid,'start'=>$start,'end'=>$end]);
-
-		}
-
-		public function siteewalletrecord($trackerid)
-		{
-			$me = (new CommonController)->get_current_user();
-
-			$ewallet = DB::table('tracker')
-			->select(DB::raw('(select IF(SUM(Amount),SUM(Amount),0) FROM ewallet Where Type="Top-up" and ewallet.TrackerId=tracker.Id) as `Total_Top-Up`'),
-			DB::raw('(select IF(SUM(Amount),SUM(Amount),0) FROM ewallet Where Type!="Top-up" and ewallet.TrackerId=tracker.Id) as `Total_Expenses`'),
-			DB::raw('(select IF(SUM(Amount),SUM(Amount),0) FROM ewallet Where Type="Top-up" and ewallet.TrackerId=tracker.Id)-(select IF(SUM(Amount),SUM(Amount),0) FROM ewallet Where Type!="Top-up" and ewallet.TrackerId=tracker.Id) as Balance'))
-			->where('tracker.Id', '=',$trackerid)
-			->first();
-
-			$ewalletrecord = DB::table('ewallet')
-			->select('ewallet.Id','ewallet.Date','projects.Project_Name','tracker.Project_Code','ewallet.Type','ewallet.Expenses_Type','ewallet.Amount','ewallet.Remarks','ewallet.created_at','ewallet.updated_at','creator.Name as Created_By')
-			->leftJoin('projects','ewallet.ProjectId','=','projects.Id')
-			->leftJoin('tracker','ewallet.TrackerId','=','tracker.Id')
-			->leftJoin('users as creator','ewallet.created_by','=','creator.Id')
-			->where('ewallet.TrackerId', '=',$trackerid)
-			->orderByRaw('str_to_date(ewallet.Date,"%d-%M-%Y") DESC')
-			->get();
-
-			$projects = DB::table('projects')
-			->where('projects.Project_Name','not like','%department%')
-			->get();
-
-			$sitelist = DB::table('tracker')
-			->select('Id','ProjectId','Project_Code','Site ID','Site LRD','Site Name')
-			->get();
-
-			$siteinfo= DB::table('tracker')
-			->where('Id', '=',$trackerid)
-			->first();
-
-			$ewalletrecord = DB::table('ewallet')
-			->select('ewallet.Id','ewallet.Date','projects.Project_Name','tracker.Project_Code','ewallet.Type','ewallet.Expenses_Type','ewallet.Amount','ewallet.Remarks','ewallet.created_at','ewallet.updated_at','creator.Name as Created_By')
-			->leftJoin('projects','ewallet.ProjectId','=','projects.Id')
-			->leftJoin('tracker','ewallet.TrackerId','=','tracker.Id')
-			->leftJoin('users as creator','ewallet.created_by','=','creator.Id')
-			->where('ewallet.TrackerId', '=',$trackerid)
-			->orderByRaw('str_to_date(ewallet.Date,"%d-%M-%Y") DESC')
-			->get();
-
-			$options= DB::table('options')
-			->whereIn('Table', ["ewallet"])
-			->orderBy('Table','asc')
-			->orderBy('Option','asc')
-			->get();
-
-			$files = DB::table('files')->select('Id', 'TargetId', 'Web_Path')->where('Type', 'eWallet')->get();
-        	$filesByGroup = collect($files)->groupBy('TargetId')->toArray();
-
-			return view('siteewalletrecord', ['me' => $me,'siteinfo'=>$siteinfo,'ewallet'=>$ewallet,'ewalletrecord' => $ewalletrecord,'projects'=>$projects,'sitelist'=>$sitelist,'options'=>$options,'filesByGroup' => $filesByGroup]);
-
-		}
-
-		public function upload(Request $request)
-    {
-        $me = (new CommonController)->get_current_user();
-        $input = $request->all();
-        $time = Carbon::now();
-        $project = DB::table('projects')
-        ->select('projects.Id','projects.Project_Name')
-        ->leftJoin('ewallet','ewallet.ProjectId','=','projects.Id')
-          ->where('ewallet.Id','=',$input['ewalletId'])
-    			->first();
-    	if($project != null)
-    	{
-        $tracker = DB::table('tracker')
-        ->select('tracker.Project_Code')
-        ->where('tracker.ProjectID','=',$project->Id)
-    			->first();
-    	}
-
-        $filenames="";
-        $attachmentUrl = null;
-        if($project != null && $tracker != null)
-        {
-        $destinationPath="private/upload/Site Document/".$project->Project_Name."/".$tracker->Project_Code."/eWallet/";
-    	}
-    	else
-    	{
-    	$destinationPath="private/upload/Site Document/topup/eWallet/";
-    	}
-        $type="eWallet";
-        $uploadcount=count($request->file('uploadfile'));
-        if ($request->hasFile('uploadfile')) {
-
-            for ($i=0; $i <$uploadcount ; $i++) {
-                # code...
-                $file = $request->file('uploadfile')[$i];
-                // $destinationPath=public_path()."/private/upload/Delivery";
-                $extension = $file->getClientOriginalExtension();
-                $originalName=$file->getClientOriginalName();
-                $fileSize=$file->getSize();
-                $fileName=time()."_".$i.".".$extension;
-                $upload_success = $file->move($destinationPath,$fileName);
-                $insert=DB::table('files')->insertGetId(
-                    ['Type' => $type,
-                     'TargetId' => $input['ewalletId'],
-                     'File_Name' => $originalName.$time,
-                     'File_Size' => $fileSize,
-                     'Web_Path' => $destinationPath.$fileName
-                    ]
-                );
-                $attachmentUrl = url($destinationPath.$fileName);
-                $filenames.= $insert."|".$attachmentUrl."|" .$originalName.",";
-            }
-
-            $filenames=substr($filenames, 0, strlen($filenames)-1);
-
-            return $filenames;
-        }
-        return 0;
-    }
 
         public function removeupload(Request $request)
     {
@@ -5833,200 +6005,6 @@ class UserController extends Controller {
         ->delete();
 
     }
-
-		public function ewalletfinanceupdate($start=null, $end=null,$company=null)
-		{
-			$me = (new CommonController)->get_current_user();
-
-			if ($start==null)
-			{
-				$start=date('d-M-Y', strtotime('first day of last month'));
-				// $start=date('d-M-Y', strtotime($start,' +16 days'));
-				$start = date('d-M-Y', strtotime($start . " +20 days"));
-			}
-			if ($end==null)
-			{
-				$end=date('d-M-Y', strtotime('first day of this month'));
-				$end = date('d-M-Y', strtotime($end . " +19 days"));
-			}
-
-			$cond="1";
-
-			if($company && $company!="false")
-			{
-				$cond.=" AND users.Company='".$company."'";
-			}
-
-			$ewalletrecord = DB::table('ewallet')
-			->select(
-				'ewallet.Id',
-				'users.StaffId',
-				'users.Name',
-				'ewallet.Date',
-				'projects.Project_Name',
-				'tracker.Project_Code',
-				'ewallet.DocNo',
-				'ewallet.DealWith',
-				'ewallet.Expenses_Type',
-				'ewallet.Amount',
-				'ewallet.Remarks',
-				'creator.Name as Created_By')
-			->leftJoin('projects','ewallet.ProjectId','=','projects.Id')
-			->leftJoin('tracker','ewallet.TrackerId','=','tracker.Id')
-			->leftJoin('users','ewallet.UserId','=','users.Id')
-			->leftJoin('users as creator','ewallet.created_by','=','creator.Id')
-			->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),">=",DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-	    ->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-			->whereRaw($cond)
-			->orderByRaw('str_to_date(ewallet.Date,"%d-%M-%Y") ASC')
-			->get();
-
-			$companies= DB::table('options')
-			->whereIn('Table', ["users"])
-			->where('Field','=','Company')
-			->orderBy('Table','asc')
-			->orderBy('Option','asc')
-			->get();
-
-			$options= DB::table('options')
-			->whereIn('Table', ["ewallet"])
-			->orderBy('Table','asc')
-			->orderBy('Option','asc')
-			->get();
-
-			$files = DB::table('files')->select('Id', 'TargetId', 'Web_Path')->where('Type', 'eWallet')->get();
-      $filesByGroup = collect($files)->groupBy('TargetId')->toArray();
-
-			return view('ewalletfinanceupdate', ['me' => $me,'ewalletrecord' => $ewalletrecord,'options'=>$options,'filesByGroup' => $filesByGroup,'start' => $start, 'end' => $end,'companies'=>$companies,'company'=>$company]);
-
-		}
-	function verify(Request $request){
-		$me=(new CommonController)->get_current_user();
-		$update=DB::Table('ewallet')->where('Id',$request->id)->update([
-			'verified_by'=>$me->UserId,
-			'verified_at'=>DB::Raw('now()')
-		]);
-		return $update;
-	}
-
-	function verifytick(Request $request){
-		$me=(new CommonController)->get_current_user();
-
-		$input = $request->all();
-
-		$recordIds = explode(",", $input["Ids"]);
-
-		foreach ($recordIds as $id) {
-			// code...
-			$update=DB::Table('ewallet')->where('Id',$id)->update([
-				'verified_by'=>$me->UserId,
-				'verified_at'=>DB::Raw('now()')
-			]);
-		}
-
-		return $update;
-	}
-
-	public function ewalletsummary($start=null, $end=null,$projectid=null,$trackerid=null)
-	{
-		$me = (new CommonController)->get_current_user();
-
-		$projectids = explode("|",$me->ProjectIds);
-
-		$projects= DB::table('projects')
-		->whereIn('Id', $projectids)
-		->get();
-
-		if($projectid==null)
-		{
-					$projectid=31;
-		}
-
-		$site= DB::table('tracker')
-		->select('tracker.Id','tracker.Project_Code','tracker.Site Name','tracker.Unique ID')
-		->where('ProjectId','=', $projectid)
-		->get();
-
-		if ($start==null)
-		{
-			$start=date('d-M-Y', strtotime('first day of last month'));
-			// $start=date('d-M-Y', strtotime($start,' +16 days'));
-			$start = date('d-M-Y', strtotime($start . " +20 days"));
-		}
-		if ($end==null)
-		{
-			$end=date('d-M-Y', strtotime('first day of this month'));
-			$end = date('d-M-Y', strtotime($end . " +19 days"));
-		}
-
-		$cond="1 ";
-
-		if($projectid && $projectid!="0")
-		{
-			$cond.=" and tracker.ProjectId=".$projectid;
-		}
-
-
-		if($trackerid && $trackerid!=0)
-		{
-			$cond.=" and tracker.Id=".$trackerid;
-		}
-
-		$summary = DB::table('ewallet')
-		->select(
-			'ewallet.Expenses_Type',
-			DB::raw('SUM(ewallet.Amount) as Total'))
-		->leftJoin('projects','ewallet.ProjectId','=','projects.Id')
-		->leftJoin('tracker','ewallet.TrackerId','=','tracker.Id')
-		->leftJoin('users','ewallet.UserId','=','users.Id')
-		->leftJoin('users as creator','ewallet.created_by','=','creator.Id')
-		->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),">=",DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-		->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-		->whereRaw($cond)
-		->groupBy('ewallet.Expenses_Type')
-		->orderByRaw('ewallet.Expenses_Type ASC')
-		->get();
-
-		$total = DB::table('ewallet')
-		->select(
-			'projects.Project_Name',
-			'tracker.Unique ID',
-			'ewallet.Expenses_Type',
-				DB::raw('SUM(ewallet.Amount) as Total'))
-		->leftJoin('projects','ewallet.ProjectId','=','projects.Id')
-		->leftJoin('tracker','ewallet.TrackerId','=','tracker.Id')
-		->leftJoin('users','ewallet.UserId','=','users.Id')
-		->leftJoin('users as creator','ewallet.created_by','=','creator.Id')
-		->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),">=",DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-		->where(DB::raw('str_to_date(ewallet.Date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-		->whereRaw($cond)
-		->groupBy('projects.Project_Name')
-		->groupBy('tracker.Unique ID')
-		->groupBy('ewallet.Expenses_Type')
-		->orderByRaw('projects.Project_Name ASC,tracker.`Unique ID` asc,ewallet.Expenses_Type asc')
-		->get();
-
-		if ($summary==null){
-			$data = "";
-			$title = "";
-		}
-		else {
-			$data = "";
-			$title = "";
-			foreach($summary as $key => $quote){
-				$ret[]=$quote->Total;
-				$data .= $quote->Total.",";
-			}
-		}
-		foreach($summary as $key => $quote){
-			$title .= $quote->Expenses_Type.",";
-		}
-		$data=substr($data,0,strlen($data)-1);
-		$title=substr($title,0,strlen($title)-1);
-
-
-		return view("ewalletsummary", ['me' => $me, 'start' => $start,'end' =>$end, 'summary' => $summary,'total' => $total,'data' => $data, 'title' => $title,'projects'=>$projects,'projectid'=>$projectid,'trackerid'=>$trackerid,'site'=>$site]);
-	}
 
 	public function staffdashboard($start = null, $end = null, $userid = null, $year = null, $kpiresult = null, $cmeresult = null){
 
@@ -6407,7 +6385,7 @@ class UserController extends Controller {
 			$users = DB::table('users')
 			->leftJoin('staffdeductions','staffdeductions.UserId','=','users.Id')
 			->select(
-				'users.Id','users.StaffId as Staff_ID','users.Name','users.Department','users.Position','users.Joining_Date','users.Nationality',
+				'users.Id','users.StaffId as Staff_ID','users.Name','users.Position','users.Joining_Date','users.Nationality',
 				DB::raw('(
 					SELECT SUM(FinalAmount) FROM staffdeductions a
 					WHERE a.UserId=users.Id
@@ -6424,7 +6402,7 @@ class UserController extends Controller {
 			$users = DB::table('users')
 			->leftJoin('staffdeductions','staffdeductions.UserId','=','users.Id')
 			->select(
-				'users.Id','users.StaffId as Staff_ID','users.Name','users.Department','users.Position','users.Joining_Date','users.Nationality',
+				'users.Id','users.StaffId as Staff_ID','users.Name','users.Position','users.Joining_Date','users.Nationality',
 				DB::raw('(
 					SELECT SUM(FinalAmount) FROM staffdeductions a
 					WHERE a.UserId=users.Id

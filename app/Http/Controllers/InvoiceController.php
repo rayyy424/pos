@@ -25,12 +25,8 @@ class InvoiceController extends Controller {
     {
 		$me = (new CommonController)->get_current_user();
 
-		$projectids = explode("|",$me->ProjectIds);
-
 		$invoices = DB::table('invoices')
-		->select('invoices.Id','invoices.Invoice_No','projects.Project_Name','invoices.Company','invoices.Invoice_Type','invoices.Invoice_Date','invoices.Invoice_Description','invoices.Invoice_Amount','invoices.Invoice_Status')
-        ->leftJoin('projects', 'invoices.ProjectId', '=', 'projects.Id')
-		->whereIn('invoices.ProjectId',$projectids)
+		->select('invoices.Id','invoices.Invoice_No','invoices.Company','invoices.Invoice_Type','invoices.Invoice_Date','invoices.Invoice_Amount', 'invoices.Invoice_Labour_Charge' ,'invoices.Invoice_Status','invoices.Invoice_Remarks')
 		->orderBy('invoices.Invoice_No','ASC')
 		->get();
 
@@ -40,11 +36,14 @@ class InvoiceController extends Controller {
 		->orderBy('Option','asc')
 		->get();
 
-		$projects = DB::table('projects')
-		->whereIn('Id',$projectids)
+		$item=DB::table('speedfreakinventory')
+		->leftJoin(DB::Raw('(SELECT Max(Id) as maxid, inventoryId from inventorysalesprice group by inventoryId) as max'),'max.inventoryId','=','speedfreakinventory.Id')
+		->leftJoin('inventorysalesprice','inventorysalesprice.Id','=',DB::raw('max.maxid'))
+		->select('speedfreakinventory.Id', 'speedfreakinventory.name', 'speedfreakinventory.type','speedfreakinventory.model', 'inventorysalesprice.price')
+		->groupBy('speedfreakinventory.model')
+		->orderBy('speedfreakinventory.name','ASC')
 		->get();
-
-			return view('invoicemanagement', ['me' => $me,'invoices' => $invoices, 'projects' =>$projects,'options' =>$options]);
+			return view('invoicemanagement', ['me' => $me,'invoices' => $invoices,'options' =>$options,  'item'=>$item]);
 
 	}
 
@@ -54,8 +53,7 @@ class InvoiceController extends Controller {
 	$me = (new CommonController)->get_current_user();
 
 	$invoice = DB::table('invoices')
-	->select('invoices.Id','invoices.Invoice_No','projects.Project_Name','invoices.Company','invoices.Invoice_Type','invoices.Invoice_Date','invoices.Invoice_Description','invoices.Invoice_Amount','invoices.Invoice_Status')
-			->leftJoin('projects', 'invoices.ProjectId', '=', 'projects.Id')
+	->select('invoices.Id','invoices.Invoice_No','invoices.Company','invoices.Invoice_Type','invoices.Invoice_Date','invoices.Invoice_Description','invoices.Invoice_Amount','invoices.Invoice_Status')
 	->orderBy('invoices.Invoice_No','ASC')
 	->where('invoices.Id', '=', $Id)
 	->first();
@@ -75,8 +73,7 @@ public function invoicedetail2($Invoice)
 	$me = (new CommonController)->get_current_user();
 
 	$invoice = DB::table('invoices')
-	->select('invoices.Id','invoices.Invoice_No','projects.Project_Name','invoices.Company','invoices.Invoice_Type','invoices.Invoice_Date','invoices.Invoice_Description','invoices.Invoice_Amount','invoices.Invoice_Status')
-			->leftJoin('projects', 'invoices.ProjectId', '=', 'projects.Id')
+	->select('invoices.Id','invoices.Invoice_No','invoices.Company','invoices.Invoice_Type','invoices.Invoice_Date','invoices.Invoice_Description','invoices.Invoice_Amount','invoices.Invoice_Status')
 			->where('invoices.Invoice_No', '=', $Invoice)
 	->orderBy('invoices.Invoice_No','ASC')
 	->first();
@@ -160,7 +157,6 @@ public function invoicedetail2($Invoice)
 			SELECT purchaseorders.PO_Type,COUNT(Distinct purchaseorders.Id) As '#_Of_PO',FORMAT(SUM(purchaseorderitems.Amount),2) as 'Total_Amount'
 			FROM purchaseorders
 			LEFT JOIN purchaseorderitems on purchaseorderitems.PO_Id=purchaseorders.Id
-			LEFT JOIN projects on purchaseorders.projectId=projects.Id
 			WHERE (First_Cut_Completed_Date<>'' AND First_Cut_Invoice_No='') OR
 			(Second_Cut_Completed_Date<>'' AND Second_Cut_Invoice_No='') OR
 			(Third_Cut_Completed_Date<>'' AND Third_Cut_Invoice_No='') OR

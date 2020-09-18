@@ -98,7 +98,7 @@
 			// Get the rows id value
 			//  var row=$(this).closest("tr");
 			//  var oTable = row.closest('table').dataTable();
-			userid = oTable.api().row( this ).data().gensetinventory.Id;
+			userid = oTable.api().row( this ).data().speedfreakinventory.Id;
 		});
 
 		oTable.api().on( 'order.dt search.dt', function () {
@@ -141,10 +141,10 @@
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1>Requisition Management<small>GENSET</small></h1>
+		<h1>Requisition Management<small>SPEED FREAK</small></h1>
 		<ol class="breadcrumb">
 			<li><a href="{{ url('/home') }}"><i class="fa fa-dashboard"></i>Home</a></li>
-			<li><a href="#">GENSET</a></li>
+			<li><a href="#">SPEED FREAK</a></li>
             <li>Requisition Management</li>
             <li class="active">Requisition Details</li>
 		</ol>
@@ -280,7 +280,7 @@
 	
  <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
   </footer>

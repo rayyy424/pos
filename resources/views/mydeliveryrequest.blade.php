@@ -434,23 +434,7 @@
                                                     { label :"TRUCK - {{$t->Vehicle_No}}", value: "{{$t->Id}}" },
                                                 @endforeach
                                                 ],
-                                        },
-                                        // {
-                                        //          label: "Driver:",
-                                        //          name: "deliveryform.DriverId",
-                                        //          type:  'textarea'
-                                        // },
-                                        {
-                                                 label: "Project Name",
-                                                 name : "deliveryform.ProjectId",
-                                                 type : "select2",
-                                                 options: [
-                                                { label :"", value: "" },
-                                                @foreach($project as $projects)
-                                                    { label :"{{$projects->Project_Name}}", value: "{{$projects->Id}}" },
-                                                @endforeach
-                                                ],
-                                         },{
+                                        },{
                                                  label: "Site:",
                                                  name: "deliveryform.Location",
                                                  type:  'select2',
@@ -491,83 +475,6 @@
                                          }
                                  ]
                          } );
-                     //     $('#deliverytable').on( 'click', 'tr', function () {
-                     //      // var data = deliverytable.row($(this).parents('tr')).data();
-                     //       var deliveryid = deliverytable.row( this ).data().deliveryform.Id;
-                     //     // console.log(deliveryid)
-                     //     });
-                     //        deliverytable=$('#deliverytable').DataTable( {
-                     //       ajax: {
-                     //         "url": "{{ asset('/Include/delivery.php') }}",
-                     //         "data": {
-                     //             "UserId": {{ $me->UserId }},
-                     //             "Status": "%Pending%"
-                     //         }
-                     //       },
-                     //             columnDefs: [{ "visible": false,"targets":[1,2,3]},{"className": "dt-center", "targets": "_all"}],
-                     //             responsive: false,
-                     //             colReorder: false,
-                     //             dom: "Blftp",
-                     //             sScrollX: "100%",
-                     //             bAutoWidth: true,
-                     //             sScrollY: "100%",
-                     //             rowId:"deliveryform.Id",
-                     //             scrollCollapse: true,
-                     //             // aaSorting:false,
-                     //             fnInitComplete: function(oSettings, json) {
-                     //               $('#mypendingdeliverytab').html("Pending Delivery" + "[" + deliverytable.rows().count() +"]")
-                     //              },
-                     //             columns: [
-                     //                     { data: null, "render":"", title:"No"},
-                     //                     { data: "deliveryform.Id"},
-                     //                     { data: "deliverystatuses.Id"},
-                     //                     { data: "requestor.Name", title:"Requestor"},
-                     //                     { data: "roadtax.Vehicle_No",title:"Vehicle No"},
-                     //                     { data: "roadtax.Lorry_Size",title:"Size"},
-                     //                     // { data: "driver.Name",title:"Driver"},
-                     //                     { data: "deliveryform.delivery_date",title:"Delivery Date"},
-                     //                     { data: "deliveryform.delivery_time",title:"Delivery Time"},
-                     //                     { data: "deliveryform.pickup_date",title:"Pickup Date"},
-                     //                     { data: "deliveryform.pick_up_time",title:"Pickup Time"},
-                     //                     { data: "radius.Location_Name",title:"Site",editField:"deliveryform.Location"},
-                     //                     { data: "projects.Project_Name", title:"Project Name"},
-                     //                     // { data: "company.Company_Name", title:"Company"},
-                     //                     // { data: "client.Company_Name", title:"Client"},
-                     //                     // { data: "deliveryform.VisitStatus", title:"Visit Status"},
-                     //                     { data: "options.Option", title:"Purpose"},
-                     //                     { data: "deliveryform.PIC_Name", title:"PIC Name"},
-                     //                     { data: "deliveryform.PIC_Contact", title:"PIC Contact"},
-                     //                     { data: "deliveryform.Remarks", title:"Remarks"},
-                     //                     { data: "deliveryform.created_at", title:"Request Date"},
-                     //                     {
-                     //                        sortable: false,
-                     //                        title:"Items",
-                     //                        // title:"View Items",
-                     //                        "render": function ( data, type, full, meta ) {
-                     //                            return '<button data-toggle="modal" data-target="#viewItemListModal" onclick="viewItemList('+full.deliveryform.Id+')">View Items</button>';
-                     //                           }
-                     //                    },
-                     //                    {
-                     //                        sortable: false,
-                     //                        title:"Action",
-                     //                        // title:"View Items",
-                     //                        "render": function ( data, type, full, meta ) {
-                     //                            return '<button onclick="OpenRecallDialog('+full.deliveryform.Id+')">Recall</button><br><br><button onclick="CancelDialog('+full.deliveryform.Id+')">Cancel</button><br><br><a href="/deliverytrackingdetails/'+full.deliveryform.Id+'"><button>Track</button></a><br><br>'+
-                     //                            "<a target='_blank' href='{{url('materiallist')}}/"+full.deliveryform.Id+"'><button>Print</button></a>";
-                     //                           }
-                     //                    },
-                     //                      ],
-                     //             select: {
-                     //                     style:    'os',
-                     //                     selector: 'tr'
-                     //                   },
-                     //                   buttons:[],
-                     // });
-                     //    deliverytable.on( 'order.dt search.dt', function () {
-                     //      deliverytable.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
-                     //          cell.innerHTML = i+1;
-                     //      } );
-                     //      } ).draw();
                         // Table 2
                         $('#delivery2table').on( 'click', 'tr', function () {
                           // var data = delivery2table.row($(this).parents('tr')).data();
@@ -608,10 +515,6 @@
                                          { data: "deliveryform.pickup_date",title:"Pickup Date"},
                                          { data: "deliveryform.pick_up_time",title:"Pickup Time"},
                                          { data: "radius.Location_Name",title:"Site",editField:"deliveryform.Location"},
-                                         { data: "projects.Project_Name", title:"Project Name"},
-                                         // { data: "company.Company_Name", title:"Company"},
-                                         // { data: "client.Company_Name", title:"Client"},
-                                         // { data: "deliveryform.VisitStatus", title:"Visit Status"},
                                          { data: "options.Option", title:"Purpose" },
                                          { data: "deliveryform.PIC_Name", title:"PIC Name"},
                                          { data: "deliveryform.PIC_Contact", title:"PIC Contact"},
@@ -693,10 +596,6 @@
                                          { data: "deliveryform.pickup_date",title:"Pickup Date"},
                                          { data: "deliveryform.pick_up_time",title:"Pickup Time"},
                                          { data: "radius.Location_Name",title:"Site",editField:"deliveryform.Location"},
-                                         { data: "projects.Project_Name", title:"Project Name"},
-                                         // { data: "company.Company_Name", title:"Company"},
-                                         // { data: "client.Company_Name", title:"Client"},
-                                         // { data: "deliveryform.VisitStatus", title:"Visit Status"},
                                          { data: "options.Option", title:"Purpose" },
                                          { data: "deliveryform.PIC_Name", title:"PIC Name"},
                                          { data: "deliveryform.PIC_Contact", title:"PIC Contact"},
@@ -787,9 +686,6 @@
                                          { data: "deliveryform.pickup_date",title:"Pickup Date"},
                                          { data: "deliveryform.pick_up_time",title:"Pickup Time"},
                                          { data: "radius.Location_Name",title:"Site",editField:"deliveryform.Location"},
-                                         { data: "projects.Project_Name", title:"Project Name",editField:"deliveryform.ProjectId"},
-                                         // { data: "company.Company_Name", title:"Company",editField:"deliveryform.company_id"},
-                                         // { data: "deliveryform.VisitStatus", title:"Visit Status"},
                                          { data:"options.Option", title:"Purpose"},
                                          { data: "deliveryform.PIC_Name", title:"PIC Name"},
                                          { data: "deliveryform.PIC_Contact", title:"PIC Contact"},
@@ -1028,10 +924,6 @@
                                          { data: "deliveryform.delivery_date",title:"Delivery Date"},
                                          { data: "deliveryform.delivery_time",title:"Delivery Time"},
                                          { data: "radius.Location_Name",title:"Site",editField:"deliveryform.Location"},
-                                         { data: "projects.Project_Name", title:"Project Name"},
-                                         // { data: "company.Company_Name", title:"Company"},
-                                         // { data: "client.Company_Name", title:"Client"},
-                                         // { data: "deliveryform.VisitStatus", title:"Visit Status"},
                                          { data: "deliveryform.PIC_Name", title:"PIC Name"},
                                          { data: "deliveryform.PIC_Contact", title:"PIC Contact"},
                                          { data: "deliveryform.Remarks", title:"Remarks"},
@@ -1135,10 +1027,6 @@
                                          { data: "deliveryform.delivery_date",title:"Delivery Date"},
                                          { data: "deliveryform.delivery_time",title:"Delivery Time"},
                                          { data: "radius.Location_Name",title:"Site",editField:"deliveryform.Location"},
-                                         { data: "projects.Project_Name", title:"Project Name"},
-                                         // { data: "company.Company_Name", title:"Company"},
-                                         // { data: "client.Company_Name", title:"Client"},
-                                         // { data: "deliveryform.VisitStatus", title:"Visit Status"},
                                          { data: "deliveryform.PIC_Name", title:"PIC Name"},
                                          { data: "deliveryform.PIC_Contact", title:"PIC Contact"},
                                          { data: "deliveryform.Remarks", title:"Remarks"},
@@ -1202,13 +1090,7 @@
                                          { data: "deliveryform.delivery_date",title:"Delivery Date"},
                                          { data: "deliveryform.delivery_time",title:"Delivery Time"},
                                          { data: "radius.Location_Name",title:"Site",editField:"deliveryform.Location"},
-                                         { data: "projects.Project_Name", title:"Project Name"},
                                          { data:"options.Option" , title:"Purpose"},
-                                         // { data: "company.Company_Name", title:"Company"},
-                                         // { data: "client.Company_Name", title:"Client"},
-                                         // { data: "deliveryform.VisitStatus", title:"Visit Status"},
-                                         // { data: "deliveryform.PIC_Name", title:"PIC Name"},
-                                         // { data: "deliveryform.PIC_Contact", title:"PIC Contact"},
                                          { data: "deliveryform.Remarks", title:"Remarks"},
                                          { data: "deliverystatuses.remarks", title:"Reason"},
                                          // { data: "approver.Name", title:"Approver"},
@@ -1283,9 +1165,6 @@
                                          { data: "deliveryform.pickup_date",title:"Pickup Date"},
                                          { data: "deliveryform.pick_up_time",title:"Pickup Time"},
                                          { data: "radius.Location_Name",title:"Site",editField:"deliveryform.Location"},
-                                         { data: "projects.Project_Name", title:"Project Name"},
-                                         // { data: "company.Company_Name", title:"Company",editField:"deliveryform.company_id"},
-                                         // { data: "deliveryform.VisitStatus", title:"Visit Status"},
                                          { data:"options.Option", title:"Purpose"},
                                          { data: "deliveryform.PIC_Name", title:"PIC Name"},
                                          { data: "deliveryform.PIC_Contact", title:"PIC Contact"},
@@ -1357,10 +1236,6 @@
                                          { data: "deliveryform.delivery_date",title:" Delivery Date"},
                                          { data: "deliveryform.delivery_time",title:" Delivery Time"},
                                          { data: "radius.Location_Name",title:"Site",editField:"deliveryform.Location"},
-                                         { data: "projects.Project_Name", title:"Project Name"},
-                                         // { data: "company.Company_Name", title:"Company",editField:"deliveryform.company_id"},
-                                         // { data: "deliveryform.VisitStatus", title:"Visit Status"},
-                                         // { data:"inventories.Item_Code",title:"Item"},
                                          { data:"options.Option", title:"Purpose"},
                                          // { data: "deliveryform.PIC_Name", title:"PIC Name"},
                                          // { data: "deliveryform.PIC_Contact", title:"PIC Contact"},
@@ -1427,10 +1302,6 @@
                                          // { data: "deliveryform.pickup_date",title:"Pickup Date"},
                                          // { data: "deliveryform.pick_up_time",title:"Pickup Time"},
                                          { data: "radius.Location_Name",title:"Site",editField:"deliveryform.Location"},
-                                         { data: "projects.Project_Name", title:"Project Name"},
-                                         // { data: "company.Company_Name", title:"Company"},
-                                         // { data: "client.Company_Name", title:"Client"},
-                                         // { data: "deliveryform.VisitStatus", title:"Visit Status"},
                                          { data: "options.Option", title:"Purpose" },
                                          // { data: "deliveryform.PIC_Name", title:"PIC Name"},
                                          // { data: "deliveryform.PIC_Contact", title:"PIC Contact"},
@@ -1821,7 +1692,7 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  <h4 class="modal-title" id="myModalLabel">Terminate Genset</h4>
+                  <h4 class="modal-title" id="myModalLabel">Terminate Speedfreak</h4>
                 </div>
                  <form enctype="multipart/form-data" id="terminate_form" role="form" method="POST" action="" >
                 <div class="modal-body">
@@ -2115,21 +1986,6 @@
                         <fieldset>
                         <h3>Delivery Order</h3>
                         <div class="row">
-                        <div class="col-md-5">
-                          <div class="form-group">
-                            <label>Project:<span class="red-star">*</span></label>
-                            <select class="project form-control select2" id="project" name="section[0][project]">
-                                @if($details == null)
-                                  <option value="" disabled selected>None</option>
-                                  @foreach ($project as $projects)
-                                      <option  value="{{$projects->Id}}" data-Name="{{$projects->Project_Name}}">{{$projects->Project_Name}}</option>
-                                  @endforeach
-                                  @else
-                                    <option  value="{{$details->projectId}}" selected="">{{$details->Project_Name}}</option>
-                                  @endif
-                                </select>
-                          </div>
-                        </div>
 
 
                           <div class="col-md-5">
@@ -2206,18 +2062,6 @@
 
 
                       <div class="row">
-                        <div class="col-md-5">
-                          <div class="form-group">
-                            <label>Project Type:<span class="red-star">*</span> </label>
-                                <!-- <select class="form-control select2" id="projtype" name="section[0][projtype]">-->
-                                @if($details == null)
-                                <input class="form-control textarea" id="projtype" name="section[0][projtype]" disabled="" value="">
-                                @else
-                                <input class="form-control textarea" id="projtype" name="section[0][projtype]" disabled="" value="{{$pt->type}}">
-                                @endif
-                          </div>
-                        </div>
-
                         <div class="col-md-5">
                           <div class="form-group">
                             <label>PIC:<span class="red-star">*</span> </label>
@@ -2966,7 +2810,6 @@
                                             <tr>
                                               <th>No</th>
                                               <th>MR NO</th>
-                                              <th>Project Name</th>
                                               <th>Status</th>
                                               <th>Action</th>
                                             </tr>
@@ -3046,7 +2889,7 @@
 
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.
@@ -3141,7 +2984,7 @@ function getRowFiles(id) {
               title: "{{ $schedule->Requestor }} - {{ $schedule->Lorry }}",
               start: new Date("{{date(DATE_ISO8601, strtotime($schedule->Delivery_Date))}}"),
               description:
-              "<p><b>Requestor</b>: {{$schedule->Requestor}}</p><p><b>Lorry</b>: {{$schedule->Lorry}}</p><p><b>Driver</b>: {{$schedule->Driver}}</p><p><b>Delivery Date</b>: {{$schedule->Delivery_Date}}</p><p><b>Status</b>: {{$schedule->Status}}</p><p><b>Project</b>: {{$schedule->Project_Name}}</p><p><b>Site</b>: {{$schedule->Location_Name}}</p><p><b>Lat/Long: </b><a data-toggle='modal' data-target='#mapsViewModal' onclick='myfunction({{$schedule->latitude}},{{$schedule->longitude}})' href='#'  target='_blank'>{{$schedule->longitude}},{{$schedule->latitude}}</a></p><p><b>Purpose</b>: {{$schedule->Option}}</p><p><b>Application Date</b>: {{$schedule->created_at}}</p>",
+              "<p><b>Requestor</b>: {{$schedule->Requestor}}</p><p><b>Lorry</b>: {{$schedule->Lorry}}</p><p><b>Driver</b>: {{$schedule->Driver}}</p><p><b>Delivery Date</b>: {{$schedule->Delivery_Date}}</p><p><b>Status</b>: {{$schedule->Status}}</p><p><b>Site</b>: {{$schedule->Location_Name}}</p><p><b>Lat/Long: </b><a data-toggle='modal' data-target='#mapsViewModal' onclick='myfunction({{$schedule->latitude}},{{$schedule->longitude}})' href='#'  target='_blank'>{{$schedule->longitude}},{{$schedule->latitude}}</a></p><p><b>Purpose</b>: {{$schedule->Option}}</p><p><b>Application Date</b>: {{$schedule->created_at}}</p>",
               allDay: true,
               @if(strpos($schedule->Status,"Accepted")!==false)
                 backgroundColor: "#00a65a", //green
@@ -3462,7 +3305,6 @@ $(document).ready(function() {
                         document.getElementById("pickupdate").value = ''
                         document.getElementById("pickup").value = ''
                         $("#lorry").val("").change();
-                        $("#project").val("").change();
                         $("#destination").val("").change();
                         $("#client").val("").change();
                         // document.getElementById("client").value = ''
@@ -3731,11 +3573,9 @@ $('body').on('click', '.addsection', function() {
         var newId = this.id + sectionsCount;
         //update id
         this.id = newId;
-        $("#project"+sectionsCount).select2("destroy");
         $("#destination"+sectionsCount).select2("destroy");
         $("#client"+sectionsCount).select2("destroy");
         $("#purpose"+sectionsCount).select2("destroy");
-        // $("#projtype"+sectionsCount).select2("destroy");
         $("#item"+sectionsCount).select2("destroy");
         $("#Description"+sectionsCount).select2("destroy");
         $("#note"+sectionsCount).select2("destroy");
@@ -3775,11 +3615,9 @@ $('body').on('click', '.addsection', function() {
     }).end()
     //inject new section
     .appendTo('#sections');
-    $("#project"+sectionsCount).select2();
     $("#destination"+sectionsCount).select2();
     $("#client"+sectionsCount).select2();
     $("#purpose"+sectionsCount).select2();
-    // $("#projtype"+sectionsCount).select2();
     $("#item"+sectionsCount).select2();
     $("#Description"+sectionsCount).select2();
     $("#note"+sectionsCount).select2({
@@ -4070,114 +3908,7 @@ $(document).ready(function() {
          // $('.client').val(cli);
     });
 });
-  $(document).ready(function(){
-    $(document).on('change','.project',function(){
-        $.ajaxSetup({
-         headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') }
-      });
-          var projectid=$(this).val();
-          var tblId = $(this).closest(':input').attr('id');
-          //get table id number
-          var numId = parseInt(tblId.match(/\d+/));
-          if(isNaN(numId)|| numId==""){
-            numId="";
-          }
-          // console.log(numId);
-        var element = $(this).find('option:selected');
-        console.log(element);
-         var name = element.data("name");
-         if(name == "MY_GSC")
-         {
-            $('#projtype'+numId).val("GSC");
-         }
-         else if(name == "MY_FAB")
-         {
-            $('#projtype'+numId).val("FAB");
-         }
-         else if(name== "MY_GST")
-         {
-           $('#projtype'+numId).val("GST");
-         }
-         else if(name== "MY_UM")
-         {
-           $('#projtype'+numId).val("CME");
-           var select = $('#client'+numId);
-          var newOptions = {
-                          '2' : 'OMNI AVENUE SDN BHD - OASB',
-                      };
-          $('option', select).remove();
-          $.each(newOptions, function(text, key) {
-              var option = new Option(key, text);
-              select.append($(option));
-          });
-         }
-         else if(name== "MY_SBC")
-         {
-          $('#projtype'+numId).val("CME");
-           var select = $('#client'+numId);
-          var newOptions = {
-                          '1' : 'MIDASCOM PERKASA SDN BHD - MPSB',
-                          '2' : 'OMNI AVENUE SDN BHD - OASB',
-                          '3' : 'MIDASCOM NETWORK SDN BHD - MNSB'
-                      };
-          $('option', select).remove();
-          $.each(newOptions, function(text, key) {
-              var option = new Option(key, text);
-              select.append($(option));
-          });
-         }
-         else if(name== "MY_DIGI")
-         {
-          $('#projtype'+numId).val("CME");
-         var select = $('#client'+numId);
-          var newOptions = {
-                          '3' : 'MIDASCOM NETWORK SDN BHD - MNSB'
-                      };
-          $('option', select).remove();
-          $.each(newOptions, function(text, key) {
-              var option = new Option(key, text);
-              select.append($(option));
-          });
-         }
-         else
-         {
-           $('#projtype'+numId).val("");
-         }
-          $.ajax
-          ({
-          type: "GET",
-          url: "{{ url('/deliveryrequest/getsite') }}",
-          data: {Id:projectid},
-          cache: false,
-          success: function(response){
-            $("#destination"+numId).empty();
-            response.site.forEach(function(key){
-                if( ((projectid != null && projectid != 142 ) && (projectid != null && projectid != 143 ))|| ((projectid != "" && projectid != 142 ) && (projectid != "" && projectid != 143 )))
-                {
-                $("#destination"+numId).append("<option value='"+key.Id+"''>"+key.Location_Name+"</option>");
-                }
-                else{
-                  $("#destination"+numId).empty();
-                }
-            });
-            // $("#client"+numId).empty();
-            if( projectid == 142 || projectid == 143 || projectid =="" || projectid == null)
-              {
-                $("#client"+numId).empty();
-              }
-            response.allclient.forEach(function(val){
-              if(projectid == 142 || projectid == 143)
-              {
-                $("#client"+numId).append("<option value='"+val.Id+"''>"+val.Company_Name +"-"+ val.Company_Code+ "</option>");
-              }
-            });
-            if(projectid == 142 || projectid == 143)
-                {
-                    alert("Please Select Client First");
-                }
-        }
-      });
-  });
+
     $(document).ready(function(){
     $(document).on('change','.client',function(){
         $.ajaxSetup({
@@ -4189,29 +3920,21 @@ $(document).ready(function() {
           if(isNaN(numId)|| numId==""){
             numId="";
           }
-        var projectid = $('#project'+numId).val();
         var clientid = $(this).val();
         var length = $('#destination'+numId).children('option').length;
-        // console.log(length, projectid, clientid)
           $.ajax
           ({
           type: "GET",
           url: "{{ url('/deliveryrequest/getsite2') }}",
-          data: {projectid,clientid},
+          data: {clientid},
           cache: false,
           success: function(response){
-              if( projectid == 142 || projectid == 143 || projectid =="" || projectid == null)
-              {
-                $("#destination"+numId).empty();
-              }
+
             response.site.forEach(function(key){
-                  if(projectid != "" || projectid != null)
-                  {
                  $("#destination"+numId).append("<option value='"+key.Id+"''>"+key.Location_Name+"</option>");
-                  }
-               });
-          }
             });
+          }
+          });
 
       });
   });
@@ -4346,7 +4069,7 @@ $(document).ready(function() {
       success: function (response) {
           for(let x=0,i=response.length;x<i;x++){
             mrTable.api().row.add([
-              "",response[x].MR_No,response[x].Project_Name,response[x].Status,response[x].total>0 ? "<a style='width:unset;' class='btn btn-xs btn-primary' onclick='MRItemModal("+response[x].Id+")'><i class='fa fa-plus' aria-hidden='true'></i></a>":"-"
+              "",response[x].MR_No,response[x].Status,response[x].total>0 ? "<a style='width:unset;' class='btn btn-xs btn-primary' onclick='MRItemModal("+response[x].Id+")'><i class='fa fa-plus' aria-hidden='true'></i></a>":"-"
             ]).draw(false);
           }
       }

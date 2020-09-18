@@ -29,74 +29,56 @@ class SalesController extends Controller {
     {
 		$me = (new CommonController)->get_current_user();
 
-		$projectids = explode("|",$me->ProjectIds);
-
-    $projects = DB::table('projects')
-    ->whereIn('Id',$projectids)
-    ->get();
-
     $pnl= DB::select("
       SELECT
-      projects.Id,
-      projects.Project_Name,
+      po.Id,
+      po.PO_No,
       FORMAT(SUM(IF(po.PO_Type='Receive',po.Amount,0)),2) AS 'Total_In',
       FORMAT(SUM(IF(po.PO_Type='Issue',po.Amount,0)),2) AS 'Total_Out',
       FORMAT((SUM(IF(po.PO_Type='Receive',po.Amount,0))-SUM(IF(po.PO_Type='Issue',po.Amount,0))),2) AS 'Profit',
       FORMAT(((SUM(IF(po.PO_Type='Receive',po.Amount,0))-SUM(IF(po.PO_Type='Issue',po.Amount,0)))/SUM(IF(po.PO_Type='Receive',po.Amount,0))*100),2) AS 'Profit %'
-      FROM projects
-      LEFT JOIN po ON projects.Id=po.ProjectId
-      WHERE projects.Id IN (".implode(",",$projectids).")
-      GROUP BY projects.Id
+      FROM po
+      WHERE po.PO_Type != ""
+      GROUP BY po.PO_No
       ");
 
-			return view('pnl', ['me' => $me, 'projects' =>$projects,'pnl'=>$pnl]);
+			return view('pnl', ['me' => $me,'pnl'=>$pnl]);
 
 	}
 
-  public function pnl($projectid)
+  public function pnl()
     {
 		$me = (new CommonController)->get_current_user();
 
-    $project = DB::table('projects')
-    ->where('Id','=',$projectid)
-    ->first();
-
     $pnl= DB::select("
       SELECT
-      projects.Id,
-      po.Project_Code,
-      po.Site_ID,
+      po.Site_Code,
       po.Site_Name,
       FORMAT(SUM(IF(po.PO_Type='Receive',po.Amount,0)),2) AS 'Total_In',
       FORMAT(SUM(IF(po.PO_Type='Issue',po.Amount,0)),2) AS 'Total_Out',
       FORMAT((SUM(IF(po.PO_Type='Receive',po.Amount,0))-SUM(IF(po.PO_Type='Issue',po.Amount,0))),2) AS 'Profit',
       FORMAT(((SUM(IF(po.PO_Type='Receive',po.Amount,0))-SUM(IF(po.PO_Type='Issue',po.Amount,0)))/SUM(IF(po.PO_Type='Receive',po.Amount,0))*100),2) AS 'Profit %'
-      FROM projects
-      LEFT JOIN po ON projects.Id=po.ProjectId
-      LEFT JOIN projectcodes ON po.Project_Code=projectcodes.Project_Code
-      WHERE projects.Id =".$projectid."
-      GROUP BY po.Project_Code
+      FROM po
+      WHERE po.PO_No !=""
+      GROUP BY po.Site_Name
       ");
 
       $pnl2= DB::select("
         SELECT
-        projects.Id,
+        po.Id,
         po.Work_Order_ID,
-        po.Project_Code,
-        projectcodes.Site_ID,
-        projectcodes.Site_Name,
+        po.Site_Code,
+        po.Site_Name,
         FORMAT(SUM(IF(po.PO_Type='Receive',po.Amount,0)),2) AS 'Total_In',
         FORMAT(SUM(IF(po.PO_Type='Issue',po.Amount,0)),2) AS 'Total_Out',
         FORMAT((SUM(IF(po.PO_Type='Receive',po.Amount,0))-SUM(IF(po.PO_Type='Issue',po.Amount,0))),2) AS 'Profit',
         FORMAT(((SUM(IF(po.PO_Type='Receive',po.Amount,0))-SUM(IF(po.PO_Type='Issue',po.Amount,0)))/SUM(IF(po.PO_Type='Receive',po.Amount,0))*100),2) AS 'Profit %'
-        FROM projects
-        LEFT JOIN po ON projects.Id=po.ProjectId
-        LEFT JOIN projectcodes ON po.Project_Code=projectcodes.Project_Code
-        WHERE projects.Id =".$projectid."
+        FROM po
+        WHERE po.PO_No !=""
         GROUP BY po.Work_Order_ID
         ");
 
-			return view('projectpnl', ['me' => $me, 'project' =>$project,'pnl'=>$pnl,'pnl2'=>$pnl2]);
+			return view('projectpnl', ['me' => $me,'pnl'=>$pnl,'pnl2'=>$pnl2]);
 
 	}
 
@@ -110,7 +92,6 @@ class SalesController extends Controller {
       ->leftJoin('tracker','tracker.Id','=','trackerid')
       ->leftjoin('companies','companies.Id','=','salesorder.companyId')
       ->leftjoin('companies as client','client.Id','=','salesorder.clientId')
-      ->leftjoin('projects','projects.Id','=','tracker.ProjectID')
       ->select('tracker.Id','salesorder.po','salesorder.SO_Number',DB::raw('tracker.`Hire Date` as hiredate'),'salesorder.rental_start','salesorder.rental_end','companies.Company_Name','client.Company_Name as client','tracker.Region','tracker.State',DB::raw('tracker.`Site Name` as SiteName'),'tracker.NTP')
       ->where('salesorder.invoice','=','0')
       ->where('salesorder.rental_end','<',$today)
@@ -123,7 +104,6 @@ class SalesController extends Controller {
       ->leftJoin('tracker','tracker.Id','=','trackerid')
       ->leftjoin('companies','companies.Id','=','salesorder.companyId')
       ->leftjoin('companies as client','client.Id','=','salesorder.clientId')
-      ->leftjoin('projects','projects.Id','=','tracker.ProjectID')
       ->select('tracker.Id','salesorder.po','salesorder.SO_Number',DB::raw('tracker.`Hire Date` as hiredate'),'salesorder.rental_start','salesorder.rental_end','companies.Company_Name','client.Company_Name as client','tracker.Region','tracker.State',DB::raw('tracker.`Site Name` as SiteName'),'tracker.NTP')
       ->where('salesorder.invoice','=','0')
       ->where('salesorder.rental_end','<',$today)
@@ -135,7 +115,6 @@ class SalesController extends Controller {
       ->leftJoin('tracker','tracker.Id','=','trackerid')
       ->leftjoin('companies','companies.Id','=','salesorder.companyId')
       ->leftjoin('companies as client','client.Id','=','salesorder.clientId')
-      ->leftjoin('projects','projects.Id','=','tracker.ProjectID')
       ->select('tracker.Id','salesorder.po','salesorder.SO_Number',DB::raw('tracker.`Hire Date` as hiredate'),'salesorder.rental_start','salesorder.rental_end','companies.Company_Name','client.Company_Name as client','tracker.Region','tracker.State',DB::raw('tracker.`Site Name` as SiteName'),'tracker.NTP')
       ->where('salesorder.invoice','=','0')
       ->where('salesorder.rental_end','<',$today)
@@ -248,7 +227,7 @@ class SalesController extends Controller {
         return view('salessummarydetails', ['me'=>$me, 'summary'=>$summary]);
     }
 
-    public function salesorder($projectid=null, $clientid = null, $companytype = null, $detail = null)
+    public function salesorder($clientid = null, $companytype = null, $detail = null)
     {
       $me = (new CommonController)->get_current_user();
 
@@ -256,11 +235,6 @@ class SalesController extends Controller {
       if($clientid && $clientid != "null")
       {
         $cond .= 'AND salesorder.clientId = '.$clientid;
-      }
-
-      if($projectid && $projectid != "null")
-      {
-        $cond .= 'AND tracker.ProjectID = '.$projectid;
       }
 
       if($companytype && $companytype != "null")
@@ -274,10 +248,8 @@ class SalesController extends Controller {
         ->leftJoin('salesorder', 'salesorder.trackerid', '=', 'tracker.Id')
         ->leftjoin('companies','companies.Id','=','salesorder.companyId')
         ->leftjoin('companies as client','client.Id','=','salesorder.clientId')
-        ->leftjoin('projects','projects.Id','=','tracker.ProjectID')
         ->select('tracker.Id','salesorder.Id as soId','salesorder.po','salesorder.SO_Number',DB::raw('tracker.`Hire Date` as hiredate'),'salesorder.rental_start','salesorder.rental_end','companies.Company_Name','client.Company_Name as client','tracker.Region','tracker.State',DB::raw('tracker.`Site Name` as SiteName'),'tracker.sales_order','salesorder.do','tracker.recurring','salesorder.invoice')
         ->whereRaw($cond)
-        ->where('projects.Project_Name','LIKE','%GENSET%')
         ->get();
       }
       else
@@ -288,17 +260,10 @@ class SalesController extends Controller {
         ->leftJoin('salesorder', 'salesorder.Id', '=', DB::raw('max.`maxid`'))
         ->leftjoin('companies','companies.Id','=','salesorder.companyId')
         ->leftjoin('companies as client','client.Id','=','salesorder.clientId')
-        ->leftjoin('projects','projects.Id','=','tracker.ProjectID')
         ->select('tracker.Id','salesorder.Id as soId','salesorder.po','salesorder.SO_Number',DB::raw('tracker.`Hire Date` as hiredate'),'salesorder.rental_start','salesorder.rental_end','companies.Company_Name','client.Company_Name as client','tracker.Region','tracker.State',DB::raw('tracker.`Site Name` as SiteName'),'tracker.sales_order','salesorder.do','tracker.recurring','salesorder.invoice')
         ->whereRaw($cond)
-        ->where('projects.Project_Name','LIKE','%GENSET%')
         ->get();
       }
-
-      $projects = DB::table('projects')
-      ->select('Id','Project_Name')
-      ->where('Project_Name','LIKE','%GENSET%')
-      ->get();
 
       $clients = DB::table('companies')
       // ->leftjoin('salesorder','salesorder.clientId','=','companies.Id')
@@ -306,7 +271,7 @@ class SalesController extends Controller {
       ->where('companies.Client','=','Yes')
       ->get();
 
-      return view('salesorder', ['me' => $me,'projects'=> $projects,'list'=>$list,'clients'=>$clients,'detail'=>$detail]);
+      return view('salesorder', ['me' => $me,'list'=>$list,'clients'=>$clients,'detail'=>$detail]);
 
   }
 
@@ -326,17 +291,13 @@ class SalesController extends Controller {
     {
       $me = (new CommonController)->get_current_user();
       $input = $request->all();
-      $project = DB::Table('tracker')
-      ->leftjoin('projects','tracker.ProjectID','=','projects.Id')
-      ->select('projects.Project_Name','tracker.Project_Code')
-      ->where('tracker.Id','=',$input['trackerid'])
-      ->first();
+
       $today = date('d-M-Y', strtotime('today'));
 
         $filenames="";
         $attachmentUrl = null;
         $type="Acceptance_Documents";
-        $path = "/private/upload/SO/".$project->Project_Name."/".$project->Project_Code."/".$type;
+        $path = "/private/upload/SO/".$type;
         if(isset($input['so']))
         {
           if ($input['so'] != null || $input['so'] != "") {
@@ -375,7 +336,7 @@ class SalesController extends Controller {
         $filenames="";
         $attachmentUrl = null;
         $type="Acceptance_Documents";
-        $path = "/private/upload/DO/".$project->Project_Name."/".$project->Project_Code."/".$type;
+        $path = "/private/upload/DO/".$type;
         if(isset($input['do']))
         {
           if ($input['do'] != null || $input['do'] != "") {
@@ -413,7 +374,7 @@ class SalesController extends Controller {
       $filenames="";
         $attachmentUrl = null;
         $type="Acceptance_Documents";
-        $path = "/private/upload/BOQ/".$project->Project_Name."/".$project->Project_Code."/".$type;
+        $path = "/private/upload/BOQ/".$type;
         if(isset($input['boq']))
         {
           if ($input['boq'] != null || $input['boq'] != "") {
@@ -452,7 +413,7 @@ class SalesController extends Controller {
       $filenames="";
         $attachmentUrl = null;
         $type="Acceptance_Documents";
-        $path = "/private/upload/jac/".$project->Project_Name."/".$project->Project_Code."/".$type;
+        $path = "/private/upload/jac/".$type;
         if(isset($input['jac']))
         {
           if ($input['jac'] != null || $input['jac'] != "") {
@@ -491,7 +452,7 @@ class SalesController extends Controller {
       $filenames="";
         $attachmentUrl = null;
         $type="Acceptance_Documents";
-        $path = "/private/upload/site_report/".$project->Project_Name."/".$project->Project_Code."/".$type;
+        $path = "/private/upload/site_report/".$type;
         if(isset($input['site_report']))
         {
           if ($input['site_report'] != null || $input['site_report'] != "") {
@@ -529,7 +490,7 @@ class SalesController extends Controller {
       $filenames="";
         $attachmentUrl = null;
         $type="Acceptance_Documents";
-        $path = "/private/upload/boq_rom/".$project->Project_Name."/".$project->Project_Code."/".$type;
+        $path = "/private/upload/boq_rom/".$type;
         if(isset($input['boq_rom']))
         {
           if ($input['boq_rom'] != null || $input['boq_rom'] != "") {
@@ -568,7 +529,7 @@ class SalesController extends Controller {
       $filenames="";
         $attachmentUrl = null;
         $type="Acceptance_Documents";
-        $path = "/private/upload/boq_hq/".$project->Project_Name."/".$project->Project_Code."/".$type;
+        $path = "/private/upload/boq_hq/".$type;
         if(isset($input['boq_hq']))
         {
           if ($input['boq_hq'] != null || $input['boq_hq'] != "") {
@@ -607,7 +568,7 @@ class SalesController extends Controller {
       $filenames="";
         $attachmentUrl = null;
         $type="Acceptance_Documents";
-        $path = "/private/upload/boq_director/".$project->Project_Name."/".$project->Project_Code."/".$type;
+        $path = "/private/upload/boq_director/".$type;
         if(isset($input['boq_director']))
         {
           if ($input['boq_director'] != null || $input['boq_director'] != "") {
@@ -646,7 +607,7 @@ class SalesController extends Controller {
       $filenames="";
         $attachmentUrl = null;
         $type="Acceptance_Documents";
-        $path = "/private/upload/po/".$project->Project_Name."/".$project->Project_Code."/".$type;
+        $path = "/private/upload/po/".$type;
         if(isset($input['po']))
         {
           if ($input['po'] != null || $input['po'] != "") {
@@ -685,7 +646,7 @@ class SalesController extends Controller {
       $filenames="";
         $attachmentUrl = null;
         $type="Acceptance_Documents";
-        $path = "/private/upload/work_order/".$project->Project_Name."/".$project->Project_Code."/".$type;
+        $path = "/private/upload/work_order/".$type;
         if(isset($input['work_order']))
         {
           if ($input['WORK ORDER'] != null || $input['work_order'] != "") {
@@ -724,7 +685,7 @@ class SalesController extends Controller {
       $filenames="";
         $attachmentUrl = null;
         $type="Acceptance_Documents";
-        $path = "/private/upload/coc/".$project->Project_Name."/".$project->Project_Code."/".$type;
+        $path = "/private/upload/coc/".$type;
         if(isset($input['coc']))
         {
           if ($input['coc'] != null || $input['coc'] != "") {
@@ -764,7 +725,7 @@ class SalesController extends Controller {
       $filenames="";
         $attachmentUrl = null;
         $type="Acceptance_Documents";
-        $path = "/private/upload/payment_checklist/".$project->Project_Name."/".$project->Project_Code."/".$type;
+        $path = "/private/upload/payment_checklist/".$type;
         if(isset($input['payment_checklist']))
         {
           if ($input['payment_checklist'] != null || $input['payment_checklist'] != "") {
@@ -804,7 +765,7 @@ class SalesController extends Controller {
       $filenames="";
         $attachmentUrl = null;
         $type="Acceptance_Documents";
-        $path = "/private/upload/audit_form/".$project->Project_Name."/".$project->Project_Code."/".$type;
+        $path = "/private/upload/audit_form/".$type;
         if(isset($input['audit_form']))
         {
           if ($input['audit_form'] != null || $input['audit_form'] != "") {
@@ -934,13 +895,13 @@ class SalesController extends Controller {
       //  $item = DB::table('inventories')
       // ->leftjoin('inventoryvendor','inventoryvendor.InventoryId','=','inventories.Id')
       // ->select('inventories.Id','inventories.Item_Code','inventories.Description','inventories.Unit','inventoryvendor.Item_Price')
-      // ->where('inventories.Categories','=','GENSET')
+      // ->where('inventories.Categories','=','SPEEDFREAK')
       // ->get();
 
       //  $item = DB::table('inventories')
       // ->leftjoin('inventoryvendor','inventoryvendor.InventoryId','=','inventories.Id')
       // ->select('inventories.Id','inventories.Item_Code','inventories.Description','inventories.Unit','inventoryvendor.Item_Price')
-      // ->where('inventories.Categories','=','GENSET')
+      // ->where('inventories.Categories','=','SPEEDFREAK')
       // ->get();
 
       $item = array();
@@ -966,7 +927,7 @@ class SalesController extends Controller {
       // ->leftjoin('salesorderitem','salesorderitem.inventoryId','=','inventories.Id')
       // ->leftjoin('inventoryvendor','inventoryvendor.InventoryId','=','inventories.Id')
       // ->select('inventories.Id','inventories.Item_Code','inventories.Description','inventories.Unit','salesorderitem.price','salesorderitem.qty')
-      // ->where('inventories.Categories','=','GENSET')
+      // ->where('inventories.Categories','=','SPEEDFREAK')
       // ->where('salesorderitem.salesorderId','=',$details->Id)
       // ->get();
 
@@ -1048,7 +1009,7 @@ class SalesController extends Controller {
 		 // ->leftjoin('salesorderitem','salesorderitem.inventoryId','=','inventories.Id')
 		 // ->leftjoin('inventoryvendor','inventoryvendor.InventoryId','=','inventories.Id')
 		 // ->select('inventories.Id','inventories.Item_Code','inventories.Description','inventories.Unit','salesorderitem.price','salesorderitem.qty')
-		 // ->where('inventories.Categories','=','GENSET')
+		 // ->where('inventories.Categories','=','SPEEDFREAK')
 		 // ->where('salesorderitem.salesorderId','=',$details->Id)
 		 // ->get();
 
@@ -1385,11 +1346,11 @@ class SalesController extends Controller {
 
       $item = DB::table('deliveryitem')
       ->leftjoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-      ->leftjoin('gensetinventory','gensetinventory.machinery_no','=','inventories.Item_Code')
-      ->select('inventories.Item_Code','gensetinventory.engine_no')
+      ->leftjoin('speedfreakinventory','speedfreakinventory.machinery_no','=','inventories.Item_Code')
+      ->select('inventories.Item_Code','speedfreakinventory.engine_no')
       ->where('deliveryitem.formId','=',$formid->Id)
       // ->where('Item_Code','LIKE','SC%')
-      ->where('gensetinventory.type','=','GENSET')
+      ->where('speedfreakinventory.type','=','SPEEDFREAK')
       ->first();
 
       $tray = DB::table('deliveryitem')
@@ -1398,9 +1359,9 @@ class SalesController extends Controller {
       ->where('deliveryitem.formId','=',$formid->Id)
       ->where('Item_Code','LIKE','%Tray%')
       ->first();
-      $machine = DB::table('gensetinventory')
-      ->leftjoin('inventories','inventories.Item_Code','=','gensetinventory.machinery_no')
-      ->select('inventories.Item_Code','gensetinventory.machinery_no','gensetinventory.engine_no')
+      $machine = DB::table('speedfreakinventory')
+      ->leftjoin('inventories','inventories.Item_Code','=','speedfreakinventory.machinery_no')
+      ->select('inventories.Item_Code','speedfreakinventory.machinery_no','speedfreakinventory.engine_no')
       ->where('inventories.Item_Code','<>',"")
       ->get();
       }
@@ -1457,11 +1418,11 @@ class SalesController extends Controller {
 
       $item = DB::table('deliveryitem')
       ->leftjoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-      ->leftjoin('gensetinventory','gensetinventory.machinery_no','=','inventories.Item_Code')
-      ->select('inventories.Item_Code','gensetinventory.engine_no')
+      ->leftjoin('speedfreakinventory','speedfreakinventory.machinery_no','=','inventories.Item_Code')
+      ->select('inventories.Item_Code','speedfreakinventory.engine_no')
       ->where('deliveryitem.formId','=',$formid->Id)
       // ->where('Item_Code','LIKE','SC%')
-      ->where('gensetinventory.type','=','GENSET')
+      ->where('speedfreakinventory.type','=','SPEEDFREAK')
       ->first();
 
       $tray = DB::table('deliveryitem')
@@ -1471,9 +1432,9 @@ class SalesController extends Controller {
       ->where('Item_Code','LIKE','%Tray%')
       ->first();
 
-      $machine = DB::table('gensetinventory')
-      ->leftjoin('inventories','inventories.Item_Code','=','gensetinventory.machinery_no')
-      ->select('inventories.Item_Code','gensetinventory.machinery_no','gensetinventory.engine_no')
+      $machine = DB::table('speedfreakinventory')
+      ->leftjoin('inventories','inventories.Item_Code','=','speedfreakinventory.machinery_no')
+      ->select('inventories.Item_Code','speedfreakinventory.machinery_no','speedfreakinventory.engine_no')
       ->where('inventories.Item_Code','<>',"")
       ->get();
       }
@@ -1559,12 +1520,12 @@ class SalesController extends Controller {
         
         $item = DB::table('deliveryitem')
         ->leftjoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-        ->leftjoin('gensetinventory','gensetinventory.machinery_no','=','inventories.Item_Code')
+        ->leftjoin('speedfreakinventory','speedfreakinventory.machinery_no','=','inventories.Item_Code')
         ->leftjoin('deliveryform','deliveryform.Id','=','deliveryitem.formId')
-        ->select('deliveryform.salesorderid','inventories.Item_Code','gensetinventory.engine_no')
+        ->select('deliveryform.salesorderid','inventories.Item_Code','speedfreakinventory.engine_no')
         ->whereIn('deliveryitem.formId',$doid)
         // ->where('Item_Code','LIKE','SC%')
-        ->where('gensetinventory.type','=','GENSET')
+        ->where('speedfreakinventory.type','=','SPEEDFREAK')
         ->orwhere('Item_Code','LIKE','%Tray%')
         ->get();
 
@@ -1576,9 +1537,9 @@ class SalesController extends Controller {
         ->where('Item_Code','LIKE','%Tray%')
         ->get();
 
-        $machine = DB::table('gensetinventory')
-        ->leftjoin('inventories','inventories.Item_Code','=','gensetinventory.machinery_no')
-        ->select('inventories.Item_Code','gensetinventory.machinery_no','gensetinventory.engine_no')
+        $machine = DB::table('speedfreakinventory')
+        ->leftjoin('inventories','inventories.Item_Code','=','speedfreakinventory.machinery_no')
+        ->select('inventories.Item_Code','speedfreakinventory.machinery_no','speedfreakinventory.engine_no')
         ->where('inventories.Item_Code','<>',"")
         ->get();
 
@@ -1649,11 +1610,11 @@ class SalesController extends Controller {
 
       $item = DB::table('deliveryitem')
       ->leftjoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-      ->leftjoin('gensetinventory','gensetinventory.machinery_no','=','inventories.Item_Code')
-      ->select('inventories.Item_Code','gensetinventory.engine_no')
+      ->leftjoin('speedfreakinventory','speedfreakinventory.machinery_no','=','inventories.Item_Code')
+      ->select('inventories.Item_Code','speedfreakinventory.engine_no')
       ->where('deliveryitem.formId','=',$formid->Id)
       // ->where('Item_Code','LIKE','SC%')
-      ->where('gensetinventory.type','=','GENSET')
+      ->where('speedfreakinventory.type','=','SPEEDFREAK')
       ->first();
 
       $tray = DB::table('deliveryitem')
@@ -1663,9 +1624,9 @@ class SalesController extends Controller {
       ->where('Item_Code','LIKE','%Tray%')
       ->first();
 
-      $machine = DB::table('gensetinventory')
-      ->leftjoin('inventories','inventories.Item_Code','=','gensetinventory.machinery_no')
-      ->select('inventories.Item_Code','gensetinventory.machinery_no','gensetinventory.engine_no')
+      $machine = DB::table('speedfreakinventory')
+      ->leftjoin('inventories','inventories.Item_Code','=','speedfreakinventory.machinery_no')
+      ->select('inventories.Item_Code','speedfreakinventory.machinery_no','speedfreakinventory.engine_no')
       ->where('inventories.Item_Code','<>',"")
       ->get();
       }
@@ -1726,11 +1687,11 @@ class SalesController extends Controller {
 
       $item = DB::table('deliveryitem')
       ->leftjoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-      ->leftjoin('gensetinventory','gensetinventory.machinery_no','=','inventories.Item_Code')
-      ->select('inventories.Item_Code','gensetinventory.engine_no')
+      ->leftjoin('speedfreakinventory','speedfreakinventory.machinery_no','=','inventories.Item_Code')
+      ->select('inventories.Item_Code','speedfreakinventory.engine_no')
       ->where('deliveryitem.formId','=',$formid->Id)
       // ->where('Item_Code','LIKE','SC%')
-      ->where('gensetinventory.type','=','GENSET')
+      ->where('speedfreakinventory.type','=','SPEEDFREAK')
       ->first();
 
       $tray = DB::table('deliveryitem')
@@ -1740,9 +1701,9 @@ class SalesController extends Controller {
       ->where('Item_Code','LIKE','%Tray%')
       ->first();
 
-      $machine = DB::table('gensetinventory')
-      ->leftjoin('inventories','inventories.Item_Code','=','gensetinventory.machinery_no')
-      ->select('inventories.Item_Code','gensetinventory.machinery_no','gensetinventory.engine_no')
+      $machine = DB::table('speedfreakinventory')
+      ->leftjoin('inventories','inventories.Item_Code','=','speedfreakinventory.machinery_no')
+      ->select('inventories.Item_Code','speedfreakinventory.machinery_no','speedfreakinventory.engine_no')
       ->where('inventories.Item_Code','<>',"")
       ->get();
       }
@@ -1798,10 +1759,9 @@ class SalesController extends Controller {
       $so = DB::table('salesorder')
       ->leftjoin('companies','companies.Id','=','salesorder.companyId')
       ->leftjoin('companies as client','client.Id','=','salesorder.clientId')
-      ->leftjoin('projects','projects.Id','=','salesorder.projectId')
       ->leftjoin('tracker','tracker.Id','=','salesorder.trackerid')
       ->leftJoin('salesorderitem','salesorderitem.salesorderId','=','salesorder.Id')
-      ->select('salesorder.Id','tracker.sales_order','salesorder.SO_Number','projects.Project_Name','companies.Company_Name','client.Company_Name as client_company',DB::raw('tracker.`Site Name` as site'),'salesorder.date','salesorder.rental_start','salesorder.rental_end','salesorder.total_amount','client.type','salesorder.invoice')
+      ->select('salesorder.Id','tracker.sales_order','salesorder.SO_Number','companies.Company_Name','client.Company_Name as client_company',DB::raw('tracker.`Site Name` as site'),'salesorder.date','salesorder.rental_start','salesorder.rental_end','salesorder.total_amount','client.type','salesorder.invoice')
       ->where('salesorder.trackerid','=',$trackerid)
       ->groupby('salesorder.Id')
       ->get();
@@ -1837,11 +1797,10 @@ class SalesController extends Controller {
       ->leftJoin('companies','companies.Id','=','deliveryform.company_id')
       ->leftJoin('companies as client','client.Id','=','deliveryform.client')
       ->leftJoin('radius','radius.Id','=','deliveryform.Location')
-      ->leftJoin('projects','projects.Id','=','deliveryform.ProjectId')
       ->leftJoin('options','options.Id','=','deliveryform.Purpose')
       ->leftJoin('deliverylocation','deliverylocation.area','=','radius.Area')
       ->leftJoin('roadtax','roadtax.Id','=','deliveryform.roadtaxId')
-      ->select('deliveryform.Id','deliveryform.DO_No','options.Option','projects.Project_Name','companies.Company_Name','client.Company_Name as client','radius.Location_Name','users.Name','deliveryform.created_at')
+      ->select('deliveryform.Id','deliveryform.DO_No','options.Option','companies.Company_Name','client.Company_Name as client','radius.Location_Name','users.Name','deliveryform.created_at')
       ->whereIn('deliveryform.salesorderid',$soids)
       ->where('deliverystatuses.delivery_status','<>','Incomplete')
       ->whereRaw('DO_NO NOT LIKE BINARY "%\_R%"')
@@ -2009,16 +1968,10 @@ class SalesController extends Controller {
        $input = $request->all();
        $tracker = DB::table('tracker')
        ->where('tracker.Id','=',$input['trackerid'])
-       ->select('Id','ProjectID',DB::raw('tracker.`Site Name` as SiteName'),'NTP')
-       ->first();
-
-       $client = DB::table('projects')
-       ->where('projects.Id','=',$tracker->ProjectID)
-       ->select('Customer')
+       ->select('Id',DB::raw('tracker.`Site Name` as SiteName'),'NTP')
        ->first();
 
        $id = DB::table('salesorder')->insertGetId([
-              'projectId'=> $tracker->ProjectID,
               'companyId'=> $input['company'],
               'date'=> $input['date'],
               'clientId' => $input['client'],
@@ -2113,7 +2066,7 @@ class SalesController extends Controller {
 
        $tracker = DB::table('tracker')
        ->where('tracker.Id','=',$input['trackerid'])
-       ->select('Id','ProjectID',DB::raw('tracker.`Site Name` as SiteName'),'NTP')
+       ->select('Id',DB::raw('tracker.`Site Name` as SiteName'),'NTP')
        ->first();
 
        $invoiced = DB::table('salesorder')
@@ -2129,7 +2082,6 @@ class SalesController extends Controller {
       DB::table('salesorder')
       ->where('salesorder.Id','=',$input['salesorderid'])
       ->update([
-              'projectId'=> $tracker->ProjectID,
               'companyId'=> $input['company'],
               'date'=> $input['date'],
               'clientId' => $input['client'],
@@ -2321,7 +2273,6 @@ class SalesController extends Controller {
                  $date = date('d-M-Y',strtotime($today));
                  $id = DB::table('salesorder')
                  ->insertGetId([
-                   'projectid' => $recurringcount->projectId,
                    'companyId' => $recurringcount->companyId,
                    'clientId' => $recurringcount->clientId,
                    'SO_Number' => $sonumber,
@@ -2408,7 +2359,6 @@ class SalesController extends Controller {
                      'delivery_time'=>$do->delivery_time,
                      'Location'=>$do->Location,
                      'project_type'=>$do->project_type,
-                     'ProjectId'=>$do->ProjectId,
                      'Purpose'=>$do->Purpose,
                      'DriverId'=>$do->DriverId,
                      'RequestorId'=>$do->RequestorId,

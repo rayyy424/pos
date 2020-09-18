@@ -49,7 +49,7 @@ class ServiceTicketController extends Controller {
 		->join('deliveryform','deliveryform.Id','=','serviceticket.DeliveryId')
 		->join('salesorder','salesorder.Id','=','deliveryform.salesorderid')
 		->join('tracker','tracker.Id','=','salesorder.trackerid')
-		->join('deliveryitem','deliveryitem.Id','=','serviceticket.genset_no')
+		->join('deliveryitem','deliveryitem.Id','=','serviceticket.speedfreak_no')
 		->join('inventories','inventories.Id','=','deliveryitem.inventoryId')
 		->get();
 		$type = DB::table('options')
@@ -66,20 +66,8 @@ class ServiceTicketController extends Controller {
 	{
 		$me = (new CommonController)->get_current_user();
 
-		// $ser=DB::table('serviceticket')
-		// ->select('serviceticket.Id','serviceticket.service_date','serviceticket.service_id','client.Company_Name','serviceticket.genset_no','client.Contact_No as clientContact','client.Person_In_Charge as clientPic',
-		// 'client.Email as clientEmail','tracker.Region','radius.Longitude','radius.Latitude','tech.Name','tech.Contact_No_1','tracker.Site_Name'
-		// )
-		// ->join('deliveryform','deliveryform.Id','=','serviceticket.DeliveryId')
-		// ->join('salesorder','salesorder.Id','=','deliveryform.salesorderid')
-		// ->join('tracker','tracker.Id','=','salesorder.trackerid')
-		// ->join('companies as client','client.Id','=','deliveryform.client')
-		// ->join('radius','radius.Id','=','deliveryform.Location')
-		// ->leftjoin('users as tech','tech.Name','=','tracker.Team')
-		// ->where('serviceticket.Id',$id)
-		// ->first();
 		$ser = DB::table('serviceticket')
-		->select('serviceticket.Id','serviceticket.service_date','serviceticket.service_id','client.Company_Name','serviceticket.genset_no','client.Contact_No as clientContact','client.Person_In_Charge as clientPic',
+		->select('serviceticket.Id','serviceticket.service_date','serviceticket.service_id','client.Company_Name','serviceticket.speedfreak_no','client.Contact_No as clientContact','client.Person_In_Charge as clientPic',
 		'client.Email as clientEmail','radius.Longitude','radius.Latitude','tech.Name','tech.Contact_No_1','radius.Location_Name','serviceticket.service_summary as remarks')
 		->leftjoin('companies as client','client.Id','=','serviceticket.client')
 		->leftjoin('radius','radius.Id','=','serviceticket.site')
@@ -87,45 +75,45 @@ class ServiceTicketController extends Controller {
 		->where('serviceticket.Id',$id)
 		->first();
 
-		$ser_appoint=DB::table('gensetservice')
+		$ser_appoint=DB::table('speedfreakservice')
 		->select('last_service','upcoming_service','Status')
 		->where('ServiceId',$id)
 		->get();
 
-		$replacement=DB::Table('gensetserviceimg')
-		->select('before.Web_Path as beforeImg','after.Web_Path as afterImg','gensetserviceimg.newQty','gensetserviceimg.previousQty','item.name','item.barcode','item.type','item.model','item1.name as name2','item1.barcode as barcode2','item1.type as type2','item1.model as model2','gensetservice.Remarks')
-		->leftjoin('files as before','before.Id','=','gensetserviceimg.previousFile')
-		->leftjoin('files as after','after.Id','=','gensetserviceimg.newFile')
-		->leftjoin('gensetinventory as item','item.Id','=','gensetserviceimg.previousMachinery')
-		->leftjoin('gensetinventory as item1','item1.Id','=','gensetserviceimg.newMachinery')
-		->leftjoin('serviceticket','serviceticket.Id','=','gensetserviceimg.ServiceId')
-		->leftjoin('gensetservice','gensetservice.ServiceId','=','gensetserviceimg.ServiceId')
-		->where('gensetserviceimg.ServiceId',$id)
+		$replacement=DB::Table('speedfreakserviceimg')
+		->select('before.Web_Path as beforeImg','after.Web_Path as afterImg','speedfreakserviceimg.newQty','speedfreakserviceimg.previousQty','item.name','item.barcode','item.type','item.model','item1.name as name2','item1.barcode as barcode2','item1.type as type2','item1.model as model2','speedfreakservice.Remarks')
+		->leftjoin('files as before','before.Id','=','speedfreakserviceimg.previousFile')
+		->leftjoin('files as after','after.Id','=','speedfreakserviceimg.newFile')
+		->leftjoin('speedfreakinventory as item','item.Id','=','speedfreakserviceimg.previousMachinery')
+		->leftjoin('speedfreakinventory as item1','item1.Id','=','speedfreakserviceimg.newMachinery')
+		->leftjoin('serviceticket','serviceticket.Id','=','speedfreakserviceimg.ServiceId')
+		->leftjoin('speedfreakservice','speedfreakservice.ServiceId','=','speedfreakserviceimg.ServiceId')
+		->where('speedfreakserviceimg.ServiceId',$id)
 		->get();
 		
-		$att = DB::table('gensetservice')
-		->leftjoin('serviceticket','serviceticket.Id','=','gensetservice.ServiceId')
-		->leftjoin('timesheets','timesheets.gensetserviceId','=','gensetservice.Id')
+		$att = DB::table('speedfreakservice')
+		->leftjoin('serviceticket','serviceticket.Id','=','speedfreakservice.ServiceId')
+		->leftjoin('timesheets','timesheets.speedfreakServiceId','=','speedfreakservice.Id')
 		->leftjoin('users','users.Id','=','serviceticket.technicianId')
 		->select('users.Name','timesheets.Time_In','timesheets.Time_Out','timesheets.Time_Diff')
-		->where('gensetservice.ServiceId','=',$id)
+		->where('speedfreakservice.ServiceId','=',$id)
 		->get();
 
-		$att2 = DB::table('gensetservice')
-		->leftjoin('serviceticket','serviceticket.Id','=','gensetservice.ServiceId')
-		->leftjoin('timesheets','timesheets.gensetserviceId','=','gensetservice.Id')
+		$att2 = DB::table('speedfreakservice')
+		->leftjoin('serviceticket','serviceticket.Id','=','speedfreakservice.ServiceId')
+		->leftjoin('timesheets','timesheets.speedfreakServiceId','=','speedfreakservice.Id')
 		->leftjoin('users','users.Id','=','serviceticket.technicianId')
-		->select('users.Name','gensetservice.Status','gensetservice.timeIn as timeIn','timesheets.Time_In','timesheets.Time_Out','timesheets.Time_Diff','gensetservice.totalTime','gensetservice.Remarks')
-		->where('gensetservice.ServiceId','=',$id)
+		->select('users.Name','speedfreakservice.Status','speedfreakservice.timeIn as timeIn','timesheets.Time_In','timesheets.Time_Out','timesheets.Time_Diff','speedfreakservice.totalTime','speedfreakservice.Remarks')
+		->where('speedfreakservice.ServiceId','=',$id)
 		->first();
 
 		$pending = DB::table('serviceticket')
-		->leftjoin('gensetservice','gensetservice.ServiceId','=','serviceticket.Id')
-		->leftjoin('requisition','requisition.gensetServiceId','=','gensetservice.Id')
+		->leftjoin('speedfreakservice','speedfreakservice.ServiceId','=','serviceticket.Id')
+		->leftjoin('requisition','requisition.speedfreakServiceId','=','speedfreakservice.Id')
 		->leftjoin('requisitionhistory','requisitionhistory.requisition_Id','=','requisition.Id')
 		->leftjoin('requisitionitem','requisitionitem.Id','=','requisitionhistory.reqItemId')
-		->leftjoin('gensetinventory','gensetinventory.Id','=','requisitionitem.InvId')
-		->select('requisition.Id','gensetinventory.name','gensetinventory.barcode','requisitionhistory.Qty','requisitionhistory.status','requisitionhistory.status_details')
+		->leftjoin('speedfreakinventory','speedfreakinventory.Id','=','requisitionitem.InvId')
+		->select('requisition.Id','speedfreakinventory.name','speedfreakinventory.barcode','requisitionhistory.Qty','requisitionhistory.status','requisitionhistory.status_details')
 		->where('requisitionhistory.status','LIKE','%Sparepart%')
 		->where('serviceticket.Id',$id)
 		->get();
@@ -133,10 +121,10 @@ class ServiceTicketController extends Controller {
 		return view('serviceticketdetails', ['me'=>$me,'ser'=>$ser,'ser_appoint'=>$ser_appoint,'replacement'=>$replacement,'att'=>$att,'att2'=>$att2, 'pending'=>$pending]);
 	}
 
-	public function SVTGetSite($genset){
+	public function SVTGetSite($speedfreak){
         $check = DB::table('inventories')
         ->select('Id')
-        ->where('Item_Code','=',$genset)
+        ->where('Item_Code','=',$speedfreak)
         ->first();
 
         $do = DB::table('deliveryform')
@@ -149,16 +137,6 @@ class ServiceTicketController extends Controller {
         ->first();
 
         return response()->json(['do' => $do]);
-	}
-	
-	public function SVTGetPic($service)
-	{
-		$user = DB::table('users')
-		->select('Id','Name')
-		->Where('team_leader','LIKE','%'.$service.'%')
-		->get();
-
-		return response()->json(['user'=>$user]);
 	}
 
 	public function servicemanagement($start = null , $end = null , $status = null, $type = null, $asset = null)
@@ -179,14 +157,14 @@ class ServiceTicketController extends Controller {
 		// ->leftjoin('users','users.Id','=','serviceticket.technicianId')
 		// ->leftjoin('companies','companies.Id','=','serviceticket.client')
         // ->leftjoin('radius','radius.Id','=','serviceticket.site')
-        // ->leftjoin('gensetservice','gensetservice.ServiceId','=','serviceticket.Id')
-        // ->select('serviceticket.Id','serviceticket.service_id','serviceticket.genset_no','service_type','serviceticket.sequence','serviceticket.parent','gensetservice.Status','users.Name','companies.Company_Name','radius.Location_Name','companies.type','companies.Address')
+        // ->leftjoin('speedfreakservice','speedfreakservice.ServiceId','=','serviceticket.Id')
+        // ->select('serviceticket.Id','serviceticket.service_id','serviceticket.speedfreak_no','service_type','serviceticket.sequence','serviceticket.parent','speedfreakservice.Status','users.Name','companies.Company_Name','radius.Location_Name','companies.type','companies.Address')
 		// ->get();
 		$list=$this->getServiceTicket($start,$end);
 
 		if($asset)
 		{
-			$list = $list->where('gensetinventory.type',$asset);
+			$list = $list->where('speedfreakinventory.type',$asset);
 		}
 
 		if($type && $type != "All")
@@ -198,7 +176,7 @@ class ServiceTicketController extends Controller {
 		{
 			if($status != "Overdue")
 			{
-				$list = $list->where('gensetservice.Status',$status)->get();
+				$list = $list->where('speedfreakservice.Status',$status)->get();
 			}
 			else
 			{
@@ -211,9 +189,9 @@ class ServiceTicketController extends Controller {
 		}
 
 
-		$sc = DB::table('gensetinventory')
+		$sc = DB::table('speedfreakinventory')
 		->select('machinery_no')
-		->where('type','GENSET')
+		->where('type','SPEEDFREAK')
 		->get();
 
 		$client = DB::table('companies')
@@ -232,10 +210,10 @@ class ServiceTicketController extends Controller {
 		$type = DB::table('options')
 		->select('Option')
 		->where('Field','Ticket Type')
-		->where('Table','Genset')
+		->where('Table','SpeedFreak')
 		->get();
 
-		$allstatus = DB::table('gensetservice')
+		$allstatus = DB::table('speedfreakservice')
 		->select('Status')
 		->groupby('Status')
 		->get();
@@ -251,7 +229,7 @@ class ServiceTicketController extends Controller {
 
 	public function ticketassettype($type)
 	{
-		$item = DB::table('gensetinventory')
+		$item = DB::table('speedfreakinventory')
 		->select('machinery_no')
 		->where('type',$type)
 		->get();
@@ -273,18 +251,18 @@ class ServiceTicketController extends Controller {
 			$end = date('d-M-Y',strtotime('last day of this month'));
 		}
 
-		$replacement=DB::Table('gensetserviceimg')
-		->select('serviceticket.Id','serviceticket.service_id','serviceticket.service_date','serviceticket.service_type','serviceticket.genset_no','companies.Company_Name','companies.type','gensetinventory.name','gensetinventory.barcode','gensetserviceimg.NewQty',DB::raw('IFNULL(inventorypricehistory.price,0)'),DB::raw('(gensetserviceimg.NewQty * IFNULL(inventorypricehistory.price,0)) as cost'),'users.Name as technician')
-		->leftjoin('gensetinventory','gensetinventory.Id','=','gensetserviceimg.newMachinery')
-		->leftjoin('serviceticket','serviceticket.Id','=','gensetserviceimg.ServiceId')
-		// ->leftjoin('gensetservice','gensetservice.ServiceId','=','gensetserviceimg.ServiceId')
+		$replacement=DB::Table('speedfreakserviceimg')
+		->select('serviceticket.Id','serviceticket.service_id','serviceticket.service_date','serviceticket.service_type','serviceticket.speedfreak_no','companies.Company_Name','companies.type','speedfreakinventory.name','speedfreakinventory.barcode','speedfreakserviceimg.NewQty',DB::raw('IFNULL(inventorypricehistory.price,0)'),DB::raw('(speedfreakserviceimg.NewQty * IFNULL(inventorypricehistory.price,0)) as cost'),'users.Name as technician')
+		->leftjoin('speedfreakinventory','speedfreakinventory.Id','=','speedfreakserviceimg.newMachinery')
+		->leftjoin('serviceticket','serviceticket.Id','=','speedfreakserviceimg.ServiceId')
+		// ->leftjoin('speedfreakservice','speedfreakservice.ServiceId','=','speedfreakserviceimg.ServiceId')
 		->leftjoin('users','users.Id','=','serviceticket.technicianId')
 		->leftjoin('companies','companies.Id','=','serviceticket.client')
-		->leftjoin(DB::raw('(SELECT MAX(Id) as maxid, inventoryId from inventorypricehistory GROUP BY inventoryId) as max'),'max.inventoryId','=','gensetinventory.Id')
+		->leftjoin(DB::raw('(SELECT MAX(Id) as maxid, inventoryId from inventorypricehistory GROUP BY inventoryId) as max'),'max.inventoryId','=','speedfreakinventory.Id')
 		->leftjoin('inventorypricehistory','inventorypricehistory.Id','=','max.maxid')
-		->leftjoin(DB::raw('(SELECT Max(Id) as maxserviceid,ServiceId from gensetservice group by ServiceId) as maxservice'),'maxservice.ServiceId','=','serviceticket.Id')
-        ->leftjoin('gensetservice','gensetservice.Id','=','maxservice.maxserviceid')
-        ->whereRaw('gensetserviceimg.newMachinery != "" AND (STR_TO_DATE(serviceticket.service_date,"%d-%M-%Y") BETWEEN STR_TO_DATE("'.$start.'","%d-%M-%Y") AND STR_TO_DATE("'.$end.'","%d-%M-%Y") )')
+		->leftjoin(DB::raw('(SELECT Max(Id) as maxserviceid,ServiceId from speedfreakservice group by ServiceId) as maxservice'),'maxservice.ServiceId','=','serviceticket.Id')
+        ->leftjoin('speedfreakservice','speedfreakservice.Id','=','maxservice.maxserviceid')
+        ->whereRaw('speedfreakserviceimg.newMachinery != "" AND (STR_TO_DATE(serviceticket.service_date,"%d-%M-%Y") BETWEEN STR_TO_DATE("'.$start.'","%d-%M-%Y") AND STR_TO_DATE("'.$end.'","%d-%M-%Y") )')
 		->get();
 
 		return view('svtreport',['me'=>$me,'replacement'=>$replacement,'start'=>$start,'end'=>$end]);
@@ -312,11 +290,11 @@ class ServiceTicketController extends Controller {
 
 		$replacement = DB::table('inventoryreplacement')
 		->leftjoin('inventorypricehistory','inventorypricehistory.Id','=','inventoryreplacement.pricehistoryId')
-		->leftjoin('gensetinventory','gensetinventory.Id','=','inventorypricehistory.inventoryId')
+		->leftjoin('speedfreakinventory','speedfreakinventory.Id','=','inventorypricehistory.inventoryId')
 		->leftjoin('serviceticket','serviceticket.Id','=','inventoryreplacement.ServiceId')
 		->leftjoin('users','users.Id','=','serviceticket.technicianId')
 		->leftjoin('companies','companies.Id','=','serviceticket.client')
-		->select('serviceticket.Id','serviceticket.service_id','serviceticket.service_date','serviceticket.service_type','serviceticket.genset_no','companies.Company_Name','companies.type','gensetinventory.name','gensetinventory.barcode','inventoryreplacement.qty','inventorypricehistory.price',DB::raw(' FORMAT(inventorypricehistory.price * inventoryreplacement.qty,2) as cost'),'users.Name as technician')
+		->select('serviceticket.Id','serviceticket.service_id','serviceticket.service_date','serviceticket.service_type','serviceticket.speedfreak_no','companies.Company_Name','companies.type','speedfreakinventory.name','speedfreakinventory.barcode','inventoryreplacement.qty','inventorypricehistory.price',DB::raw(' FORMAT(inventorypricehistory.price * inventoryreplacement.qty,2) as cost'),'users.Name as technician')
 		->get();
 		
 
@@ -327,13 +305,13 @@ class ServiceTicketController extends Controller {
 	{
 		$me = (new CommonController)->get_current_user();
 		$details = DB::table('serviceticket')
-		->leftjoin(DB::raw('(SELECT Max(Id) as maxid,ServiceId from gensetservice group by ServiceId) as max'),'max.ServiceId','=','serviceticket.Id')
-        ->leftjoin('gensetservice','gensetservice.Id','=','max.maxid')
-		// ->leftjoin('timesheets','timesheets.gensetserviceId','=','gensetservice.Id')
+		->leftjoin(DB::raw('(SELECT Max(Id) as maxid,ServiceId from speedfreakservice group by ServiceId) as max'),'max.ServiceId','=','serviceticket.Id')
+        ->leftjoin('speedfreakservice','speedfreakservice.Id','=','max.maxid')
+		// ->leftjoin('timesheets','timesheets.speedfreakServiceId','=','speedfreakservice.Id')
 		// ->leftjoin('users','users.Id','=','serviceticket.technicianId')
 		->leftjoin('companies','companies.Id','=','serviceticket.client')
 		->leftjoin('radius','radius.Id','=','serviceticket.site')
-		->select('serviceticket.Id','companies.Company_Name','radius.Location_Name','serviceticket.technicianId','serviceticket.service_type','serviceticket.service_date','serviceticket.service_summary','serviceticket.genset_no','gensetservice.Status')
+		->select('serviceticket.Id','companies.Company_Name','radius.Location_Name','serviceticket.technicianId','serviceticket.service_type','serviceticket.service_date','serviceticket.service_summary','serviceticket.speedfreak_no','speedfreakservice.Status')
 		->where('serviceticket.Id','=',$id)
 		->first();
 
@@ -362,7 +340,7 @@ class ServiceTicketController extends Controller {
 			'service_summary' => $input['remarks_update']
 		]);
 
-		DB::table('gensetservice')
+		DB::table('speedfreakservice')
 		->where('ServiceId',$input['serviceid'])
 		->update([
 			'Status' => $input['status'],
@@ -384,15 +362,15 @@ class ServiceTicketController extends Controller {
 	}
 	public function getServiceTicket($start,$end){
 		$data=DB::Table('serviceticket')
-		->select('serviceticket.Id','serviceticket.service_id','serviceticket.genset_no','service_type','serviceticket.service_date','serviceticket.sequence','serviceticket.parent','gensetservice.Status','users.Name','companies.Company_Name','radius.Location_Name','companies.type') 
+		->select('serviceticket.Id','serviceticket.service_id','serviceticket.speedfreak_no','service_type','serviceticket.service_date','serviceticket.sequence','serviceticket.parent','speedfreakservice.Status','users.Name','companies.Company_Name','radius.Location_Name','companies.type') 
 		// ->leftjoin('salesorder','salesorder.Id','=','deliveryform.salesorderid')
         // ->leftjoin('tracker','salesorder.trackerid','=','tracker.Id')
-        ->leftjoin(DB::raw('(SELECT Max(Id) as maxid,ServiceId from gensetservice group by ServiceId) as max'),'max.ServiceId','=','serviceticket.Id')
-        ->leftjoin('gensetservice','gensetservice.Id','=','max.maxid')
-        // ->leftjoin('requisition','requisition.gensetServiceId','=','gensetservice.Id')
+        ->leftjoin(DB::raw('(SELECT Max(Id) as maxid,ServiceId from speedfreakservice group by ServiceId) as max'),'max.ServiceId','=','serviceticket.Id')
+        ->leftjoin('speedfreakservice','speedfreakservice.Id','=','max.maxid')
+        // ->leftjoin('requisition','requisition.speedfreakServiceId','=','speedfreakservice.Id')
         // ->leftjoin(DB::raw('(SELECT Max(Id) as maxid,requisition_Id from requisitionhistory group by requisition_Id) as max1'),'max1.requisition_Id','=','requisition.Id')
         // ->leftjoin('requisitionhistory','requisitionhistory.Id','=','max1.maxid')
-		->leftjoin('gensetinventory','gensetinventory.machinery_no','=','serviceticket.genset_no')
+		->leftjoin('speedfreakinventory','speedfreakinventory.machinery_no','=','serviceticket.speedfreak_no')
 		->leftjoin('users','users.Id','=','serviceticket.technicianId')
 		->leftjoin('companies','companies.Id','=','serviceticket.client')
         ->leftjoin('radius','radius.Id','=','serviceticket.site')
@@ -417,8 +395,8 @@ class ServiceTicketController extends Controller {
 		$list = DB::table('requisition')
 		->leftjoin(DB::raw('(SELECT MAX(Id) as maxid, requisition_Id FROM requisitionhistory GROUP BY requisition_Id) as max'),'requisition.Id','=',DB::raw('max.requisition_Id'))
 		->leftjoin('requisitionhistory','requisitionhistory.Id','=',DB::raw('max.maxid'))
-		->leftjoin('gensetservice','gensetservice.Id','=','gensetServiceId')
-		->leftjoin('serviceticket','serviceticket.Id','=','gensetservice.ServiceId')
+		->leftjoin('speedfreakservice','speedfreakservice.Id','=','speedfreakServiceId')
+		->leftjoin('serviceticket','serviceticket.Id','=','speedfreakservice.ServiceId')
 		->leftjoin('users','users.Id','=','requisition.created_by')
 		->select('requisition.Id','requisition.Req_No','requisitionhistory.status','requisitionhistory.status_details','serviceticket.service_id','users.Name','requisition.created_at')
 		->whereRaw("STR_TO_DATE(requisition.created_at,'%Y-%m-%d') BETWEEN STR_TO_DATE('".$start."','%d-%M-%Y') AND STR_TO_DATE('".$end."','%d-%M-%Y')")
@@ -430,9 +408,9 @@ class ServiceTicketController extends Controller {
 	public function storeGetItem($id)
 	{
 		$item = DB::table('requisitionitem')
-		->leftjoin('gensetinventory','gensetinventory.Id','=','requisitionitem.InvId')
+		->leftjoin('speedfreakinventory','speedfreakinventory.Id','=','requisitionitem.InvId')
 		->leftjoin('requisition','requisition.Id','=','requisitionitem.reqId')
-		->select('requisition.Req_No','gensetinventory.machinery_no','gensetinventory.name','requisitionitem.Qty')
+		->select('requisition.Req_No','speedfreakinventory.machinery_no','speedfreakinventory.name','requisitionitem.Qty')
 		->where('requisitionitem.reqId','=',$id)
 		->get();
 
@@ -443,7 +421,7 @@ class ServiceTicketController extends Controller {
 	{
 		$me = (new CommonController)->get_current_user();
 		$input = $request->all();
-		if(!$input['genset_no'])
+		if(!$input['speedfreak_no'])
 		{
 			return "Please Select Geneset";
 		}
@@ -462,72 +440,6 @@ class ServiceTicketController extends Controller {
 		{
 			$number = substr($svt->service_id, 4,8);
 		}
-
-		// $flow = DB::table('ticketflow')
-		// ->where('ticketId',$input['tickettype'])
-		// ->select('service')
-		// ->get();
-
-		// foreach ($flow as $fkey => $fvalue) {
-		// 	$id2 = 0;
-		// 	$child = sprintf("%05s",$number+$fkey+1);
-		// 	$parent = sprintf("%05s",$number+1);
-
-		// 	$pic = DB::table('users')
-		// 	->where('team_leader','LIKE',"%".$fvalue->service."%")
-		// 	->first();
-
-		// 	if(!$pic)
-		// 	{
-		// 		return "No Team Leader";
-		// 	}
-
-		// 	$id = DB::table('serviceticket')
-		// 	->insertGetId([
-		// 	 'service_type' => $fvalue->service,
-		// 	 'genset_no' => $input['genset_no'],
-		// 	 'technicianId' => $pic->Id,
-		// 	 'client' => isset($input['client']) ? $input['client']: "",
-		// 	 'site' => isset($input['site']) ? $input['site'] : "",
-		// 	 // 'service_summary' => $input['remarks'][$key],
-		// 	 'service_date' => date('d-M-Y',strtotime('today')),
-		// 	 'prev_serviceId' => $id2,
-		// 	 'service_id' => "SVT-".$child,
-		// 	 'parent' => "SVT-".$parent,
-		// 	 'sequence' => $fkey+1,
-		// 	 'UserId'=>$me->UserId
-		// 	]);
-
-		// 	 DB::table('gensetservice')
-		// 	->insertGetId([
-		// 	 'ServiceId' => $id,
-		// 	 'Status' => "In-Progress"
-		// 	]);
-
-		// 	DB::table('servicelog')
-		// 	->insert([
-		// 		 'serviceticket_id' => $id,
-		// 		 'leader_id' => $pic->Id,
-		// 		 'created_at' => DB::raw('NOW()')
-		// 	]);
-
-		// 	if($fkey == 0)
-		// 	{
-
-		// 		$playerid	= DB::table('users')->select('Player_Id')->where('Id','=',$pic->Id)->first();
-		// 		$playerids = array();
-		// 		array_push($playerids, $playerid->Player_Id);
-		// 		$message 	= 'New Service Ticket Assigned';
-		// 		$type 		= 'Service Ticket';
-		// 		$title  	= 'New Ticket Assigned';
-		// 		$this->sendNotification($playerids, $title, $message, $type);
-		// 	}
-
-		// 	$id2 = $id;
-		// }
-
-		// return 1;
-
 
 		$id2 = 0;
 		foreach ($input['service'] as $key => $value) {
@@ -548,7 +460,7 @@ class ServiceTicketController extends Controller {
 				$id = DB::table('serviceticket')
 				->insertGetId([
 				 'service_type' => $input['service'][$key],
-				 'genset_no' => $input['genset_no'],
+				 'speedfreak_no' => $input['speedfreak_no'],
 				 'technicianId' => $input['pic'][$key],
 				 'client' => isset($input['client']) ? $input['client']: "",
 				 'site' => isset($input['site']) ? $input['site'] : "",
@@ -561,7 +473,7 @@ class ServiceTicketController extends Controller {
 				 'UserId'=>$me->UserId
 				]);
 
-				 DB::table('gensetservice')
+				 DB::table('speedfreakservice')
 				->insertGetId([
 				 'ServiceId' => $id,
 				 'Status' => "In-Progress"
@@ -648,17 +560,17 @@ class ServiceTicketController extends Controller {
 
 		if($status != null && $status != "All")
 		{
-			$cond = $cond." AND gensetservice.Status = '".$status."' ";
+			$cond = $cond." AND speedfreakservice.Status = '".$status."' ";
 		}
 
-		$allstatus = DB::table('gensetservice')
+		$allstatus = DB::table('speedfreakservice')
 		->select('Status')
 		->groupby('Status')
 		->get();
 
 		$count = DB::Table('serviceticket')
-		->leftjoin(DB::raw('(SELECT Max(Id) as maxid,ServiceId from gensetservice group by ServiceId) as max'),'max.ServiceId','=','serviceticket.Id')
-        ->leftjoin('gensetservice','gensetservice.Id','=','max.maxid')
+		->leftjoin(DB::raw('(SELECT Max(Id) as maxid,ServiceId from speedfreakservice group by ServiceId) as max'),'max.ServiceId','=','serviceticket.Id')
+        ->leftjoin('speedfreakservice','speedfreakservice.Id','=','max.maxid')
 		->select(
 			'serviceticket.service_type',DB::raw(' (SELECT COUNT(serviceticket.Id)) as count')
 		)
@@ -681,7 +593,7 @@ class ServiceTicketController extends Controller {
 		$type = DB::table('options')
 		->select('Option')
 		->where('Field','Ticket Type')
-		->where('Table','Genset')
+		->where('Table','SpeedFreak')
 		->get();
 
 		return view('ticketflow',['me'=>$me, 'list'=>$list, 'type'=>$type]);

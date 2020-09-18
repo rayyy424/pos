@@ -216,7 +216,7 @@
                                         { data: "request.Id",title:"Id"},
                                         { data: "requeststatuses.Id",title:"Id"},
                                         { data: "applicant.Name",title:"Applicant"},
-                                        { data: "applicant.Department",title:"Department"},
+                                        { data: "applicant.Position",title:"Position"},
                                         { data: "request.Approver",title:"Approver"},
                                         { data: "request.Request_type",title:"Request_type",editfield:"request.Request_type"},
                                         { data: "request.Others",title:"Others"},
@@ -224,7 +224,6 @@
                                         { data: "request.End_Date",title:"End_Date"},
                                         { data: "request.Remarks",title:"Remarks"},
                                         { data: "request.created_at",title:"created_at"},
-                                        { data: "projects.Project_Name",title:"Project_Name"},
                                         { data: "approver.Name",title:"Approver", editfield:"request.Approver"},
                                         { data: "requeststatuses.Request_status",title:"Request Status",
                                            "render": function( data, type, full, meta ) {
@@ -250,54 +249,7 @@
                                         },
                                         { data: "requeststatuses.updated_at",title:"updated_at"},
                                         { data: "requeststatuses.Comment",title:"Comment"}
-                                         // { data: "requeststatuses.Id"},
-                                         // { data: "requests.Id"},
-                                         // { data: "requeststatuses.Request_Status",title:"Request_Status",
-                                         //   "render": function ( data, type, full, meta ) {
-                                         //
-                                         //        if(full.requeststatuses.Request_Status.includes("Approved"))
-                                         //        {
-                                         //          return "<span class='green'>"+full.requeststatuses.Request_Status+"</span>";
-                                         //        }
-                                         //        else if(full.requeststatuses.Request_Status.includes("Rejected"))
-                                         //        {
-                                         //          return "<span class='red'>"+full.requeststatuses.Request_Status+"</span>";
-                                         //        }
-                                         //        else if(full.requeststatuses.Request_Status.includes("Cancelled"))
-                                         //        {
-                                         //          return "<span class='red'>"+full.requeststatuses.Request_Status+"</span>";
-                                         //        }
-                                         //        else {
-                                         //          return "<span class='yellow'>"+full.requeststatuses.Request_Status+"</span>";
-                                         //        }
-                                         //
-                                         //     }
-                                         // },
-                                         // { data: "applicant.StaffId",title:"Staff_ID"},
-                                         // { data: "applicant.Name",title:"Name"},
-                                         // { data: "requests.Request_Type",title:"Request_Type" },
-                                         // { data: "requests.Request_Term",title:"Request_Term" },
-                                         // { data: "requests.Start_Date",title:"Start_Date"},
-                                         // { data: "requests.End_Date",title:"End_Date"},
-                                         // { data: "requests.No_of_Days",title:"No_of_Days"},
-                                         // { data: "requests.Reason",title:"Reason"},
-                                         // { data: "requests.created_at",title:"Application_Date"},
-                                         // { data: "projects.Project_Name",title:"Project_Name"},
-                                         // { data: "approver.Name",title:"Approver"},
-                                         // { data: "requeststatuses.Comment",title:"Comment"},
-                                         // { data: "requeststatuses.updated_at",title:"Review_Date"},
-                                         // { data: "files.Web_Path",
-                                         //    render: function ( url, type, row ) {
-                                         //         if (url)
-                                         //         {
-                                         //           return '<a href="{{ url("/") }}'+url+'" target="_blank">Download</a>';
-                                         //         }
-                                         //         else {
-                                         //           return ' - ';
-                                         //         }
-                                         //     },
-                                         //     title: "File"
-                                         //   }
+
                                  ],
                                  autoFill: {
                                     editor:  alleditor
@@ -377,7 +329,7 @@
                               { data: "request.Id",title:"Id"},
                               { data: "requeststatuses.Id",title:"Id"},
                               { data: "applicant.Name",title:"Applicant"},
-                              { data: "applicant.Department",title:"Department"},
+                              { data: "applicant.Position",title:"Position"},
                               { data: "request.Approver",title:"Approver"},
                               { data: "request.Request_type",title:"Request_type",editfield:"request.Request_type"},
                               { data: "request.Others",title:"Others"},
@@ -385,7 +337,6 @@
                               { data: "request.End_Date",title:"End_Date"},
                               { data: "request.Remarks",title:"Remarks"},
                               { data: "request.created_at",title:"created_at"},
-                              { data: "projects.Project_Name",title:"Project_Name"},
                               { data: "approver.Name",title:"Approver", editfield:"request.Approver"},
                               { data: "requeststatuses.Request_status",title:"Request Status",
                                  "render": function( data, type, full, meta ) {
@@ -472,7 +423,7 @@
                                              { data: "request.Id",title:"Id"},
                                              { data: "requeststatuses.Id",title:"Id"},
                                              { data: "applicant.Name",title:"Applicant"},
-                                             { data: "applicant.Department",title:"Department"},
+                                             { data: "applicant.Position",title:"Position"},
                                              { data: "request.Approver",title:"Approver"},
                                              { data: "request.Request_type",title:"Request_type",editfield:"request.Request_type"},
                                              { data: "request.Others",title:"Others"},
@@ -480,7 +431,6 @@
                                              { data: "request.End_Date",title:"End_Date"},
                                              { data: "request.Remarks",title:"Remarks"},
                                              { data: "request.created_at",title:"created_at"},
-                                             { data: "projects.Project_Name",title:"Project_Name"},
                                              { data: "approver.Name",title:"Approver", editfield:"request.Approver"},
                                              { data: "requeststatuses.Request_status",title:"Request Status",
                                                 "render": function( data, type, full, meta ) {
@@ -506,54 +456,7 @@
                                              },
                                              { data: "requeststatuses.updated_at",title:"updated_at"},
                                              { data: "requeststatuses.Comment",title:"Comment"}
-                                         // { data: "requeststatuses.Id"},
-                                         // { data: "request.Id"},
-                                         // { data: "requeststatuses.Request_Status",title:"Request_Status",
-                                         //   "render": function ( data, type, full, meta ) {
-                                         //
-                                         //        if(full.requeststatuses.Request_Status.includes("Approved"))
-                                         //        {
-                                         //          return "<span class='green'>"+full.requeststatuses.Request_Status+"</span>";
-                                         //        }
-                                         //        else if(full.requeststatuses.Request_Status.includes("Rejected"))
-                                         //        {
-                                         //          return "<span class='red'>"+full.requeststatuses.Request_Status+"</span>";
-                                         //        }
-                                         //        else if(full.requeststatuses.Request_Status.includes("Cancelled"))
-                                         //        {
-                                         //          return "<span class='red'>"+full.requeststatuses.Request_Status+"</span>";
-                                         //        }
-                                         //        else {
-                                         //          return "<span class='yellow'>"+full.requeststatuses.Request_Status+"</span>";
-                                         //        }
-                                         //
-                                         //     }
-                                         // },
-                                         // { data: "applicant.StaffId",title:"Staff_ID"},
-                                         // { data: "applicant.Name",title:"Name"},
-                                         // { data: "requests.Request_Type",title:"Request_Type" },
-                                         // { data: "requests.Request_Term",title:"Request_Term" },
-                                         // { data: "requests.Start_Date",title:"Start_Date"},
-                                         // { data: "requests.End_Date",title:"End_Date"},
-                                         // { data: "requests.No_of_Days",title:"No_of_Days"},
-                                         // { data: "requests.Reason",title:"Reason"},
-                                         // { data: "requests.created_at",title:"Application_Date"},
-                                         // { data: "projects.Project_Name",title:"Project_Name"},
-                                         // { data: "approver.Name",title:"Approver"},
-                                         // { data: "requeststatuses.Comment",title:"Comment"},
-                                         // { data: "requeststatuses.updated_at",title:"Review_Date"},
-                                         // { data: "files.Web_Path",
-                                         //    render: function ( url, type, row ) {
-                                         //         if (url)
-                                         //         {
-                                         //           return '<a href="{{ url("/") }}'+url+'" target="_blank">Download</a>';
-                                         //         }
-                                         //         else {
-                                         //           return ' - ';
-                                         //         }
-                                         //     },
-                                         //     title: "File"
-                                         //   }
+
                                  ],
                                  autoFill: {
                                     editor:  requestseditor
@@ -615,7 +518,7 @@
                                      { data: "request.Id",title:"Id"},
                                      { data: "requeststatuses.Id",title:"Id"},
                                      { data: "applicant.Name",title:"Applicant"},
-                                     { data: "applicant.Department",title:"Department"},
+                                     { data: "applicant.Position",title:"Position"},
                                      { data: "request.Approver",title:"Approver"},
                                      { data: "request.Request_type",title:"Request_type",editfield:"request.Request_type"},
                                      { data: "request.Others",title:"Others"},
@@ -623,7 +526,6 @@
                                      { data: "request.End_Date",title:"End_Date"},
                                      { data: "request.Remarks",title:"Remarks"},
                                      { data: "request.created_at",title:"created_at"},
-                                     { data: "projects.Project_Name",title:"Project_Name"},
                                      { data: "approver.Name",title:"Approver", editfield:"request.Approver"},
                                      { data: "requeststatuses.Request_status",title:"Request Status",
                                         "render": function( data, type, full, meta ) {
@@ -649,54 +551,7 @@
                                      },
                                      { data: "requeststatuses.updated_at",title:"updated_at"},
                                      { data: "requeststatuses.Comment",title:"Comment"}
-                                    // { data: "requeststatuses.Id"},
-                                    // { data: "requests.Id"},
-                                    // { data: "requeststatuses.Request_Status",title:"Request_Status",
-                                    //   "render": function ( data, type, full, meta ) {
-                                    //
-                                    //        if(full.requeststatuses.Request_Status.includes("Approved"))
-                                    //        {
-                                    //          return "<span class='green'>"+full.requeststatuses.Request_Status+"</span>";
-                                    //        }
-                                    //        else if(full.requeststatuses.Request_Status.includes("Rejected"))
-                                    //        {
-                                    //          return "<span class='red'>"+full.requeststatuses.Request_Status+"</span>";
-                                    //        }
-                                    //        else if(full.requeststatuses.Request_Status.includes("Cancelled"))
-                                    //        {
-                                    //          return "<span class='red'>"+full.requeststatuses.Request_Status+"</span>";
-                                    //        }
-                                    //        else {
-                                    //          return "<span class='yellow'>"+full.requeststatuses.Request_Status+"</span>";
-                                    //        }
-                                    //
-                                    //     }
-                                    // },
-                                    // { data: "applicant.StaffId",title:"Staff_ID"},
-                                    // { data: "applicant.Name",title:"Name"},
-                                    // { data: "requests.Request_Type",title:"Request_Type" },
-                                    // { data: "requests.Request_Term",title:"Request_Term" },
-                                    // { data: "requests.Start_Date",title:"Start_Date"},
-                                    // { data: "requests.End_Date",title:"End_Date"},
-                                    // { data: "requests.No_of_Days",title:"No_of_Days"},
-                                    // { data: "requests.Reason",title:"Reason"},
-                                    // { data: "requests.created_at",title:"Application_Date"},
-                                    // { data: "projects.Project_Name",title:"Project_Name"},
-                                    // { data: "approver.Name",title:"Approver"},
-                                    // { data: "requeststatuses.Comment",title:"Comment"},
-                                    // { data: "requeststatuses.updated_at",title:"Review_Date"},
-                                    // { data: "files.Web_Path",
-                                    //    render: function ( url, type, row ) {
-                                    //         if (url)
-                                    //         {
-                                    //           return '<a href="{{ url("/") }}'+url+'" target="_blank">Download</a>';
-                                    //         }
-                                    //         else {
-                                    //           return ' - ';
-                                    //         }
-                                    //     },
-                                    //     title: "File"
-                                    //   }
+
                              ],
                              autoFill: {
                                 editor:  requests2editor
@@ -759,7 +614,7 @@
                                    { data: "request.Id",title:"Id"},
                                    { data: "requeststatuses.Id",title:"Id"},
                                    { data: "applicant.Name",title:"Applicant"},
-                                   { data: "applicant.Department",title:"Department"},
+                                   { data: "applicant.Position",title:"Position"},
                                    { data: "request.Approver",title:"Approver"},
                                    { data: "request.Request_type",title:"Request_type",editfield:"request.Request_type"},
                                    { data: "request.Others",title:"Others"},
@@ -767,7 +622,6 @@
                                    { data: "request.End_Date",title:"End_Date"},
                                    { data: "request.Remarks",title:"Remarks"},
                                    { data: "request.created_at",title:"created_at"},
-                                   { data: "projects.Project_Name",title:"Project_Name"},
                                    { data: "approver.Name",title:"Approver", editfield:"request.Approver"},
                                    { data: "requeststatuses.Request_status",title:"Request Status",
                                       "render": function( data, type, full, meta ) {
@@ -793,54 +647,7 @@
                                    },
                                    { data: "requeststatuses.updated_at",title:"updated_at"},
                                    { data: "requeststatuses.Comment",title:"Comment"}
-                                  // { data: "requeststatuses.Id"},
-                                  // { data: "requests.Id"},
-                                  // { data: "requeststatuses.Request_Status",title:"Request_Status",
-                                  //   "render": function ( data, type, full, meta ) {
-                                  //
-                                  //        if(full.requeststatuses.Request_Status.includes("Approved"))
-                                  //        {
-                                  //          return "<span class='green'>"+full.requeststatuses.Request_Status+"</span>";
-                                  //        }
-                                  //        else if(full.requeststatuses.Request_Status.includes("Rejected"))
-                                  //        {
-                                  //          return "<span class='red'>"+full.requeststatuses.Request_Status+"</span>";
-                                  //        }
-                                  //        else if(full.requeststatuses.Request_Status.includes("Cancelled"))
-                                  //        {
-                                  //          return "<span class='red'>"+full.requeststatuses.Request_Status+"</span>";
-                                  //        }
-                                  //        else {
-                                  //          return "<span class='yellow'>"+full.requeststatuses.Request_Status+"</span>";
-                                  //        }
-                                  //
-                                  //     }
-                                  // },
-                                  // { data: "applicant.StaffId",title:"Staff_ID"},
-                                  // { data: "applicant.Name",title:"Name"},
-                                  // { data: "requests.Request_Type",title:"Request_Type" },
-                                  // { data: "requests.Request_Term",title:"Request_Term" },
-                                  // { data: "requests.Start_Date",title:"Start_Date"},
-                                  // { data: "requests.End_Date",title:"End_Date"},
-                                  // { data: "requests.No_of_Days",title:"No_of_Days"},
-                                  // { data: "requests.Reason",title:"Reason"},
-                                  // { data: "requests.created_at",title:"Application_Date"},
-                                  // { data: "projects.Project_Name",title:"Project_Name"},
-                                  // { data: "approver.Name",title:"Approver"},
-                                  // { data: "requeststatuses.Comment",title:"Comment"},
-                                  // { data: "requeststatuses.updated_at",title:"Review_Date"},
-                                  // { data: "files.Web_Path",
-                                  //    render: function ( url, type, row ) {
-                                  //         if (url)
-                                  //         {
-                                  //           return '<a href="{{ url("/") }}'+url+'" target="_blank">Download</a>';
-                                  //         }
-                                  //         else {
-                                  //           return ' - ';
-                                  //         }
-                                  //     },
-                                  //     title: "File"
-                                  //   }
+
                          ],
                          autoFill: {
                             editor:  requests3editor
@@ -1681,7 +1488,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

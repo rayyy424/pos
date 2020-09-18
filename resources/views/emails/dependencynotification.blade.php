@@ -30,18 +30,6 @@
                                                     <tbody>
 
                                                         <tr valign="top" align="center">
-                                                            <td style="width:45%;text-align:right;;">Project Name</td>
-                                                            <td style="width:10%;text-align:center;">:</td>
-                                                            <td style="width:45%;text-align:left;">{{$line->Project_Name}}</td>
-                                                        </tr>
-
-                                                        <tr valign="top" align="center">
-                                                            <td style="width:45%;text-align:right;;">Project_Code</td>
-                                                            <td style="width:10%;text-align:center;">:</td>
-                                                            <td style="width:45%;text-align:left;">{{$line->Project_Code}}</td>
-                                                        </tr>
-
-                                                        <tr valign="top" align="center">
                                                             <td style="width:45%;text-align:right;;">Site ID</td>
                                                             <td style="width:10%;text-align:center;">:</td>
                                                             <td style="width:45%;text-align:left;">{{$line->{'Site ID'} }}</td>

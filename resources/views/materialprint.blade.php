@@ -172,11 +172,6 @@
 		
 		<div class="row">
 			<div class="col-xs-12">
-				<b>Project Name: </b>{{$detail->Project_Name}}
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-xs-12">
 				<b>Site Name: </b>{{$detail->site}}
 			</div>
 		</div>

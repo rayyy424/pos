@@ -275,7 +275,7 @@
                           { data: "licenses.Id",title: "Id"},
                           { data: "licenses.Type",title: "Type"},
                           { data: 'users.Name',editField:'licenses.UserId',title: "Name"},
-                          { data: 'users.Department',title: "Department"},
+                          { data: 'users.Position',title: "Position"},
                           { data: "licenses.License_Type",title: "License_Type" },
                           { data: "licenses.Description",title: "Description" },
                           { data: "licenses.Identity_No",title: "Identity_No" },
@@ -528,7 +528,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

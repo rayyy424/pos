@@ -253,13 +253,13 @@ class ClaimController extends Controller {
 						->where('advances.Id','=',$id)
 						->get();
 
-						Mail::send('emails.advancerequest', ['me' => $me,'advance' => $advance], function($message) use ($emails,$me,$NotificationSubject)
-						{
-							$emails = array_filter($emails);
-							array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-							$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+						// Mail::send('emails.advancerequest', ['me' => $me,'advance' => $advance], function($message) use ($emails,$me,$NotificationSubject)
+						// {
+						// 	$emails = array_filter($emails);
+						// 	array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+						// 	$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
 
-						});
+						// });
 
 						return 1;
 					}
@@ -318,12 +318,12 @@ class ClaimController extends Controller {
 				->where('advances.Id','=',$advanceid)
 				->get();
 
-				Mail::send('emails.advance', ['me' => $me,'advance' => $advance], function($message) use ($emails,$me,$NotificationSubject)
-				{
-					$emails = array_filter($emails);
-					array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-					$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
-				});
+				// Mail::send('emails.advance', ['me' => $me,'advance' => $advance], function($message) use ($emails,$me,$NotificationSubject)
+				// {
+				// 	$emails = array_filter($emails);
+				// 	array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+				// 	$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+				// });
 			}
 		}
 	}

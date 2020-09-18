@@ -81,15 +81,12 @@
                                    type:"readonly",
                                    def: '{{$type}}'
                            },{
-                                   label: "Department:",
-                                   name: "agreement.Department",
+                                   label: "Company:",
+                                   name: "agreement.Company",
                                    type: "select2",
                                    options: [
                                      { label :"", value:""},
-                                     { label :"CME", value: "CME" },
-                                     { label :"GENSET", value: "GENSET" },
-                                     { label :"HRA", value: "HRA" }
-
+                                     { label :"SPEED FREAK", value: "SPEED FREAK" }
                                    ]
                            },{
                                    label: "Date of Agreement:",
@@ -156,7 +153,7 @@
                      {data: null, title:"No"},
                      {data:"agreement.Id", title:"Id"},
                      {data:'agreement.Type', title:"Type"},
-                     {data:'agreement.Department', title:"Department"},
+                     {data:'agreement.Company', title:"Company"},
                      {data:'agreement.Date_of_Agreement', title:"Date of Agreement"},
                      {data:'agreement.Description_of_Agreement', title:"Description of Agreement"},
                      {data:'agreement.Expiry_Date', title:"Expiry Date"},
@@ -408,7 +405,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

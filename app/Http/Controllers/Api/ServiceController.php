@@ -22,7 +22,7 @@ class ServiceController extends Controller {
         $me = JWTAuth::parseToken()->authenticate();
 
         $log = DB::table('servicelog')
-        ->select('servicelog.Id','servicelog.service_id','servicelog.leader_id','servicelog.member_id','serviceticket.service_type','serviceticket.service_id','serviceticket.genset_no','serviceticket.service_date')
+        ->select('servicelog.Id','servicelog.service_id','servicelog.leader_id','servicelog.member_id','serviceticket.service_type','serviceticket.service_id','serviceticket.speedfreak_no','serviceticket.service_date')
         ->leftjoin('serviceticket','serviceticket.Id','=','servicelog.serviceticket_id')
         ->get();
 
@@ -35,7 +35,7 @@ class ServiceController extends Controller {
         $input = $request->all();
 
         $serv = DB::table('serviceticket')
-            ->select('serviceticket.Id','serviceticket.service_type','serviceticket.technicianId','serviceticket.service_id','serviceticket.genset_no','serviceticket.service_date','serviceticket.client','serviceticket.site')
+            ->select('serviceticket.Id','serviceticket.service_type','serviceticket.technicianId','serviceticket.service_id','serviceticket.speedfreak_no','serviceticket.service_date','serviceticket.client','serviceticket.site')
             ->where('serviceticket.technicianId','=',$me->Id)
             ->where('serviceticket.Id','=',$input['Id'])
             ->update([
@@ -74,18 +74,6 @@ class ServiceController extends Controller {
 
     }
 
-    public function getteammember(){
-        $me = JWTAuth::parseToken()->authenticate();
-
-        $staff = DB::table('users')
-        ->select('users.Id','users.ticket_team','users.team_leader','users.Name')
-        ->where('users.ticket_team','like','%'.$_GET['type'].'%')
-        // ->leftjoin('')
-        ->get();
-
-        return json_encode($staff);
-    }
-
     public function getServiceTicketAssign(Request $request){
         $me = JWTAuth::parseToken()->authenticate();
 
@@ -93,14 +81,13 @@ class ServiceController extends Controller {
         $start=date('d-M-Y',strtotime('first day of previous month'));
 
         $ticket = DB::table('serviceticket')
-        ->leftjoin(DB::raw('(SELECT serviceticket.Id,parent FROM serviceticket LEFT JOIN gensetservice ON serviceticket.Id = gensetservice.ServiceId WHERE gensetservice.Status !="Completed" GROUP BY parent) as cur'),'cur.Id','=','serviceticket.Id')
-        ->leftjoin('gensetservice','serviceticket.Id','=','gensetservice.ServiceId')
+        ->leftjoin(DB::raw('(SELECT serviceticket.Id,parent FROM serviceticket LEFT JOIN speedfreakservice ON serviceticket.Id = speedfreakservice.ServiceId WHERE speedfreakservice.Status !="Completed" GROUP BY parent) as cur'),'cur.Id','=','serviceticket.Id')
+        ->leftjoin('speedfreakservice','serviceticket.Id','=','speedfreakservice.ServiceId')
         ->leftjoin('radius as rad','serviceticket.site','=','rad.Id')
-        ->leftjoin('gensetinventory','serviceticket.genset_no','=','gensetinventory.barcode')
+        ->leftjoin('speedfreakinventory','serviceticket.speedfreak_no','=','speedfreakinventory.barcode')
         ->leftjoin('users','users.Id','=','serviceticket.UserId')
-        ->select('serviceticket.Id','serviceticket.service_type','serviceticket.service_id','serviceticket.genset_no','serviceticket.UserId','serviceticket.service_date','gensetservice.Status','serviceticket.status','serviceticket.technicianId','rad.Latitude as Lat','rad.Longitude as Long','rad.Location_Name as Loc_Name','gensetinventory.model','gensetinventory.capacity','users.team_leader')
+        ->select('serviceticket.Id','serviceticket.service_type','serviceticket.service_id','serviceticket.speedfreak_no','serviceticket.UserId','serviceticket.service_date','speedfreakservice.Status','serviceticket.status','serviceticket.technicianId','rad.Latitude as Lat','rad.Longitude as Long','rad.Location_Name as Loc_Name','speedfreakinventory.model','speedfreakinventory.capacity')
         ->where('serviceticket.technicianId','=',$me->Id)
-        ->whereIn('serviceticket.service_type',explode(',',$me->team_leader))
         ->orderBy(DB::raw('str_to_date(serviceticket.service_date,"%d-%M-%Y")'),'asc')
         ->whereRaw('str_to_date(serviceticket.service_date,"%d-%M-%Y") between str_to_date("'.$start.'","%d-%M-%Y") And str_to_date("'.$end.'","%d-%M-%Y")')
         // ->whereRaw('serviceticket.service_date between "'.$start.'" And "'.$end.'"')
@@ -116,12 +103,12 @@ class ServiceController extends Controller {
         $start=date('d-M-Y',strtotime('first day of previous month'));
 
         $ticket = DB::table('serviceticket')
-        ->select('serviceticket.Id','serviceticket.service_type','serviceticket.service_id','serviceticket.genset_no','serviceticket.UserId','serviceticket.service_date','gensetservice.Status','serviceticket.status','serviceticket.technicianId','rad.Latitude as Lat','rad.Longitude as Long','rad.Location_Name as Loc_Name','gensetinventory.model','gensetinventory.capacity')
-        ->leftjoin('gensetservice','serviceticket.Id','=','gensetservice.ServiceId','gensetservice.Status')
+        ->select('serviceticket.Id','serviceticket.service_type','serviceticket.service_id','serviceticket.speedfreak_no','serviceticket.UserId','serviceticket.service_date','speedfreakservice.Status','serviceticket.status','serviceticket.technicianId','rad.Latitude as Lat','rad.Longitude as Long','rad.Location_Name as Loc_Name','speedfreakinventory.model','speedfreakinventory.capacity')
+        ->leftjoin('speedfreakservice','serviceticket.Id','=','speedfreakservice.ServiceId','speedfreakservice.Status')
         ->leftjoin('radius as rad','serviceticket.site','=','rad.Id')
-        ->leftjoin('gensetinventory','serviceticket.genset_no','=','gensetinventory.barcode')
+        ->leftjoin('speedfreakinventory','serviceticket.speedfreak_no','=','speedfreakinventory.barcode')
         ->where('serviceticket.technicianId','=',$me->Id)
-        ->where('gensetservice.Status','=','Completed')
+        ->where('speedfreakservice.Status','=','Completed')
         ->orderBy(DB::raw('str_to_date(serviceticket.service_date,"%d-%M-%Y")'),'asc')
         ->whereRaw('serviceticket.service_date between "'.$start.'" And "'.$end.'"')
         ->get();
@@ -143,13 +130,13 @@ class ServiceController extends Controller {
         ->get();
 
         $ticket = DB::table('serviceticket')
-        ->select('serviceticket.Id','serviceticket.service_type','serviceticket.service_id','serviceticket.genset_no','serviceticket.UserId','serviceticket.service_date','gensetservice.Status','serviceticket.status','serviceticket.technicianId','rad.Latitude as Lat','rad.Longitude as Long','rad.Location_Name as Loc_Name','gensetinventory.model','gensetinventory.capacity','servicelog.leader_id','servicelog.member_id')
-        ->leftjoin('gensetservice','serviceticket.Id','=','gensetservice.ServiceId','gensetservice.Status')
+        ->select('serviceticket.Id','serviceticket.service_type','serviceticket.service_id','serviceticket.speedfreak_no','serviceticket.UserId','serviceticket.service_date','speedfreakservice.Status','serviceticket.status','serviceticket.technicianId','rad.Latitude as Lat','rad.Longitude as Long','rad.Location_Name as Loc_Name','speedfreakinventory.model','speedfreakinventory.capacity','servicelog.leader_id','servicelog.member_id')
+        ->leftjoin('speedfreakservice','serviceticket.Id','=','speedfreakservice.ServiceId','speedfreakservice.Status')
         ->leftjoin('radius as rad','serviceticket.site','=','rad.Id')
-        ->leftjoin('gensetinventory','serviceticket.genset_no','=','gensetinventory.barcode')
+        ->leftjoin('speedfreakinventory','serviceticket.speedfreak_no','=','speedfreakinventory.barcode')
         ->leftjoin('servicelog','serviceticket.Id','=','servicelog.serviceticket_id')
         ->where('servicelog.leader_id','=',$me->Id)
-        ->where('gensetservice.Status','=','Completed')
+        ->where('speedfreakservice.Status','=','Completed')
         ->where('servicelog.member_id','!=','')
         ->orderBy(DB::raw('str_to_date(serviceticket.service_date,"%d-%M-%Y")'),'asc')
         // ->whereRaw('serviceticket.service_date between "'.$start.'" And "'.$end.'"')
@@ -168,12 +155,12 @@ class ServiceController extends Controller {
         $start=date('d-M-Y',strtotime('first day of previous month'));
 
         $ticket = DB::table('serviceticket')
-        ->select('serviceticket.Id','serviceticket.service_type','serviceticket.service_id','serviceticket.genset_no','serviceticket.UserId','serviceticket.service_date','gensetservice.Status','serviceticket.status','serviceticket.technicianId','rad.Latitude as Lat','rad.Longitude as Long','rad.Location_Name as Loc_Name','gensetinventory.model','gensetinventory.capacity')
-        ->leftjoin('gensetservice','serviceticket.Id','=','gensetservice.ServiceId','gensetservice.Status')
+        ->select('serviceticket.Id','serviceticket.service_type','serviceticket.service_id','serviceticket.speedfreak_no','serviceticket.UserId','serviceticket.service_date','speedfreakservice.Status','serviceticket.status','serviceticket.technicianId','rad.Latitude as Lat','rad.Longitude as Long','rad.Location_Name as Loc_Name','speedfreakinventory.model','speedfreakinventory.capacity')
+        ->leftjoin('speedfreakservice','serviceticket.Id','=','speedfreakservice.ServiceId','speedfreakservice.Status')
         ->leftjoin('radius as rad','serviceticket.site','=','rad.Id')
-        ->leftjoin('gensetinventory','serviceticket.genset_no','=','gensetinventory.barcode')
+        ->leftjoin('speedfreakinventory','serviceticket.speedfreak_no','=','speedfreakinventory.barcode')
         ->where('serviceticket.technicianId','=',$me->Id)
-        ->where('gensetservice.Status','=','Approved')
+        ->where('speedfreakservice.Status','=','Approved')
         ->orderBy(DB::raw('str_to_date(serviceticket.service_date,"%d-%M-%Y")'),'asc')
         // ->whereRaw('serviceticket.service_date between "'.$start.'" And "'.$end.'"')
         ->get();
@@ -187,7 +174,7 @@ class ServiceController extends Controller {
 
     public function getItemInv(Request $request){
         $me=  JWTAuth::parsetoken()->authenticate();
-        // $data=DB::Table('gensetinventory')
+        // $data=DB::Table('speedfreakinventory')
         // ->select('Id','name','type','model')
         // ->where('type','!=','GENSET')
         // ->where('type','!=','ATS')
@@ -197,8 +184,8 @@ class ServiceController extends Controller {
 
 
         $data=DB::table('techbag')
-        ->select('techbag.Balance','techbag.InvId','gensetinventory.model','gensetinventory.capacity','gensetinventory.Id','gensetinventory.name','gensetinventory.barcode')
-        ->join('gensetinventory','techbag.InvId','=','gensetinventory.Id')
+        ->select('techbag.Balance','techbag.InvId','speedfreakinventory.model','speedfreakinventory.capacity','speedfreakinventory.Id','speedfreakinventory.name','speedfreakinventory.barcode')
+        ->join('speedfreakinventory','techbag.InvId','=','speedfreakinventory.Id')
         ->where('techbag.UserId',$me->Id)
         ->where('techbag.Balance','!=','')
         ->get();
@@ -224,12 +211,12 @@ class ServiceController extends Controller {
                 'Balance' => (int)$i['Balance'] - $test,
             ]);
 
-            $genInv=DB::table('gensetinventory')
+            $genInv=DB::table('speedfreakinventory')
             ->select('Id','qty_balance')
             ->where('Id','=',$i['InvId'])
             ->first();
 
-            $u=DB::table('gensetinventory')
+            $u=DB::table('speedfreakinventory')
             ->where('Id','=',$i['InvId'])
             ->update([
                 'qty_balance' => $genInv->qty_balance + $test
@@ -240,18 +227,18 @@ class ServiceController extends Controller {
             ->select('Name','Id')
             ->first();
 
-            $a=DB::table('gensetinventory')
+            $a=DB::table('speedfreakinventory')
             ->select('Id','branch')
             ->where('Id','=',$i['InvId'])
             ->first();
 
-            DB::table('gensetinventory_history')
+            DB::table('speedfreakinventory_history')
             ->insertGetId([
                 'activity' => "Stock-return from " . $user->Name,
                 'branch' => "Store HQ",
                 'qty' => $test,
                 'type' => "Stock-return",
-                'gensetinventoryId' => $i['InvId'],
+                'speedfreakInventoryId' => $i['InvId'],
                 'userId' => $me->Id,
                 'created_at' => DB::raw('now()'),
                 'technicianId' => $me->Id
@@ -265,18 +252,18 @@ class ServiceController extends Controller {
         //     ->where('Id','=',$input['technician'])
         //     ->select('Name')
         //     ->first();
-        //     DB::table('gensetinventory')
+        //     DB::table('speedfreakinventory')
         //     ->where('Id','=',$input['StockId'])
         //     ->update([
         //             'qty_balance' => $balance
         //     ]);
-            // DB::table('gensetinventory_history')
+            // DB::table('speedfreakinventory_history')
             // ->insertGetId([
             //     'activity' => $input['Process']." from ".$technician->Name,
             //     'branch' => $input['branch'],
             //     'qty' => $input['qty_return'],
             //     'type' => "Stock-return",
-            //     'gensetinventoryId' => $input['StockId'],
+            //     'speedfreakInventoryId' => $input['StockId'],
             //     'userId' => $me->UserId,
             //     'created_at' => Carbon::now(),
             //     'technicianId' => $input['technician']
@@ -295,14 +282,14 @@ class ServiceController extends Controller {
             ->addSelect(DB::Raw('CASE WHEN serviceticket.sequence = 0 THEN serviceticket.Id ELSE MIN(serviceticket.Id) END as Id'))
             ->groupBy(DB::Raw('CASE WHEN serviceticket.sequence <> 0 THEN serviceticket.parent ELSE serviceticket.Id END'))
             ->where(function($q){
-                $q->where('gensetservice.Status','In-Progress');
-                $q->orWhere('gensetservice.Status','Repair');
-                $q->orWhere('gensetservice.Status','Completed');
-                $q->orWhere('gensetservice.Status','Pending');
+                $q->where('speedfreakservice.Status','In-Progress');
+                $q->orWhere('speedfreakservice.Status','Repair');
+                $q->orWhere('speedfreakservice.Status','Completed');
+                $q->orWhere('speedfreakservice.Status','Pending');
 
             })
              ->whereRaw('serviceticket.service_date = "'.$request->date.'"')
-             ->where('gensetservice.Status','!=','Completed')
+             ->where('speedfreakservice.Status','!=','Completed')
             ->get();
         }
 // <<<<<<< HEAD
@@ -312,15 +299,15 @@ class ServiceController extends Controller {
     //     //Get service ticket by sequence
     //     $data=DB::select('
     //     Select
-    //         Min(serviceticket.Id) as Id,serviceticket.service_type,serviceticket.service_id,tracker.Region,serviceticket.genset_no
-    //         ,radius.Location_Name,radius.Latitude,radius.Longitude,gensetservice.Status,tracker.Site_Name,gensetservice.Id as serviceId,tracker.Site_Name,
-    //         gensetservice.timeIn,gensetservice.timeOut,requisition.Id as reqId,gensetinventory.capacity,serviceticket.service_date,
+    //         Min(serviceticket.Id) as Id,serviceticket.service_type,serviceticket.service_id,tracker.Region,serviceticket.speedfreak_no
+    //         ,radius.Location_Name,radius.Latitude,radius.Longitude,speedfreakservice.Status,tracker.Site_Name,speedfreakservice.Id as serviceId,tracker.Site_Name,
+    //         speedfreakservice.timeIn,speedfreakservice.timeOut,requisition.Id as reqId,speedfreakinventory.capacity,serviceticket.service_date,
     //         "" as user,serviceticket.UserId,serviceticket.technicianId
     //     FROM
     //         serviceticket
     //     left join
-    //         gensetservice
-    //             on gensetservice.ServiceId = serviceticket.Id
+    //         speedfreakservice
+    //             on speedfreakservice.ServiceId = serviceticket.Id
     //     left join
     //         deliveryform
     //             on deliveryform.Id = serviceticket.DeliveryId
@@ -335,12 +322,12 @@ class ServiceController extends Controller {
     //             on radius.Id = deliveryform.Location
     //     left join
     //         requisition
-    //             on requisition.gensetServiceId = gensetservice.Id
+    //             on requisition.speedfreakServiceId = speedfreakservice.Id
     //     left join
-    //         gensetinventory
-    //             on gensetinventory.machinery_no=serviceticket.genset_no
+    //         speedfreakinventory
+    //             on speedfreakinventory.machinery_no=serviceticket.speedfreak_no
     //     where
-    //         gensetservice.Status = "In-Progress" AND serviceticket.sequence <> 0
+    //         speedfreakservice.Status = "In-Progress" AND serviceticket.sequence <> 0
     //         AND serviceticket.service_date = "'.$request->date.'"
     //     group by
     //         serviceticket.parent
@@ -364,43 +351,35 @@ class ServiceController extends Controller {
      */
     private function serviceTicket($name=null,$id=null){
         $data=DB::Table('serviceticket')
-        ->select('serviceticket.Id','serviceticket.service_type','rad.Location_Name as Loc_Name','serviceticket.site','serviceticket.service_id','tracker.Region','serviceticket.genset_no','serviceticket.status','serviceticket.remarks','radius.Location_Name',
+        ->select('serviceticket.Id','serviceticket.service_type','rad.Location_Name as Loc_Name','serviceticket.site','serviceticket.service_id','tracker.Region','serviceticket.speedfreak_no','serviceticket.status','serviceticket.remarks','radius.Location_Name',
         'radius.Latitude','radius.Longitude',
-        'rad.Latitude as Lat','rad.Longitude as Long','gensetservice.Status','gen.model','gen.capacity','tracker.Site_Name','gensetservice.Id as serviceId','tracker.Site_Name'
-        ,'gensetservice.timeIn','gensetservice.timeOut','requisition.Id as reqId','gensetinventory.capacity','serviceticket.service_date',DB::raw('"" as user'),'requisitionhistory.status as reqStatus',
-        'serviceticket.UserId','serviceticket.technicianId','gensetservice.Status')
+        'rad.Latitude as Lat','rad.Longitude as Long','speedfreakservice.Status','gen.model','gen.capacity','tracker.Site_Name','speedfreakservice.Id as serviceId','tracker.Site_Name'
+        ,'speedfreakservice.timeIn','speedfreakservice.timeOut','requisition.Id as reqId','speedfreakinventory.capacity','serviceticket.service_date',DB::raw('"" as user'),'requisitionhistory.status as reqStatus',
+        'serviceticket.UserId','serviceticket.technicianId','speedfreakservice.Status')
         ->leftjoin('deliveryform','deliveryform.Id','=','serviceticket.DeliveryId')
         ->leftjoin('salesorder','salesorder.Id','=','deliveryform.salesorderid')
         ->leftjoin('tracker','salesorder.trackerid','=','tracker.Id')
         ->leftjoin('radius','radius.Id','=','deliveryform.Location')
         ->leftjoin('radius as rad','serviceticket.site','=','rad.Id')
-        ->leftjoin(DB::raw('(SELECT Max(Id) as maxid,ServiceId from gensetservice group by ServiceId) as max'),'max.ServiceId','=','serviceticket.Id')
-        ->leftjoin('gensetservice','gensetservice.Id','=','max.maxid')
-        ->leftjoin('gensetinventory as gen','serviceticket.genset_no','=','gen.machinery_no')
+        ->leftjoin(DB::raw('(SELECT Max(Id) as maxid,ServiceId from speedfreakservice group by ServiceId) as max'),'max.ServiceId','=','serviceticket.Id')
+        ->leftjoin('speedfreakservice','speedfreakservice.Id','=','max.maxid')
+        ->leftjoin('speedfreakinventory as gen','serviceticket.speedfreak_no','=','gen.machinery_no')
         ->leftjoin('servicelog','serviceticket.Id','=','servicelog.serviceticket_id')
-        ->leftjoin('requisition','requisition.gensetServiceId','=','gensetservice.Id')
+        ->leftjoin('requisition','requisition.speedfreakServiceId','=','speedfreakservice.Id')
         ->leftjoin(DB::raw('(SELECT Max(Id) as maxid,requisition_Id from requisitionhistory group by requisition_Id) as max1'),'max1.requisition_Id','=','requisition.Id')
         ->leftjoin('requisitionhistory','requisitionhistory.Id','=','max1.maxid')
-        ->leftjoin('gensetinventory','gensetinventory.machinery_no','=','serviceticket.genset_no')
+        ->leftjoin('speedfreakinventory','speedfreakinventory.machinery_no','=','serviceticket.speedfreak_no')
         ->orderBy('Id','asc');
         if($name != null || $id != null){
             // $data=$data->havingRaw('serviceticket.technicianId = ? OR serviceticket.UserId = ?',[$id,$id]);
             $data=$data->whereRaw("(serviceticket.technicianId = ".$id." OR serviceticket.UserId = ".$id.")");
         }
-        // ->where('serviceticket.sequence',0);
-        // if($name != null && $id != null){
-        //     $data=$data->where(function($q) use ($name,$id){
-        //         $q->where('tracker.Team','=',$name);
-        //         $q->orWhere('serviceticket.technicianId',$id);
-        //         $q->orWhere('serviceticket.UserId',$id);
-        //     });
-        // }
         return $data;
     }
     public function order(Request $request){
         $me=  JWTAuth::parsetoken()->authenticate();
 
-        $id=DB::table('gensetinventory_history')
+        $id=DB::table('speedfreakinventory_history')
         ->insertGetId([
             'acitivity'=>'Ordered by '.$me->Name,
             'qty'=>$request->qty,
@@ -413,7 +392,7 @@ class ServiceController extends Controller {
     public function replacement(Request $request){
         $me=  JWTAuth::parsetoken()->authenticate();
         $count=1;
-        $path = public_path() . "/private/upload/Genset/".$request->type;
+        $path = public_path() . "/private/upload/Speedfreak/".$request->type;
         if(!file_exists($path)){
             File::makeDirectory($path, 0777, true, true);
         }
@@ -423,13 +402,13 @@ class ServiceController extends Controller {
             $orig=end($orig);
 
             $fileName = time().'_'.$count.".jpg";
-            $path = public_path() . "/private/upload/Genset/".$request->type."/" . $fileName;
+            $path = public_path() . "/private/upload/Speedfreak/".$request->type."/" . $fileName;
             $count ++;
             $old="";
             if(isset($data['replace']['file'])){
                 $oldOri=explode('/',$data['replace']['file']);
                 $oldOri=end($oldOri);
-                $oldPath=public_path() . "/private/upload/Genset/".$request->type."/" . time().'_'.$count.".jpg";
+                $oldPath=public_path() . "/private/upload/Speedfreak/".$request->type."/" . time().'_'.$count.".jpg";
                 $oldImg=$data['replace']['view']['changingThisBreaksApplicationSecurity'];
                 $oldImg=substr($oldImg,strpos($oldImg,",")+1);
                 $oldImg=base64_decode($oldImg);
@@ -439,7 +418,7 @@ class ServiceController extends Controller {
                     'Type'=>'Before '.$request->type,
                     'TargetId'=>$request->id,
                     'File_Name'=>$oldOri,
-                    'Web_Path'=>"/private/upload/Genset/".$request->type."/". time().'_'.$count.".jpg",
+                    'Web_Path'=>"/private/upload/Speedfreak/".$request->type."/". time().'_'.$count.".jpg",
 
                 ]);
             }
@@ -455,7 +434,7 @@ class ServiceController extends Controller {
             //     'Type'=>'Before '.$request->type,
             //     'TargetId'=>$request->id,
             //     'File_Name'=>$oldOri,
-            //     'Web_Path'=>"/private/upload/Genset/".$request->type."/". time().'_'.$count.".jpg",
+            //     'Web_Path'=>"/private/upload/Speedfreak/".$request->type."/". time().'_'.$count.".jpg",
 
             // ]);
 
@@ -464,12 +443,12 @@ class ServiceController extends Controller {
                 'Type'=>'After '.$request->type,
                 'TargetId'=>$request->id,
                 'File_Name'=>$orig,
-                'Web_Path'=>"/private/upload/Genset/".$request->type."/".$fileName,
+                'Web_Path'=>"/private/upload/Speedfreak/".$request->type."/".$fileName,
             ]);
 
             $count++;
 
-            DB::Table('gensetserviceimg')
+            DB::Table('speedfreakserviceimg')
             ->insert([
                 'ServiceId'=>$request->id,
                 'previousFile'=>$old != "" ?$old:"",
@@ -543,7 +522,7 @@ class ServiceController extends Controller {
     public function updateService(Request $request){
         $me=  JWTAuth::parsetoken()->authenticate();
         $total = "";
-        $timein = DB::Table('gensetservice')
+        $timein = DB::Table('speedfreakservice')
         ->where('Id',$request->serId)
         ->select('timeIn')
         ->first();
@@ -557,7 +536,7 @@ class ServiceController extends Controller {
 
         if($request->status == 'verify'){
 
-            $inst=DB::Table('gensetservice')
+            $inst=DB::Table('speedfreakservice')
             ->insertGetId([
                 'Status'=>'Verified',
                 'ServiceId'=>$request->id,
@@ -565,7 +544,7 @@ class ServiceController extends Controller {
             return $inst;
         }
          if(strpos($request->type,'PMO') !== false){
-           DB::Table('gensetservice')
+           DB::Table('speedfreakservice')
             ->where('Id',$request->serId)
             ->update([
                 'Status'=>"Completed",
@@ -574,7 +553,7 @@ class ServiceController extends Controller {
                 'Remarks'=>$request->remarks
             ]);
             $today=date("d-M-Y");
-            $insert=DB::table('gensetservice')
+            $insert=DB::table('speedfreakservice')
             ->insertGetId([
                 'ServiceId'=>$request->id,
                 'last_service'=>$today,
@@ -586,7 +565,7 @@ class ServiceController extends Controller {
             if($request->serId && $request->status != "repair"){
 // dd($request->remarks);
                 if($request->remarks == "No spareparts"){
-                    DB::Table('gensetservice')
+                    DB::Table('speedfreakservice')
                     ->where('Id',$request->serId)
                     ->update([
                         'Status'=>"Pending",
@@ -597,7 +576,7 @@ class ServiceController extends Controller {
                 }else{
 
 
-                    DB::Table('gensetservice')
+                    DB::Table('speedfreakservice')
                     ->where('Id',$request->serId)
                     ->update([
                         'Status'=>"Completed",
@@ -634,7 +613,7 @@ class ServiceController extends Controller {
                 }
 
             }else if($request->status == "repair"){
-                DB::Table('gensetservice')
+                DB::Table('speedfreakservice')
                 ->insert([
                     'ServiceId'=>$request->id,
                     'Status'=>'Repair'
@@ -669,7 +648,7 @@ class ServiceController extends Controller {
     public function approveService(Request $request){
         $me=  JWTAuth::parsetoken()->authenticate();
 
-        DB::Table('gensetservice')
+        DB::Table('speedfreakservice')
         ->where('ServiceId',$request->id)
         ->update([
             'Status'=>"Approved",
@@ -715,10 +694,10 @@ class ServiceController extends Controller {
     public function getItem(Request $request){
         $me=  JWTAuth::parsetoken()->authenticate();
         $data=DB::table('techbag')
-        ->select('techbag.Balance','techbag.InvId','gensetinventory.model','gensetinventory.capacity','gensetinventory.Id','gensetinventory.name')
-        ->join('gensetinventory','techbag.InvId','=','gensetinventory.Id')
+        ->select('techbag.Balance','techbag.InvId','speedfreakinventory.model','speedfreakinventory.capacity','speedfreakinventory.Id','speedfreakinventory.name')
+        ->join('speedfreakinventory','techbag.InvId','=','speedfreakinventory.Id')
         ->where('techbag.UserId',$me->Id)
-        ->where('gensetinventory.barcode',$request->code)
+        ->where('speedfreakinventory.barcode',$request->code)
         ->first();
 
         return json_encode($data);
@@ -726,19 +705,19 @@ class ServiceController extends Controller {
     function startTask(Request $request){
         $me=JWTAuth::parsetoken()->authenticate();
 
-        $a = DB::table('gensetservice')
+        $a = DB::table('speedfreakservice')
         ->where('Id',$request->id)
         ->first();
 
         $b = DB::table('timesheets')
-        ->where('gensetserviceId',$request->id)
+        ->where('speedfreakServiceId',$request->id)
         ->where('Time_In','!=','')
         ->first();
 
         // dd($a->timeIn);
 
         if($a->timeIn == ''){
-            $update=DB::Table('gensetservice')
+            $update=DB::Table('speedfreakservice')
             ->where('Id',$request->id)
             ->update([
                 'timeIn'=>DB::raw('now()')
@@ -748,7 +727,7 @@ class ServiceController extends Controller {
             $update=DB::Table('timesheets')
             // ->where('Id',$request->id)
             ->insertGetId([
-                'gensetserviceId'=>$request->id,
+                'speedfreakServiceId'=>$request->id,
                 'Time_In'=>DB::raw('now()'),
                 'Remarks'=>''
             ]);
@@ -760,19 +739,19 @@ class ServiceController extends Controller {
     function startTask2(Request $request){
         $me=JWTAuth::parsetoken()->authenticate();
 
-        $a = DB::table('gensetservice')
+        $a = DB::table('speedfreakservice')
         ->where('Id',$request->id)
         ->first();
 
         $time1 = DB::table('timesheets')
-        ->where('gensetserviceId','=',$request->id)
+        ->where('speedfreakServiceId','=',$request->id)
         ->where('Time_In','!=','')
         ->first();
 
         // dd($time1);
 
         if($a->timeIn == ''){
-            $update=DB::Table('gensetservice')
+            $update=DB::Table('speedfreakservice')
             ->where('Id',$request->id)
             ->update([
                 'timeIn'=>date('d-M-Y g:i A')
@@ -782,14 +761,14 @@ class ServiceController extends Controller {
             //get last timesheets firs before time in
 
             $previoustimesheet = DB::table('timesheets')
-            ->where('gensetserviceId', '=', $request->id)
+            ->where('speedfreakServiceId', '=', $request->id)
             ->orderBy('Id','DESC')
             ->first();
 
             //insert new time in
             $time2Id=DB::table('timesheets')
                         ->insertGetId([
-                            'gensetserviceId'=>$request->id,
+                            'speedfreakServiceId'=>$request->id,
                             'Time_In'=>date('d-M-Y g:i A'),
                             'Remarks'=>''
                         ]);
@@ -823,7 +802,7 @@ class ServiceController extends Controller {
         $me=JWTAuth::parsetoken()->authenticate();
 
         $a = DB::table('timesheets')
-        ->where('gensetserviceId',$request->id)
+        ->where('speedfreakServiceId',$request->id)
         ->first();
 // dd($a);
         // dd($a->timeIn);
@@ -834,7 +813,7 @@ class ServiceController extends Controller {
             $totaltime = $diff->format('%H:%i:%s');
 
             $update=DB::Table('timesheets')
-            ->where('gensetserviceId',$request->id)
+            ->where('speedfreakServiceId',$request->id)
             ->where('Time_Out','=','')
             ->update([
                 'Time_Out'=>date('d-M-Y g:i A'),
@@ -861,7 +840,7 @@ class ServiceController extends Controller {
             $rqId=DB::Table('requisition')
             ->insertGetId([
                 'Req_No'=>$num,
-                'gensetServiceId'=>$request->serId,
+                'speedfreakServiceId'=>$request->serId,
                 'created_by'=>$me->Id
             ]);
         }
@@ -872,7 +851,7 @@ class ServiceController extends Controller {
             $item['name']=trim($item['name']);
             // $item['name']=explode(' ',$item['name'])[1];
             // dd($item);
-            $invId=DB::table('gensetinventory')
+            $invId=DB::table('speedfreakinventory')
             ->select('Id')
             ->where('barcode','=',$item['name'])
             ->first();
@@ -900,7 +879,7 @@ class ServiceController extends Controller {
         //     // $stupidid = 0;
         //     // $items['name']=explode(' ',$items['name'])[1];
         //     // dd($items);
-        //     $invId=DB::table('gensetinventory')
+        //     $invId=DB::table('speedfreakinventory')
         //     ->select('Id')
         //     ->where('barcode','=',$items['name'])
         //     ->first();
@@ -963,15 +942,15 @@ class ServiceController extends Controller {
         foreach($request->item as $asd){
             $asd['name']=trim($asd['name']);
 
-            $test=DB::table('gensetinventory')
+            $test=DB::table('speedfreakinventory')
             ->where('barcode','=',$asd['name'])
             ->first();
 
             $test2=DB::table('techbag')
-            ->select('techbag.Balance','techbag.InvId','gensetinventory.model','gensetinventory.capacity','gensetinventory.Id','gensetinventory.name','gensetinventory.barcode')
-            ->join('gensetinventory','techbag.InvId','=','gensetinventory.Id')
+            ->select('techbag.Balance','techbag.InvId','speedfreakinventory.model','speedfreakinventory.capacity','speedfreakinventory.Id','speedfreakinventory.name','speedfreakinventory.barcode')
+            ->join('speedfreakinventory','techbag.InvId','=','speedfreakinventory.Id')
             ->where('techbag.UserId',$me->Id)
-            ->where('gensetinventory.barcode','=',$asd['name'])
+            ->where('speedfreakinventory.barcode','=',$asd['name'])
             ->first();
 
             // $aaa= $test2->Balance + $asd['qty'];
@@ -992,7 +971,7 @@ class ServiceController extends Controller {
                     $rqId=DB::Table('requisition')
                     ->insertGetId([
                         'Req_No'=>$num,
-                        'gensetServiceId'=>$request->serId,
+                        'speedfreakServiceId'=>$request->serId,
                         'created_by'=>$me->Id
                     ]);
                 }
@@ -1003,7 +982,7 @@ class ServiceController extends Controller {
                     $item['name']=trim($item['name']);
                     // $item['name']=explode(' ',$item['name'])[1];
                     // dd($item);
-                    $invId=DB::table('gensetinventory')
+                    $invId=DB::table('speedfreakinventory')
                     ->select('Id')
                     ->where('barcode','=',$item['name'])
                     ->first();
@@ -1031,7 +1010,7 @@ class ServiceController extends Controller {
                 //     // $stupidid = 0;
                 //     // $items['name']=explode(' ',$items['name'])[1];
                 //     // dd($items);
-                //     $invId=DB::table('gensetinventory')
+                //     $invId=DB::table('speedfreakinventory')
                 //     ->select('Id')
                 //     ->where('barcode','=',$items['name'])
                 //     ->first();
@@ -1105,7 +1084,7 @@ class ServiceController extends Controller {
                     $rqId=DB::Table('requisition')
                     ->insertGetId([
                         'Req_No'=>$num,
-                        'gensetServiceId'=>$request->serId,
+                        'speedfreakServiceId'=>$request->serId,
                         'created_by'=>$me->Id
                     ]);
                 }
@@ -1116,7 +1095,7 @@ class ServiceController extends Controller {
                     $item['name']=trim($item['name']);
                     // $item['name']=explode(' ',$item['name'])[1];
                     // dd($item);
-                    $invId=DB::table('gensetinventory')
+                    $invId=DB::table('speedfreakinventory')
                     ->select('Id')
                     ->where('barcode','=',$item['name'])
                     ->first();
@@ -1144,7 +1123,7 @@ class ServiceController extends Controller {
                 //     // $stupidid = 0;
                 //     // $items['name']=explode(' ',$items['name'])[1];
                 //     // dd($items);
-                //     $invId=DB::table('gensetinventory')
+                //     $invId=DB::table('speedfreakinventory')
                 //     ->select('Id')
                 //     ->where('barcode','=',$items['name'])
                 //     ->first();
@@ -1224,7 +1203,7 @@ class ServiceController extends Controller {
             $rqId=DB::Table('requisition')
             ->insertGetId([
                 'Req_No'=>$num,
-                'gensetServiceId'=>$request->serId,
+                'speedfreakServiceId'=>$request->serId,
                 'created_by'=>$me->Id
             ]);
         }
@@ -1235,7 +1214,7 @@ class ServiceController extends Controller {
             $item['name']=trim($item['name']);
             // $item['name']=explode(' ',$item['name'])[1];
             // dd($item);
-            $invId=DB::table('gensetinventory')
+            $invId=DB::table('speedfreakinventory')
             ->select('Id')
             ->where('barcode','=',$item['name'])
             ->first();
@@ -1293,7 +1272,7 @@ class ServiceController extends Controller {
     function getItemOption(Request $request){
         $me=  JWTAuth::parsetoken()->authenticate();
 
-        $data=DB::Table('gensetinventory')
+        $data=DB::Table('speedfreakinventory')
         ->select('Id','name','type')
         ->where('type','!=','GENSET')
         ->where('type','!=','ATS')
@@ -1311,8 +1290,8 @@ class ServiceController extends Controller {
         $me=  JWTAuth::parsetoken()->authenticate();
         $input=$request->all();
         // $data=DB::Table('requisitionitem')
-        // ->select('gensetinventory.*',DB::raw('"true" as checked'),'requisitionitem.Qty','requisitionitem.Id as reqItemId')
-        // ->leftjoin('gensetinventory','gensetinventory.Id','=','requisitionitem.InvId')
+        // ->select('speedfreakinventory.*',DB::raw('"true" as checked'),'requisitionitem.Qty','requisitionitem.Id as reqItemId')
+        // ->leftjoin('speedfreakinventory','speedfreakinventory.Id','=','requisitionitem.InvId')
         // ->leftjoin('requisitionhistory','requisitionhistory.Id','=','requisitionitem.historyId')
         // ->leftjoin('requisition','requisition.Id','=','requisitionitem.reqId')
         // ->where('requisition.Id',$input['reqId'])
@@ -1338,10 +1317,10 @@ class ServiceController extends Controller {
             'service_type'=>$request->type,
             'service_id'=>'SVT-'.$ser,
             'UserId'=>$me->Id,
-            'genset_no'=>$request->genset,
+            'speedfreak_no'=>$request->speedfreak,
             'service_date'=>date("d-M-Y")
         ]);
-        DB::table('gensetservice')
+        DB::table('speedfreakservice')
         ->insert([
             'ServiceId'=>$id,
             'Status'=>'In-Progress'
@@ -1351,7 +1330,7 @@ class ServiceController extends Controller {
     function getServiceDate(Request $request){
         $me=JWTAuth::parsetoken()->authenticate();
 
-        return json_encode($this->serviceTicket($me->Name,$me->Id)->groupBy('service_date')->where('gensetservice.Status','!=','Completed')->where('gensetservice.Status','!=','Approved')
+        return json_encode($this->serviceTicket($me->Name,$me->Id)->groupBy('service_date')->where('speedfreakservice.Status','!=','Completed')->where('speedfreakservice.Status','!=','Approved')
         ->where('serviceticket.technicianId','=',$me->Id)
             ->get());
     }
@@ -1359,41 +1338,41 @@ class ServiceController extends Controller {
     function getServiceDatetest(Request $request){
         $me=JWTAuth::parsetoken()->authenticate();
         // $data = DB::Table('serviceticket')
-        // ->select('serviceticket.Id','serviceticket.service_type','rad.Location_Name as Loc_Name','serviceticket.site','serviceticket.service_id','tracker.Region','serviceticket.genset_no','serviceticket.status','serviceticket.remarks','radius.Location_Name',
+        // ->select('serviceticket.Id','serviceticket.service_type','rad.Location_Name as Loc_Name','serviceticket.site','serviceticket.service_id','tracker.Region','serviceticket.speedfreak_no','serviceticket.status','serviceticket.remarks','radius.Location_Name',
         // 'radius.Latitude','radius.Longitude',
-        // 'rad.Latitude as Lat','rad.Longitude as Long','gensetservice.Status','gen.model','gen.capacity','tracker.Site_Name','gensetservice.Id as serviceId','tracker.Site_Name'
-        // ,'gensetservice.timeIn','gensetservice.timeOut','requisition.Id as reqId','gensetinventory.capacity','serviceticket.service_date',DB::raw('"" as user'),'requisitionhistory.status as reqStatus',
-        // 'serviceticket.UserId','serviceticket.technicianId','gensetservice.Status')
+        // 'rad.Latitude as Lat','rad.Longitude as Long','speedfreakservice.Status','gen.model','gen.capacity','tracker.Site_Name','speedfreakservice.Id as serviceId','tracker.Site_Name'
+        // ,'speedfreakservice.timeIn','speedfreakservice.timeOut','requisition.Id as reqId','speedfreakinventory.capacity','serviceticket.service_date',DB::raw('"" as user'),'requisitionhistory.status as reqStatus',
+        // 'serviceticket.UserId','serviceticket.technicianId','speedfreakservice.Status')
         // ->leftjoin('deliveryform','deliveryform.Id','=','serviceticket.DeliveryId')
         // ->leftjoin('salesorder','salesorder.Id','=','deliveryform.salesorderid')
         // ->leftjoin('tracker','salesorder.trackerid','=','tracker.Id')
         // ->leftjoin('radius','radius.Id','=','deliveryform.Location')
         // ->leftjoin('radius as rad','serviceticket.site','=','rad.Id')
-        // ->leftjoin(DB::raw('(SELECT Max(Id) as maxid,ServiceId from gensetservice group by ServiceId) as max'),'max.ServiceId','=','serviceticket.Id')
-        // ->leftjoin('gensetservice','gensetservice.Id','=','max.maxid')
-        // ->leftjoin('gensetinventory as gen','serviceticket.genset_no','=','gen.machinery_no')
-        // ->leftjoin('requisition','requisition.gensetServiceId','=','gensetservice.Id')
+        // ->leftjoin(DB::raw('(SELECT Max(Id) as maxid,ServiceId from speedfreakservice group by ServiceId) as max'),'max.ServiceId','=','serviceticket.Id')
+        // ->leftjoin('speedfreakservice','speedfreakservice.Id','=','max.maxid')
+        // ->leftjoin('speedfreakinventory as gen','serviceticket.speedfreak_no','=','gen.machinery_no')
+        // ->leftjoin('requisition','requisition.speedfreakServiceId','=','speedfreakservice.Id')
         // ->leftjoin(DB::raw('(SELECT Max(Id) as maxid,requisition_Id from requisitionhistory group by requisition_Id) as max1'),'max1.requisition_Id','=','requisition.Id')
         // ->leftjoin('requisitionhistory','requisitionhistory.Id','=','max1.maxid')
-        // ->leftjoin('gensetinventory','gensetinventory.machinery_no','=','serviceticket.genset_no')
+        // ->leftjoin('speedfreakinventory','speedfreakinventory.machinery_no','=','serviceticket.speedfreak_no')
         // ->groupby('service_date')
         // ->groupby('serviceticket.parent')
-        // ->whereRaw("(serviceticket.technicianId = ".$id." OR serviceticket.UserId = ".$id.") && servicelog.member_id = ".$me->Id." && gensetservice.Status != 'Completed' && gensetservice.Status != 'Approved' ");
+        // ->whereRaw("(serviceticket.technicianId = ".$id." OR serviceticket.UserId = ".$id.") && servicelog.member_id = ".$me->Id." && speedfreakservice.Status != 'Completed' && speedfreakservice.Status != 'Approved' ");
         // ->get();
-        return json_encode($this->serviceTicket($me->Name,$me->Id)->groupBy('service_date')->where('gensetservice.Status','!=','Completed')->where('gensetservice.Status','!=','Approved')
+        return json_encode($this->serviceTicket($me->Name,$me->Id)->groupBy('service_date')->where('speedfreakservice.Status','!=','Completed')->where('speedfreakservice.Status','!=','Approved')
         ->where('servicelog.member_id','=',$me->Id)
             ->get());
     }
     function delivery(Request $request){
         $me=JWTAuth::parsetoken()->authenticate();
         if($request->type == 'repair'){
-            DB::Table('gensetservice')
+            DB::Table('speedfreakservice')
             ->insertGetId([
                 'last_service'=>DB::raw('now()'),
                 'Status'=>'In-Progress'
             ]);
         }else{
-            DB::table('gensetservice')
+            DB::table('speedfreakservice')
             ->insertGetId([
                 'ServiceId'=>$request->id,
                 'status'=>'Verified',
@@ -1404,8 +1383,8 @@ class ServiceController extends Controller {
         $me=JWTAuth::parsetoken()->authenticate();
         // $data=DB::Table('requisition')
         // ->select('requisition.Req_No','serviceticket.service_date')
-        // ->leftjoin('gensetservice','gensetservice.Id','=','requisition.gensetServiceId')
-        // ->leftjoin('serviceticket','serviceticket.Id','=','gensetservice.ServiceId')
+        // ->leftjoin('speedfreakservice','speedfreakservice.Id','=','requisition.speedfreakServiceId')
+        // ->leftjoin('serviceticket','serviceticket.Id','=','speedfreakservice.ServiceId')
         // ->groupBy('serviceticket.service_date');
         $data=$this->requisitionData($me->Name,$me->Id)->addSelect('serviceticket.service_date','requisitionhistory.status')
         // ->where('serviceTicket.service_date','=','$request->date')
@@ -1479,12 +1458,12 @@ class ServiceController extends Controller {
                 // dd($exist);
 
 
-                $getbal = DB::table('gensetinventory')
+                $getbal = DB::table('speedfreakinventory')
                 ->select('Id','qty_balance')
                 ->where('Id','=',$arr['id'])
                 ->first();
                 $sbalance = $getbal->qty_balance - $arr['qty'];
-                DB::table('gensetinventory')
+                DB::table('speedfreakinventory')
                 ->where('Id','=',$arr['id'])
                 ->update([
                         'qty_balance' => $sbalance
@@ -1512,9 +1491,9 @@ class ServiceController extends Controller {
                 {
                     $store = "Store HQ";
                 }
-                $bal = DB::table('gensetinventory_history')
+                $bal = DB::table('speedfreakinventory_history')
                 ->where('branch',$store)
-                ->where('gensetinventoryId',$arr['id'])
+                ->where('speedfreakInventoryId',$arr['id'])
                 ->select(DB::raw('(CASE WHEN SUM(qty) THEN SUM(qty) ELSE 0 END) as qty_balance'))
                 ->first();
 
@@ -1526,13 +1505,13 @@ class ServiceController extends Controller {
                 }
                 else
                 {
-                    DB::table('gensetinventory_history')
+                    DB::table('speedfreakinventory_history')
                     ->insertGetId([
                         'activity' => "Stock Out to ".$me->Name,
                         'branch' => $store,
                         'qty' => "-".$arr['qty'],
                         'type' => "Stock-out",
-                        'gensetinventoryId' => $arr['id'],
+                        'speedfreakInventoryId' => $arr['id'],
                         'userId' => $me->Id,
                         'created_at' => DB::raw('Now()'),
                         'technicianId' => $me->Id
@@ -1569,13 +1548,13 @@ class ServiceController extends Controller {
     }
     function requisitionData($name=null,$id=null){
         $data= DB::Table('requisitionitem')
-        ->select('gensetinventory.*',DB::raw('"false" as checked'),'requisitionitem.Qty','requisitionitem.Id as reqItemId','requisitionitem.reqId')
-        ->leftjoin('gensetinventory','gensetinventory.Id','=','requisitionitem.InvId')
+        ->select('speedfreakinventory.*',DB::raw('"false" as checked'),'requisitionitem.Qty','requisitionitem.Id as reqItemId','requisitionitem.reqId')
+        ->leftjoin('speedfreakinventory','speedfreakinventory.Id','=','requisitionitem.InvId')
         ->leftjoin(DB::raw('(SELECT Max(Id) as maxid,reqItemId FROM requisitionhistory group by reqItemId) as max'),'max.reqItemId','=','requisitionitem.Id')
         ->leftjoin('requisitionhistory','requisitionhistory.Id','=','max.maxid')
         ->leftjoin('requisition','requisition.Id','=','requisitionitem.reqId')
-        ->leftjoin('gensetservice','gensetservice.Id','=','requisition.gensetServiceId')
-        ->leftjoin('serviceticket','serviceticket.Id','=','gensetservice.ServiceId')
+        ->leftjoin('speedfreakservice','speedfreakservice.Id','=','requisition.speedfreakServiceId')
+        ->leftjoin('serviceticket','serviceticket.Id','=','speedfreakservice.ServiceId')
         ;
 
          $notify = DB::table('users')
@@ -1586,23 +1565,14 @@ class ServiceController extends Controller {
         $notify=collect($notify)->transform(function($item){
             return $item->Id;
         });
-
-        // $data->whereRaw('(serviceticket.technicianId,servicetick)')
-        // if($name != null && $id != null){
-        //     $data=$data->where(function($q) use ($notify){
-        //         // $q->where('tracker.Team','=',$name);
-        //         $q->orWhereIn('serviceticket.technicianId',$notify);
-        //         $q->orWhereIn('serviceticket.UserId',$notify);
-        //     });
-        // }
         return $data;
     }
     function getRequisition(Request $request){
         $me=JWTAuth::parsetoken()->authenticate();
         $data=$this->requisitionData($me->Name,$me->Id)->addSelect('requisition.Req_No','tech.Name as techName','st.service_id as ServiceName')
         ->leftjoin('users as tech','tech.Id','=','requisition.created_by')
-        ->leftjoin('requisition as re','re.gensetServiceId','=','gensetservice.Id')
-        ->leftjoin('serviceticket as st','st.Id','=','gensetservice.ServiceId')
+        ->leftjoin('requisition as re','re.speedfreakServiceId','=','speedfreakservice.Id')
+        ->leftjoin('serviceticket as st','st.Id','=','speedfreakservice.ServiceId')
         ->where('requisitionhistory.status','Pending')
         ->where('serviceticket.service_date','=',$request->date)
         ->where('tech.HolidayTerritoryId','=',$me->HolidayTerritoryId)
@@ -1634,7 +1604,7 @@ class ServiceController extends Controller {
         }else{
             $service=$this->serviceTicket($me->Name,$me->Id)
             // ->whereRaw('serviceticket.service_date = "'.$request->date.'"')->get();
-            ->where('gensetservice.Status','like','%In-Progress%')
+            ->where('speedfreakservice.Status','like','%In-Progress%')
             ->get();
         }
         // $service=$this->serviceTicket($me->Name,$me->Id)->get();
@@ -1651,8 +1621,8 @@ class ServiceController extends Controller {
         }else{
             $service=$this->serviceTicket($me->Name,$me->Id)
             // ->whereRaw('serviceticket.service_date = "'.$request->date.'"')->get();
-            // ->where('gensetservice.ServiceId','like','serviceticket.Id')
-            ->where('gensetservice.Status','like','%In-Progress%')
+            // ->where('speedfreakservice.ServiceId','like','serviceticket.Id')
+            ->where('speedfreakservice.Status','like','%In-Progress%')
             ->get();
         }
         // $service=$this->serviceTicket($me->Name,$me->Id)->get();
@@ -1703,14 +1673,14 @@ class ServiceController extends Controller {
             'service_id'=>'SVT-'.$ser,
             // 'technicianId'=>$me->Id,
             'UserId'=>$me->Id,
-            'genset_no'=>$request->genset,
+            'speedfreak_no'=>$request->speedfreak,
             'service_date'=>date("d-M-Y"),
             // 'status'=>'Pending Approval',
             // 'remarks'=>$request->Reason,
             'site'=>$request->SiteName,
             'client'=>$request->Company
         ]);
-        DB::table('gensetservice')
+        DB::table('speedfreakservice')
         ->insert([
             'ServiceId'=>$id,
             'Status'=>'In-Progress'
@@ -1728,7 +1698,7 @@ class ServiceController extends Controller {
 
     function oncallstartTask(Request $request){
         $me=JWTAuth::parsetoken()->authenticate();
-        $update=DB::Table('gensetservice')
+        $update=DB::Table('speedfreakservice')
         ->where('Id',$request->id)
         ->update([
             'timeIn'=>DB::raw('now()')
@@ -1810,14 +1780,14 @@ class ServiceController extends Controller {
         $me = JWTAuth::parseToken()->authenticate();
 
         $history = DB::table('requisitionhistory')
-        ->select('requisitionhistory.Id','requisitionhistory.requisition_Id','requisitionhistory.user_Id','requisitionhistory.status','requisitionhistory.reqItemId','requisitionhistory.Qty','requisitionitem.InvId','inventories.Item_Code','requisition.Req_No','users.Name','users.Id','requisition.created_by','requisition.gensetServiceId','gensetservice.ServiceId','serviceticket.Id','serviceticket.service_date','gensetinventory.name as genInvName','gensetinventory.barcode')
+        ->select('requisitionhistory.Id','requisitionhistory.requisition_Id','requisitionhistory.user_Id','requisitionhistory.status','requisitionhistory.reqItemId','requisitionhistory.Qty','requisitionitem.InvId','inventories.Item_Code','requisition.Req_No','users.Name','users.Id','requisition.created_by','requisition.speedfreakServiceId','speedfreakservice.ServiceId','serviceticket.Id','serviceticket.service_date','speedfreakinventory.name as genInvName','speedfreakinventory.barcode')
         ->leftJoin('requisitionitem','requisitionhistory.reqItemId','=','requisitionitem.Id')
         ->leftJoin('inventories','requisitionitem.InvId','=','inventories.Id')
         ->leftJoin('requisition','requisitionitem.reqId','=','requisition.Id')
         ->leftJoin('users','requisition.created_by','=','users.Id')
-        ->leftJoin('gensetservice','requisition.gensetServiceId','=','gensetservice.Id')
-        ->leftJoin('serviceticket','gensetservice.ServiceId','=','serviceticket.Id')
-        ->leftJoin('gensetinventory','inventories.Id','=','gensetinventory.Id')
+        ->leftJoin('speedfreakservice','requisition.speedfreakServiceId','=','speedfreakservice.Id')
+        ->leftJoin('serviceticket','speedfreakservice.ServiceId','=','serviceticket.Id')
+        ->leftJoin('speedfreakinventory','inventories.Id','=','speedfreakinventory.Id')
         ->where('requisitionhistory.user_Id','=',$me->Id)
         ->where('requisitionhistory.status','=','Prepared')
         ->orderBy(DB::raw('str_to_date(serviceticket.service_date,"%d-%M-%Y")'),'desc')
@@ -1833,14 +1803,14 @@ class ServiceController extends Controller {
         $me = JWTAuth::parseToken()->authenticate();
 
         $history = DB::table('requisitionhistory')
-        ->select('requisitionhistory.Id','requisitionhistory.requisition_Id','requisitionhistory.user_Id','requisitionhistory.status','requisitionhistory.reqItemId','requisitionhistory.Qty','requisitionitem.InvId','inventories.Item_Code','requisition.Req_No','users.Name','users.Id','requisition.created_by','requisition.gensetServiceId','gensetservice.ServiceId','serviceticket.Id','serviceticket.service_date','gensetinventory.name as genInvName','gensetinventory.barcode','gensetinventory.model')
+        ->select('requisitionhistory.Id','requisitionhistory.requisition_Id','requisitionhistory.user_Id','requisitionhistory.status','requisitionhistory.reqItemId','requisitionhistory.Qty','requisitionitem.InvId','inventories.Item_Code','requisition.Req_No','users.Name','users.Id','requisition.created_by','requisition.speedfreakServiceId','speedfreakservice.ServiceId','serviceticket.Id','serviceticket.service_date','speedfreakinventory.name as genInvName','speedfreakinventory.barcode','speedfreakinventory.model')
         ->leftJoin('requisitionitem','requisitionhistory.reqItemId','=','requisitionitem.Id')
         ->leftJoin('inventories','requisitionitem.InvId','=','inventories.Id')
         ->leftJoin('requisition','requisitionitem.reqId','=','requisition.Id')
         ->leftJoin('users','requisition.created_by','=','users.Id')
-        ->leftJoin('gensetservice','requisition.gensetServiceId','=','gensetservice.Id')
-        ->leftJoin('serviceticket','gensetservice.ServiceId','=','serviceticket.Id')
-        ->leftJoin('gensetinventory','inventories.Id','=','gensetinventory.Id')
+        ->leftJoin('speedfreakservice','requisition.speedfreakServiceId','=','speedfreakservice.Id')
+        ->leftJoin('serviceticket','speedfreakservice.ServiceId','=','serviceticket.Id')
+        ->leftJoin('speedfreakinventory','inventories.Id','=','speedfreakinventory.Id')
         ->where('requisitionhistory.user_Id','=',$me->Id)
         ->where('requisitionhistory.status','=','Confirmed')
         ->orderBy(DB::raw('str_to_date(serviceticket.service_date,"%d-%M-%Y")'),'desc')
@@ -2011,7 +1981,7 @@ class ServiceController extends Controller {
 
 
         $content = array(
-            "en" => 'Genset Service Completed'
+            "en" => 'Speedfreak Service Completed'
         );
 
         $fields = array(
@@ -2076,20 +2046,20 @@ class ServiceController extends Controller {
 
     public function systemstockin()
     {
-        $allgenset = DB::table('gensetinventory')
+        $allspeedfreak = DB::table('speedfreakinventory')
         ->whereNOTIN('type',['GENSET','ATS','TANK'])
         ->select('Id')
         ->get();
 
-        foreach ($allgenset as $key => $value)
+        foreach ($allspeedfreak as $key => $value)
         {
-            DB::table('gensetinventory_history')
+            DB::table('speedfreakinventory_history')
             ->insert([
                 'activity' => "Stock In",
                 'branch' => "Store HQ",
                 'qty' => 200,
                 'type' => "Stock-in",
-                'gensetinventoryId' => $value->Id,
+                'speedfreakInventoryId' => $value->Id,
                 'userId' => 904,
                 'created_at' => DB::raw('NOW()'),
             ]);

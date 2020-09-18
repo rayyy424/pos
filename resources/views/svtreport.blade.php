@@ -118,12 +118,12 @@
                           { data: 'serviceticket.service_id' , title:"SVT #"},
                           { data: 'serviceticket.service_date' , title:"Date"},
                           { data: 'serviceticket.service_type' , title:"Ticket Type"},
-                          { data: 'serviceticket.genset_no' , title:"Genset"},
+                          { data: 'serviceticket.speedfreak_no' , title:"Speedfreak"},
                           { data: 'companies.Company_Name' , title:"Company"},
                           { data: 'companies.type' , title:"Client Type"},
-                          { data: 'gensetinventory.name' , title:"Inventory"},
-                          { data: 'gensetinventory.barcode' , title:"Barcode"},
-                          { data: 'gensetserviceimg.NewQty' , title:"Qty"},
+                          { data: 'speedfreakinventory.name' , title:"Inventory"},
+                          { data: 'speedfreakinventory.barcode' , title:"Barcode"},
+                          { data: 'speedfreakserviceimg.NewQty' , title:"Qty"},
                           { data: 'inventorypricehistory.price' , title:"Price(RM)"},
                           { data: 'cost' , title:"Cost"},
                           { data: 'users.Name' , title:"Technician"}
@@ -303,7 +303,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

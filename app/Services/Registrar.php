@@ -67,7 +67,6 @@ class Registrar implements RegistrarContract {
 			'SOCSO_No' => $data['SOCSO_No'],
 			'Income_Tax_No' => $data['Income_Tax_No'],
 			'StaffId' => $data['StaffId'],
-			'Department' => $data['Department'],
 			'HolidayTerritoryId' => $data['HolidayTerritoryId'],
 			'Working_Days' => $data['Working_Days'],
 			'Joining_Date' => $data['Joining_Date'],

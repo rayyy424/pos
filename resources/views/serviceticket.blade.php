@@ -132,7 +132,7 @@
 				{ data: "client", title:'Client Info'},			
 				{ data:"branch",title:"Branch Info"},
 				{ title:"Client Category"},
-				{ data: "genset_no", title:'GENSET No'},
+				{ data: "speedfreak_no", title:'SPEEDFREAK No'},
 				{ data: "service_date", title:'Service Date'},
 				{ data: "technician_name", title:'Technician'},
 				{ data: "status", title:'Status'}
@@ -207,10 +207,10 @@
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1>Service Ticket<small>GENSET</small></h1>
+		<h1>Service Ticket<small>SPEEEDFREAK</small></h1>
 		<ol class="breadcrumb">
 			<li><a href="{{ url('/home') }}"><i class="fa fa-dashboard"></i>Home</a></li>
-			<li><a href="#">GENSET</a></li>
+			<li><a href="#">SPEED FREAK</a></li>
             <li class="active">Service Ticket</li>
 		</ol>
 	</section>

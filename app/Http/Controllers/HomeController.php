@@ -48,8 +48,6 @@ class HomeController extends Controller {
 		$me = (new CommonController)->get_current_user();
 		$Date=date("d-M-Y", strtotime('+2 weeks'));
 		$Today=date("d-M-Y");
-
-		$missedproject="";
 		$staffconfirmationcount = null;
 		$staffconfirmationlist = [];
 
@@ -58,9 +56,6 @@ class HomeController extends Controller {
 		$oneweek = date('d-M-Y', strtotime('today +7 days'));
 		$onemonth = date('d-M-Y', strtotime('today 1 month'));
 		$today = date('d-M-Y', strtotime('today'));
-
-		$projects = DB::table('projects')
-		->get();
 
 		$users = DB::table('users')
 		->where('users.Id','<>',562)
@@ -111,25 +106,17 @@ class HomeController extends Controller {
 		->get();
 
 		$myclaim = DB::table('claims')
-		->select('claims.Id','claims.Date','projectcodes.Project_Code','projects.Project_Name','claims.Site_Name','claims.State','claims.Work_Description',
+		->select('claims.Id','claims.Date','claims.Site_Name','claims.State','claims.Work_Description',
 		'claims.Next_Person','claims.Car_No','claims.Mileage','claims.Expenses_Type','claims.GST_No','claims.GST_Amount','claims.Total_Amount','claims.Remarks','approver.Name as Approver','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Updated_At','files.Web_Path')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Claim" Group By TargetId) as maxfile'), 'maxfile.TargetId', '=', 'claims.Id')
 		->leftJoin('files', 'files.Id', '=', DB::raw('maxfile.`maxid` and files.`Type`="Claim"'))
 		->leftJoin('claimsheets', 'claimsheets.Id', '=', 'claims.ClaimSheetId')
-		->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
 		->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
 		->where('claimsheets.UserId', '=', $me->UserId)
 		->orderBy('claims.Id','desc')
 		->get();
-
-		// $myclaim = DB::table('claimsheets')
-		// ->select('claimsheets.Id','claimsheets.UserId','claimsheets.Claim_Sheet_Name','claimsheets.Remarks','claimsheets.Status','claimsheets.created_at as Created_Date')
-		// ->where('claimsheets.UserId', '=', $me->UserId)
-		// ->orderBy('claimsheets.Id','desc')
-		// ->get();
 
 		$myleave = DB::table('leaves')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,LeaveId from leavestatuses Group By LeaveId) as max'), 'max.LeaveId', '=', 'leaves.Id')
@@ -146,12 +133,10 @@ class HomeController extends Controller {
 		->get();
 
 		$mytimesheet = DB::table('timesheets')
-		->select('timesheets.Id','timesheets.UserId','timesheets.Date','timesheets.Leader_Member','timesheets.Next_Person','projectcodes.Project_Code','projects.Project_Name','timesheets.Site_Name','timesheets.State','timesheets.Check_In_Type',
+		->select('timesheets.Id','timesheets.UserId','timesheets.Date','timesheets.Leader_Member','timesheets.Next_Person','timesheets.Site_Name','timesheets.State','timesheets.Check_In_Type',
 		'timesheets.Time_In','timesheets.Time_Out','timesheets.Reason','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Updated_At','files.Web_Path')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Timesheet" Group By TargetId) as maxfile'), 'maxfile.TargetId', '=', 'timesheets.Id')
 		->leftJoin('files', 'files.Id', '=', DB::raw('maxfile.`maxid` and files.`Type`="Timesheet"'))
-		->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
 		->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'timesheetstatuses.UserId', '=', 'approver.Id')
@@ -161,7 +146,7 @@ class HomeController extends Controller {
 		->get();
 
 		$assettrackings = DB::table('assets')
-		->select('assets.Id','assettrackings.Id as TrackingId','assettrackings.ProjectId','assettrackings.UserId','assets.Label','assets.Type','assets.Serial_No','assets.IMEI','assets.Model_No','assets.Car_No',
+		->select('assets.Id','assettrackings.Id as TrackingId','assettrackings.UserId','assets.Label','assets.Type','assets.Serial_No','assets.IMEI','assets.Model_No','assets.Car_No',
 		'assets.Color','assettrackings.Date as Taken_Date','transfer.Name as Transfer_To','assettrackings.Transfer_Date_Time','assets.Remarks')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,AssetId from assettrackings Group By AssetId) as max'), 'max.AssetId', '=', 'assets.Id')
 		->leftJoin('assettrackings', 'assettrackings.Id', '=', DB::raw('max.`maxid`'))
@@ -257,7 +242,7 @@ class HomeController extends Controller {
 
 		}
 
-		if($me->Create_Project || $me->Create_Project_Code || $me->View_PO_Summary || $me->View_Invoice_Summary)
+		if($me->View_PO_Summary || $me->View_Invoice_Summary)
 		{
 
 			$trackercolumns = DB::table('trackercolumn')
@@ -376,7 +361,7 @@ class HomeController extends Controller {
 			->count();
 
 			$staffconfirmationlist = DB::table('users')
-			->select('users.Id','users.StaffId','users.Name','users.Grade','users.Company','users.Department','users.Position','users.Joining_Date','users.Confirmation_Date')
+			->select('users.Id','users.StaffId','users.Name','users.Grade','users.Company','users.Position','users.Joining_Date','users.Confirmation_Date')
 			->whereRaw("str_to_date(users.Confirmation_Date,'%d-%M-%Y') BETWEEN str_to_date('$confirmStartDate','%d-%M-%Y') AND str_to_date('$confirmEndDate','%d-%M-%Y')")
 			->where(function ($query) use ($todayDate) {
 				$query->whereRaw('str_to_date(users.Resignation_Date,"%d-%M-%Y") > str_to_date("'.$todayDate.'","%d-%M-%Y")');
@@ -387,41 +372,6 @@ class HomeController extends Controller {
 
 
 		}
-
-
-
-		if($me->Approval_Control)
-		{
-			$missedproject = DB::select("
-			SELECT  (
-				select COUNT(*) AS COUNT from `projects` where `projects`.`Id` not in (select `approvalsettings`.`ProjectId` from `approvalsettings` where `approvalsettings`.`Type` = 'Claim')
-			) AS 'Claim',
-			(
-				select COUNT(*) AS COUNT from `projects` where `projects`.`Id` not in (select `approvalsettings`.`ProjectId` from `approvalsettings` where `approvalsettings`.`Type` = 'Timesheet')
-			) AS 'Timesheet',
-			(
-				select COUNT(*) AS COUNT from `projects` where `projects`.`Id` not in (select `approvalsettings`.`ProjectId` from `approvalsettings` where `approvalsettings`.`Type` = 'Leave')
-			) AS 'Leave'
-			");
-
-		}
-
-			// $start2=date('d-M-Y', strtotime('first day of last month'));
-			// $end2=date('d-M-Y', strtotime('last day of this month'));
-
-		// $finaltimesheetspendingallowance = DB::table('timesheets')
-		// ->select(DB::raw('Count(DISTINCT timesheets.UserId) as total'))
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid2,TimesheetId from timesheetchecked Group By TimesheetId) as max2'), 'max2.TimesheetId', '=', 'timesheets.Id')
-		// ->leftJoin('timesheetchecked', 'timesheetchecked.Id', '=', DB::raw('max2.`maxid2`'))
-		//
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
-		// ->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
-		//
-		// ->whereRaw('timesheetstatuses.Status like "%Final Approved%"')
-		// ->whereRaw('timesheetchecked.Timesheet_Status<>"Processed"')
-		// ->first();
-		//
-		// $pendingallowance=$finaltimesheetspendingallowance->total;
 
 		$pendingtimesheets = DB::table('timesheets')
 		->select(DB::raw('count(Distinct timesheets.UserId) as pending'))
@@ -515,7 +465,6 @@ class HomeController extends Controller {
 		->select('assets.Label','assets.Label','assets.Type','assets.Serial_No','assets.IMEI','assets.Brand','assets.Model_No','assets.Car_No','assets.Color','assets.Rental_Start_Date','assets.Rental_End_Date')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,AssetId from assettrackings Group By AssetId) as max'), 'max.AssetId', '=', 'assets.Id')
 		->leftJoin('assettrackings', 'assettrackings.Id', '=', DB::raw('max.`maxid`'))
-		->leftJoin('projects', 'assettrackings.ProjectId', '=', 'projects.Id')
 		->leftJoin('users', 'assettrackings.UserId', '=', 'users.Id')
 		->leftJoin(DB::raw('users as transfer'), 'assettrackings.Transfer_To', '=', 'transfer.Id')
 		->orderBy('assets.Label','asc')
@@ -770,7 +719,6 @@ class HomeController extends Controller {
 		->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Leave"'))
 		->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
 		->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-		->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
 		->select('leaves.Id','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','approver.Name as Approver','leavestatuses.Leave_Status as Status','leavestatuses.Comment','leavestatuses.updated_at as Review_Date')
 		->where('leavestatuses.Leave_Status', '<>','Cancelled')
 		->orderBy('leaves.Id','desc')
@@ -778,7 +726,7 @@ class HomeController extends Controller {
 
 
 
-		return view('home', ['me' => $me,'start' => $start, 'end' => $end,'projects' =>$projects,'missedproject'=>$missedproject, 'users' =>$users,'notice' => $notice,'holidays' => $holidays,'mytask' =>$mytask,'myclaim' => $myclaim,'mytimesheet' => $mytimesheet,
+		return view('home', ['me' => $me,'start' => $start, 'end' => $end, 'users' =>$users,'notice' => $notice,'holidays' => $holidays,'mytask' =>$mytask,'myclaim' => $myclaim,'mytimesheet' => $mytimesheet,
 		'myleave' => $myleave,'interval' =>$interval,'assets' =>$assettrackings, 'assetsummary' => $assetsummary,'leavesummary'=>$leavesummary,'interns'=>$interns,'accountsummary'=>$accountsummary,
 		'pendingtimesheets' => $pendingtimesheets, 'pendingclaims' => $pendingclaims,'pendingadvance'=>$pendingadvance,'pendingleaves' => $pendingleaves,'mypendingtimesheet' => $mypendingtimesheet,
 	 	'rejectedtimesheets' => $rejectedtimesheets, 'rejectedclaims' => $rejectedclaims,'rejectedleaves' => $rejectedleaves, 'licenses'=>$licenses,
@@ -831,13 +779,13 @@ class HomeController extends Controller {
 
 
 
-		Mail::send('emails.birthdayalert', ['me' => $me, 'birthday'=>$birthday, 'birthdaycount'=>$birthdaycount], function($message) use ($emails,$NotificationSubject)
-		{
-				$emails = array_filter($emails);
-				array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-				$message->to($emails)->subject($NotificationSubject);
+		// Mail::send('emails.birthdayalert', ['me' => $me, 'birthday'=>$birthday, 'birthdaycount'=>$birthdaycount], function($message) use ($emails,$NotificationSubject)
+		// {
+		// 		$emails = array_filter($emails);
+		// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+		// 		$message->to($emails)->subject($NotificationSubject);
 
-		});
+		// });
 
 			return 1;
 		}

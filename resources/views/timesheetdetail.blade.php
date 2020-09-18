@@ -265,17 +265,6 @@
                                },{
                                       label: "Next Person:",
                                       name: "timesheets.Next_Person"
-                               },{
-                                      label: "Project Name:",
-                                      name: "timesheets.ProjectId",
-                                      type:  'select',
-                                      options: [
-                                          { label :"", value: "0" },
-                                          @foreach($projects as $project)
-                                              { label :"{{$project->Project_Name}}", value: "{{$project->Id}}" },
-                                          @endforeach
-
-                                      ],
                                },
                                @if($me->Edit_Allowance)
                                {
@@ -485,7 +474,7 @@
 
                                      }
                                    },
-                                   columnDefs: [{ "visible": false, "targets": [1,2,3,4,5,6,23,35] },{"className": "dt-center dt-padding", "targets": "_all"}],
+                                   columnDefs: [{ "visible": false, "targets": [1,2,3,4,5,6,33] },{"className": "dt-center dt-padding", "targets": "_all"}],
                                    rowId: 'timesheetstatuses.Id',
                                    colReorder: false,
                                    sScrollX: "100%",
@@ -530,7 +519,7 @@
                                            { data: "timesheets.Date",title:"Date",
                                            "render": function ( data, type, full, meta ) {
 
-                                                  return '<a class ="buttonclaim" onclick="viewclaim(\''+full.timesheets.Date+'\',\''+full.timesheets.ProjectId+'\',\'{{$user->Id}}\')">'+full.timesheets.Date+'</a>';
+                                                  return '<a class ="buttonclaim" onclick="viewclaim(\''+full.timesheets.Date+'\',\'{{$user->Id}}\')">'+full.timesheets.Date+'</a>';
                                               }
                                            },
                                            {
@@ -640,8 +629,6 @@
                                           { data: "timesheets.OT3",title:"OT_3.0"},
                                            { data: "timesheets.Leader_Member",title:"Leader/Member"},
                                            { data: "timesheets.Next_Person",title:"Next_Person"},
-                                           { data: "projectcodes.Project_Code", editField: "timesheets.Project_Code_Id",title:"Project_Code" },
-                                           { data: "projects.Project_Name", editField: "timesheets.ProjectId" ,title:"Project_Name"},
                                            { data: "timesheets.Site_Name",title:"Site_Name"},
 
                                            { data: "timesheets.Work_Description",title:"Work_Description"},
@@ -1001,19 +988,6 @@
                    </div>
                  </div>
 
-                 <div class="form-group">
-                   <label class="col-md-4 control-label">Project Name</label>
-                   <div class="col-md-8">
-
-                     <select class="form-control select2" id="NewProject" name="NewProject" style="width: 100%;">
-                       <option></option>
-                       @foreach ($projects as $project)
-                           <option  value="{{$project->Id}}">{{$project->Project_Name}}</option>
-                       @endforeach
-                     </select>
-                   </div>
-                 </div>
-
                </div>
 
                <div class="modal-footer">
@@ -1056,10 +1030,6 @@
 
              <div class="row">
                <div class="form-group">
-
-                 <div class="col-lg-6">
-                   <label>Department : <i>{{$user->Department}}</i></label>
-                 </div>
 
                  <div class="col-lg-6">
 
@@ -1316,7 +1286,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -1368,10 +1338,9 @@
 
       }
 
-      function viewclaim(date,projectid,userid)
+      function viewclaim(date,userid)
       {
         // alert(date);
-        // alert(projectid);
         // alert(nextperson);
         $('#ViewClaim').modal('show');
         $("#claim").html("");
@@ -1387,7 +1356,6 @@
                     method: "POST",
                     data: {
                       Date:date,
-                      ProjectId:projectid,
                       UserId:userid
                     },
                     success: function(response){
@@ -1408,17 +1376,12 @@
 
 
                         var display='<div id="table-wrapper"><div id="table-scroll"><table border="1" align="center" class="claimtable" cellspacing="0" width="100%" padding="30px" style="font-size: 13px;">';
-                        display+='<tr class="claimheader"><td>Project_Name</td><td>Site_Name</td><td>State</td><td>Work_Description</td><td>Car_No</td><td>Mileage</td><td>Expenses_Type</td><td>Total_Expenses</td><td>Petrol_SmartPay</td><td>Advance</td><td>Total_Amount</td><td>GST_Amount</td><td>Total_Without_GST</td><td>Receipt_No</td><td>Company_Name</td><td>GST_No</td><td>Remarks</td><td>Approver</td><td>Status</td><td>Comment</td><td>Review_Date</td></tr>';
+                        display+='<tr class="claimheader"><td>Site_Name</td><td>State</td><td>Work_Description</td><td>Car_No</td><td>Mileage</td><td>Expenses_Type</td><td>Total_Expenses</td><td>Petrol_SmartPay</td><td>Advance</td><td>Total_Amount</td><td>GST_Amount</td><td>Total_Without_GST</td><td>Receipt_No</td><td>Company_Name</td><td>GST_No</td><td>Remarks</td><td>Approver</td><td>Status</td><td>Comment</td><td>Review_Date</td></tr>';
 
                         $.each(myObject, function(i,item){
 
-                                if (item.Project_Name===null)
-                                {
-                                  item.Project_Name=" - ";
-                                }
-
                                 display+="<tr>";
-                                display+='<td>'+item.Project_Name+'</td><td>'+item.Site_Name+'</td><td>'+item.State+'</td><td>'+item.Work_Description+'</td><td>'+item.Car_No+'</td><td>'+item.Mileage+'</td><td>'+item.Expenses_Type+'</td><td>'+item.Total_Expenses+'</td><td>'+item.Petrol_SmartPay+'</td><td>'+item.Advance+'</td><td>'+item.Total_Amount+'</td><td>'+item.GST_Amount+'</td><td>'+item.Total_Without_GST+'</td><td>'+item.Receipt_No+'</td><td>'+item.Company_Name+'</td><td>'+item.GST_No+'</td><td>'+item.Remarks+'</td><td>'+item.Approver+'</td><td>'+item.Status+'</td><td>'+item.Comment+'</td><td>'+item.updated_at+'<td>';
+                                display+='<td>'+item.Site_Name+'</td><td>'+item.State+'</td><td>'+item.Work_Description+'</td><td>'+item.Car_No+'</td><td>'+item.Mileage+'</td><td>'+item.Expenses_Type+'</td><td>'+item.Total_Expenses+'</td><td>'+item.Petrol_SmartPay+'</td><td>'+item.Advance+'</td><td>'+item.Total_Amount+'</td><td>'+item.GST_Amount+'</td><td>'+item.Total_Without_GST+'</td><td>'+item.Receipt_No+'</td><td>'+item.Company_Name+'</td><td>'+item.GST_No+'</td><td>'+item.Remarks+'</td><td>'+item.Approver+'</td><td>'+item.Status+'</td><td>'+item.Comment+'</td><td>'+item.updated_at+'<td>';
                                 display+="</tr>";
                         });
 
@@ -2182,7 +2145,6 @@ function newtimesheet() {
 
   var date = "{{$end}}";
   var commentdate = $("input[name=NewDate]").val();
-  var projectid = $('select[name=NewProject] option:selected').val();
   var userid = {{$UserId}};
 
     $.ajaxSetup({
@@ -2195,7 +2157,6 @@ function newtimesheet() {
                 data: {
                   Date:date,
                   Comment:commentdate,
-                  ProjectId:projectid,
                   UserId:userid
                 },
 

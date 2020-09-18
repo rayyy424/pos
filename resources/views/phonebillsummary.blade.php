@@ -87,8 +87,8 @@
 
         <div class="col-md-2">
           <select class="form-control" id="year">
-            <option <?php if($year == '2017') echo ' selected="selected" '; ?>>2017</option>
-            <option <?php if($year == '2018') echo ' selected="selected" '; ?>>2018</option>
+            <option <?php if($year == '2019') echo ' selected="selected" '; ?>>2019</option>
+            <option <?php if($year == '2020') echo ' selected="selected" '; ?>>2020</option>
 
           </select>
         </div>
@@ -192,7 +192,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

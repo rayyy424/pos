@@ -18,7 +18,7 @@
                             </a>
                               <br>
                                 <p style="margin:0 0 36px; text-align:center; font-size:16px; line-height:22px; text-transform:uppercase; color:#626658;">
-                                    {{$count->count}} Genset Spare Part(s) Are Low In Quantity
+                                    {{$count->count}} SpeedFreak Spare Part(s) Are Low In Quantity
                                 </p>
 
                                 <table border="1" width="100%" class="table table-bordered">

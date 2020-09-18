@@ -253,7 +253,6 @@
                                          { data: "leaves.No_of_Days",title:"No_of_Days"},
                                          { data: "leaves.Reason",title:"Reason"},
                                          { data: "leaves.created_at",title:"Application_Date"},
-                                         { data: "projects.Project_Name", editField: "leaves.ProjectId",title:"Project_Name" },
                                          { data: "approver.Name", editField: "leavestatuses.UserId",title:"Approver" },
                                          { data: "leavestatuses.Leave_Status",title:"Leave_Status"},
                                          { data: "leavestatuses.updated_at",title:"Review_Date"},
@@ -340,7 +339,6 @@
                                { data: "leaves.No_of_Days",title:"No_of_Days"},
                                { data: "leaves.Reason",title:"Reason"},
                                { data: "leaves.created_at",title:"Application_Date"},
-                               { data: "projects.Project_Name", editField: "leaves.ProjectId",title:"Project_Name" },
                                { data: "approver.Name", editField: "leavestatuses.UserId",title:"Approver" },
                                { data: "leavestatuses.Leave_Status",title:"Leave_Status"},
                                { data: "leavestatuses.updated_at",title:"Review_Date"},
@@ -406,7 +404,6 @@
                            { data: "leaves.No_of_Days",title:"No_of_Days"},
                            { data: "leaves.Reason",title:"Reason"},
                            { data: "leaves.created_at",title:"Application_Date"},
-                           { data: "projects.Project_Name", editField: "leaves.ProjectId",title:"Project_Name" },
                            { data: "approver.Name", editField: "leavestatuses.UserId",title:"Approver" },
                            { data: "leavestatuses.Leave_Status",title:"Leave_Status"},
                            { data: "leavestatuses.updated_at",title:"Review_Date"},
@@ -472,7 +469,6 @@
                        { data: "leaves.No_of_Days",title:"No_of_Days"},
                        { data: "leaves.Reason",title:"Reason"},
                        { data: "leaves.created_at",title:"Application_Date"},
-                       { data: "projects.Project_Name", editField: "leaves.ProjectId",title:"Project_Name" },
                        { data: "approver.Name", editField: "leavestatuses.UserId",title:"Approver" },
                        { data: "leavestatuses.Leave_Status",title:"Leave_Status"},
                        { data: "leavestatuses.updated_at",title:"Review_Date"},
@@ -794,7 +790,7 @@
                         @if ($user->Country!="")
                           <option  value="{{$user->Id}}">{{$user->Name}} - {{$user->Country}}</option>
                         @else
-                          <option  value="{{$user->Id}}">{{$user->Name}} - {{$user->Project_Name}}</option>
+                          <option  value="{{$user->Id}}">{{$user->Name}}</option>
                         @endif
 
                       @endforeach
@@ -1051,21 +1047,6 @@
                         </div>
 
                         <div class="form-group">
-                          <label>Project : </label>
-
-                          <select class="form-control select2" id="Project" name="Project" style="width: 100%;">
-                            <option></option>
-
-                            @foreach ($projects as $project)
-
-                                <option  value="{{$project->Id}}">{{$project->Project_Name}}</option>
-
-                            @endforeach
-
-                          </select>
-                        </div>
-
-                        <div class="form-group">
                           <label>Approver : </label>
 
                           <select class="form-control select2" id="Approver" name="Approver" style="width: 100%;">
@@ -1075,7 +1056,7 @@
                               @if ($user->Country!="")
                                 <option  value="{{$user->Id}}">{{$user->Name}} - {{$user->Country}} [{{$user->Level}}]</option>
                               @else
-                                <option  value="{{$user->Id}}">{{$user->Name}} - {{$user->Project_Name}} [{{$user->Level}}]</option>
+                                <option  value="{{$user->Id}}">{{$user->Name}} [{{$user->Level}}]</option>
                               @endif
 
                             @endforeach
@@ -1282,7 +1263,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -1748,7 +1729,6 @@
 
                         $("#Leave_Type").val("").change();
                         $("#Approver").val("").change();
-                        $("#Project").val("").change();
                         // document.getElementById("Leave_Term_2").checked=false;
                         // document.getElementById("Leave_Term_3").checked=false;
                         // document.getElementById("Leave_Term_1").checked=true;
@@ -1805,56 +1785,6 @@
       });
 
   }
-
-  $('#Project').on('change', function() {
-
-    $('#Approver')
-    .empty();
-
-    $('#Approver')
-    .append('<option value=""></option>');
-
-    if($("#Project option:selected").text()=="")
-    {
-
-      @foreach ($approver as $user)
-
-          @if ($user->Country!="")
-
-            $('#Approver')
-            .append('<option value="{{$user->Id}}">{{$user->Name}} - {{$user->Country}} [{{$user->Level}}]</option>');
-
-          @else
-
-            $('#Approver')
-            .append('<option value="{{$user->Id}}">{{$user->Name}} - {{$user->Project_Name}} [{{$user->Level}}]</option>');
-
-          @endif
-
-      @endforeach
-
-    }
-    else {
-
-      @foreach ($approver as $user)
-
-        if ($("#Project option:selected").text()==decodeEntities("{{$user->Project_Name}}"))
-        {
-          @if ($user->Country!="")
-            $('#Approver')
-            .append('<option value="{{$user->Id}}">{{$user->Name}} - {{$user->Project_Name}} [{{$user->Level}}]</option>');
-          @else
-            $('#Approver')
-            .append('<option value="{{$user->Id}}">{{$user->Name}} - {{$user->Project_Name}} [{{$user->Level}}]</option>');
-          @endif
-
-        }
-
-      @endforeach
-
-    }
-
-  });
 
   function decodeEntities(s){
       var str, temp= document.createElement('p');

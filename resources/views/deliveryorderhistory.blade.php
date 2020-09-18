@@ -77,7 +77,6 @@
                             { data : 'deliveryform.Id', title: "Id"},
                             { data : 'deliveryform.DO_No', title: "DO Number"},
                             { data : 'options.Option', title: "Purpose"},  
-                            { data : 'projects.Project_Name', title: "Project"},  
                             { data : 'companies.Company_Name', title: "Company"},  
                             { data : 'client.Company_Name', title: "Client"},  
                             { data : 'radius.Location_Name', title: "Site"},  
@@ -248,7 +247,7 @@
 
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
   </footer>

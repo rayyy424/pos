@@ -620,7 +620,6 @@
                                     { data: "vpn.Id",title: "Id"},
                                     { data: "users.Name", editField: "vpn.UserId",title:'Staff_Name' },
                                     { data: "users.Position" ,title: "Position"},
-                                    { data: "users.Department",title: "Department" },
                                     { data: "vpn.User_ID",title: "User ID" },
                                     { data: "vpn.Password",title: "Password" }
 
@@ -679,7 +678,6 @@
                                     { data: "nas.Id",title: "Id"},
                                     { data: "users.Name", editField: "nas.UserId",title:'Staff_Name' },
                                     { data: "users.Position",title: "Position" },
-                                    { data: "users.Department",title: "Department" },
                                     { data: "nas.PC_Name",title: "PC Name" },
                                     { data: "nas.User_ID",title: "User ID" },
                                     { data: "nas.Password",title: "Password" },
@@ -1896,7 +1894,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -2035,7 +2033,6 @@
       nric=$('[name="NRIC"]').val();
       passportno=$('[name="Passport_No"]').val();
       unionno=$('[name="Union_No"]').val();
-      department=$('[name="Department"]').val();
       position=$('[name="Position"]').val();
       // grade=$('[name="Grade"]').val();
       // superior=$('[name="Superior"]').val();
@@ -2074,7 +2071,6 @@
                     NRIC:nric,
                     Passport_No:passportno,
                     Union_No:unionno,
-                    Department:department,
                     Position:position,
                     Emergency_Contact_Person:emergencycontactperson,
                     Emergency_Contact_Relationship:emergencycontactrelationship,

@@ -79,8 +79,8 @@
                           columns: [
                           { data : null, "render":"", title: "No"},
                           { data: 'inventorypricehistory.Id' , title:"Id"},
-                          { data: 'gensetinventory.name' , title:"Inventory"},
-                          { data: 'gensetinventory.barcode' , title:"Barcode"},
+                          { data: 'speedfreakinventory.name' , title:"Inventory"},
+                          { data: 'speedfreakinventory.barcode' , title:"Barcode"},
                           { data: 'companies.Company_Name' , title:"Supplier"},
                           { data: 'inventorypricehistory.price' , title:"Price (RM)"},
                           { data: 'inventorypricehistory.stockin' , title:"Stock In"},
@@ -157,12 +157,12 @@
     <section class="content-header">
       <h1>
       Price History
-      <small>Genset Inventory Management</small>
+      <small>Speedfreak Inventory Management</small>
       </h1>
 
       <ol class="breadcrumb">
       <li><a href="{{ url('/home') }}"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li><a href="#">Genset Inventory Management</a></li>
+      <li><a href="#">Speedfreak Inventory Management</a></li>
       <li class="active">Price History</li>
       </ol>
     </section>
@@ -247,7 +247,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

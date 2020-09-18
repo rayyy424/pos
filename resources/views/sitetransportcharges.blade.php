@@ -163,7 +163,6 @@
                             columns: [
                             { data : null, "render":"", title: "No"},
                             { data : 'deliveryform.Id', title:"Id"},
-                            { data: "deliveryform.project_type", title:"Project Type"},
                             { data: "deliverylocation.driverincentive",title:"Total Charges (RM)"}
 
                     ],
@@ -206,8 +205,6 @@
                             { data: "users.Name", title:"Driver Name"},
                             { data: "deliveryform.DO_No", title:"DO Number"},
                             { data: "radius.Location_Name", title:"Site"},
-                            { data: "projects.Project_Name", title:"Project"},
-                            { data: "deliveryform.project_type", title:"Project Type"},
                             { data: "companies.Company_Name", title:"Company"},
                             { data: "deliverylocation.area", title:"Area"},
                             { data: "roadtax.Lorry_Size", title:"Lorry Size"},
@@ -438,21 +435,6 @@
                    </div>
                  </div>
 
-                  <div class="col-md-3">
-                   <div class="input-group">
-                    <label>Project Type: <input type="checkbox" name="viewtype" id="viewtype">Group By Project Type</label>
-                     <select class="form-control" id="projecttype" name="projecttype">
-                      <option value="" selected=""></option>
-                      <option value="CME">CME</option>
-                      <option value="GSC">GSC</option>
-                      <option value="GST">GST</option>
-                      <option value="FAB">FAB</option>
-                      <option value="Others">Others</option>
-                     </select>
-
-                   </div>
-                 </div>
-
                  <div class="col-md-2">
                      <div class="input-group">
                       <label>Refresh</label>
@@ -658,7 +640,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.
@@ -681,22 +663,12 @@
 
       var d=$('#range').val();
       var arr = d.split(" - ");
-      var projecttype = $('#projecttype').val();
       var company = $('#company').val();
-      console.log(projecttype,company)
+      console.log(company)
 
-      if((projecttype == null || projecttype == "") && (company == null || company == ""))
-      {
-        window.location.href ="{{ url("/transportcharges") }}/"+arr[0]+"/"+arr[1];
-      }
-      else if((company == null || company == ""))
-      {
-        window.location.href ="{{ url("/transportcharges") }}/"+arr[0]+"/"+arr[1]+"/"+projecttype;
-      }
-      else if((projecttype == null || projecttype == ""))
-      {
-        window.location.href ="{{ url("/transportcharges") }}/"+arr[0]+"/"+arr[1]+"/"+ null +"/"+company;
-      }
+      
+        window.location.href ="{{ url("/transportcharges") }}/"+arr[0]+"/"+arr[1]+"/"+company;
+      
     }
 
 

@@ -14,7 +14,7 @@
                         <tr align="center">
                             <td>
                               <a href="" style="display:block; width:587px; height:122px; margin:0 auto 30px;">
-                                  <img src="{{ URL::to('/') ."/img/logo.png"  }}" width="587" height="122" alt="Midascom Network Sdn Bhd" style="display:block; border:0; margin:0;">
+                                  <img src="{{ URL::to('/') ."/img/logo.png"  }}" width="587" height="122" alt="Speed Freak Sdn Bhd" style="display:block; border:0; margin:0;">
                               </a>
                                 <br>
                                 <p style="margin:0 0 36px; text-align:center; font-size:16px; line-height:22px; text-transform:uppercase; color:#626658;">

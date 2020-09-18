@@ -457,7 +457,7 @@
                   </li>
 
                   <li class="list-group-item">
-                    <b>Department</b> : <p class="pull-right"><i>{{ $user->Department }}</i>
+                    <b>Position</b> : <p class="pull-right"><i>{{ $user->Position }}</i>
                   </li>
 
                 </ul>
@@ -567,7 +567,7 @@
 
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

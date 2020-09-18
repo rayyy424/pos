@@ -339,15 +339,6 @@
             </div>
       </div>
 
-      <div class="col-md-2">
-        <label>Project</label>
-      <select class="form-control select2" id="project" name="project">
-        <option value="">All</option>
-        @foreach($projects as $p)
-          <option value="{{$p->Id}}">{{$p->Project_Name}}</option>
-        @endforeach
-      </select>
-    </div>
      <div class="col-md-3">
         <label>Client</label>
       <select class="form-control select2" id="client" name="client">
@@ -442,7 +433,7 @@
 
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
   </footer>
@@ -453,12 +444,11 @@
      $(".select2").select2();
     $(document).ready(function() {
         $(document).on('click', '#refresh', function(e) {
-           var project = $('#project').val() ? $('#project').val() : null;
            var client = $('#client').val() ? $('#client').val() : null;
            var type = $('#type').val() ? $('#type').val() : null;
            var detail = $('#all').is(':checked') ? "true" : "";
 
-            window.location.href ="{{ url("/salesorder") }}/"+ project +"/"+ client + "/" + type + "/" + detail;
+            window.location.href ="{{ url("/salesorder") }}/"+ client + "/" + type + "/" + detail;
         });
       });
 

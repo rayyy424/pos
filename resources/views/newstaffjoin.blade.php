@@ -204,16 +204,6 @@
                                                      @endforeach
                                                  ],
                                        }, {
-                                               label: "Team:",
-                                               name: "users.Team",
-                                               type:  "select",
-                                               options: [
-                                                   { label :"", value: "" },
-                                                   @foreach($users as $user)
-                                                       { label :"{{$user->Name}}", value: "{{$user->Id}}" },
-                                                   @endforeach
-                                               ],
-                                       }, {
                                                  label: "Company:",
                                                  name: "users.Company",
                                                  type:  "select",
@@ -221,30 +211,6 @@
                                                    { label :"", value: "" },
                                                    @foreach($options as $option)
                                                      @if ($option->Field=="Company")
-                                                       { label :"{{$option->Option}}", value: "{{$option->Option}}" },
-                                                     @endif
-                                                   @endforeach
-                                                 ],
-                                         }, {
-                                                 label: "Department:",
-                                                 name: "users.Department",
-                                                 type:  "select",
-                                                 options: [
-                                                   { label :"", value: "" },
-                                                   @foreach($projects as $proj)
-
-                                                       { label :"{{$proj->Project_Name}}", value: "{{$proj->Project_Name}}" },
-
-                                                   @endforeach
-                                                 ],
-                                         }, {
-                                                 label: "Cag:",
-                                                 name: "users.Category",
-                                                 type:  "select",
-                                                 options: [
-                                                   { label :"", value: "" },
-                                                   @foreach($options as $option)
-                                                     @if ($option->Field=="Category")
                                                        { label :"{{$option->Option}}", value: "{{$option->Option}}" },
                                                      @endif
                                                    @endforeach
@@ -465,7 +431,7 @@
 
                                         return nRow;
                                       },
-                                       columnDefs: [{ "visible": false, "targets": [2,4,18,19,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53] },{"className": "dt-center", "targets": "_all"}],
+                                       columnDefs: [{ "visible": false, "targets": [2,4,16,17,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50] },{"className": "dt-center", "targets": "_all"}],
                                        responsive: false,
                                        sScrollX: "100%",
                                        language : {
@@ -520,8 +486,6 @@
                                               { data: "users.Nationality"},
                                               { data: "users.Grade"},
                                               { data: "users.Company"},
-                                              { data: "users.Department"},
-                                              { data: "users.Category"},
                                               { data: "users.Entitled_for_OT"},
                                               { data: "users.Working_Days"},
                                               { data: "holidayterritories.Name", editField: "users.HolidayTerritoryId" },
@@ -537,15 +501,13 @@
                                                { data: "users.Home_Base"},
                                                // { data: "users.Nationality"},
                                                { data: "users.DOB"},
-                                               { data: "users.Place_Of_Birth"},
+                                               { data: "users.Place_Of_Birth"},//30
                                                { data: "users.Race"},
                                                { data: "users.Religion"},
                                                { data: "users.Passport_No"},
                                                { data: "users.Gender"},
                                                { data: "users.Marital_Status"},
                                                { data: "superior.Name", editField: "users.SuperiorId" },
-                                               { data: "team.Name", editField: "users.Team" },
-
                                                // { data: "users.Resignation_Date"},
                                                { data: "users.Internship_Start_Date"},
                                                { data: "users.Internship_End_Date"},
@@ -774,7 +736,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

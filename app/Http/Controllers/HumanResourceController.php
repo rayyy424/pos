@@ -156,7 +156,6 @@ class HumanResourceController extends Controller {
             ->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Leave"'))
             ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
             ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-            ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
             ->select('leaves.Id','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leave_terms.Terms','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','approver.Name as Approver','leavestatuses.Leave_Status as Status','leavestatuses.Comment','leavestatuses.updated_at as Review_Date')
             ->where('leaves.Leave_Type',$k)
             ->where('leavestatuses.Leave_Status', '<>','Cancelled')
@@ -176,7 +175,6 @@ class HumanResourceController extends Controller {
             ->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Leave"'))
             ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
             ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-            ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
             ->select('leaves.Id','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leave_terms.Terms','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','approver.Name as Approver','leavestatuses.Leave_Status as Status','leavestatuses.Comment','leavestatuses.updated_at as Review_Date')
             ->where('leaves.Leave_Type',$k)
             ->where('leavestatuses.Leave_Status', '<>','Cancelled')
@@ -195,8 +193,7 @@ class HumanResourceController extends Controller {
             ->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Leave"'))
             ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
             ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-            ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
-            ->select('leavestatuses.Id','leaves.Id as LeaveId','leavestatuses.Leave_Status as Status','applicant.StaffId as Staff_ID','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.Medical_Claim','leaves.Panel_Claim','leaves.Verified_By_HR','leaves.Medical_Paid_Month','leaves.created_at as Application_Date','projects.Project_Name','approver.Name as Approver','leavestatuses.Comment','leavestatuses.updated_at as Review_Date','files.Web_Path')
+            ->select('leavestatuses.Id','leaves.Id as LeaveId','leavestatuses.Leave_Status as Status','applicant.StaffId as Staff_ID','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.Medical_Claim','leaves.Panel_Claim','leaves.Verified_By_HR','leaves.Medical_Paid_Month','leaves.created_at as Application_Date','approver.Name as Approver','leavestatuses.Comment','leavestatuses.updated_at as Review_Date','files.Web_Path')
             ->where('leavestatuses.Leave_Status', 'like','%Final Approved%')
             ->where('leaves.Leave_Type',$k)
             ->orderBy('leaves.Id','desc')
@@ -215,12 +212,11 @@ class HumanResourceController extends Controller {
 		$me=(new CommonController)->get_current_user();
 		$month = date('m');
 		
-		$users = DB::table('users')->select('users.Id','files.Web_Path','users.Status','users.StaffId as Staff_ID','users.Name','users.NRIC','users.Joining_Date','users.Confirmation_Date','users.Resignation_Date','users.Position','users.Contact_No_1','users.Nationality','users.Grade','users.Company','users.Department','users.Category','users.Entitled_for_OT','users.Working_Days','holidayterritories.Name as HolidayTerritory','users.Ext_No','users.Company_Email','users.Nick_Name','users.User_Type','users.Personal_Email', 'users.Contact_No_2','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.DOB','users.Place_Of_Birth','users.Race','users.Religion','users.Passport_No','users.Gender','users.Marital_Status','superior.Name as Superior','team.Name as TeamMember','users.Internship_Start_Date','users.Internship_End_Date','users.Bank_Name','users.Bank_Account_No','users.EPF_No','users.SOCSO_No','users.Income_Tax_No','users.Emergency_Contact_Person','users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Address','users.Driving_License','users.Car_Owner','users.Criminal_Activity')
+		$users = DB::table('users')->select('users.Id','files.Web_Path','users.Status','users.StaffId as Staff_ID','users.Name','users.NRIC','users.Joining_Date','users.Confirmation_Date','users.Resignation_Date','users.Position','users.Contact_No_1','users.Nationality','users.Grade','users.Company','users.Entitled_for_OT','users.Working_Days','holidayterritories.Name as HolidayTerritory','users.Ext_No','users.Company_Email','users.Nick_Name','users.User_Type','users.Personal_Email', 'users.Contact_No_2','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.DOB','users.Place_Of_Birth','users.Race','users.Religion','users.Passport_No','users.Gender','users.Marital_Status','superior.Name as Superior','users.Internship_Start_Date','users.Internship_End_Date','users.Bank_Name','users.Bank_Account_No','users.EPF_No','users.SOCSO_No','users.Income_Tax_No','users.Emergency_Contact_Person','users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Address','users.Driving_License','users.Car_Owner','users.Criminal_Activity')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
 		->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="User"'))
 		->leftJoin('users as superior','superior.Id','=','users.SuperiorId')
 		->leftJoin('holidayterritories','holidayterritories.Id','=','users.HolidayTerritoryId')
-		->leftJoin('users as team','team.Id','=','users.Team')
 		->orderBy('users.Id')
 		->get();
 
@@ -231,13 +227,9 @@ class HumanResourceController extends Controller {
 		->orderBy('Option','asc')
 		->get();
 
-		$projects = DB::table('projects')
-		->where('projects.Project_Name','like','%department%')
-		->get();
-
 		$holidayterritories = DB::table('holidayterritories')->select('holidayterritories.Id','holidayterritories.Name')->get();
 
-    return view('staffconfirmed', ['me' => $me,'users' => $users,'options' =>$options,'resigned'=>false,'projects'=>$projects, 'holidayterritories' => $holidayterritories,'month' => $month]);
+    return view('staffconfirmed', ['me' => $me,'users' => $users,'options' =>$options,'resigned'=>false, 'holidayterritories' => $holidayterritories,'month' => $month]);
 	}
 
 	public function newstaff(){
@@ -245,12 +237,11 @@ class HumanResourceController extends Controller {
 		$me=(new CommonController)->get_current_user();
 		$year = Carbon::now()->year;
 
-		$users = DB::table('users')->select('users.Id','files.Web_Path','users.Status','users.StaffId as Staff_ID','users.Name','users.NRIC','users.Joining_Date','users.Confirmation_Date','users.Resignation_Date','users.Position','users.Contact_No_1','users.Nationality','users.Grade','users.Company','users.Department','users.Category','users.Entitled_for_OT','users.Working_Days','holidayterritories.Name as HolidayTerritory','users.Ext_No','users.Company_Email','users.Nick_Name','users.User_Type','users.Personal_Email', 'users.Contact_No_2','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.DOB','users.Place_Of_Birth','users.Race','users.Religion','users.Passport_No','users.Gender','users.Marital_Status','superior.Name as Superior','team.Name as TeamMember','users.Internship_Start_Date','users.Internship_End_Date','users.Bank_Name','users.Bank_Account_No','users.EPF_No','users.SOCSO_No','users.Income_Tax_No','users.Emergency_Contact_Person','users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Address','users.Driving_License','users.Car_Owner','users.Criminal_Activity')
+		$users = DB::table('users')->select('users.Id','files.Web_Path','users.Status','users.StaffId as Staff_ID','users.Name','users.NRIC','users.Joining_Date','users.Confirmation_Date','users.Resignation_Date','users.Position','users.Contact_No_1','users.Nationality','users.Grade','users.Company','users.Entitled_for_OT','users.Working_Days','holidayterritories.Name as HolidayTerritory','users.Ext_No','users.Company_Email','users.Nick_Name','users.User_Type','users.Personal_Email', 'users.Contact_No_2','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.DOB','users.Place_Of_Birth','users.Race','users.Religion','users.Passport_No','users.Gender','users.Marital_Status','superior.Name as Superior','users.Internship_Start_Date','users.Internship_End_Date','users.Bank_Name','users.Bank_Account_No','users.EPF_No','users.SOCSO_No','users.Income_Tax_No','users.Emergency_Contact_Person','users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Address','users.Driving_License','users.Car_Owner','users.Criminal_Activity')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
 		->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="User"'))
 		->leftJoin('users as superior','superior.Id','=','users.SuperiorId')
 		->leftJoin('holidayterritories','holidayterritories.Id','=','users.HolidayTerritoryId')
-		->leftJoin('users as team','team.Id','=','users.Team')
 		->orderBy('users.Id')
 		->where(DB::raw('str_to_date(users.Joining_Date,"%Y")'),"=",DB::raw('str_to_date("'.$year.'","%Y")'))
 		->get();
@@ -261,13 +252,9 @@ class HumanResourceController extends Controller {
 		->orderBy('Option','asc')
 		->get();
 
-		$projects = DB::table('projects')
-		->where('projects.Project_Name','like','%department%')
-		->get();
-
 		$holidayterritories = DB::table('holidayterritories')->select('holidayterritories.Id','holidayterritories.Name')->get();
 
-    return view('newstaffjoin', ['me' => $me,'users' => $users,'options' =>$options,'resigned'=>false,'projects'=>$projects, 'holidayterritories' => $holidayterritories,'year' => $year]);
+    return view('newstaffjoin', ['me' => $me,'users' => $users,'options' =>$options,'resigned'=>false, 'holidayterritories' => $holidayterritories,'year' => $year]);
 
 	}
 
@@ -276,12 +263,11 @@ class HumanResourceController extends Controller {
 		$me=(new CommonController)->get_current_user();
 		$year = Carbon::now()->year;
 
-		$users = DB::table('users')->select('users.Id','files.Web_Path','users.Status','users.StaffId as Staff_ID','users.Name','users.NRIC','users.Joining_Date','users.Confirmation_Date','users.Resignation_Date','users.Position','users.Contact_No_1','users.Nationality','users.Grade','users.Company','users.Department','users.Category','users.Entitled_for_OT','users.Working_Days','holidayterritories.Name as HolidayTerritory','users.Ext_No','users.Company_Email','users.Nick_Name','users.User_Type','users.Personal_Email', 'users.Contact_No_2','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.DOB','users.Place_Of_Birth','users.Race','users.Religion','users.Passport_No','users.Gender','users.Marital_Status','superior.Name as Superior','team.Name as TeamMember','users.Internship_Start_Date','users.Internship_End_Date','users.Bank_Name','users.Bank_Account_No','users.EPF_No','users.SOCSO_No','users.Income_Tax_No','users.Emergency_Contact_Person','users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Address','users.Driving_License','users.Car_Owner','users.Criminal_Activity')
+		$users = DB::table('users')->select('users.Id','files.Web_Path','users.Status','users.StaffId as Staff_ID','users.Name','users.NRIC','users.Joining_Date','users.Confirmation_Date','users.Resignation_Date','users.Position','users.Contact_No_1','users.Nationality','users.Grade','users.Company','users.Entitled_for_OT','users.Working_Days','holidayterritories.Name as HolidayTerritory','users.Ext_No','users.Company_Email','users.Nick_Name','users.User_Type','users.Personal_Email', 'users.Contact_No_2','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.DOB','users.Place_Of_Birth','users.Race','users.Religion','users.Passport_No','users.Gender','users.Marital_Status','superior.Name as Superior','users.Internship_Start_Date','users.Internship_End_Date','users.Bank_Name','users.Bank_Account_No','users.EPF_No','users.SOCSO_No','users.Income_Tax_No','users.Emergency_Contact_Person','users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Address','users.Driving_License','users.Car_Owner','users.Criminal_Activity')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
 		->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="User"'))
 		->leftJoin('users as superior','superior.Id','=','users.SuperiorId')
 		->leftJoin('holidayterritories','holidayterritories.Id','=','users.HolidayTerritoryId')
-		->leftJoin('users as team','team.Id','=','users.Team')
 		->orderBy('users.Id')
 		->where('users.Resignation_Date','!=','')
 		->where(DB::raw('str_to_date(users.Resignation_Date,"%Y")'),"=",DB::raw('str_to_date("'.$year.'","%Y")'))
@@ -293,13 +279,9 @@ class HumanResourceController extends Controller {
 		->orderBy('Option','asc')
 		->get();
 
-		$projects = DB::table('projects')
-		->where('projects.Project_Name','like','%department%')
-		->get();
-
 		$holidayterritories = DB::table('holidayterritories')->select('holidayterritories.Id','holidayterritories.Name')->get();
 
-		return view('staffresigned', ['me' => $me,'users' => $users,'options' =>$options,'resigned'=>true,'projects'=>$projects, 'holidayterritories' => $holidayterritories]);
+		return view('staffresigned', ['me' => $me,'users' => $users,'options' =>$options,'resigned'=>true,'holidayterritories' => $holidayterritories]);
 	}
 
 	public function staffloanpending($start=null,$end=null){
@@ -345,7 +327,7 @@ class HumanResourceController extends Controller {
 			->get();
 
 			$users = DB::table('users')->where('active', 1)->get();
-			$users_depts = collect($users)->groupBy('Department')->all();
+			$users_pos = collect($users)->groupBy('Position')->all();
 			return view('staffloanpending',['me'=>$me, 'start'=>$start, 'end'=>$end,'staffloans'=>$staffloans,'all'=>$all, 'allfinal'=>$allfinal]);
 	}
 
@@ -392,7 +374,7 @@ class HumanResourceController extends Controller {
 			->get();
 
 			$users = DB::table('users')->where('active', 1)->get();
-			$users_depts = collect($users)->groupBy('Department')->all();
+			$users_pos = collect($users)->groupBy('Position')->all();
 			return view('approvedloan',['me'=>$me, 'start'=>$start, 'end'=>$end,'staffloans'=>$staffloans,'all'=>$all, 'allfinal'=>$allfinal]);
 	}
 }

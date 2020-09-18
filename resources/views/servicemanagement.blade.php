@@ -78,7 +78,7 @@
                             // { data : 'deliveryform.Id', title: "formId"}, 
                             { data : 'serviceticket.service_id', title: "Service Ticket Id"}, 
                             // { data : 'deliveryform.DO_No', title: "DO Number"}, 
-                            { data : 'serviceticket.genset_no', title: "Genset No"},
+                            { data : 'serviceticket.speedfreak_no', title: "Speedfreak No"},
                             { data : 'serviceticket.service_type', title: "Service Type"},
                             { data : 'serviceticket.service_date', title: "Service Date"},  
                             { data : 'serviceticket.sequence', title: "Sequence",
@@ -90,7 +90,7 @@
                                 }
                             },
                             { data : 'serviceticket.parent', title: "Parent SVT Number"},
-                            { data : 'gensetservice.Status', title: "Status",
+                            { data : 'speedfreakservice.Status', title: "Status",
                               "render": function ( data, type, full, meta ) {
                                 var status = "{{$status}}";
                                 var show = "";
@@ -258,8 +258,8 @@
                             <div class="col-md-10">
                               <label>Service</label>
                               <input type="text" class="form-control" id="service_update" readonly="">
-                              <label>Genset</label>
-                              <input type="text"  class="form-control" id="genset_update" readonly="">
+                              <label>Speedfreak</label>
+                              <input type="text"  class="form-control" id="speedfreak_update" readonly="">
                               <label>Client</label>
                               <input type="text" class="form-control" id="client_update" readonly="">
                               <label>Site</label>
@@ -329,7 +329,7 @@
                               <label>Code:</label>
                               </div>
                               <div class="col-md-7">
-                              <select style="width:100%" class="select2 form-control" name="genset_no" id="genset_no">
+                              <select style="width:100%" class="select2 form-control" name="speedfreak_no" id="speedfreak_no">
                               <option value="">NONE</option>
                               @foreach ($sc as $sc)
                               <option value="{{$sc->machinery_no}}">{{$sc->machinery_no}}</option>
@@ -565,7 +565,7 @@
 
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
   </footer>
@@ -600,7 +600,7 @@
           method: "GET",
           success: function(response)
           {
-            $('#genset_update').val(response.details.genset_no);
+            $('#speedfreak_update').val(response.details.speedfreak_no);
             $('#date_update').val(response.details.service_date);
             $('#service_update').val(response.details.service_type);
             $('#client_update').val(response.details.Company_Name);
@@ -801,15 +801,15 @@
     });
 
     $(document).ready(function() {
-      $(document).on('change', '#genset_no', function(e) {
-          var genset = $('#genset_no').val();
+      $(document).on('change', '#speedfreak_no', function(e) {
+          var speedfreak = $('#speedfreak_no').val();
           $.ajaxSetup({
           headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') }
           });
           $.ajax
           ({
           type: "GET",
-          url: "{{ url('/servicegetsite') }}" + "/" + genset,
+          url: "{{ url('/servicegetsite') }}" + "/" + speedfreak,
           success: function(response){
             $("#site").empty();
             $('#client').empty();
@@ -831,10 +831,10 @@
             type: "GET",
             url: "{{ url('/ticketassettype') }}" + "/" + selected,
             success: function(response){
-              $("#genset_no").empty();
-              $("#genset_no").append("<option>NONE</option>");
+              $("#speedfreak_no").empty();
+              $("#speedfreak_no").append("<option>NONE</option>");
               response.item.forEach(function(ele){
-                $("#genset_no").append("<option>"+ele.machinery_no+"</option>");
+                $("#speedfreak_no").append("<option>"+ele.machinery_no+"</option>");
               });
             }
           });

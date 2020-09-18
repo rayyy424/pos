@@ -71,7 +71,7 @@
 
         $(document).ready(function() {
              table=$('#table').DataTable({
-                          columnDefs: [{ "visible": false, "targets":[1,2]},{"className": "dt-right", "targets": [11]}],
+                          columnDefs: [{ "visible": false, "targets":[1,2]},{"className": "dt-right", "targets": [10]}],
                             responsive: false,
                             dom: "Bltp",
                             sScrollX: "100%",
@@ -86,7 +86,6 @@
                             { data : 'salesorder.Id', title: "Id"},
                             { data : 'tracker.sales_order', title: "SO"},
                             { data : 'salesorder.SO_Number', title: "SO Number"},
-                            { data : 'projects.Project_Name', title: "Project Name"},
                             { data : 'companies.Company_Name', title: "Company"},
                             { data : 'client.Company_Name', title: "Client"},
                             { data : 'tracker.Site Name', title: "Site"},
@@ -553,7 +552,7 @@
 
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
   </footer>

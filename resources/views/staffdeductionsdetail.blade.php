@@ -87,7 +87,6 @@
                                               { data: "users.Id"},
                                               { data: "users.StaffId" , title:"Staff ID"},
                                               { data: "users.Name" },
-                                              { data: "users.Department" , title:"Department"},
                                               { data: "users.Position" , title:"Position"},
                                               { data: "users.Joining_Date" , title:"Joined Date"},
                                               { data: "users.Nationality" , title:"Nationality"},
@@ -289,7 +288,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

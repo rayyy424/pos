@@ -113,17 +113,6 @@
 
                                  ],
                          },{
-                                     label: "Project_Code:",
-                                     name: "deductionitems.Project_Code",
-                                     type: 'select2',
-                                     options: [
-                                       { label :"", value: "" },
-                                       @foreach($cars as $car)
-                                       { label :"{{$car->Vehicle_No}}", value: "{{$car->Vehicle_No}}" },
-                                       @endforeach
-                                     ],
-
-                           },{
                                      label: "Petrol_Station:",
                                      name: "deductionitems.Petrol_Station"
                           },{
@@ -188,7 +177,7 @@
                       sScrollY: "100%",
                       sScrollX: "100%",
                       aaSorting:[[1,'desc']],
-                      columnDefs: [{ "visible": false, "targets": [1,2,13] },{"className": "dt-left", "targets": []},{"className": "dt-center", "targets": "_all"}],
+                      columnDefs: [{ "visible": false, "targets": [1,2,12] },{"className": "dt-left", "targets": []},{"className": "dt-center", "targets": "_all"}],
                       bScrollCollapse: true,
                       columns: [
                         {data:null, "render":"", title:"No"},
@@ -201,9 +190,8 @@
                         {data:'deductionitems.Due_Date', title:"Due Date"},
                         {data:'deductionitems.Account_No', title:"Account No"},
                         {data:'deductionitems.Company', title:"Company"},
-                        {data:'deductionitems.Project_Code', title:"Project Code"},
                         {data:'users.Name', editField:"deductionitems.UserId", title:"Custodian"},
-                        {data:'users.Department',  title:"Department"},
+                        {data:'users.Position',  title:"Position"},
                         {data:'deductionitems.Petrol_Station', title:"Petrol Station"},
                         {data:'deductionitems.Amount' , title:"Amount (RM)"},
                         {data:'deductionitems.Total_Deduction' , title:"Total Deduction (RM)"},
@@ -433,7 +421,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

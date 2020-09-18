@@ -271,12 +271,6 @@
                     <div class="form-group">
 
                         <div class="col-lg-4">
-                            <label>Project : </label>
-                            <h5>{{$advances->Project_Name}}</h5>
-
-                        </div>
-
-                        <div class="col-lg-4">
                           <label> Position : </label>
                           @if($advances->Position=="")
                             <h5>-</h5>
@@ -429,7 +423,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

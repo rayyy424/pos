@@ -9,14 +9,9 @@ class MaterialController extends Controller {
 		$this->middleware('auth');
 	}
 
-    function materialRequest($projectid = null,$trackerid = null)
+    function materialRequest($trackerid = null)
     {
         $me = (new CommonController)->get_current_user();
-
-        $project=DB::table('projects')
-        ->select('Id','Project_Name')
-        ->whereIn('Project_Name',['MY_DIGI','MY_UM','MY_SBC','MY_(DIGI) LEGALIZATION','MY_(DIGI) RENEWAL PERMIT'])
-        ->get();
 
         $item=DB::table('inventories')
         ->select('inventories.Type','inventoryvendor.Id as vendorId','inventories.Id','Description','Item_Code','Unit','inventoryvendor.Item_Price','inventoryvendor.CompanyId as companyid')
@@ -45,9 +40,8 @@ class MaterialController extends Controller {
         ->get();
     
         $approve=$this->getAllMr("%Approved%");
-        $projectid == null ? 0:$projectid;
         $trackerid == null ? 0:$trackerid;
-        return view('materialrequest',['me'=>$me,'projects'=>$project,'items'=>$item,'projectid'=>$projectid,'trackerid'=>$trackerid,'type'=>$type,'approve'=>$approve,'type1'=>$type1,'save'=>$save]);
+        return view('materialrequest',['me'=>$me,'items'=>$item,'trackerid'=>$trackerid,'type'=>$type,'approve'=>$approve,'type1'=>$type1,'save'=>$save]);
     }
     /**
      * Get all mr based on status
@@ -56,23 +50,18 @@ class MaterialController extends Controller {
     private function getAllMR($status)
     {
         return DB::Table('material')
-        ->select('material.Id','material.MR_No','users.Name','projects.Project_Name','tracker.Project_Code',DB::raw('tracker.`Site Name`'),'materialstatus.Status'
+        ->select('material.Id','material.MR_No','users.Name',DB::raw('tracker.`Site Name`'),'materialstatus.Status'
         ,'material.created_at','material.Total',DB::raw('tracker.`Unique Id`'))
         ->leftjoin('tracker','tracker.Id','=','material.TrackerId')
         ->leftjoin('users','users.Id','=','material.UserId')
-        ->leftjoin('projects','projects.Id','=','material.ProjectId')
         ->leftjoin(DB::raw('(select Max(Id) as maxid,MaterialId from materialstatus group by MaterialId) as max'),'max.MaterialId','=','material.id')
         ->leftjoin('materialstatus','materialstatus.Id','=','max.maxid')
         ->where('materialstatus.Status','LIKE',$status)
         ->get();
     }
-    function materialRequest2($projectid = null,$trackerid = null)
+    function materialRequest2($trackerid = null)
     {
         $me=(new CommonController)->get_current_user();
-        $project=DB::table('projects')
-        ->select('Id','Project_Name')
-        ->whereIn('Project_Name',['MY_DIGI','MY_UM','MY_SBC','MY_(DIGI) LEGALIZATION','MY_(DIGI) RENEWAL PERMIT'])
-        ->get();
 
         $item=DB::table('inventories')
         ->select('inventories.Type','inventoryvendor.Id as vendorId','inventories.Id','Description','Item_Code','Unit','inventoryvendor.Item_Price','inventoryvendor.CompanyId as companyid')
@@ -95,9 +84,8 @@ class MaterialController extends Controller {
         // ->where('options.Option','<>','MPSB')
         ->get();
         $approve=$this->getAllMr("%Approved%");
-        $projectid == null ? 0:$projectid;
         $trackerid == null ? 0:$trackerid;
-        return view('materialrequest2',['me'=>$me,'projects'=>$project,'items'=>$item,'projectid'=>$projectid,'trackerid'=>$trackerid,'type'=>$type,'approve'=>$approve,'type1'=>$type1]);
+        return view('materialrequest2',['me'=>$me,'items'=>$item,'trackerid'=>$trackerid,'type'=>$type,'approve'=>$approve,'type1'=>$type1]);
     }
     /**
      * Get lastest MR NO
@@ -113,194 +101,6 @@ class MaterialController extends Controller {
         // ->orderByRaw('cast(MR_No as unsigned)')
         ->orderBy('Id','DESC')
         ->first();
-    }
-
-    function newMaterialRequest(Request $request)
-    {
-        $me= (new CommonController)->get_current_user();
-
-        $input=$request->all();
-        if(isset($input['savemr'])){
-            DB::Table('savemr')
-            ->where('Id',$input['savemr'])
-            ->delete();
-            DB::Table('savemritem')
-            ->where('SaveId',$input['savemr'])
-            ->delete();
-        }
-          
-        $emaillist=array();
-        $cal=0;
-        foreach($input['item'] as $count)
-        {
-            $cal += (float) $count['total'];
-        }
-        $initial=DB::table('projects')
-        ->select('Customer')
-        ->where('Id',$input['project'])
-        ->first();
-        $today=date("ymd");
-        $mr_no=$initial->Customer.$today.'-';
-        $no=$this->checkMr($mr_no);
-        if($no != null)
-        {
-            $count=str_pad((int) substr($no->MR_No,strlen($mr_no)) + 1, 2 ,'0', STR_PAD_LEFT);
-            $mr_no.=$count;
-        }
-        else{
-            $mr_no.='01';
-        }
-        $materialId=DB::table('material')
-        ->insertGetId([
-            'MR_No'=>$mr_no,
-            'UserId'=>$me->UserId,
-            'ProjectId'=>$input['project'],
-            'TrackerId'=>$input['site'],
-            'total'=>$cal
-        ]);
-        $trackerId=$input['site'];
-        DB::Table('tracker')
-        ->where(function($q) use ($trackerId){
-            $q->where('Id',$trackerId)
-            ->where('First_MR_Budget','');
-
-        })
-        ->update([
-            'First_MR_Budget'=>$cal
-        ]);
-        array_push($emaillist,$me->UserId);
-        $newVendor=array();
-        if(isset($input['updateVendor']))
-        {
-            foreach($input['updateVendor'] as $v)
-            {
-                $vid=DB::table('inventoryvendor')
-                ->insert([
-                    'InventoryId'=>$v['item'],
-                    'Item_Price'=>$v['price'],
-                    'CompanyId'=>$v['company']
-                ]);
-                array_push($newVendor,[
-                    "id"=>$vid,
-                    "row"=>$v['row']]);
-            }
-        }
-        $inventory=array();
-        foreach($input['item'] as $item)
-        {
-            // foreach($newVendor as $v)
-            // {
-            //     if($v['row'] == $item['row'])
-            //         $item['vendorId']=$v['id'];
-            // }
-            DB::table('materialrequest')
-            ->insert([
-                "MaterialId"=>$materialId,
-                "InventoryId"=>$item['item'],
-                "Price"=>(float) $item['price'],
-                "Qty"=>$item['qty'],
-                'vendorId'=>$item['vendor']
-            ]);
-            array_push($inventory,$item['item']);
-        }
-        $get=DB::table('inventories')
-        ->whereIn('Id',$inventory)
-        ->where('Type',"NOT LIKE",'MPSB')
-        ->get();
-        if($get)
-        {
-            DB::table('material')
-            ->where('Id',$materialId)
-            ->update([
-                'generatePO'=>"PO"
-            ]);
-        }
-        else{
-            DB::table('material')
-            ->where('Id',$materialId)
-            ->update([
-                'generatePO'=>"No PO"
-            ]);
-        }
-        // if($cal > 10000)
-        // {
-        //     $approver = $this->getApprover($input['project']);
-
-        //     if($approver)
-        //     {
-        //         DB::table('materialstatus')
-        //         ->insert([
-        //             "MaterialId"=>$materialId,
-        //             "ApproverId"=>$approver[0]->UserId,
-        //             "status"=>"Pending Approval"
-        //         ]);
-        //         array_push($emaillist,$approver[0]->UserId);
-        //     }
-        //     else{
-        //         $approver = $this->getApprover(0);
-
-        //         DB::table('materialstatus')
-        //         ->insert([
-        //             "MaterialId"=>$materialId,
-        //             "ApproverId"=>$approver[0]->UserId,
-        //             "status"=>"Pending Approval"
-        //         ]);
-        //         array_push($emaillist,$approver[0]->UserId);
-        //     }
-        // }else
-        {
-            DB::table('materialstatus')
-            ->insert([
-                "MaterialId"=>$materialId,
-                "status"=>"Approved"
-            ]);
-        }
-
-        $materialdetail=$this->getMaterialDetail($materialId);
-
-        $item=$this->getItem($materialId);
-
-        $log=$this->getLog($materialId);
-
-        $notify=DB::table('users')
-        ->whereIn('Id',$emaillist)->get();
-
-        $subscribers = DB::table('notificationtype')
-        ->leftJoin('notificationsubscriber','notificationtype.Id','=','notificationsubscriber.NotificationTypeId')
-        ->leftJoin('users','users.Id','=','notificationsubscriber.UserId')
-        ->where('notificationtype.Id','=',80)
-        ->get();
-
-        $emails=array();
-        foreach($notify as $n)
-        {
-            if($n->Company_Email != ""){
-                array_push($emails,$n->Company_Email);
-            }
-            else{
-                array_push($emails,$n->Personal_Email);
-            }
-        }
-        foreach($subscribers as $subscriber)
-        {
-            $NotificationSubject=$subscriber->Notification_Subject;
-            if($subscriber->Company_Email != ""){
-                array_push($emails,$subscriber->Company_Email);
-            }
-            else{
-                array_push($emails,$subscriber->Personal_Email);
-            }
-        }
-
-        Mail::send('emails.materialstatus', ['me' => $me,'title'=>"Material Status Updated!",'materialdetail' => $materialdetail,'item'=>$item,'log'=>$log], function($message) use ($emails,$materialdetail,$NotificationSubject)
-        {
-            array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-            $emails = array_filter($emails);
-            $message->to($emails)->subject($NotificationSubject.' ['.$materialdetail->Name.']');
-
-        });
-
-        return 1;
     }
 
     private function getItem($id)
@@ -320,13 +120,6 @@ class MaterialController extends Controller {
         ->leftjoin('users as approver','approver.Id','=','materialstatus.ApproverId')
         ->where('materialstatus.MaterialId',$id)
         ->get();
-    }
-
-    function getSite(Request $request)
-    {
-        return DB::select("SELECT Id,CONCAT(tracker.`Unique ID`,'-',tracker.`Site ID`,'-',tracker.`Site LRD`,'-',tracker.`Site Name`) as 'site' from tracker
-        where tracker.`ProjectID` = '".$request->id."' AND tracker.Id Not In (SELECT TrackerId from material)
-        ");
     }
 
     function getMaterial(Request $request)
@@ -377,8 +170,7 @@ class MaterialController extends Controller {
         $me= (new CommonController)->get_current_user();
 
         $data=DB::table('material')
-        ->select('requestor.Name','material.Total','material.Id','projects.Project_Name',DB::raw('tracker.`Site Name` as site'),'projects.Id as ProjectId','materialstatus.Status','materialstatus.ApproverId')
-        ->leftjoin('projects','projects.Id','=','material.ProjectId')
+        ->select('requestor.Name','material.Total','material.Id',DB::raw('tracker.`Site Name` as site'),'materialstatus.Status','materialstatus.ApproverId')
         ->leftjoin('tracker','tracker.Id','=','material.TrackerId')
         ->leftjoin('users as requestor','requestor.Id','=','material.UserId')
         ->leftjoin(DB::raw('(select Max(Id) as maxid,MaterialId from materialstatus group by MaterialId) as max'),'max.MaterialId','=','material.Id')
@@ -392,20 +184,18 @@ class MaterialController extends Controller {
     {
         $me = (new CommonController)->get_current_user();
 
-        // $materialdetail=DB::table('material')
-        // ->select('projects.Project_Name','tracker.Site_Name','requestor.Name','material.UserId')
-        // ->leftjoin('users as requestor','requestor.Id','=','material.UserId')
-        // ->leftjoin('tracker','material.TrackerId','=','tracker.Id')
-        // ->leftjoin('projects','material.ProjectId','=','projects.Id')
-        // ->where('material.Id',$request->id)
-        // ->first();
         $materialdetail=$this->getMaterialDetail($request->id);
         $emaillist=array();
         $status="";
         $succ=false;
         if($request->status != "reject")
         {
-            $approver=$this->getApprover($request->project);
+            $approver = DB::table('users')
+            ->select('users.Id','users.Name')
+            ->leftJoin('accesscontroltemplates', 'accesscontroltemplates.Id', '=', 'users.AccessControlTemplateId')
+            ->orderBy('Name','asc')
+            ->where('accesscontroltemplates.Approve_Leave', '=','1')
+            ->get();
             $temp="";
             $tempApprId=0;
             $check=false;
@@ -574,13 +364,13 @@ class MaterialController extends Controller {
         $item=$this->getItem($request->id);
         $log=$this->getLog($request->id);
 
-        Mail::send('emails.materialstatus', ['me' => $me,'title'=>"Material Status Updated!",'materialdetail' => $materialdetail,'item'=>$item,'log'=>$log], function($message) use ($emails,$materialdetail,$NotificationSubject)
-        {
-            array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-            $emails = array_filter($emails);
-            $message->to($emails)->subject($NotificationSubject.' ['.$materialdetail->Name.']');
+        // Mail::send('emails.materialstatus', ['me' => $me,'title'=>"Material Status Updated!",'materialdetail' => $materialdetail,'item'=>$item,'log'=>$log], function($message) use ($emails,$materialdetail,$NotificationSubject)
+        // {
+        //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+        //     $emails = array_filter($emails);
+        //     $message->to($emails)->subject($NotificationSubject.' ['.$materialdetail->Name.']');
 
-        });
+        // });
 
        return $succ == true ? 1:0;
     }
@@ -588,12 +378,10 @@ class MaterialController extends Controller {
     {
         return DB::table('approvalsettings')
         ->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-        ->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
         ->select('users.Id as UserId','users.Name','approvalsettings.Level')
         ->where('approvalsettings.Type', '=', 'MR')
-        ->where('approvalsettings.ProjectId',$pid)
         ->orderByRaw("FIELD(approvalsettings.Level , '1st Approval','2nd Approval','3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
-        ->groupBy('approvalsettings.Country','projects.Project_Name','users.Id')
+        ->groupBy('approvalsettings.Country','users.Id')
         ->get();
     }
     /**
@@ -603,11 +391,10 @@ class MaterialController extends Controller {
     private function getMaterialDetail($id)
     {
         return DB::table('material')
-        ->select('material.MR_No','projects.Id as projectid','projects.Project_Name',DB::raw('tracker.`Site Name` as site'),'requestor.Name','material.UserId','material.MR_No','material.created_at','material.Total',
+        ->select('material.MR_No',DB::raw('tracker.`Site Name` as site'),'requestor.Name','material.UserId','material.MR_No','material.created_at','material.Total',
         DB::raw('tracker.`Unique Id` as uniqueId'))
         ->leftjoin('users as requestor','requestor.Id','=','material.UserId')
         ->leftjoin('tracker','material.TrackerId','=','tracker.Id')
-        ->leftjoin('projects','material.ProjectId','=','projects.Id')
         ->where('material.Id',$id)
         ->first();
     }
@@ -673,13 +460,13 @@ class MaterialController extends Controller {
         $item=$this->getItem($request->id);
         $log=$this->getLog($request->id);
 
-        Mail::send('emails.materialstatus', ['me' => $me,'title'=>"Material Status Updated!",'materialdetail' => $detail,'item'=>$item,'log'=>$log], function($message) use ($emails,$detail,$NotificationSubject)
-        {
-            array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-            $emails = array_filter($emails);
-            $message->to($emails)->subject($NotificationSubject.' ['.$detail->Name.']');
+        // Mail::send('emails.materialstatus', ['me' => $me,'title'=>"Material Status Updated!",'materialdetail' => $detail,'item'=>$item,'log'=>$log], function($message) use ($emails,$detail,$NotificationSubject)
+        // {
+        //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+        //     $emails = array_filter($emails);
+        //     $message->to($emails)->subject($NotificationSubject.' ['.$detail->Name.']');
 
-        });
+        // });
 
         return 1;
     }
@@ -845,53 +632,14 @@ class MaterialController extends Controller {
         $appr=$this->findApprover($request->id);
         $detail=$this->getMaterialDetail($request->id);
         $emaillist=array();
-        // if($detail->Total > 10000)
-        // {
-        //     if($appr) //previous approver
-        //     {
-        //         DB::table('materialstatus')
-        //          ->insert([
-        //             'ApproverId'=>$appr->ApproverId,
-        //             'Status'=>"Pending Approval",
-        //             'MaterialId'=>$request->id
-        //         ]);
-        //         array_push($emaillist,$appr->ApproverId);
-        //     }
-        //     else
-        //     {
-        //         $approver = $this->getApprover($detail->projectid);
-        //         if($approver)
-        //         {
-        //             DB::table('materialstatus')
-        //             ->insert([
-        //                 "MaterialId"=>$request->id,
-        //                 "ApproverId"=>$approver[0]->UserId,
-        //                 "status"=>"Pending Approval"
-        //             ]);
-        //             array_push($emaillist,$approver[0]->UserId);
-        //         }
-        //         else
-        //         {
-        //             $approver = $this->getApprover(0);
-
-        //             DB::table('materialstatus')
-        //             ->insert([
-        //                 "MaterialId"=>$request->id,
-        //                 "ApproverId"=>$approver[0]->UserId,
-        //                 "status"=>"Pending Approval"
-        //             ]);
-        //             array_push($emaillist,$approver[0]->UserId);
-        //         }
-        //     }
-        // }
-        // else
-        {
+   
+        
             DB::table('materialstatus')
             ->insert([
                'Status'=>"Approved",
                'MaterialId'=>$request->id
            ]);
-        }
+        
 
         $emaillist=array();
 
@@ -931,13 +679,13 @@ class MaterialController extends Controller {
         $item=$this->getItem($request->id);
         $log=$this->getLog($request->id);
 
-        Mail::send('emails.materialstatus', ['me' => $me,'title'=>"Material Status Updated!",'materialdetail' => $materialdetail,'item'=>$item,'log'=>$log], function($message) use ($emails,$materialdetail,$NotificationSubject)
-        {
-            array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-            $emails = array_filter($emails);
-            $message->to($emails)->subject($NotificationSubject.' ['.$materialdetail->Name.']');
+        // Mail::send('emails.materialstatus', ['me' => $me,'title'=>"Material Status Updated!",'materialdetail' => $materialdetail,'item'=>$item,'log'=>$log], function($message) use ($emails,$materialdetail,$NotificationSubject)
+        // {
+        //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+        //     $emails = array_filter($emails);
+        //     $message->to($emails)->subject($NotificationSubject.' ['.$materialdetail->Name.']');
 
-        });
+        // });
 
         return 1;
     }
@@ -1010,10 +758,8 @@ class MaterialController extends Controller {
         ->where('Table','materialpo')
         ->where('Field','Payment Terms')
         ->get();
-        $project=DB::table('projects')
-        ->select('Id','Project_Name')
-        ->get();
-        return view('materialpo',['me'=>$me,'projects'=>$project,'details'=>$this->getPODetails($mid,$start,$end),'companies'=>$companies,'terms'=>$terms,'payment'=>$payment,
+
+        return view('materialpo',['me'=>$me,'details'=>$this->getPODetails($mid,$start,$end),'companies'=>$companies,'terms'=>$terms,'payment'=>$payment,
         'mid'=>$mid,'start'=>$start,'end'=>$end]);
     }
     /**
@@ -1076,7 +822,7 @@ class MaterialController extends Controller {
     {
         return DB::Table('materialpo')
         ->select('company.Company_Name','company.Address','company.Office_No','company.Fax_No','client.Company_Name as clientCompany','client.Address as clientAddress',
-        'client.Office_No as clientOffice','client.Fax_No as clientFax','client.Person_In_Charge','materialpo.PO_No','materialpo.created_at','tracker.Project_Code',
+        'client.Office_No as clientOffice','client.Fax_No as clientFax','client.Person_In_Charge','materialpo.PO_No','materialpo.created_at',
         'materialpo.VendorId','materialpo.MaterialId',DB::raw('tracker.`Site Name` as SiteName'),'item.total','material.MR_No','users.Name','materialpo.created_at',
         'materialpo.Id','client.Contact_No','materialpo.Terms','materialpo.Delivery_Date',DB::raw('tracker.`Site ID` as SiteId'),'materialpo.Status',
         'client.Company_Account')
@@ -1429,7 +1175,6 @@ class MaterialController extends Controller {
     
         $detail=DB::table('material')
         ->select('request.total','material.Id','material.MR_No','companies.Company_Name')
-        ->leftjoin('projects','material.ProjectId','=','projects.Id')
         ->leftjoin('tracker','tracker.Id','=','material.TrackerId')
         ->leftjoin(DB::raw('(SELECT MaterialId,vendorId, SUM(materialrequest.Qty*materialrequest.Price) as total from materialrequest
         left join inventories on inventories.Id = materialrequest.InventoryId
@@ -1726,24 +1471,24 @@ class MaterialController extends Controller {
         if($title == "New Quotation")
         {
             $NotificationSubject="New Quotation Submitted!";
-            Mail::send($page,['me' => $me,'title'=>"New Quotation Submitted",'detail' => $detail, 'd' => $d], function($message) use ($emails,$me,$NotificationSubject)
-                {
-            array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-            $emails = array_filter($emails);
-            $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+            // Mail::send($page,['me' => $me,'title'=>"New Quotation Submitted",'detail' => $detail, 'd' => $d], function($message) use ($emails,$me,$NotificationSubject)
+            //     {
+            // array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+            // $emails = array_filter($emails);
+            // $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
 
-            });
+            // });
         }
         else
         {
             $NotificationSubject="Quotation Status Updated!";
-            Mail::send($page,['me' => $me,'title'=>"Pending Approval",'detail' => $detail,'d'=>$d], function($message) use ($emails,$me,$NotificationSubject)
-                {
-            array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-            $emails = array_filter($emails);
-            $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+            // Mail::send($page,['me' => $me,'title'=>"Pending Approval",'detail' => $detail,'d'=>$d], function($message) use ($emails,$me,$NotificationSubject)
+            //     {
+            // array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+            // $emails = array_filter($emails);
+            // $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
 
-            });
+            // });
         }
         
     }
@@ -1775,21 +1520,16 @@ class MaterialController extends Controller {
         ->where('quotationfile.Id',$request->id)
         ->first();
         $NotificationSubject="Quotation Status Updated";
-        Mail::send("emails.quotationapproval",['me' => $me,'title'=>$status,'detail' => $detail,'d'=>$d], function($message) use ($emails,$me,$NotificationSubject)
-        {
-            array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-            $emails = array_filter($emails);
-            $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+        // Mail::send("emails.quotationapproval",['me' => $me,'title'=>$status,'detail' => $detail,'d'=>$d], function($message) use ($emails,$me,$NotificationSubject)
+        // {
+        //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+        //     $emails = array_filter($emails);
+        //     $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
 
-        });
+        // });
         return 1;
     }
-    function getProjectCode(Request $request){
-        return DB::table('tracker')
-        ->select('tracker.Id','tracker.Project_Code')
-        ->where('ProjectID',$request->id)
-        ->get();
-    }
+
     function checkQuotationExceed(Request $request)
     {
         // $data= DB::select('SELECT SUM(materialrequest.Qty*materialrequest.Price) as total from materialrequest 
@@ -1861,21 +1601,9 @@ class MaterialController extends Controller {
         return 0;
     }
     function getAllPO(Request $request){
-        // return DB::select("SELECT po.Id,po.PO_No,vendor.Company_Name as vendorName,poType.total from materialpo po
-        //     left join material on material.Id = po.MaterialId
-        //     left join projects on projects.Id = material.ProjectId  
-        //     left join companies as vendor on vendor.Id = po.VendorId
-        //     left join (Select Type,PoId,SUM(Qty*Price) as total from materialpoitem group by Type,PoId) as poType on poType.PoId = po.Id
-        //     where (poType.Type,1) In (SELECT inventories.Type,
-        //     (Case When SUM(materialrequest.Qty*materialrequest.Price)-(Case WHEN poItem.total IS NULL THEN 0 ELSE poItem.total END) > poType.total THEN 1 ELSE 0 END) from materialrequest left join inventories on inventories.Id = materialrequest.InventoryId
-        //     left join (SELECT SUM(Qty*Price) as total,MaterialId,Type from materialpoitem group by MaterialId,Type) as poItem on poItem.MaterialId = materialrequest.MaterialId
-        //     where materialrequest.MaterialId =".$request->id." 
-        //     group by inventories.Type,poItem.Type
-        //     )
-        // ");
+
         return DB::select("SELECT poType.Type,po.Id,po.PO_No,vendor.Company_Name as vendorName,poType.total from materialpo po
             left join material on material.Id = po.MaterialId
-            left join projects on projects.Id = material.ProjectId  
             left join companies as vendor on vendor.Id = po.VendorId
             left join (Select Type,PoId,SUM(Qty*Price) as total from materialpoitem group by Type,PoId) as poType on poType.PoId = po.Id
             where (poType.Type) In (SELECT inventories.Type from materialrequest left join inventories on inventories.Id = materialrequest.InventoryId where materialrequest.MaterialId = ".$request->id." group by materialrequest.Type)
@@ -1903,7 +1631,6 @@ class MaterialController extends Controller {
         $returnHtml=array();
         $detail=DB::table('material')
         ->leftjoin('tracker','tracker.Id','=','material.TrackerId')
-        ->leftjoin('projects','projects.Id','=','material.ProjectId')
         ->where('material.Id',$request->id)->first();
         $today=date("ym"); 
         $po = "PO-".$today;
@@ -1965,7 +1692,6 @@ class MaterialController extends Controller {
         $id=DB::Table('savemr')
         ->insertGetId([
             'TrackerId'=>$request->site ? $request->site:0,
-            'ProjectId'=>$request->project,
             'created_by'=>$me->UserId
         ]);
         foreach($request->arr as $item){
@@ -1986,10 +1712,6 @@ class MaterialController extends Controller {
         $mr=DB::table('savemr')
         ->where('Id',$id)
         ->first();
-        $project=DB::table('projects')
-        ->select('Id','Project_Name')
-        ->whereIn('Project_Name',['MY_DIGI','MY_UM','MY_SBC','MY_(DIGI) LEGALIZATION','MY_(DIGI) RENEWAL PERMIT'])
-        ->get();
 
         $item=DB::table('inventories')
         ->select('inventories.Type','inventoryvendor.Id as vendorId','inventories.Id','Description','Item_Code','Unit','inventoryvendor.Item_Price','inventoryvendor.CompanyId as companyid')
@@ -2012,7 +1734,7 @@ class MaterialController extends Controller {
         ->where('options.Option','<>','MPSB')
         ->get();
 
-        return view('savemr',['me'=>$me,'mr'=>$mr,'type'=>$type,'type1'=>$type1,'items'=>$item,'projects'=>$project]);
+        return view('savemr',['me'=>$me,'mr'=>$mr,'type'=>$type,'type1'=>$type1,'items'=>$item]);
     }
     function getSaveMrItem(Request $request){
         return DB::Table('savemritem')

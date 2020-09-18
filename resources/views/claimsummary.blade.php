@@ -60,7 +60,7 @@
        <script type="text/javascript" language="javascript" class="init">
 
           var all;
-          var byproject;
+          var bytype;
           var byperson;
           var byperson2;
 
@@ -97,19 +97,17 @@
 
                 });
 
-                byproject =  $('#byproject').dataTable( {
+                bytype =  $('#bytype').dataTable( {
 
                              dom: "fBrtip",
                              bAutoWidth: true,
-                             rowId:"projects.Id",
-                             //rowId:"projects.Project_Name",
-                             //aaSorting:false,
+                             rowId:"claims.Id",
                              columnDefs: [{ "visible": false, "targets": [1] },{"className": "dt-left", "targets": 2},{"className": "dt-right", "targets": "_all"}],
                              bScrollCollapse: true,
                              columns: [
                                { data: "","render":"", title:"No"},
-                               { data: "projects.Id"},
-                               { data: "projects.Project_Name"},
+                               { data: "claims.Id"},
+                               { data: "claims.Expenses_Type"},
                                 { data: "Total_Petrol_SmartPay"},
                                 { data: "Total_Claim_With_SmartPay"},
                                 { data: "Total_Claim_Without_SmartPay"},
@@ -330,8 +328,8 @@
 
                      } );
 
-                     byproject.api().on( 'order.dt search.dt', function () {
-                         byproject.api().column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+                     bytype.api().on( 'order.dt search.dt', function () {
+                         bytype.api().column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
                              cell.innerHTML = i+1;
                          } );
                      } ).draw();
@@ -350,33 +348,33 @@
 
 
 
-                     $(".byproject thead input").keyup ( function () {
+                     $(".bytype thead input").keyup ( function () {
 
                              /* Filter on the column (the index) of this element */
-                             if ($('#byproject').length > 0)
+                             if ($('#bytype').length > 0)
                              {
 
-                                 var colnum=document.getElementById('byproject').rows[0].cells.length;
+                                 var colnum=document.getElementById('bytype').rows[0].cells.length;
 
                                  if (this.value=="[empty]")
                                  {
 
-                                    byproject.fnFilter( '^$', this.name,true,false );
+                                    bytype.fnFilter( '^$', this.name,true,false );
                                  }
                                  else if (this.value=="[nonempty]")
                                  {
 
-                                    byproject.fnFilter( '^(?=\\s*\\S).*$', this.name,true,false );
+                                    bytype.fnFilter( '^(?=\\s*\\S).*$', this.name,true,false );
                                  }
                                  else if (this.value.startsWith("!")==true && this.value.length>1)
                                  {
 
-                                    byproject.fnFilter( '^(?'+ this.value +').*', this.name,true,false );
+                                    bytype.fnFilter( '^(?'+ this.value +').*', this.name,true,false );
                                  }
                                  else if (this.value.startsWith("!")==false)
                                  {
 
-                                     byproject.fnFilter( this.value, this.name,true,false );
+                                     bytype.fnFilter( this.value, this.name,true,false );
                                  }
                              }
 
@@ -791,7 +789,7 @@
 
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -986,116 +984,6 @@
                         //end chart
 
                      $("#ajaxloader3").hide();
-
-                    }
-                   }
-       });
-
-
-  }
-
-  function projectclaimbreakdown(projectid)
-  {
-
-      $('#chartpopup').modal('show');
-      $("#pieChartpopup").html("");
-
-      $.ajaxSetup({
-         headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') }
-      });
-
-      $("#ajaxloader3").show();
-
-       $.ajax({
-                  url: "{{ url('projectclaimbreakdown') }}",
-                  method: "POST",
-                  data: {
-                    Id:projectid
-                  },
-                  success: function(response){
-                    if (response==0)
-                    {
-                      alert("NO");
-                    }
-                    else
-                    {
-                      $("#exist-alert").hide();
-
-                      var myObject = JSON.parse(response);
-
-                      $.each(myObject, function(i,item){
-
-                        //chart
-                        var pie = document.getElementById("pieChartpopup");
-                        var pieOptions = {
-                            events: false,
-                            animation: {
-                                duration: 500,
-                                easing: "easeOutQuart",
-                                onComplete: function () {
-                                var ctx = this.chart.ctx;
-                                ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, 'normal', Chart.defaults.global.defaultFontFamily);
-                                ctx.textAlign = 'center';
-                                ctx.textBaseline = 'bottom';
-
-                                this.data.datasets.forEach(function (dataset) {
-
-                                    for (var i = 0; i < dataset.data.length; i++) {
-                                    var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model,
-                                        total = dataset._meta[Object.keys(dataset._meta)[0]].total,
-                                        mid_radius = model.innerRadius + (model.outerRadius - model.innerRadius)/2,
-                                        start_angle = model.startAngle,
-                                        end_angle = model.endAngle,
-                                        mid_angle = start_angle + (end_angle - start_angle)/2;
-
-                                    var x = mid_radius * Math.cos(mid_angle);
-                                    var y = mid_radius * Math.sin(mid_angle);
-
-                                    ctx.fillStyle = '#fff';
-                                    if (i == 3){ // Darker text color for lighter background
-                                        ctx.fillStyle = '#fff';
-                                    }
-                                    var percent = String(Math.round(dataset.data[i]/total*100)) + "%";
-                                    ctx.fillText(dataset.data[i], model.x + x, model.y + y);
-                                    // Display percent in another line, line break doesn't work for fillText
-                                    ctx.fillText(percent, model.x + x, model.y + y + 15);
-                                    }
-                                });
-                                }
-                            }
-                        };
-
-                        var piedata = [item.Expenses_Type];
-
-                        var piechart = new Chart(pie, {
-                            type: 'pie',
-                            data: {
-                                labels: ["a","b"],
-                                datasets: [{
-                                backgroundColor: [
-                                    "#2ecc71",
-                                    "#3498db",
-                                    "#95a5a6",
-                                    "#9b59b6",
-                                    "#f1c40f",
-                                    "#e74c3c",
-                                    "#34495e"
-                                ],
-                                data: [1,2]
-                                }],
-                            },
-                            options: pieOptions
-                        });
-                         // console.log(piechart);
-                            $("#ajaxloader3").hide();
-                        //end chart
-
-                     $("#ajaxloader3").hide();
-
-
-
-                      });
-
 
                     }
                    }

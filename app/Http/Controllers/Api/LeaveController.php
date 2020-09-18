@@ -1690,12 +1690,12 @@ class LeaveController extends Controller {
 
         $periods = DB::table('leave_terms')->where('leave_terms.Leave_Id', $id)->get();
 
-        Mail::send('emails.leaveapplicationwithperiod', ['leavedetail' => $leavedetail,'periods'=>$periods, 'attachmentUrl' => $attachmentUrl], function($message) use ($emails,$me,$NotificationSubject)
-        {
-            array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-            $emails = array_filter($emails);
-            $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
-        });
+        // Mail::send('emails.leaveapplicationwithperiod', ['leavedetail' => $leavedetail,'periods'=>$periods, 'attachmentUrl' => $attachmentUrl], function($message) use ($emails,$me,$NotificationSubject)
+        // {
+        //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+        //     $emails = array_filter($emails);
+        //     $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+        // });
 
         return 1;
     }

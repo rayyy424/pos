@@ -117,11 +117,11 @@
                           opts: {
                               data: [
                                 { text :"", id: "0" },
-                                @foreach($users as $department => $dept_users)
+                                @foreach($users as $position => $pos_users)
                                 {
-                                  text: "{{ $department }}",
+                                  text: "{{ $position }}",
                                   children: [
-                                    @foreach($dept_users as $user)
+                                    @foreach($pos_users as $user)
                                     { text :"{{$user->Name}}", id: "{{$user->Id}}" },
                                     @endforeach
                                   ]
@@ -249,11 +249,11 @@
 
                                          data: [
                                            { text :"", id: "0" },
-                                           @foreach($users as $department => $dept_users)
+                                           @foreach($users as $position => $pos_users)
                                            {
-                                             text: "{{ $department }}",
+                                             text: "{{ $position }}",
                                              children: [
-                                               @foreach($dept_users as $user)
+                                               @foreach($pos_users as $user)
                                                { text :"{{$user->Name}}", id: "{{$user->Id}}" },
                                                @endforeach
                                              ]
@@ -310,11 +310,11 @@
 
                                     data: [
                                       { text :"", id: "0" },
-                                      @foreach($users as $department => $dept_users)
+                                      @foreach($users as $position => $pos_users)
                                       {
-                                        text: "{{ $department }}",
+                                        text: "{{ $position }}",
                                         children: [
-                                          @foreach($dept_users as $user)
+                                          @foreach($pos_users as $user)
                                           { text :"{{$user->Name}}", id: "{{$user->Id}}" },
                                           @endforeach
                                         ]
@@ -411,11 +411,11 @@
 
                                     data: [
                                       { text :"", id: "0" },
-                                      @foreach($users as $department => $dept_users)
+                                      @foreach($users as $position => $pos_users)
                                       {
-                                        text: "{{ $department }}",
+                                        text: "{{ $position }}",
                                         children: [
-                                          @foreach($dept_users as $user)
+                                          @foreach($pos_users as $user)
                                           { text :"{{$user->Name}}", id: "{{$user->Id}}" },
                                           @endforeach
                                         ]
@@ -452,9 +452,6 @@
 
                                 ],
                         },{
-                                    label: "Project_Code:",
-                                    name: "deductionitems.Project_Code",
-                          },{
                                     label: "Petrol_Station:",
                                     name: "deductionitems.Petrol_Station"
                          },{
@@ -524,11 +521,11 @@
 
                                   data: [
                                     { text :"", id: "" },
-                                    @foreach($users as $department => $dept_users)
+                                    @foreach($users as $position => $pos_users)
                                     {
-                                      text: "{{ $department }}",
+                                      text: "{{ $position }}",
                                       children: [
-                                        @foreach($dept_users as $user)
+                                        @foreach($pos_users as $user)
                                         { text :"{{$user->Name}}", id: "{{$user->Id}}" },
                                         @endforeach
                                       ]
@@ -672,11 +669,11 @@
                                     opts: {
 
                                         data: [
-                                          @foreach($users as $department => $dept_users)
+                                          @foreach($users as $position => $pos_users)
                                           {
-                                            text: "{{ $department }}",
+                                            text: "{{ $position }}",
                                             children: [
-                                              @foreach($dept_users as $user)
+                                              @foreach($pos_users as $user)
                                               { text :"{{$user->Name}}", id: "{{$user->Id}}" },
                                               @endforeach
                                             ]
@@ -827,11 +824,11 @@
             type:  'select2',
             opts: {
               data : [
-              @foreach($users as $department => $dept_users)
+              @foreach($users as $position => $pos_users)
               {
-                text: "{{ $department }}",
+                text: "{{ $position }}",
                 children: [
-                @foreach($dept_users as $user)
+                @foreach($pos_users as $user)
                 {
                   id: {{ $user->Id }},
                   text: "{{ $user->Name }}"
@@ -848,11 +845,11 @@
             type:  'select2',
             opts: {
               data : [
-              @foreach($users as $department => $dept_users)
+              @foreach($users as $position => $pos_users)
               {
-                text: "{{ $department }}",
+                text: "{{ $position }}",
                 children: [
-                @foreach($dept_users as $user)
+                @foreach($pos_users as $user)
                 {
                   id: {{ $user->Id }},
                   text: "{{ $user->Name }}"
@@ -870,11 +867,11 @@
             type:  'select2',
             opts: {
               data : [
-              @foreach($users as $department => $dept_users)
+              @foreach($users as $position => $pos_users)
               {
-                text: "{{ $department }}",
+                text: "{{ $position }}",
                 children: [
-                @foreach($dept_users as $user)
+                @foreach($pos_users as $user)
                 {
                   id: {{ $user->Id }},
                   text: "{{ $user->Name }}"
@@ -1230,7 +1227,7 @@
                    {data:"users.Name", editField: "roadtax.UserId",title:'Custodian' },
                    {data:"driver.Name", editField: "roadtax.UserId2",title:'Custodian2' },
                    {data:"driver2.Name", editField: "roadtax.UserId3",title:'Custodian3' },
-                   {data:'users.Department', title:"Department"},
+                   {data:'users.Position', title:"Position"},
                    {data:'roadtax.RoadTax_Expire_Date', title:"RoadTax_Expiry_Date"},
                    {data:'roadtax.Insurance_Expiry_Date', title:"Insurance_Expiry_Date"},
                    {data:'roadtax.Insurance_Company', title:"Insurance_Company"},
@@ -1501,7 +1498,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.
@@ -1567,7 +1564,7 @@
        label: "Submit",
        fn: function () { this.submit(); }
     }, false );
-    shellcarddeductioneditor.set( 'deductionitems.Project_Code', Vehicle_No);
+    shellcarddeductioneditor.set( 'deductionitems.Car_No', Vehicle_No);
     // roadtaxeditor.set( 'roadtax.UserId', 0);
 
     shellcarddeductioneditor.open();

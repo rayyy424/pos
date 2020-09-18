@@ -275,7 +275,7 @@ Route::group(['prefix' => 'api'], function() {
 
 		Route::get('serviceticket/getItemInv','Api\ServiceController@getItemInv');
 
-		Route::get('getgenset','Api\NoticeController@getgenset');
+		Route::get('getspeedfreak','Api\NoticeController@getspeedfreak');
 		Route::get('serviceticket/getAssign','Api\ServiceController@getServiceTicketAssign');
 		Route::get('systemstockin','Api\ServiceController@systemstockin');
 
@@ -340,7 +340,6 @@ Route::group(['prefix' => 'api'], function() {
 		Route::get('delivery/getVehicle','Api\DeliveryController@getVehicle');
 		// Route::get('delivery/getLorrySize','Api\DeliveryController@getLorrySize');
 		Route::get('delivery/getSite','Api\DeliveryController@getSite');
-		// Route::get('delivery/getProjects','Api\DeliveryController@getProjects');
 		Route::get('delivery/getOptions','Api\DeliveryController@getOptions');
 		Route::get('delivery/getPIC','Api\DeliveryController@getPIC');
 		// Route::get('delivery/getSalesOrder','Api\DeliveryCOntroller@getSalesOrder');
@@ -380,8 +379,6 @@ Route::post('allowancecontrol/createnewscheme', 'AllowanceController@createnewsc
 Route::post('allowancecontrol/removescheme', 'AllowanceController@removescheme');
 
 Route::post('accesscontrol/updatedocumenttypeaccess', 'AccessControlController@updatedocumenttypeaccess');
-
-Route::get('documenttypeaccesscontrol/{Id?}/{ProjectId?}', 'AccessControlController@documenttypeaccesscontrol');
 
 
 // resource management route
@@ -503,8 +500,6 @@ Route::get('taskslist/{status?}/{start?}/{end?}/{userid?}', 'TimesheetController
 
 Route::get('otwgetpoints/{id}', 'TimesheetController@otwgetpoints');
 
-Route::get('project', 'ProjectController@project');
-Route::get('project/projectcode', 'ProjectController@projectcode');
 
 Route::get('engineermonitoring', 'MonitoringController@index');
 Route::get('engineerlocationtracking/{Start?}/{End?}/{includeResigned?}', 'TimesheetController@engineerlocationtracking');
@@ -520,7 +515,6 @@ Route::get('optioncontrol/{Type}/{All?}', 'OptionController@index');
 Route::get('options/{Table}/{Type}', 'OptionController@getoptions');
 
 Route::get('approvalcontrol/{Type}', 'ApprovalController@index');
-Route::get('approval/project/{Type}', 'ApprovalController@missedproject');
 
 // Route::get('holidaymanagement/{Year}', 'HolidayController@index');
 
@@ -563,18 +557,16 @@ Route::get('PO/{Id}', 'POController@purchaseorderitem');
 Route::get('PO2/{PO}', 'POController@purchaseorderitem2');
 Route::post('PO/uploadreceipt', 'POController@uploadreceipt');
 Route::post('PO/deletereceipt', 'POController@deletereceipt');
-Route::get('PObyprojectcode/{ProjectCode?}', 'POController@index');
-Route::get('PObyworkorderid/{ProjectCode?}/{WorkItemId?}', 'POController@index');
-Route::get('PO/{ProjectCode?}/{WorkItemId?}/{ProjectId}', 'POController@index');
-Route::get('PO/{ProjectCode?}/{WorkItemId?}/{ProjectId}/{Type}', 'POController@index');
-Route::get('PO/{ProjectCode?}/{WorkItemId?}/{ProjectId}/{Type}/{Template}', 'POController@index');
-Route::get('PObyprojectcode/{ProjectCode?}', 'POController@index');
+Route::get('PObyworkorderid/{WorkItemId?}', 'POController@index');
+Route::get('PO/{WorkItemId?}', 'POController@index');
+Route::get('PO/{WorkItemId?}/{Type}', 'POController@index');
+Route::get('PO/{WorkItemId?}/{Type}/{Template}', 'POController@index');
 Route::post('PO/importpo', 'POController@importpo');
 
 Route::get('POSummary/{Start?}/{End?}', 'POController@posummary');
-Route::get('POAgingSummary/{ProjectId?}', 'POController@poagingsummary');
+Route::get('POAgingSummary', 'POController@poagingsummary');
 
-Route::get('Invoice', 'InvoiceController@index');
+Route::get('invoice', 'InvoiceController@index');
 Route::get('Invoice/{Id}', 'InvoiceController@invoicedetail');
 Route::get('Invoice2/{Invoice}', 'InvoiceController@invoicedetail2');
 Route::post('Invoice/uploadreceipt', 'InvoiceController@uploadreceipt');
@@ -601,7 +593,6 @@ Route::get('claimsummary', 'ClaimController@summary');
 Route::get('claimsummary2', 'ClaimController@summary2');
 Route::get('claimsummary/{Start?}/{End?}', 'ClaimController@summary');
 Route::get('userclaimbreakdown/{UserId}/{Start?}/{End?}','ClaimController@userclaimbreakdown');
-Route::get('projectclaimbreakdown/{ProjectId}/{Start?}/{End?}','ClaimController@projectclaimbreakdown');
 
 Route::get('timesheetsummary', 'TimesheetController@summary');
 Route::get('timesheetsummary/{Start?}/{End?}', 'TimesheetController@summary');
@@ -674,16 +665,16 @@ Route::post('tracker/updatecolumn', 'TrackerController@updatecolumn');
 Route::post('tracker/viewdocument/{trackerid?}', 'TrackerController@viewdocument');
 Route::post('tracker/submitdocument', 'TrackerController@submitdocument'); //original
 Route::post('tracker/submitdocumentmanual', 'TrackerController@submitdocumentmanual'); //for manual
-Route::get('tracker/filecategory2/{projectid}/{trackerid}', 'TrackerController@filecategory2'); //Firdaus - Copy from filecategory to do new route for getdocumentlist 20180621 Original = Route::get('filecategory/{trackerid}', 'TrackerController@filecategory');
+Route::get('tracker/filecategory2/{trackerid}', 'TrackerController@filecategory2'); //Firdaus - Copy from filecategory to do new route for getdocumentlist 20180621 Original = Route::get('filecategory/{trackerid}', 'TrackerController@filecategory');
 Route::post('tracker/deleteallfiles', 'TrackerController@deleteallfiles');
 
 Route::post('tracker/gettemplateaccess', 'TrackerController@gettemplateaccess');
 Route::post('tracker/updatetemplateaccess', 'TrackerController@updatetemplateaccess');
 
-Route::get('customizereport/{projectid}/{region?}', 'ChartController@customizereport');
+Route::get('customizereport/{region?}', 'ChartController@customizereport');
 
 Route::get('projectfolder', 'TrackerController@projectfolder'); //Firdaus - Copy from filecategory to do new route for getdocumentlist 20180621 Original = Route::get('filecategory/{trackerid}', 'TrackerController@filecategory');
-Route::get('projectfolder/sitefolder/{ProjectId}', 'TrackerController@sitefolder');
+Route::get('projectfolder/sitefolder', 'TrackerController@sitefolder');
 
 Route::post('tracker/submitdocument', 'TrackerController@submitdocument');
 Route::post('tracker/getdocumentlist', 'TrackerController@getdocumentlist');
@@ -693,10 +684,10 @@ Route::post('tracker/deletedocument', 'TrackerController@deletedocument');
 Route::post('tracker/importdata', 'TrackerController@importdata');
 Route::post('tracker/importhuaweipo', 'TrackerController@importhuaweipo');
 Route::post('tracker/reordercolumn', 'TrackerController@reordercolumn');
-Route::get('tracker/agingrules/{ProjectId?}', 'TrackerController@agingrules');
-Route::get('tracker/dependencyrules/{ProjectId?}', 'TrackerController@dependencyrules');
+Route::get('tracker/agingrules', 'TrackerController@agingrules');
+Route::get('tracker/dependencyrules', 'TrackerController@dependencyrules');
 Route::get('tracker/agingpreview/{AgingId}', 'TrackerController@agingpreview');
-Route::get('tracker/targetrules/{ProjectId?}', 'TrackerController@targetrules');
+Route::get('tracker/targetrules', 'TrackerController@targetrules');
 Route::get('tracker/targetpreview/{TargetId}', 'TrackerController@targetpreview');
 Route::post('tracker/updatepocolumn', 'TrackerController@updatepocolumn');
 Route::post('tracker/assigntask', 'TrackerController@assigntask');
@@ -704,7 +695,7 @@ Route::post('tracker/viewphoto', 'TrackerController@viewphoto');
 
 Route::get('trackerupdatetracker/{start?}/{end?}', 'TrackerController@trackerupdatetracker');
 
-Route::get('tracker/autodate/{ProjectId?}', 'TrackerController@autodate');
+Route::get('tracker/autodate', 'TrackerController@autodate');
 
 Route::post('tracker/updatetracker', 'TrackerController@updatetracker');
 Route::post('tracker/updatetracker2', 'TrackerController@updatetracker2');
@@ -713,10 +704,8 @@ Route::post('tracker/createnewsite', 'TrackerController@createnewsite');
 Route::post('tracker/removeitem', 'TrackerController@removeitem');
 Route::post('tracker/updatesite', 'TrackerController@updatesite');
 
-
-// Route::get('projecttracker/{ProjectId?}/{TrackerId?}', 'TrackerController@trackerview');
-Route::get('projecttracker/{ProjectId?}/{TrackerId?}/{Condition?}', 'TrackerController@trackerview');
-Route::get('handsontable/{ProjectId?}/{TrackerId?}/{Condition?}', 'TrackerController@handsontable');
+Route::get('projecttracker/{TrackerId?}/{Condition?}', 'TrackerController@trackerview');
+Route::get('handsontable/{TrackerId?}/{Condition?}', 'TrackerController@handsontable');
 
 Route::get('siteissue', 'TrackerController@siteissue');
 Route::get('assignments', 'TrackerController@assignments');
@@ -731,28 +720,27 @@ Route::post('loginlog', 'TrackerController@updatelogin');
 
 Route::get('userability', 'UserController@userability');
 Route::get('resourcecalendar/{start?}/{end?}/{role?}', 'TrackerController@resourcecalendar');
-Route::get('resourcecalendar/{start?}/{end?}/{role?}/{projectid?}', 'TrackerController@viewproject');
+Route::get('resourcecalendar/{start?}/{end?}/{role?}', 'TrackerController@viewproject');
 Route::post('resourcecalendar/typelist', 'TrackerController@typelist');
 Route::get('unassignedusers/{role?}', 'TrackerController@unassignedusers');
-Route::get('projectrequirement/{ProjectId?}', 'TrackerController@projectrequirement');
+Route::get('projectrequirement', 'TrackerController@projectrequirement');
 Route::get('projectaccess', 'TrackerController@projectaccess');
 Route::get('notificationmaintenance', 'NotificationController@notificationmaintenance');
-Route::get('templateaccess/{projectid?}', 'TrackerController@templateaccess');
+Route::get('templateaccess', 'TrackerController@templateaccess');
 Route::get('chartmanagement', 'ChartController@index');
-Route::get('chartcolumn/{chartviewid}/{projectid}', 'ChartController@chartcolumn');
-Route::get('chartpreview/{chartviewid}/{projectid}', 'ChartController@chartpreview');
+Route::get('chartcolumn/{chartviewid}', 'ChartController@chartcolumn');
+Route::get('chartpreview/{chartviewid}', 'ChartController@chartpreview');
 Route::post('chartcolumn/reordercolumn', 'ChartController@reordercolumn');
 
-Route::get('gantt/{projectid?}/{trackerid?}/{siteid?}', 'GanttController@gantt');
-Route::get('projectdashboard/{projectid}/{region?}', 'ChartController@projectdashboard');
+Route::get('gantt/{trackerid?}/{siteid?}', 'GanttController@gantt');
+Route::get('projectdashboard/{region?}', 'ChartController@projectdashboard');
 
-Route::get('dashboard/{projectid?}', 'TrackerController@dashboard');
-Route::get('dashboard2/{projectid?}', 'TrackerController@dashboard2');
-Route::get('dashboard3/{projectid?}', 'TrackerController@dashboard3');
+Route::get('dashboard', 'TrackerController@dashboard');
+Route::get('dashboard2', 'TrackerController@dashboard2');
+Route::get('dashboard3', 'TrackerController@dashboard3');
 
 Route::get('PNL', 'SalesController@index');
-Route::get('PNL/{projectid}', 'SalesController@pnl');
-Route::get('salesorder/{projectid?}/{clientid?}/{companytype?}/{detail?}', 'SalesController@salesorder');
+Route::get('salesorder/{clientid?}/{companytype?}/{detail?}', 'SalesController@salesorder');
 Route::post('salesorder/generate/{trackerid}', 'SalesController@generate');
 Route::post('salesorderdetails/save', 'SalesController@save');
 Route::post('salesorderdetails/save2', 'SalesController@save2');
@@ -876,6 +864,8 @@ Route::get('staffloan2/{end?}', 'UserController@staffloan2');
 
 Route::get('staffloan/{end?}', 'UserController@staffloan');
 
+Route::get('companyloan/{end?}', 'UserController@companyloan');
+
 Route::get('presaving/{year?}', 'UserController@presaving');
 Route::get('presavingrecord/{Id}/{year}', 'UserController@presavingrecord');
 
@@ -942,6 +932,16 @@ Route::post('staffloan/uploadreceipt', 'UserController@staffloanuploadreceipt');
 Route::post('staffloan/deletereceipt', 'UserController@staffloandeletereceipt');
 Route::get('exportstaffloan/{Id}', 'UserController@exportstaffloandetail');
 
+
+//company loan
+Route::get('companyloanmanagement/{start?}/{end?}', 'UserController@companyloanmanagement');
+Route::get('companyloans/{advanceid}', 'UserController@companyloandetail');
+Route::post('companyloan/approve', 'UserController@approvecompanyloan');
+Route::post('companyloan/reject', 'UserController@rejectcompanyloan');
+Route::post('companyloan/redirect', 'UserController@redirectcompanyloan');
+Route::post('companyloan/deletereceipt', 'UserController@companyloandeletereceipt');
+Route::post('companyloan/uploadreceipt', 'UserController@companyloanuploadreceipt');
+Route::post('companyloan/updateBankIn', 'UserController@companyupdateBankIn');
 
 //holiday scheme
 Route::post('holidaymanagement/territory/{id}/{year}/duplicate', 'HolidayController@duplicate');
@@ -1058,28 +1058,28 @@ Route::get('asset/inventorydetails/{Id}','InventoryController@assetinventorydeta
 Route::get('assetdetails/{Id}','InventoryController@assetdetails');
 Route::post('assetupdate','InventoryController@assetsupdate');
 
-// GENSET Inventory
-Route::get('genset/inventory/{branch?}','InventoryController@gensetinventory');
+// SpeedFreak Inventory
+Route::get('speedfreak/inventory/{branch?}','InventoryController@speedfreakinventory');
 Route::get('lowtresholdlist','InventoryController@lowtresholdlist');
 Route::get('lowtresholdlist/getpricehistory/{id}','InventoryController@getpricehistory');
-Route::post('inventory/updatestock','InventoryController@gensetupdate');
-Route::post('gensetinventorycreate','InventoryController@gensetinventorycreate');
-Route::post('gensetinventory/edit','InventoryController@gensetinventoryedit');
+Route::post('inventory/updatestock','InventoryController@speedfreakupdate');
+Route::post('speedfreakinventorycreate','InventoryController@speedfreakinventorycreate');
+Route::post('speedfreakinventory/edit','InventoryController@speedfreakinventoryedit');
 Route::post('toolsupdate','InventoryController@assetupdate');
-Route::post('inventory/delete','InventoryController@gensetdelete');
-Route::get('genset/inventorydetails/{Id?}','InventoryController@gensetinventorydetails');
-Route::get('genset/inventoryhistory/{branch}/{Id}','InventoryController@gensetinventoryhistory');
+Route::post('inventory/delete','InventoryController@speedfreakdelete');
+Route::get('speedfreak/inventorydetails/{Id?}','InventoryController@speedfreakinventorydetails');
+Route::get('speedfreak/inventoryhistory/{branch}/{Id}','InventoryController@speedfreakinventoryhistory');
 Route::get('branchtransfergetquantity/{type?}','InventoryController@branchtransfergetquantity');
 Route::get('inventorypricehistory/{id?}','InventoryController@inventorypricehistory');
 
-Route::get('filerenderer2/{projectid}/{trackerid}/{option}', 'TrackerController@filerenderer2'); //Firdaus - New Route for renderer 2 (For Document List)
+Route::get('filerenderer2/{trackerid}/{option}', 'TrackerController@filerenderer2'); //Firdaus - New Route for renderer 2 (For Document List)
 Route::post('filerenderer2downloadall', 'TrackerController@downloadall');
 Route::get('filerenderer2delete/{Id}', 'TrackerController@filerenderer2delete');
 Route::get('filecategory/{trackerid}', 'TrackerController@filecategory'); //Firdaus - Capture this route for getdocumentlist
 
-Route::get('opendocument/{ProjectId}/{Id}/{Column}', 'TrackerController@opendocument'); //Firdaus - Capture this route for getdocumentlist
+Route::get('opendocument/{Id}/{Column}', 'TrackerController@opendocument'); //Firdaus - Capture this route for getdocumentlist
 
-Route::get('invoicelisting/{Year?}/{ProjectId?}', 'TrackerController@invoicelisting');
+Route::get('invoicelisting/{Year?}', 'TrackerController@invoicelisting');
 Route::post('invoicelisting/newrecord', 'TrackerController@createnewrecord');
 Route::post('invoicelisting/updateinvoicelisting', 'TrackerController@updateinvoicelisting');
 Route::post('invoicelisting/removerecord', 'TrackerController@removerecord');
@@ -1091,15 +1091,15 @@ Route::get('transportcharges/{Start?}/{End?}', 'TrackerController@transportcharg
 Route::post('transportcharges/updateincentive/{id}', 'TrackerController@updateincentive');
 Route::get('transportchargesdetails/{roadtaxid}/{date}', 'TrackerController@transportchargesdetails');
 Route::get('sitetransportcharges/{Start?}/{End?}/{Site?}', 'TrackerController@sitetransportcharges');
-Route::get('costing/{ProjectId?}', 'TrackerController@costing');
-Route::get('logisticschargesincentive/{Start?}/{End?}/{ProjectType?}/{Company?}', 'TrackerController@logisticschargesincentive');
+Route::get('costing', 'TrackerController@costing');
+Route::get('logisticschargesincentive/{Start?}/{End?}/{Company?}', 'TrackerController@logisticschargesincentive');
 
 Route::post('costing/newcostingrecord', 'TrackerController@createnewcostingrecord');
 Route::post('costing/updatecosting', 'TrackerController@updatecosting');
 Route::post('costing/removecostingrecord', 'TrackerController@removecostingrecord');
 /*Material Request*/
 Route::get('material/MR','MaterialController@materialRequest');
-Route::get('material/MR/{projectid?}/{trackerid?}','MaterialController@materialRequest2');
+Route::get('material/MR/{trackerid?}','MaterialController@materialRequest2');
 Route::get('material/getSite','MaterialController@getSite');
 Route::post('material/newRequest','MaterialController@newMaterialRequest');
 Route::get('material/getMaterial','MaterialController@getMaterial');
@@ -1128,7 +1128,7 @@ Route::post('ewalletrecord/uploadfile', 'UserController@upload');
 Route::post('ewalletrecord/deletefile', 'UserController@removeupload');
 Route::post('ewalletrecord/verify','UserController@verify');
 Route::post('ewalletrecord/verifytick','UserController@verifytick');
-Route::get('ewalletsummary/{start?}/{end?}/{projectid?}/{trackerid?}','UserController@ewalletsummary');
+Route::get('ewalletsummary/{start?}/{end?}/{trackerid?}','UserController@ewalletsummary');
 /*Material PO */
 Route::post('material/generatePO','MaterialController@generatePO');
 Route::get('material/PO/{mid?}/{start?}/{end?}','MaterialController@materialPO');
@@ -1143,7 +1143,6 @@ Route::get('material/getItemBasedOnType','MaterialController@getItemBasedOnType'
 Route::post('material/uploadQuotation','MaterialController@uploadQuotation');
 Route::get('material/getFile','MaterialController@getFile');
 Route::post('material/quotationApproval','MaterialController@quotationApproval');
-Route::get('material/getProjectCode','MaterialController@getProjectCode');
 Route::get('material/checkQuotationExceed','MaterialController@checkQuotationExceed');
 Route::post('material/savePoItem','MaterialController@savePoItem');
 Route::post('material/cancel','MaterialController@cancel');
@@ -1160,9 +1159,9 @@ Route::post('material/removeFile','MaterialController@removeFile');
 Route::get('material/getCancelledPo','MaterialController@getCancelledPo');
 Route::post('material/savePoNo','MaterialController@savePoNo');
 Route::get('material/filterClient','MaterialController@filterClient');
-// GENSET
-Route::get('genset/dashboard', 'GensetController@index');
-Route::get('gensetsummarydashboard/{year?}/{cat?}/{clientId?}/{scope?}/{region?}','GensetController@gensetsummarydashboard');
+// Speedfreak
+Route::get('speedfreak/dashboard/{start?}/{end?}', 'SpeedFreakController@index');
+Route::get('speedfreaksummarydashboard/{year?}/{cat?}/{clientId?}/{scope?}/{region?}','SpeedFreakController@speedfreaksummarydashboard');
 // Human Resources Dashboard
 Route::get('humanresource/dashboard/{start?}/{end?}', 'HumanResourceController@index');
 Route::get('onleavetodaydashboard/{start?}/{end?}', 'HumanResourceController@onleavetodaydashboard');
@@ -1184,25 +1183,25 @@ Route::get('kpiresult/{start?}/{end?}/{user?}/{year?}', 'UserController@kpiresul
 Route::get('cmeresult/{start?}/{end?}/{user?}/{year?}', 'UserController@cmeresult');
 
 
-Route::get('technicianbag/{id?}','GensetController@technicianbag');
-Route::get('technicianbag/details/{id}','GensetController@technicianbagdetails');
-Route::post('importgensetinventory','GensetController@importgensetinventory');
-Route::get('requisitionmanagement/{start?}/{end?}','GensetController@requisitionmanagement');
-Route::get('deleterequisition/{id}','GensetController@deleterequisition');
-Route::get('requisitionmanagementdetails/{id}','GensetController@requisitionmanagementdetails');
-Route::post('requisition/approve/{id}','GensetController@approveRequisition');
-Route::get('requisitionform/{technician?}/{branch?}','GensetController@requisitionform');
-Route::post('/requisition/set_requisition_data','GensetController@fetchItemList');
-Route::post('/requisitionform/getitem','GensetController@getitemlist');
-Route::post('/requisitionform/confirmStockOut','GensetController@confirmStockOut');
-Route::post('requisitionform/prepare','GensetController@prepare');
-Route::get('exportGensetInventory','GensetController@exportGensetInventory');
+Route::get('technicianbag/{id?}','SpeedFreakController@technicianbag');
+Route::get('technicianbag/details/{id}','SpeedFreakController@technicianbagdetails');
+Route::post('importspeedfreakinventory','SpeedFreakController@importspeedfreakinventory');
+Route::get('requisitionmanagement/{start?}/{end?}','SpeedFreakController@requisitionmanagement');
+Route::get('deleterequisition/{id}','SpeedFreakController@deleterequisition');
+Route::get('requisitionmanagementdetails/{id}','SpeedFreakController@requisitionmanagementdetails');
+Route::post('requisition/approve/{id}','SpeedFreakController@approveRequisition');
+Route::get('requisitionform/{technician?}/{branch?}','SpeedFreakController@requisitionform');
+Route::post('/requisition/set_requisition_data','SpeedFreakController@fetchItemList');
+Route::post('/requisitionform/getitem','SpeedFreakController@getitemlist');
+Route::post('/requisitionform/confirmStockOut','SpeedFreakController@confirmStockOut');
+Route::post('requisitionform/prepare','SpeedFreakController@prepare');
+Route::get('exportspeedfreakinventory','SpeedFreakController@exportspeedfreakinventory');
 
 // service ticket
 Route::get('serviceticket','ServiceTicketController@serviceticket');
 Route::get('serviceticket/details/{id}','ServiceTicketController@serviceticketdetails');
 Route::get('servicemanagement/{start?}/{end?}/{status?}/{type?}/{asset?}','ServiceTicketController@servicemanagement');
-Route::get('servicegetsite/{genset}','ServiceTicketController@SVTGetSite');
+Route::get('servicegetsite/{speedfreak}','ServiceTicketController@SVTGetSite');
 Route::get('servicegetpic/{service}','ServiceTicketController@SVTGetPic');
 Route::post('servicemanagement/create','ServiceTicketController@create');
 Route::post('servicemanagement/update','ServiceTicketController@update');
@@ -1221,7 +1220,7 @@ Route::post('deleteticket/{id}','ServiceTicketController@deleteticket');
 Route::get('svtreport/{start?}/{end?}','ServiceTicketController@svtreport');
 Route::get('replacementhistory/{start?}/{end?}/{priceId?}','ServiceTicketController@replacementhistory');
 
-Route::get('trackersummary/{projectid?}', 'TrackerController@trackersummary');
+
 Route::get('cashbook/{start?}/{end?}/{company?}', 'TrackerController@cashbook');
 Route::get('apinvoice/{start?}/{end?}/{company?}', 'TrackerController@apinvoice');
 Route::get('apcreditnote/{start?}/{end?}/{company?}', 'TrackerController@apcreditnote');
@@ -1235,3 +1234,11 @@ Route::post('tracker/updatefibre', 'TrackerController@updatefibre');
 Route::post('tracker/diary', 'TrackerController@diary');
 
 Route::get('svt/dashboard/{start?}/{end?}/{status?}','ServiceTicketController@dashboard');
+
+//Speed Freak Dashboard
+Route::get('salary/{start?}/{end?}/{type?}', 'SalaryController@index');
+
+
+//Speed Freak Sales
+Route::get('speedfreak/sales/{start?}/{end?}/{branch?}','InventoryController@speedfreaksales');
+Route::get('averagesale/{year?}', 'SpeedFreakController@averagesale');

@@ -207,22 +207,6 @@
                                   name: "po.Scope_of_Work",
                                   type: "textarea"
                            },{
-                                  label: "Project Code:",
-                                  name: "po.Project_Code",
-                                  type:  'autoComplete',
-                                  "opts": {
-                                    "source": [
-                                      // array of genres...
-                                      @if($projectcodes)
-                                        @foreach($projectcodes as $projectcode)
-
-                                        { label :"{{$projectcode->Project_Code}} - {{$projectcode->Site_ID}}", value: "{{$projectcode->Project_Code}}" },
-
-                                        @endforeach
-                                      @endif
-                                    ]
-                                  },
-                           },{
                                   label: "Work Order ID:",
                                   name: "po.Work_Order_ID"
                            },{
@@ -525,12 +509,6 @@
                                   label: "Engineering_No:",
                                   name: "po.Engineering_No"
                            },{
-                                  label: "Project:",
-                                  name: "po.Project"
-                           },{
-                                  label: "ProjectCode:",
-                                  name: "po.ProjectCode"
-                           },{
                                   label: "Quantity_Request:",
                                   name: "po.Quantity_Request",
                                   attr: {
@@ -660,13 +638,9 @@
                                           {  data: null,"render":"", title:"No"},
                                            { data: "po.Id",title:"Id"},
                                            { data: "po.Huawei_ID",title:"Huawei_ID"},
-                                           { data: "projects.Project_Name", editField: "po.ProjectId",title:"Project_Name" },
-                                           { data: "po.Project",title:"Project" },
-                                            { data: "po.Project_Code", title:"Project_Code" },
                                            { data: "po.PO_Status",title:"PO_Status" },
                                            { data: "po.Status",title:"Status" },
                                            { data: "po.ROR_Status",title:"ROR_Status" },
-                                           { data: "po.ProjectCode",title:"ProjectCode" },
 
                                            { data: "po.PO_No",title:"PO_No" },
                                            { data: "po.PR_No",title:"PR_No" },
@@ -1078,7 +1052,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

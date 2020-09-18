@@ -34,7 +34,6 @@
 
                                                       <tr>
                                                         <th style="text-align:center;white-space: nowrap;">Date</th>
-                                                        <th style="text-align:center;white-space: nowrap;">Project Name</th>
                                                         <th style="text-align:center;white-space: nowrap;">Expenses Type</th>
                                                         <th style="text-align:center;white-space: nowrap;">Remarks</th>
                                                         <th style="text-align:center;white-space: nowrap;">Approver</th>
@@ -45,8 +44,6 @@
 
                                                         <tr valign="top">
                                                             <td style="text-align:center;white-space: nowrap;">{{$claim->Date}}</td>
-
-                                                            <td style="text-align:center;white-space: nowrap;">{{$claim->Project_Name}}</td>
 
                                                             <td style="text-align:center;white-space: nowrap;">{{$claim->Expenses_Type}}</td>
 

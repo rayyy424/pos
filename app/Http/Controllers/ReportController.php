@@ -24,8 +24,6 @@ class ReportController extends Controller {
 	{
       $me = (new CommonController)->get_current_user();
 
-      $projectids = explode("|",$me->ProjectIds);
-
       $options = DB::table('documenttypeaccess')
       ->leftJoin('options','documenttypeaccess.Document_Type','=','options.Option')
       ->select('options.Id','options.Table','options.Field','options.Option')
@@ -57,7 +55,7 @@ class ReportController extends Controller {
       $reports="";
 
       $reports = DB::table('tracker')
-      ->select('tracker.Id','files.File_Name','files.Web_Path','projects.Project_Name','tracker.Unique ID',
+      ->select('tracker.Id','files.File_Name','files.Web_Path','tracker.Unique ID',
       DB::raw("CASE
         WHEN Site_ID='' THEN `Site LRD`
       ELSE
@@ -66,9 +64,7 @@ class ReportController extends Controller {
       'tracker.Site_Name',DB::raw('submitter.Name as Submitter'),DB::raw('files.created_at as Submitted_Date'))
       ->leftJoin('files', 'tracker.Id', '=',  DB::raw('files.TargetId AND files.Type="Tracker" AND files.Document_Type="'.$type.'"'))
       ->leftJoin('users as submitter', 'files.UserId', '=', 'submitter.Id')
-      ->leftJoin('projects', 'projects.Id', '=', 'tracker.ProjectId')
       ->whereNotNull('files.Id')
-      ->whereIn('tracker.ProjectId',$projectids)
       ->groupBy('files.Id')
       ->orderBy('tracker.Site_Name', 'asc')
       ->get();

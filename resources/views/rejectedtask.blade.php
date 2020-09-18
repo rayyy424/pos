@@ -78,7 +78,6 @@
                             { data : 'tasks.Current_Task' , title: "Task"},
                             { data : 'tasks.Previous_Task' , title: "Previous Task"},
                             { data : 'tasks.Current_Task_Date' , title: "Previous Task Date"},
-                            { data : 'tasks.Project_Code' , title: "Project Code"},
                             { data : 'tasks.Site_Name' , title: "Site Name"},
                             { data : 'tasks.Threshold' , title: "KPI (Days)"},
                             { data : 'pic' , title: "Person-in-Charge"},
@@ -316,7 +315,7 @@
 
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
   </footer>

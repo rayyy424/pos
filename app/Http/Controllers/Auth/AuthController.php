@@ -67,13 +67,6 @@ class AuthController extends Controller {
 	public function getRegister()
     {
 
-				$project= DB::table('projects')
-				->leftJoin('users', 'users.Id', '=', 'projects.Project_Manager')
-				->select('users.Id as UserId','users.Name','projects.Id as ProjectId','projects.Project_Name')
-				->orderBy('users.Name','asc')
-				->orderBy('projects.Project_Name','asc')
-				->get();
-
 				$options= DB::table('options')
 				->whereIn('Table', ["users"])
 				->orderBy('Table','asc')
@@ -85,7 +78,7 @@ class AuthController extends Controller {
 				->select('Id','Name')
 				->get();
 
-        return view('auth.register', ['project' => $project,'options' =>$options, 'holiday'=>$holiday]);
+        return view('auth.register', ['options' =>$options, 'holiday'=>$holiday]);
     }
 
 	public function postLogin(Request $request)
@@ -141,7 +134,6 @@ class AuthController extends Controller {
 	{
 
 		$emails = array();
-		$project=null;
 
 		$messages = [
     	'Name.required' => 'The Name field is required.',
@@ -167,8 +159,6 @@ class AuthController extends Controller {
 			'Institution' 			 => 'required_if:User_Type,==,"Assistant Engineer"',
 			'Internship_Start_Date' 			 => 'required_if:User_Type,==,"Assistant Engineer"',
 			'Internship_End_Date' 			 => 'required_if:User_Type,==,"Assistant Engineer"',
-			'Project' 			 => 'required_if:User_Type,==,"Conractor"',
-			'Project_Manager' 			 => 'required_if:User_Type,==,"Conractor"',
 			'Contact_No_1' => 'required',           // required and has to match the password field
 			'Company' 			 => 'required',
 			'Identity_Type' 			 => 'required',
@@ -224,24 +214,14 @@ class AuthController extends Controller {
 		if ($input["User_Type"]=="Contractor")
 		{
 			DB::table('contractorreferences')->insert(
-				['UserId' => $userid,
-				 'ProjectId' => $input["Project"],
-				 'Project_Manager' => $input["Project_Manager"]
+				['UserId' => $userid
 				]
 			);
 
 			$notify = DB::table('users')
 			->where('Admin', "=",1)
-			->orWhere('Id', '=', $input["Project_Manager"])
 			->get();
 
-			$project= DB::table('projects')
-			->leftJoin('users', 'users.Id', '=', 'projects.Project_Manager')
-			->select('users.Id as UserId','users.Name','projects.Id as ProjectId','projects.Project_Name')
-			->where('projects.Id','=',$input["Project"])
-			->orderBy('users.Name','asc')
-			->orderBy('projects.Project_Name','asc')
-			->first();
 		}
 		elseif ($input["User_Type"]=="Assistant Engineer")
 		{
@@ -282,10 +262,10 @@ class AuthController extends Controller {
 
 		}
 
-		Mail::send('emails.register', ['detail'=>$input,'project'=>$project], function($message) use ($emails)
-		{
-				$message->to($emails)->subject('New Account Registered Pending Approval');
-		});
+		// Mail::send('emails.register', ['detail'=>$input], function($message) use ($emails)
+		// {
+		// 		$message->to($emails)->subject('New Account Registered Pending Approval');
+		// });
 
 		return redirect($this->loginPath())->with('status', 'Success!');
 	}

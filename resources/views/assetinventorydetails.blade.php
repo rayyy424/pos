@@ -75,10 +75,10 @@
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1>Asset Management<small>GENSET</small></h1>
+		<h1>Asset Management<small>SPEEDFREAK</small></h1>
 		<ol class="breadcrumb">
 			<li><a href="{{ url('/home') }}"><i class="fa fa-dashboard"></i>Home</a></li>
-			<li><a href="#">GENSET</a></li>
+			<li><a href="#">SPEEDFREAK</a></li>
             <li>Asset Management</li>
             <li class="active">Asset Inventory Branch Details</li>
 		</ol>
@@ -153,7 +153,7 @@
                                 <tr>
                                     <th>Date</th>
                                     <th>Purpose</th>
-                                    <th>Genset</th>
+                                    <th>SpeedFreak</th>
                                     <th>Client</th>
                                     <th>Site</th>
                                     <th>DO Number</th>
@@ -240,7 +240,7 @@
 </div>
 <footer class="main-footer">
 	<div class="pull-right hidden-xs">
-		<b>Version</b> 2.0.1
+		<b>Version</b> 1.0.0
 	</div>
 	<strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
 </footer>

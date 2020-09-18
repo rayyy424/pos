@@ -661,9 +661,8 @@
                                          },{
                                                  label: "Created By:",
                                                  name: "salary.Created_By",
-                                                 attr:  {
-                                                    placeholder: ''
-                                                }
+                                                 type: "hidden",
+                                                 def: "{{ $me->UserId }}"
                                          }
                                  ]
                          } );
@@ -1226,8 +1225,7 @@
                                        { data: "salary.Salary",title: "Salary" },
                                        { data: "salary.Remarks",title: "Remarks" },
                                        { data: "salary.Created_By",title: "Created_By" },
-
-                                       { data: "salary.Adjustment_Date",title: "Adjustment_Date" }
+                                       { data: "salary.created_at",title: "Adjustment_Date" }
                                ],
                                autoFill: {
                                        //columns: ':not(:first-child)',
@@ -1981,6 +1979,7 @@
                <li><a href="#certificate" data-toggle="tab">Certificate</a></li>
                <li><a href="#resume" data-toggle="tab">Resume</a></li>
                <li><a href="#Export" data-toggle="tab">Export</a></li>
+               <li><a href="#salary" data-toggle="tab">Salary</a></li>
              </ul>
 
              <div class="tab-content">
@@ -2338,90 +2337,6 @@
                                         @foreach ($options as $opt)
                                             @if ($opt->Field=="Company")
                                               <option <?php if($user->Company == $opt->Option) echo ' selected="selected" '; ?>>{{$opt->Option}}</option>
-                                            @endif
-                                        @endforeach
-                                      </select>
-
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                      <label>Department : </label>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                      @if(str_contains($changes, 'Department'))
-                                        <select class="changed form-control select" id="Department" name="Department" style="width: 100%;">
-                                      @else
-                                        <select class="form-control select2" id="Department" name="Department" style="width: 100%;">
-                                      @endif
-
-                                        <option></option>
-                                        @foreach ($projects as $project)
-
-                                            <option <?php if($user->Department == $project->Project_Name) echo ' selected="selected" '; ?>>{{$project->Project_Name}}</option>
-
-                                        @endforeach
-                                      </select>
-
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                      <label>Team : </label>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                      @if(str_contains($changes, 'Department'))
-                                        <select class="changed form-control select" id="ticket_team" name="ticket_team" style="width: 100%;" multiple="">
-                                      @else
-                                        <select class="form-control select2" id="ticket_team" name="ticket_team" style="width: 100%;" multiple="">
-                                      @endif
-
-                                        <option></option>
-                                        @foreach ($ticket_team as $tt)
-
-                                            <option <?php if(strpos($user->ticket_team,$tt->Option) !== false) echo ' selected="selected" '; ?> >{{$tt->Option}}</option>
-
-                                        @endforeach
-                                      </select>
-
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                      <label>Team Leader : </label>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                      @if(str_contains($changes, 'Department'))
-                                        <select class="changed form-control select" id="team_leader" name="team_leader" style="width: 100%;" multiple="">
-                                      @else
-                                        <select class="form-control select2" id="team_leader" name="team_leader" style="width: 100%;" multiple="">
-                                      @endif
-
-                                        <option></option>
-                                        @foreach ($team_leader as $tl)
-
-                                            <option <?php if(strpos($user->team_leader,$tl->Option) !== false) echo ' selected="selected" '; ?> >{{$tl->Option}}</option>
-
-                                        @endforeach
-                                      </select>
-
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                      <label>Category : </label>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                      @if(str_contains($changes, 'Category'))
-                                        <select class="changed form-control select" id="Category" name="Category" style="width: 100%;">
-                                      @else
-                                        <select class="form-control select2" id="Category" name="Category" style="width: 100%;">
-                                      @endif
-
-                                        <option></option>
-                                        @foreach ($options as $opt)
-                                            @if ($opt->Field=="Category")
-                                              <option <?php if($user->Category == $opt->Option) echo ' selected="selected" '; ?>>{{$opt->Option}}</option>
                                             @endif
                                         @endforeach
                                       </select>
@@ -3927,39 +3842,6 @@
                                   </div>
 
                                   <div class="col-lg-6">
-                                    <label>Department : </label>
-                                  </div>
-
-                                  <div class="col-lg-6">
-                                    <select class="form-control select2" id="Department1" name="Department1" style="width: 100%;">
-
-                                      <option></option>
-                                      @foreach ($projects as $project)
-
-                                          <option <?php if($user->Department == $project->Project_Name) echo ' selected="selected" '; ?>>{{$project->Project_Name}}</option>
-
-                                      @endforeach
-                                    </select>
-
-                                  </div>
-
-                                  <div class="col-lg-6">
-                                    <label>Category : </label>
-                                  </div>
-
-                                  <div class="col-lg-6">
-                                      <select class="form-control select2" id="Category1" name="Category1" style="width: 100%;">
-                                      <option></option>
-                                      @foreach ($options as $opt)
-                                          @if ($opt->Field=="Category")
-                                            <option <?php if($user->Category == $opt->Option) echo ' selected="selected" '; ?>>{{$opt->Option}}</option>
-                                          @endif
-                                      @endforeach
-                                    </select>
-
-                                  </div>
-
-                                  <div class="col-lg-6">
                                     <label>Entitled_for_OT : </label>
                                   </div>
 
@@ -4484,7 +4366,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -4751,8 +4633,6 @@
       nric=$('[name="NRIC"]').val();
       passportno=$('[name="Passport_No"]').val();
       unionno=$('[name="Union_No"]').val();
-      department=$('[name="Department"]').val();
-      category=$('[name="Category"]').val();
       entitle_for_ot=$('[name="Entitled_for_OT"]').val();
       company=$('[name="Company"]').val();
       workingdays=$('[name="Working_Days"]').val();
@@ -4769,8 +4649,6 @@
       confirmationdate=$('[name="Confirmation_Date"]').val();
       resignationdate=$('[name="Resignation_Date"]').val();
       holidayterritoryid=$('[name="HolidayTerritoryId"]').val();
-      ticket_team=$('[name="ticket_team"]').val();
-      team_leader=$('[name="team_leader"]').val();
 
 //
       $.ajax({
@@ -4805,8 +4683,6 @@
                     NRIC:nric,
                     Passport_No:passportno,
                     Union_No:unionno,
-                    Department:department,
-                    Category:category,
                     Entitled_for_OT:entitle_for_ot,
                     Company:company,
                     Working_Days:workingdays,
@@ -4823,8 +4699,6 @@
                     Emergency_Contact_Relationship_2:emergencycontactrelationship2,
                     Emergency_Contact_No_2:emergencycontactno2,
                     HolidayTerritoryId:holidayterritoryid,
-                    ticket_team:ticket_team,
-                    team_leader:team_leader,
                   },
 
                   success: function(response){

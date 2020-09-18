@@ -275,7 +275,7 @@
 					<thead>
 						<tr>
 							<th style="text-align:center;">No.</th>
-							<th style="text-align:center;">Genset No.</th>
+							<th style="text-align:center;">Speedfreak No.</th>
 							<th style="text-align:center;">Quantity</th>
 		                    <th style="text-align:center;">Description</th>
 		                    <th style="text-align:center;">Additional Description</th>
@@ -327,7 +327,7 @@
 									1 Units N70 Battery
 								</td>
 								<td style="width:100px;text-align:center;"></td>
-								<td style="width:200px;text-align:left;">Exchange Genset SC097</td>
+								<td style="width:200px;text-align:left;">Exchange Speedfreak SC097</td>
 							</tr>
 						<tr>
 							<td style="width:20px;text-align:center">2</td>
@@ -360,7 +360,7 @@
 								1 Units N70 Battery
 							</td>
 							<td style="width:100px;text-align:center;"></td>
-							<td style="width:200px;text-align:left;">Exchange Genset SC097</td>
+							<td style="width:200px;text-align:left;">Exchange Speedfreak SC097</td>
 						</tr>
 						<tr>
 							<td style="width:20px;text-align:center">3</td>

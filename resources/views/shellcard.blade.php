@@ -138,11 +138,11 @@
                                       opts: {
 
                                           data: [
-                                            @foreach($users as $department => $dept_users)
+                                            @foreach($users as $position => $pos_users)
                                             {
-                                              text: "{{ $department }}",
+                                              text: "{{ $position }}",
                                               children: [
-                                                @foreach($dept_users as $user)
+                                                @foreach($pos_users as $user)
                                                 { text :"{{$user->Name}}", id: "{{$user->Id}}" },
                                                 @endforeach
                                               ]
@@ -397,7 +397,7 @@
                      {data:'shellcards.Limit_Month', title:"Card Limit/Month"},
                      {data:'shellcards.Expiry_Date', title:"Expiry Date"},
                      {data:'users.Name', editField: "shellcards.UserId",title:"Custodian"},
-                     {data:'users.Department', title:"Department"},
+                     {data:'users.Position', title:"Position"},
                      {data:'shellcards.Remarks', title:"Remarks"},
 
 
@@ -908,7 +908,7 @@
 
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

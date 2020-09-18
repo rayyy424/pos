@@ -166,16 +166,6 @@
                     <td>David</td>
                 </tr>
                 <tr>
-                    <td>Project Name</td>
-                    <td>:</td>
-                    <td>Celcom Hammer Microwave KV</td>
-                </tr>
-                 <tr>
-                    <td>Project Code</td>
-                    <td>:</td>
-                    <td>HW-CL-MWKV</td>
-                </tr>
-                <tr>
                     <td>Sub-con TI  Antenna Swap</td>
                     <td>:</td>
                     <td>LITECORE SDN BHD<td>
@@ -284,7 +274,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

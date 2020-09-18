@@ -173,7 +173,6 @@
                         {data:'deductionitems.Time', title:"Time"},
                         {data:'deductionitems.Car_No', title:"Car No"},
                         {data:'users.Name', editField:"deductionitems.UserId", title:"Custodian"},
-                        {data:'users.Department', title:"Department"},
                         {data:'deductionitems.Victim', title:"Victim"},
                         {data:'deductionitems.Amount' , title:"Amount (RM)"},
                         {data:'deductionitems.Total_Deduction', title:"Total to be deduct"},
@@ -386,7 +385,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

@@ -23,14 +23,6 @@
               padding: 10px;
       }
 
-      .projectheader{
-        background-color: gray;
-      }
-
-      .projecttable{
-        text-align: center;
-      }
-
     </style>
 
 @endsection
@@ -83,16 +75,6 @@
                                       @endforeach
                                     ],
                             },{
-                                    label: "Project:",
-                                    name: "approvalsettings.ProjectId",
-                                    type:  'select',
-                                    options: [
-                                        { label :"", value: "" },
-                                        @foreach($projects as $project)
-                                            { label :"{{$project->Project_Name}}", value: "{{$project->Id}}" },
-                                        @endforeach
-                                    ],
-                            },{
                                     label: "Type:",
                                     name: "approvalsettings.Type",
                                     type:  'select',
@@ -109,11 +91,6 @@
                                     name: "approvalsettings.Level",
                                     type:  'select',
                                     options: [
-                                        { label :"1st Approval", value: "1st Approval" },
-                                        { label :"2nd Approval", value: "2nd Approval" },
-                                        { label :"3rd Approval", value: "3rd Approval" },
-                                        { label :"4th Approval", value: "4th Approval" },
-                                        { label :"5th Approval", value: "5th Approval" },
                                         { label :"Final Approval", value: "Final Approval" }
                                     ],
                             }
@@ -144,14 +121,13 @@
                     bAutoWidth: true,
                     iDisplayLength:10,
                     rowId:"approvalsettings.Id",
-                    order: [[ 5, "asc" ]],
+                    order: [[ 1, "asc" ]],
                     columns: [
                             { data: null, "render":"", title: "No"},
                             { data: "approvalsettings.Id", title: "Id"},
                             { data: "approvalsettings.Type", title: "Type" },
                             { data: "users.Name", editField: "approvalsettings.UserId", title: "Approver" },
-                            { data: "approvalsettings.Level", title: "Level" },
-                            { data: "projects.Project_Name", editField: "approvalsettings.ProjectId", title:"Department" }
+                            { data: "approvalsettings.Level", title: "Level" }
 
                     ],
                     autoFill: {
@@ -244,41 +220,7 @@
     <!-- Main content -->
     <section class="content">
 
-      <!-- <div class="row">
-        <div class="col-lg-3 col-xs-6">
-
-          <div class="small-box bg-red">
-            <div class="inner">
-              {{$missedproject->COUNT}}
-
-              <p>Project Without <br>Approval Set</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-android-folder"></i>
-            </div>
-            <a href="#" onclick="projectview('{{$type}}');" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-      </div> -->
-
       <!--on leave list -->
-      <div class="modal fade" id="projectview" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Project without approval setting</h4>
-              </div>
-              <div class="modal-body" name="projectlabel" id="projectlabel">
-
-              </div>
-              <div class="modal-footer">
-                <center><img src="{{ URL::to('/') ."/img/ajax-loader.gif" }}" width="50px" height="50px" alt="Loading" name='ajaxloader' id="ajaxloader"></center>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
-      </div>
 
       <div class="row">
           <div class="col-md-12">
@@ -365,65 +307,13 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
   </footer>
 
 <script>
-
-function projectview($type)
- {
-    $('#projectview').modal('show');
-    $("#projectlabel").html("");
-
-    $.ajaxSetup({
-       headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') }
-    });
-
-    $("#ajaxloader").show();
-
-    $.ajax({
-                url: "{{ url('/approval/project/') }}/{{$type}}",
-                success: function(response){
-
-                  if (response==0)
-                  {
-                    var message ="Failed to retrieve on project list!";
-                    $("#warning-alert ul").html(message);
-                    $("#warning-alert").show();
-
-                    $("#ajaxloader").hide();
-                  }
-                  else {
-
-                    var myObject = JSON.parse(response);
-
-                    var display='<table border="1" align="center" class="projecttable" cellspacing="0" width="100%" padding="30px" style="font-size: 13px;">';
-                    display+='<tr class="projectheader"><td>Project Name</td></tr>';
-
-                    $.each(myObject, function(i,item){
-
-                      display+="<tr>";
-                      display+='<td>'+item.Project_Name+'</td>';
-                      display+="</tr>";
-
-                    });
-
-
-                    $("#exist-alert").hide();
-
-                    var myObject = JSON.parse(response);
-
-                      $("#projectlabel").html(display);
-
-                      $("#ajaxloader").hide();
-                    }
-                  }
-    });
-
-  }
 
 </script>
 

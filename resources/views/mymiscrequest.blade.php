@@ -338,21 +338,6 @@
 
                                             }
                                         },
-                                         // { data: "requests.Id"},
-                                         // { data: "requeststatuses.Id"},
-                                         // { data: "applicant.Name",title:"Name"},
-                                         // { data: "requests.request_Type",title:"request_Type" },
-                                         // { data: "requests.request_Term",title:"request_Term" },
-                                         // { data: "requests.Start_Date",title:"Start_Date"},
-                                         // { data: "requests.End_Date",title:"End_Date"},
-                                         // { data: "requests.No_of_Days",title:"No_of_Days"},
-                                         // { data: "requests.Reason",title:"Reason"},
-                                         // { data: "requests.created_at",title:"Application_Date"},
-                                         // { data: "projects.Project_Name", editField: "requests.ProjectId",title:"Project_Name" },
-                                         // { data: "approver.Name", editField: "requeststatuses.UserId",title:"Approver" },
-                                         // { data: "requeststatuses.request_Status",title:"request_Status"},
-                                         // { data: "requeststatuses.updated_at",title:"Review_Date"},
-                                         // { data: "requeststatuses.Comment",title:"Comment"},
 
                                          { data: "request.Id",title:"Id"},
                                          { data: "requeststatuses.Id",title:"Id"},
@@ -362,7 +347,6 @@
                                          { data: "request.End_Date",title:"End_Date"},
                                          { data: "request.Remarks",title:"Remarks"},
                                          { data: "request.created_at",title:"created_at"},
-                                         { data: "projects.Project_Name",title:"Project_Name"},
                                          { data: "approver.Name",title:"Approver", editfield:"request.Approver"},
                                          { data: "requeststatuses.Request_status",title:"Request_status"},
                                          { data: "requeststatuses.updated_at",title:"updated_at"},
@@ -430,21 +414,6 @@
 
                                   }
                               },
-                               // { data: "requests.Id"},
-                               // { data: "requeststatuses.Id"},
-                               // { data: "applicant.Name",title:"Name"},
-                               // { data: "requests.request_Type",title:"request_Type" },
-                               // { data: "requests.request_Term",title:"request_Term" },
-                               // { data: "requests.Start_Date",title:"Start_Date"},
-                               // { data: "requests.End_Date",title:"End_Date"},
-                               // { data: "requests.No_of_Days",title:"No_of_Days"},
-                               // { data: "requests.Reason",title:"Reason"},
-                               // { data: "requests.created_at",title:"Application_Date"},
-                               // { data: "projects.Project_Name", editField: "requests.ProjectId",title:"Project_Name" },
-                               // { data: "approver.Name", editField: "requeststatuses.UserId",title:"Approver" },
-                               // { data: "requeststatuses.request_Status",title:"request_Status"},
-                               // { data: "requeststatuses.updated_at",title:"Review_Date"},
-                               // { data: "requeststatuses.Comment",title:"Comment"},
 
                                { data: "request.Id",title:"Id"},
                                { data: "requeststatuses.Id",title:"Id"},
@@ -454,7 +423,6 @@
                                { data: "request.End_Date",title:"End_Date"},
                                { data: "request.Remarks",title:"Remarks"},
                                { data: "request.created_at",title:"created_at"},
-                               { data: "projects.Project_Name",title:"Project_Name"},
                                { data: "approver.Name",title:"Approver"},
                                { data: "requeststatuses.Request_status",title:"Request_status"},
                                { data: "requeststatuses.updated_at",title:"updated_at"},
@@ -506,21 +474,6 @@
 
                           },
                          columns: [
-                           // { data: "requests.Id"},
-                           // { data: "requeststatuses.Id"},
-                           // { data: "applicant.Name",title:"Name"},
-                           // { data: "requests.request_Type",title:"request_Type" },
-                           // { data: "requests.request_Term",title:"request_Term" },
-                           // { data: "requests.Start_Date",title:"Start_Date"},
-                           // { data: "requests.End_Date",title:"End_Date"},
-                           // { data: "requests.No_of_Days",title:"No_of_Days"},
-                           // { data: "requests.Reason",title:"Reason"},
-                           // { data: "requests.created_at",title:"Application_Date"},
-                           // { data: "projects.Project_Name", editField: "requests.ProjectId",title:"Project_Name" },
-                           // { data: "approver.Name", editField: "requeststatuses.UserId",title:"Approver" },
-                           // { data: "requeststatuses.request_Status",title:"request_Status"},
-                           // { data: "requeststatuses.updated_at",title:"Review_Date"},
-                           // { data: "requeststatuses.Comment",title:"Comment"},
                            { data: "request.Id",title:"Id"},
                            { data: "requeststatuses.Id",title:"Id"},
                            { data: "request.Request_type",title:"Request_Type"},
@@ -529,7 +482,6 @@
                            { data: "request.End_Date",title:"End_Date"},
                            { data: "request.Remarks",title:"Remarks"},
                            { data: "request.created_at",title:"created_at"},
-                           { data: "projects.Project_Name",title:"Project_Name"},
                            { data: "approver.Name",title:"Approver"},
                            { data: "requeststatuses.Request_status",title:"Request_status"},
                            { data: "requeststatuses.updated_at",title:"updated_at"},
@@ -580,21 +532,6 @@
 
                       },
                      columns: [
-                       // { data: "requests.Id"},
-                       // { data: "requeststatuses.Id"},
-                       // { data: "applicant.Name",title:"Name"},
-                       // { data: "requests.request_Type",title:"request_Type" },
-                       // { data: "requests.request_Term",title:"request_Term" },
-                       // { data: "requests.Start_Date",title:"Start_Date"},
-                       // { data: "requests.End_Date",title:"End_Date"},
-                       // { data: "requests.No_of_Days",title:"No_of_Days"},
-                       // { data: "requests.Reason",title:"Reason"},
-                       // { data: "requests.created_at",title:"Application_Date"},
-                       // { data: "projects.Project_Name", editField: "requests.ProjectId",title:"Project_Name" },
-                       // { data: "approver.Name", editField: "requeststatuses.UserId",title:"Approver" },
-                       // { data: "requeststatuses.request_Status",title:"request_Status"},
-                       // { data: "requeststatuses.updated_at",title:"Review_Date"},
-                       // { data: "requeststatuses.Comment",title:"Comment"},
                        { data: "request.Id",title:"Id"},
                        { data: "requeststatuses.Id",title:"Id"},
                        { data: "request.Request_type",title:"Request_Type"},
@@ -603,7 +540,6 @@
                        { data: "request.End_Date",title:"End_Date"},
                        { data: "request.Remarks",title:"Remarks"},
                        { data: "request.created_at",title:"created_at"},
-                       { data: "projects.Project_Name",title:"Project_Name"},
                        { data: "approver.Name",title:"Approver"},
                        { data: "requeststatuses.Request_status",title:"Request_status"},
                        { data: "requeststatuses.updated_at",title:"updated_at"},
@@ -722,46 +658,6 @@
             </div>
           </div>
         </div>
-
-        <!-- <div class="modal fade" id="Redirect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Redirect</h4>
-              </div>
-              <div class="modal-body">
-                <div class="form-group" id="redirectrequeststatus">
-
-                </div>
-                <div class="form-group">
-
-                    <label>Approver : </label>
-
-                    <select class="form-control select2" id="NewApprover" name="NewApprover" style="width: 100%;">
-                      <option></option>
-
-                      @foreach ($approver as $user)
-                        @if ($user->Country!="")
-                          <option  value="{{$user->Id}}">{{$user->Name}} - {{$user->Country}}</option>
-                        @else
-                          <option  value="{{$user->Id}}">{{$user->Name}} - {{$user->Project_Name}}</option>
-                        @endif
-
-                      @endforeach
-
-                      </select>
-
-                </div>
-              </div>
-              <div class="modal-footer">
-                <center><img src="{{ URL::to('/') ."/img/ajax-loader.gif" }}" width="50px" height="50px" alt="Loading" name='ajaxloader' id="ajaxloader"></center>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="redirect()">Redirect</button>
-              </div>
-            </div>
-          </div>
-        </div> -->
 
         <div class="modal fade" id="Export" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div class="modal-dialog" role="document">
@@ -935,21 +831,6 @@
                         <!-- /.input group -->
                       </div>
 
-                      <div class="form-group">
-                        <label>Project : </label>
-
-                        <select class="form-control select2" id="Project" name="Project" style="width: 100%;">
-                          <option></option>
-
-                          @foreach ($projects as $project)
-
-                              <option  value="{{$project->Id}}">{{$project->Project_Name}}</option>
-
-                          @endforeach
-
-                          </select>
-                      </div>
-
                         <div class="form-group">
                          <label>Approver : </label>
 
@@ -959,7 +840,7 @@
                             @if ($user->Country!="")
                               <option  value="{{$user->Id}}">{{$user->Name}} - {{$user->Country}}</option>
                             @else
-                              <option  value="{{$user->Id}}">{{$user->Name}} - {{$user->Project_Name}}</option>
+                              <option  value="{{$user->Id}}">{{$user->Name}}</option>
                             @endif
 
                          @endforeach
@@ -1177,7 +1058,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -1383,42 +1264,42 @@ function applyrequest() {
 
       }
 
-      $('#Project').on('change', function() {
+      // $('#Project').on('change', function() {
 
-        $('#Approver')
-        .empty();
+      //   $('#Approver')
+      //   .empty();
 
-        $('#Approver')
-        .append('<option value=""></option>');
+      //   $('#Approver')
+      //   .append('<option value=""></option>');
 
-        if($("#Project option:selected").text()=="")
-        {
+      //   if($("#Project option:selected").text()=="")
+      //   {
 
-          @foreach ($approver as $user)
+      //     @foreach ($approver as $user)
 
-                $('#Approver')
-                .append('<option value="{{$user->Id}}">{{$user->Name}} - {{$user->Project_Name}} [{{$user->Level}}]</option>');
+      //           $('#Approver')
+      //           .append('<option value="{{$user->Id}}">{{$user->Name}} - {{$user->Project_Name}} [{{$user->Level}}]</option>');
 
-          @endforeach
+      //     @endforeach
 
-        }
-        else {
+      //   }
+      //   else {
 
-          @foreach ($approver as $user)
+      //     @foreach ($approver as $user)
 
-            if ($("#Project option:selected").text()==decodeEntities("{{$user->Project_Name}}"))
-            {
+      //       if ($("#Project option:selected").text()==decodeEntities("{{$user->Project_Name}}"))
+      //       {
 
-                $('#Approver')
-                .append('<option value="{{$user->Id}}">{{$user->Name}} - {{$user->Project_Name}} [{{$user->Level}}]</option>');
+      //           $('#Approver')
+      //           .append('<option value="{{$user->Id}}">{{$user->Name}} - {{$user->Project_Name}} [{{$user->Level}}]</option>');
 
-            }
+      //       }
 
-          @endforeach
+      //     @endforeach
 
-        }
+      //   }
 
-      });
+      // });
 
       function decodeEntities(s){
           var str, temp= document.createElement('p');

@@ -318,10 +318,6 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-3">
-                                <label>Department: </label>
-                                {{$detail->Project_Name}}
-                            </div>
-                            <div class="col-sm-3">
 
                                 </div>
                                 <div class="col-sm-3">
@@ -477,7 +473,6 @@
                                     <tbody>
                                         <?php $i=1;?>
                                         @foreach($items as $item)
-                                        @foreach($project as $p)
                                          <tr id='row_{{$i}}'>
                                             <td>{{$i}}</td>
                                             <td>{{$item->Categories}}</td>
@@ -489,15 +484,7 @@
                                             <td>{{$item->Qty_request}}</td>
                                             <td>{{$item->Qty_send}}</td>
                                             <td>{{$item->Qty_received}}</td>
-                                            <!-- @if($detail->delivery_status != "Pending" && $detail->delivery_status_details != "Accepted by Admin" && $detail->delivery_status != "Rejected")
-                                            @if($p->Id != 142 || $p->Id != 143 )
-                                                @if($item->available == 1)
-                                                    <td><span style="color:green;">Available</span></td>
-                                                @else
-                                                    <td><span style="color:red;">Insufficient</span></td>
-                                                @endif
-                                            @endif
-                                            @endif -->
+
                                             <td>
                                                 <a class="update" id="{{$item->Id}}" desc="{{$item->add_desc}}">Update</a>
                                             @if($detail->delivery_status == "Completed" && $detail->delivery_status_details != "Final Approved by Admin")
@@ -1107,7 +1094,7 @@
 
 <footer class="main-footer">
     <div class="pull-right hidden-xs">
-        <b>Version</b> 2.0.1
+        <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
 </footer>

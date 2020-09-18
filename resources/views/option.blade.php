@@ -112,11 +112,6 @@
                                             { label :"{{$col->Col}}", value: "{{$col->Col}}" },
                                         @endforeach
                                     ],
-                            },{
-                                    label: "Projects:",
-                                    name: "projects[].Id",
-                                    type:  'checkbox'
-
                             },
                             @elseif($type=="Report Store")
                             {
@@ -129,11 +124,6 @@
                                             { label :"{{$col->Col}}", value: "{{$col->Col}}" },
                                         @endforeach
                                     ],
-                            },{
-                                    label: "Projects:",
-                                    name: "projects[].Id",
-                                    type:  'checkbox'
-
                             },
                             {
                                    label: "Section:",
@@ -163,13 +153,13 @@
                        }
                      },
                      @if($type=="costing" || $type=="polisting" || $type=="invoicelisting")
-                      columnDefs: [{ "visible": false, "targets": [1,2,5,7,8] },{"className": "dt-center", "targets": "_all"}],
+                      columnDefs: [{ "visible": false, "targets": [1,2,6,7] },{"className": "dt-center", "targets": "_all"}],
                       @elseif($type=="Report Store")
                        columnDefs: [{ "visible": false, "targets": [1,2] },{"className": "dt-center", "targets": "_all"}],
                      @elseif($type=="tracker" || $type=="costing" || $type=="polisting" || $type=="invoicelisting")
-                       columnDefs: [{ "visible": false, "targets": [1,2,7,8] },{"className": "dt-center", "targets": "_all"}],
+                       columnDefs: [{ "visible": false, "targets": [1,2,6,7] },{"className": "dt-center", "targets": "_all"}],
                      @else
-                      columnDefs: [{ "visible": false, "targets": [1,2,5,6,7,8] },{"className": "dt-center", "targets": "_all"}],
+                      columnDefs: [{ "visible": false, "targets": [1,2,5,6,7] },{"className": "dt-center", "targets": "_all"}],
                      @endif
 
                     responsive: false,
@@ -186,7 +176,6 @@
                             { data: "options.Table" },
                             { data: "options.Field",title:"Field" },
                             { data: "options.Option",title:"Option" },
-                            { data: "projects", render: "[<br> ].Project_Name" ,title:"Projects"},
                             { data: "options.Update_Column", title:"Update_Column"},
                             { data: "options.Section", title:"Section"},
                             { data: "options.Description", title:"Description"}
@@ -397,7 +386,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

@@ -23,7 +23,7 @@ class ContractorVendorController extends Controller {
 
 		$me = (new CommonController)->get_current_user();
 
-		$users = DB::table('users')->select('users.Id','files.Web_Path','users.StaffId','users.Name','users.User_Type','users.Company_Email','users.Personal_Email','users.Contact_No_1','users.Contact_No_2','users.Permanent_Address','users.Current_Address','users.Home_Base','users.Nationality','users.DOB','users.NRIC','users.Passport_No','users.Gender','users.Marital_Status','superior.Name as Superior','users.Department','users.Position','users.Emergency_Contact_Person','users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Address')
+		$users = DB::table('users')->select('users.Id','files.Web_Path','users.StaffId','users.Name','users.User_Type','users.Company_Email','users.Personal_Email','users.Contact_No_1','users.Contact_No_2','users.Permanent_Address','users.Current_Address','users.Home_Base','users.Nationality','users.DOB','users.NRIC','users.Passport_No','users.Gender','users.Marital_Status','superior.Name as Superior','users.Position','users.Emergency_Contact_Person','users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Address')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
 		->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="User"'))
 		->leftJoin('users as superior','superior.Id','=','users.SuperiorId')

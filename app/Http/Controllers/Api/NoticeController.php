@@ -12,18 +12,18 @@ use DateTime;
 
 class NoticeController extends Controller {
 
-    public function getgenset()
+    public function getspeedfreak()
     {
         $me = JWTAuth::parseToken()->authenticate();
 
         $gen=DB::table('serviceticket')
-        ->select('serviceticket.Id','serviceticket.technicianId','gensetservice.ServiceId as ServiceId','gensetservice.Status')
-        // ->leftJoin('gensetservice','serviceticket.Id','=','gensetservice.ServiceId')
-        ->leftjoin(DB::raw('(SELECT Max(Id) as maxid,ServiceId from gensetservice group by ServiceId) as max'),'max.ServiceId','=','serviceticket.Id')
-        ->leftjoin('gensetservice','gensetservice.Id','=','max.maxid')
+        ->select('serviceticket.Id','serviceticket.technicianId','speedfreakservice.ServiceId as ServiceId','speedfreakservice.Status')
+        // ->leftJoin('speedfreakservice','serviceticket.Id','=','speedfreakservice.ServiceId')
+        ->leftjoin(DB::raw('(SELECT Max(Id) as maxid,ServiceId from speedfreakservice group by ServiceId) as max'),'max.ServiceId','=','serviceticket.Id')
+        ->leftjoin('speedfreakservice','speedfreakservice.Id','=','max.maxid')
         ->where('serviceticket.technicianId','=',$me->Id)
-        // ->where('gensetservice.Status','=',"In-Progress")
-        ->where('gensetservice.Status','!=',"Completed")
+        // ->where('speedfreakservice.Status','=',"In-Progress")
+        ->where('speedfreakservice.Status','!=',"Completed")
         ->get();
 
         return json_encode(['gen'=> $gen, 'count' => count($gen)]);

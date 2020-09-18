@@ -36,21 +36,17 @@ class AssetController extends Controller {
 
 	$assettrackings = DB::table('assets')
 	->select('assets.Id','assets.Label','assets.Type','assets.Serial_No','assets.IMEI','assets.Brand','assets.Model_No','assets.Car_No','assets.Replacement_Car_No',
-	'assets.Color','assets.Availability','projects.Project_Name','users.Name as Holder','transfer.Name as Transfer_To','assettrackings.Transfer_Date_Time','assettrackings.Acknowledge_Date_Time','assets.Ownership','assets.Rental_Company','assets.Rental_Start_Date','assets.Asset_Type','assets.Rental_End_Date','assets.Remarks','assets.Extra_Detail_1','assets.Extra_Detail_2','assets.Extra_Detail_3','assets.Extra_Detail_4','assets.Extra_Detail_5','files.Web_Path',
+	'assets.Color','assets.Availability','users.Name as Holder','transfer.Name as Transfer_To','assettrackings.Transfer_Date_Time','assettrackings.Acknowledge_Date_Time','assets.Ownership','assets.Rental_Company','assets.Rental_Start_Date','assets.Asset_Type','assets.Rental_End_Date','assets.Remarks','assets.Extra_Detail_1','assets.Extra_Detail_2','assets.Extra_Detail_3','assets.Extra_Detail_4','assets.Extra_Detail_5','files.Web_Path',
 	'assets.Supplier_Name',DB::raw('Format((assets.Price),2) as Price'), 'assets.Description','assets.Date_of_Purchase','assets.Kitchen_Appliances','assets.Location','assets.Company','assets.Rental_Fees','assets.Registered_Fees','assets.Agreenment_Start_Date','assets.Agreenment_End_Date','assets.Termination_of_Agreenment','assets.Asset_Listed','assets.Rental_Date','assets.Rental_Deposit','assets.Service_Provided','assets.APA_Registration_No','assets.Expired_Date','assets.Quantity','assets.Contact_No')
 	->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Asset" Group By TargetId) as max2'), 'max2.TargetId', '=', 'assets.Id')
 	->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Asset"'))
 	->leftJoin( DB::raw('(select Max(Id) as maxid,AssetId from assettrackings Group By AssetId) as max'), 'max.AssetId', '=', 'assets.Id')
 	->leftJoin('assettrackings', 'assettrackings.Id', '=', DB::raw('max.`maxid`'))
-	->leftJoin('projects', 'assettrackings.ProjectId', '=', 'projects.Id')
 	->leftJoin('users', 'assettrackings.UserId', '=', 'users.Id')
 	->leftJoin(DB::raw('users as transfer'), 'assettrackings.Transfer_To', '=', 'transfer.Id')
 	->orderBy('assets.Label','asc')
 	->where('assets.Type', '=',$type)
 	->get();
-
-    $projects = DB::table('projects')
-    ->get();
 
     $users = DB::table('users')
     ->get();
@@ -88,10 +84,6 @@ class AssetController extends Controller {
 			->where('options.Field', '=','Company')
 			->get();
 
-		$departments = DB::table('projects')
-		->where('projects.Project_Name','like','%Department%')
-    ->get();
-
 		$items = DB::table('options')
 			->distinct('options.Option')
 			->select('options.Option', 'options.Field')
@@ -99,7 +91,7 @@ class AssetController extends Controller {
 			->orderBy('options.Option')
 			->get();
 
-    return view('assettracking', ['me' => $me,'type' =>$type,'projects' =>$projects, 'users' =>$users,'usersasset' =>$usersasset, 'assettrackings' =>$assettrackings,'category' =>$category,'options' =>$options,'departments'=>$departments,'company'=>$company, 'items'=>$items]);
+    return view('assettracking', ['me' => $me,'type' =>$type, 'users' =>$users,'usersasset' =>$usersasset, 'assettrackings' =>$assettrackings,'category' =>$category,'options' =>$options,'company'=>$company, 'items'=>$items]);
 
 	}
 
@@ -117,10 +109,9 @@ class AssetController extends Controller {
 		->get();
 
 		DB::table('assettrackings')->insert(
-    ['AssetId' => $input["AssetId"],
+    	['AssetId' => $input["AssetId"],
 		'UserId' => $input["UserId"],
 		'Date' => $input["Date"],
-		'ProjectId' => $input["ProjectId"],
 		'Status' => 'Taken'
 		]);
 
@@ -166,14 +157,6 @@ class AssetController extends Controller {
 		->whereIn('Id', $emaillist)
 		->get();
 
-		// DB::table('assettrackings')->insert(
-    // ['AssetId' => $input["AssetId"],
-		// 'UserId' => $input["UserId"],
-		// 'Date' => $input["Date"],
-		// 'ProjectId' => $input["ProjectId"],
-		// 'Status' => 'Taken'
-		// ]);
-
 		DB::table('assettrackings')
 			->where('Id', $input["TrackingId"])
 			->update(array(
@@ -216,9 +199,8 @@ class AssetController extends Controller {
 		->get();
 
 		$report = DB::table('assettrackings')
-		->select('assets.Label','assets.Type','assets.Serial_No','assets.IMEI','assets.Brand','assets.Model_No','assets.Car_No','projects.Project_Name','users.Name As Holder','assettrackings.Issue','assettrackings.Replacement')
+		->select('assets.Label','assets.Type','assets.Serial_No','assets.IMEI','assets.Brand','assets.Model_No','assets.Car_No','users.Name As Holder','assettrackings.Issue','assettrackings.Replacement')
 		->leftJoin('assets','assettrackings.AssetId','=','assets.Id')
-		->leftJoin('projects','projects.Id','=','assettrackings.ProjectId')
 		->leftJoin('users','users.Id','=','assettrackings.UserId')
 		->where('assettrackings.Id','=',$input["TrackingId"])
 		->get();
@@ -250,14 +232,6 @@ class AssetController extends Controller {
 		->whereIn('Id', $emaillist)
 		->get();
 
-		// DB::table('assettrackings')->insert(
-    // ['AssetId' => $input["AssetId"],
-		// 'UserId' => $input["UserId"],
-		// 'Date' => $input["Date"],
-		// 'ProjectId' => $input["ProjectId"],
-		// 'Status' => 'Taken'
-		// ]);
-
 		DB::table('assettrackings')
 			->where('Id', $input["TrackingId"])
 			->update(array(
@@ -278,12 +252,12 @@ class AssetController extends Controller {
 
 		}
 
-		Mail::send('emails.assetissuereport', ['me'=>$me,'report'=>$report], function($message) use ($emails,$NotificationSubject)
-		{
-			$emails = array_filter($emails);
-			array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-			$message->to($emails)->subject($NotificationSubject);
-		});
+		// Mail::send('emails.assetissuereport', ['me'=>$me,'report'=>$report], function($message) use ($emails,$NotificationSubject)
+		// {
+		// 	$emails = array_filter($emails);
+		// 	array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+		// 	$message->to($emails)->subject($NotificationSubject);
+		// });
 
 		return 1;
 	}
@@ -304,15 +278,13 @@ class AssetController extends Controller {
 		DB::table('assettrackings')->insert(
 		['AssetId' => $input["AssetId"],
 		'UserId' => $input["UserId"],
-		'ProjectId' => $input["ProjectId"],
 		'Date' => Date("d-M-Y"),
 		'Status' => "Returned"
 		]);
 
 		DB::table('assettrackings')->insert(
-    ['AssetId' => $input["AssetId"],
-		'UserId' => 0,
-		'ProjectId' => 0
+    	['AssetId' => $input["AssetId"],
+		'UserId' => 0
 		]);
 
 		// DB::table('assettrackings')
@@ -369,12 +341,11 @@ class AssetController extends Controller {
 		->get();
 
 		$assettrackings = DB::table('assets')
-		->select('assets.Label','assets.Type','assets.Serial_No','assets.IMEI','assets.Brand','assets.Model_No','assets.Car_No','projects.Project_Name','users.Name as Holder','transfer.Name as Transfer_To','assettrackings.Transfer_Date_Time')
+		->select('assets.Label','assets.Type','assets.Serial_No','assets.IMEI','assets.Brand','assets.Model_No','assets.Car_No','users.Name as Holder','transfer.Name as Transfer_To','assettrackings.Transfer_Date_Time')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Asset" Group By TargetId) as max2'), 'max2.TargetId', '=', 'assets.Id')
 		->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Asset"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,AssetId from assettrackings Group By AssetId) as max'), 'max.AssetId', '=', 'assets.Id')
 		->leftJoin('assettrackings', 'assettrackings.Id', '=', DB::raw('max.`maxid`'))
-		->leftJoin('projects', 'assettrackings.ProjectId', '=', 'projects.Id')
 		->leftJoin('users', 'assettrackings.UserId', '=', 'users.Id')
 		->leftJoin(DB::raw('users as transfer'), 'assettrackings.Transfer_To', '=', 'transfer.Id')
 		->orderBy('assets.Label','asc')
@@ -423,10 +394,10 @@ class AssetController extends Controller {
 
 		}
 
-		Mail::send('emails.assetacknowledgement', ['me'=>$me,'assettrackings'=>$assettrackings], function($message) use ($emails)
-		{
-				$message->to($emails)->subject('Asset Acknowledged');
-		});
+		// Mail::send('emails.assetacknowledgement', ['me'=>$me,'assettrackings'=>$assettrackings], function($message) use ($emails)
+		// {
+		// 		$message->to($emails)->subject('Asset Acknowledged');
+		// });
 
 		return 1;
 	}
@@ -456,8 +427,7 @@ class AssetController extends Controller {
 		if ($input["Type"]=="Car")
 		{
 			$assettrackings = DB::table('assettrackings')
-			->select('assettrackings.Date','projects.Project_Name','users.Name','assettrackings.Car_No','assettrackings.Status')
-			->leftJoin('projects', 'assettrackings.ProjectId', '=', 'projects.Id')
+			->select('assettrackings.Date','users.Name','assettrackings.Car_No','assettrackings.Status')
 			->leftJoin('users', 'assettrackings.UserId', '=', 'users.Id')
 			->orderBy('assettrackings.Id','Desc')
 			->where('assettrackings.AssetId', '=', $input["AssetId"])
@@ -465,8 +435,7 @@ class AssetController extends Controller {
 		}
 		else {
 			$assettrackings = DB::table('assettrackings')
-			->select('assettrackings.Date','projects.Project_Name','users.Name','assettrackings.Status')
-			->leftJoin('projects', 'assettrackings.ProjectId', '=', 'projects.Id')
+			->select('assettrackings.Date','users.Name','assettrackings.Status')
 			->leftJoin('users', 'assettrackings.UserId', '=', 'users.Id')
 			->orderBy('assettrackings.Id','Desc')
 			->where('assettrackings.AssetId', '=', $input["AssetId"])
@@ -485,9 +454,8 @@ class AssetController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$history = DB::table('assettrackings')
-		->select('assettrackings.Date','assets.Type','assets.Rental_End_Date','users.Name','assets.Label','assets.Serial_No','projects.Project_Name','assettrackings.Status')
+		->select('assettrackings.Date','assets.Type','assets.Rental_End_Date','users.Name','assets.Label','assets.Serial_No','assettrackings.Status')
 		->leftJoin('assets', 'assets.Id', '=', 'assettrackings.AssetId')
-		->leftJoin('projects', 'assettrackings.ProjectId', '=', 'projects.Id')
 		->leftJoin('users', 'assettrackings.UserId', '=', 'users.Id')
 		->leftJoin(DB::raw('users as transfer'), 'assettrackings.Transfer_To', '=', 'transfer.Id')
 		->orderBy('assets.Type','asc')
@@ -527,7 +495,6 @@ class AssetController extends Controller {
 		->select('assets.Type','assets.Rental_Start_Date','assets.Rental_End_Date','users.Name as Holder', 'users.Company_Email', 'users.Personal_Email','assets.Label','assets.Type','assets.Serial_No','assets.IMEI','assets.Brand','assets.Model_No','assets.Car_No','assets.Color')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,AssetId from assettrackings Group By AssetId) as max'), 'max.AssetId', '=', 'assets.Id')
 		->leftJoin('assettrackings', 'assettrackings.Id', '=', DB::raw('max.`maxid`'))
-		->leftJoin('projects', 'assettrackings.ProjectId', '=', 'projects.Id')
 		->leftJoin('users', 'assettrackings.UserId', '=', 'users.Id')
 		->leftJoin(DB::raw('users as transfer'), 'assettrackings.Transfer_To', '=', 'transfer.Id')
 		->orderBy('assets.Label','asc')
@@ -578,13 +545,13 @@ class AssetController extends Controller {
 
 			}
 
-				Mail::send('emails.rentalNotification', ['endNotify'=>$endNotify], function($message) use ($emails, $rentalEndDate,$notifyType,$NotificationSubject)
-				{
-						$emails = array_filter($emails);
-						array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-						$message->to($emails)->subject($NotificationSubject.' '.$rentalEndDate. '! ['.$notifyType.']');
+				// Mail::send('emails.rentalNotification', ['endNotify'=>$endNotify], function($message) use ($emails, $rentalEndDate,$notifyType,$NotificationSubject)
+				// {
+				// 		$emails = array_filter($emails);
+				// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+				// 		$message->to($emails)->subject($NotificationSubject.' '.$rentalEndDate. '! ['.$notifyType.']');
 
-				});
+				// });
 				return 1;
 		}
 		else {
@@ -611,12 +578,12 @@ class AssetController extends Controller {
 
 		}
 		$list = DB::table('phones')
-		->select('phones.Id','phones.Type','phones.Registered_Name','phones.Account_No','phones.Phone_No','phones.Current_Holder','phones.Department as depart','users.Name','users.Department','phones.Package','phones.Remarks')
+		->select('phones.Id','phones.Type','phones.Registered_Name','phones.Account_No','phones.Phone_No','phones.Current_Holder','phones.Position as position','users.Name','users.Position','phones.Package','phones.Remarks')
 		->leftJoin('users','phones.UserId','=','users.Id')
 		->where('phones.Type','=',$type)
 		->get();
 		$bills = DB::table('phonebills')
-		->select('phonebills.Id','phonebills.Type','phonebills.Registered_Name','phonebills.Account_No','phonebills.Bill_No','phonebills.Phone_No','phonebills.Current_Holder','phonebills.Department as depart','users.Name','users.Department','phonebills.Package','phonebills.Amount','phonebills.GST',DB::raw('"" as Total'),'phonebills.Bill_Date','phonebills.Due_Date','phonebills.Credit_Card_No','phonebills.Transaction_Date','phonebills.Transfer_Amount','phonebills.Remarks')
+		->select('phonebills.Id','phonebills.Type','phonebills.Registered_Name','phonebills.Account_No','phonebills.Bill_No','phonebills.Phone_No','phonebills.Current_Holder','phonebills.Position as position','users.Name','users.Position','phonebills.Package','phonebills.Amount','phonebills.GST',DB::raw('"" as Total'),'phonebills.Bill_Date','phonebills.Due_Date','phonebills.Credit_Card_No','phonebills.Transaction_Date','phonebills.Transfer_Amount','phonebills.Remarks')
 		->leftJoin('users','phonebills.UserId','=','users.Id')
 		->where('phonebills.Type','=',$type)
 		->get();
@@ -649,9 +616,6 @@ class AssetController extends Controller {
 
 		");
 
-		$projects = DB::table('projects')
-    ->get();
-
 		$category=DB::table('options')
 			->distinct('options.Option')
 			->select('options.Option')
@@ -667,13 +631,11 @@ class AssetController extends Controller {
 			->where('options.Field', '=','Company')
 			->get();
 
-			$departments = DB::table('projects')
-			->where('projects.Project_Name','like','%department%')
+		$position=DB::table('users')
+			->distinct('users.Position')
+			->select('users.Position')
+			->orderBy('users.Position','asc')
 			->get();
-
-				// dd($department);
-
-
 			// $phone_no=DB::table('options')
 			// 	->distinct('options.Option')
 			// 	->select('options.Option','options.Field', 'options.Extra')
@@ -692,13 +654,10 @@ class AssetController extends Controller {
     ->get();
 
     	if ($type == "Maxis" || $type == "Celcom") {
-    		$users = collect($users)->groupBy('Department');
+    		$users = collect($users)->groupBy('Position');
     	}
 
-		return view('phones',['me'=>$me,'list'=>$list, 'type'=>$type,'rangebill'=>$rangebill,'daterange'=>$daterange, 'start'=>$start, 'end'=>$end,'sims'=>$sims,'projects'=>$projects,'category'=>$category,'users'=>$users,'company'=>$company,'phone_no'=>$phone_no,'departments'=>$departments, 'bills' => $bills]);
-
-		// return view('phonebill',['me'=>$me,'list'=>$list, 'type'=>$type,'rangebill'=>$rangebill,'daterange'=>$daterange, 'start'=>$start, 'end'=>$end,'sims'=>$sims,'projects'=>$projects,'category'=>$category,'users'=>$users,'company'=>$company,'phone_no'=>$phone_no,'departments'=>$departments]);
-
+		return view('phones',['me'=>$me,'list'=>$list, 'type'=>$type,'rangebill'=>$rangebill,'daterange'=>$daterange, 'start'=>$start, 'end'=>$end,'sims'=>$sims,'category'=>$category,'users'=>$users,'company'=>$company, 'position'=>$position ,'phone_no'=>$phone_no, 'bills' => $bills]);
 	}
 
 	public function shellcardtracker($start = null, $end = null)
@@ -720,7 +679,7 @@ class AssetController extends Controller {
 		}
 
 		$list = DB::table('shellcards')
-		->select('shellcards.Id','shellcards.Company','shellcards.Vehicle_No','shellcards.Account_No','shellcards.Card_No','shellcards.Pin_Code','shellcards.Type','shellcards.Limit_Month','shellcards.Expiry_Date','users.Name','users.Department','shellcards.Remarks')
+		->select('shellcards.Id','shellcards.Company','shellcards.Vehicle_No','shellcards.Account_No','shellcards.Card_No','shellcards.Pin_Code','shellcards.Type','shellcards.Limit_Month','shellcards.Expiry_Date','users.Name','users.Position','shellcards.Remarks')
 		->leftJoin('users','users.Id','=','shellcards.UserId')
 		->get();
 
@@ -744,35 +703,11 @@ class AssetController extends Controller {
 
 
 		$approverlevel = DB::table('approvalsettings')
-		->select('users.Id','users.Name','approvalsettings.UserId','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+		->select('users.Id','users.Name','approvalsettings.UserId','approvalsettings.Level','approvalsettings.Country')
 		->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
 		->where('approvalsettings.Type', '=', 'Deduction')
 		->where('approvalsettings.Level', '=', 'Final Approval')
 		->get();
-
-		$HOD_LOG=0;
-		$HOD_CME=0;
-		$HOD_GST=0;
-		$MD=855;
-
-		foreach($approverlevel as $level)
-		{
-			if($level->Project_Name == "MY_Department_LOG")
-			{
-				$HOD_LOG=$level->UserId;
-			}
-			elseif($level->Project_Name == "MY_Department_CME")
-			{
-				$HOD_CME=$level->UserId;
-			}
-			elseif($level->Project_Name == "MY_Department_GST")
-			{
-				$HOD_GST=$level->UserId;
-			}
-
-		}
-
 
 		$paymentmonth = DB::table('cutoff')
 		->orderBy(DB::raw('str_to_date(cutoff.Payment_Month,"%M %Y")'))
@@ -796,7 +731,7 @@ class AssetController extends Controller {
 		->where('users.Name','not like', '%admin%')
     ->get();
 
-    	$users = collect($users)->groupBy('Department')->all();
+    	$users = collect($users)->groupBy('Position')->all();
 
     	$vehiclelist = DB::table('roadtax')->select('Vehicle_No')->where('Option','=', 'VEHICLE LIST')->get();
 
@@ -804,7 +739,7 @@ class AssetController extends Controller {
 		->select('shellcards.*')
 		->get();
 
-		return view('shellcard',['me'=>$me, 'list'=>$list, 'company'=>$company,'start'=>$start,'end'=>$end,'cars'=>$cars,'users'=>$users,'deductions'=>$deductions,'paymentmonth'=>$paymentmonth,'current'=>$current,'approverlevel'=>$approverlevel,'HOD_LOG'=>$HOD_LOG,'HOD_CME'=>$HOD_CME,'HOD_GST'=>$HOD_GST,'MD'=>$MD,'expenses'=>$expenses,'account_no'=>$account_no, 'vehiclelist'=>$vehiclelist]);
+		return view('shellcard',['me'=>$me, 'list'=>$list, 'company'=>$company,'start'=>$start,'end'=>$end,'cars'=>$cars,'users'=>$users,'deductions'=>$deductions,'paymentmonth'=>$paymentmonth,'current'=>$current,'approverlevel'=>$approverlevel,'expenses'=>$expenses,'account_no'=>$account_no, 'vehiclelist'=>$vehiclelist]);
 
 	}
 
@@ -814,7 +749,7 @@ class AssetController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$shelldeductions = DB::table('deductionitems')
-		->select('deductionitems.Id','deductionitems.DeductionId','deductionitems.Date','deductionitems.Time','deductionitems.Invoice_No','deductionitems.Invoice_Date','deductionitems.Due_Date','deductionitems.Account_No','deductionitems.Company','deductionitems.Project_Code','users.Name','users.Department','deductionitems.Petrol_Station','deductionitems.Amount','deductionitems.Total_Deduction','deductionitems.Remarks')
+		->select('deductionitems.Id','deductionitems.DeductionId','deductionitems.Date','deductionitems.Time','deductionitems.Invoice_No','deductionitems.Invoice_Date','deductionitems.Due_Date','deductionitems.Account_No','deductionitems.Company','users.Name','users.Position','deductionitems.Petrol_Station','deductionitems.Amount','deductionitems.Total_Deduction','deductionitems.Remarks')
 		->leftJoin('users','users.Id','=','deductionitems.UserId')
 		->leftJoin('deductions','deductions.Id','=','deductionitems.DeductionId')
 		->where('deductionitems.DeductionId','=',$deductionid)
@@ -927,7 +862,7 @@ class AssetController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$all = DB::table('summons')
-		->select('summons.Id','summons.Vehicle_No','summons.Company','summons.Place','summons.Summon_No','summons.Date','summons.Time','summons.Offense','summons.Amount','users.Name','users.Department','summons.Company_Deduction','summons.Total_Deduction','summons.Employer_Bare','summons.Settlement_Date','summons.Remarks')
+		->select('summons.Id','summons.Vehicle_No','summons.Company','summons.Place','summons.Summon_No','summons.Date','summons.Time','summons.Offense','summons.Amount','users.Name','users.Position','summons.Company_Deduction','summons.Total_Deduction','summons.Employer_Bare','summons.Settlement_Date','summons.Remarks')
 		->leftJoin('users','users.Id','=','summons.UserId')
 		->orderBy('summons.Id','asc')
 		->get();
@@ -971,39 +906,11 @@ class AssetController extends Controller {
 
 
 		$approverlevel = DB::table('approvalsettings')
-		->select('users.Id','users.Name','approvalsettings.UserId','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+		->select('users.Id','users.Name','approvalsettings.UserId','approvalsettings.Level','approvalsettings.Country')
 		->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
 		->where('approvalsettings.Type', '=', 'Deduction')
 		->where('approvalsettings.Level', '=', 'Final Approval')
 		->get();
-
-		$HOD_LOG=0;
-		$HOD_CME=0;
-		$HOD_GST=0;
-		$MD=855;
-
-		foreach($approverlevel as $level)
-		{
-			if($level->Project_Name == "MY_Department_LOG")
-			{
-				$HOD_LOG=$level->UserId;
-
-
-			}
-			elseif($level->Project_Name == "MY_Department_CME")
-			{
-				$HOD_CME=$level->UserId;
-			}
-			elseif($level->Project_Name == "MY_Department_GST")
-			{
-				$HOD_GST=$level->UserId;
-			}
-
-		}
-
-		// dd($HOD_LOG);
-
 
 		$paymentmonth = DB::table('cutoff')
 		->orderBy(DB::raw('str_to_date(cutoff.Payment_Month,"%M %Y")'))
@@ -1023,15 +930,8 @@ class AssetController extends Controller {
 		->where('users.Name','not like', '%admin%')
     ->get();
 
-		// $departments = DB::table('projects')
-		// ->where('projects.Project_Name','like','%Department%')
-    // ->get();
 
-		// $departments = ["GST","LOG"];
-
-		// dd($departments);
-
-		return view('summon',['me'=>$me, 'all'=>$all, 'users'=>$users,'cars'=>$cars,'company'=>$company,'deductions'=>$deductions,'accidents'=>$accidents,'paymentmonth'=>$paymentmonth,'current'=>$current,'approverlevel'=>$approverlevel,'HOD_LOG'=>$HOD_LOG,'HOD_CME'=>$HOD_CME,'HOD_GST'=>$HOD_GST,'MD'=>$MD]);
+		return view('summon',['me'=>$me, 'all'=>$all, 'users'=>$users,'cars'=>$cars,'company'=>$company,'deductions'=>$deductions,'accidents'=>$accidents,'paymentmonth'=>$paymentmonth,'current'=>$current,'approverlevel'=>$approverlevel]);
 
 	}
 
@@ -1041,7 +941,7 @@ class AssetController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$summondeductions = DB::table('summons')
-		->select('summons.Id','summons.DeductionId','summons.Vehicle_No','summons.Company','summons.Place','summons.Summon_No','summons.Date','summons.Time','summons.Offense','summons.Amount','users.Name','users.Department','summons.Company_Deduction','summons.Total_Deduction','summons.Employer_Bare','summons.Settlement_Date','summons.Remarks')
+		->select('summons.Id','summons.DeductionId','summons.Vehicle_No','summons.Company','summons.Place','summons.Summon_No','summons.Date','summons.Time','summons.Offense','summons.Amount','users.Name','users.Position','summons.Company_Deduction','summons.Total_Deduction','summons.Employer_Bare','summons.Settlement_Date','summons.Remarks')
 		->leftJoin('deductions','deductions.Id','=','summons.DeductionId')
 		->leftJoin('users','users.Id','=','summons.UserId')
 		->where('summons.DeductionId','=',$deductionid)
@@ -1083,7 +983,7 @@ class AssetController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$accidentdeduction = DB::table('deductionitems')
-		->select('deductionitems.Id','deductionitems.DeductionId','deductionitems.Date','deductionitems.Time','deductionitems.Car_No','users.Name','users.Department','deductionitems.Victim','deductionitems.Amount','deductionitems.Total_Deduction')
+		->select('deductionitems.Id','deductionitems.DeductionId','deductionitems.Date','deductionitems.Time','deductionitems.Car_No','users.Name','users.Position','deductionitems.Victim','deductionitems.Amount','deductionitems.Total_Deduction')
 		->leftJoin('deductions','deductions.Id','=','deductionitems.DeductionId')
 		->leftJoin('users','users.Id','=','deductionitems.UserId')
 		->where('deductionitems.DeductionId','=',$deductionid)
@@ -1127,7 +1027,7 @@ class AssetController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$list = DB::table('touchngo')
-		->select('touchngo.Id','touchngo.Username','touchngo.User_ID','touchngo.Card_No','touchngo.Vehicle_No','touchngo.Card_Type','touchngo.Registered_Name','touchngo.Plusmiles_Register','users.Name','users.Department','touchngo.Date_Provide','touchngo.Date_Return','touchngo.Date_Terminate','touchngo.Remarks')
+		->select('touchngo.Id','touchngo.Username','touchngo.User_ID','touchngo.Card_No','touchngo.Vehicle_No','touchngo.Card_Type','touchngo.Registered_Name','touchngo.Plusmiles_Register','users.Name','users.Position','touchngo.Date_Provide','touchngo.Date_Return','touchngo.Date_Terminate','touchngo.Remarks')
 		->leftJoin('users','users.Id','=','touchngo.UserId')
 		->get();
 
@@ -1145,41 +1045,17 @@ class AssetController extends Controller {
 		->get();
 
 		$reload = DB::table('reload')
-		->select('reload.Id','reload.Card_No','users.Name','reload.Project_Code','users.Department','reloadBy.Name as reloader','reloadBy.Department as depart','reload.Date_Reload','reload.Balance_Before','reload.Total_Reload','reload.Topup','reload.Balance','reload.Remarks')
+		->select('reload.Id','reload.Card_No','users.Name','users.Position','reloadBy.Name as reloader','reloadBy.Position as pos','reload.Date_Reload','reload.Balance_Before','reload.Total_Reload','reload.Topup','reload.Balance','reload.Remarks')
 		->leftJoin('users','users.Id','=','reload.Request_By')
 		->leftJoin('users as reloadBy','reloadBy.Id','=','reload.Reload_By')
 		->get();
 
 		$approverlevel = DB::table('approvalsettings')
-		->select('users.Id','users.Name','approvalsettings.UserId','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+		->select('users.Id','users.Name','approvalsettings.UserId','approvalsettings.Level','approvalsettings.Country')
 		->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
 		->where('approvalsettings.Type', '=', 'Deduction')
 		->where('approvalsettings.Level', '=', 'Final Approval')
 		->get();
-
-		$HOD_LOG=0;
-		$HOD_CME=0;
-		$HOD_GST=0;
-		$MD=855;
-
-		foreach($approverlevel as $level)
-		{
-			if($level->Project_Name == "MY_Department_LOG")
-			{
-				$HOD_LOG=$level->UserId;
-			}
-			elseif($level->Project_Name == "MY_Department_CME")
-			{
-				$HOD_CME=$level->UserId;
-			}
-			elseif($level->Project_Name == "MY_Department_GST")
-			{
-				$HOD_GST=$level->UserId;
-			}
-
-		}
-
 
 		$paymentmonth = DB::table('cutoff')
 		->orderBy(DB::raw('str_to_date(cutoff.Payment_Month,"%M %Y")'))
@@ -1217,7 +1093,7 @@ class AssetController extends Controller {
 		->DISTINCT('Vehicle_No')
 		->get();
 
-		return view('touchngo',['me'=>$me, 'list'=>$list, 'company'=>$company,'cars'=>$cars,'users'=>$users,'deductions'=>$deductions,'paymentmonth'=>$paymentmonth,'current'=>$current,'reload'=>$reload,'approverlevel'=>$approverlevel,'HOD_LOG'=>$HOD_LOG,'HOD_CME'=>$HOD_CME,'HOD_GST'=>$HOD_GST,'MD'=>$MD,'vehicle_no'=>$vehicle_no, 'cardtypes' => $cardtypes, 'touchngocards' => $touchngocards]);
+		return view('touchngo',['me'=>$me, 'list'=>$list, 'company'=>$company,'cars'=>$cars,'users'=>$users,'deductions'=>$deductions,'paymentmonth'=>$paymentmonth,'current'=>$current,'reload'=>$reload,'approverlevel'=>$approverlevel,'vehicle_no'=>$vehicle_no, 'cardtypes' => $cardtypes, 'touchngocards' => $touchngocards]);
 
 	}
 
@@ -1259,7 +1135,7 @@ class AssetController extends Controller {
 					'Account_No' => $input['Account_No'][$i],
 					'Phone_No' => $input['Phone_No'][$i],
 					'Current_Holder' => $input['Current_Holder'][$i],
-					'Department' => $input['Department'][$i],
+					'Position' => $input['Position'][$i],
 					'UserId' => $input['UserId'][$i],
 					'Package' => $input['Package'][$i],
 
@@ -1272,9 +1148,7 @@ class AssetController extends Controller {
 					'Bill_Date' => $input['Bill_Date'],
 					'Due_Date' => $input['Due_Date'],
 					'Bill_No' => $input['Bill_No'],
-					'Prorate_Monthly' => NULL,
-					'Type' => $type,
-					'ProjectId' => 0,
+					'Type' => $type
 
 				]);
 			}
@@ -1414,11 +1288,6 @@ class AssetController extends Controller {
 			case 'WATER':
 				$bill_account_no_type = 'Utility_Account_WATER';
 				break;
-
-			case 'COWAY':
-				$bill_account_no_type = 'Utility_Account_COWAY';
-				break;
-
 			case 'BOMBA':
 				$bill_account_no_type = 'Utility_Account_BOMBA';
 				break;
@@ -1428,17 +1297,17 @@ class AssetController extends Controller {
 			case 'INDAH WATER':
 				$bill_account_no_type = 'Utility_Account_INDAH_WATER';
 				break;
-			case 'MPKJ':
-				$bill_account_no_type = 'Utility_Account_MPKJ';
-				break;
 			case 'TELEKOM':
 				$bill_account_no_type = 'Utility_Account_TELEKOM';
 				break;
 			case 'UMOBILE':
-				$bill_account_no_type = 'Utility_Account_UMobile';
+				$bill_account_no_type = 'Utility_Account_MAXIS';
 				break;
 			case 'UNIFI':
 				$bill_account_no_type = 'Utility_Account_Unifi';
+				break;
+			case 'RENTAL':
+				$bill_account_no_type = 'Utility_Account_RENTAL';
 				break;
 			default:
 				$bill_account_no_type = 'Utility_Account_%';
@@ -1472,7 +1341,7 @@ class AssetController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$roadtax = DB::table('roadtax')
-		->select('roadtax.Id','roadtax.Option','roadtax.Vehicle_No','users.Name','driver.Name as driver','driver2.Name as driver2','users.Department','roadtax.RoadTax_Expire_Date','roadtax.Insurance_Expiry_Date','roadtax.Insurance_Company','roadtax.Asset_Listed','roadtax.With_ShellCard','roadtax.Maker','roadtax.Model',
+		->select('roadtax.Id','roadtax.Option','roadtax.Vehicle_No','users.Name','driver.Name as driver','driver2.Name as driver2','users.Position','roadtax.RoadTax_Expire_Date','roadtax.Insurance_Expiry_Date','roadtax.Insurance_Company','roadtax.Asset_Listed','roadtax.With_ShellCard','roadtax.Maker','roadtax.Model',
 		'roadtax.Year','roadtax.Type','roadtax.Lorry_Size','roadtax.Lorry_Dimension','roadtax.dimension','roadtax.Owner','roadtax.Original_Reg_Card','roadtax.Availability','roadtax.Purchase_Date','roadtax.Financier','roadtax.Account_No','roadtax.Hire_Purchase','roadtax.First_Installment','roadtax.Monthly_Installment',
 		'roadtax.Personal_Accident','roadtax.Puspakom_Expiry','roadtax.PMA_Expiry','roadtax.SPAD_Expiry','roadtax.NCD','roadtax.Loading','roadtax.Sum_Insured','roadtax.Windscreen','roadtax.Remarks', 'shellcards.Card_No', 'shellcards.Id as ShellCardId')
 		->leftJoin('users','users.Id','=','roadtax.UserId')
@@ -1499,7 +1368,7 @@ class AssetController extends Controller {
 			->where('users.Name','not like', '%admin%')
     		->get();
 
-		$users = collect($users)->groupBy('Department');
+		$users = collect($users)->groupBy('Position');
 
 		$company=DB::table('options')
 			->distinct('options.Option')
@@ -1660,11 +1529,6 @@ class AssetController extends Controller {
 		->where('insurances.Type','=',$type)
 		->get();
 
-
-
-		$projects = DB::table('projects')
-		->get();
-
 		$category=DB::table('options')
 			->distinct('options.Option')
 			->select('options.Option')
@@ -1681,7 +1545,7 @@ class AssetController extends Controller {
 			->get();
 
 
-		return view('insurancetracker',['me'=>$me,'list'=>$list, 'type'=>$type,'projects'=>$projects,'category'=>$category,'company'=>$company]);
+		return view('insurancetracker',['me'=>$me,'list'=>$list, 'type'=>$type,'category'=>$category,'company'=>$company]);
 
 	}
 
@@ -1690,7 +1554,7 @@ class AssetController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$licenses = DB::table('licenses')
-		->select('licenses.Id','licenses.Type','users.Name','users.Department','licenses.License_Type','licenses.Description','licenses.Identity_No','licenses.Expiry_Date','licenses.Remarks','files.Web_Path')
+		->select('licenses.Id','licenses.Type','users.Name','users.Position','licenses.License_Type','licenses.Description','licenses.Identity_No','licenses.Expiry_Date','licenses.Remarks','files.Web_Path')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="License" Group By TargetId) as max'), 'max.TargetId', '=', 'licenses.Id')
 		->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="License"'))
 		->leftJoin('users','users.Id','=','licenses.UserId')
@@ -1712,15 +1576,12 @@ class AssetController extends Controller {
 			->orderBy('options.Option')
 			->get();
 
-		$projects = DB::table('projects')
-    ->get();
-
 		$users = DB::table('users')
 		->where('users.StaffId','<>','admin')
     ->get();
 
 
-		return view('licensetracker',['me'=>$me, 'type'=>$type, 'category'=>$category,'licenses'=>$licenses,'options'=>$options,'projects'=>$projects,'users'=>$users]);
+		return view('licensetracker',['me'=>$me, 'type'=>$type, 'category'=>$category,'licenses'=>$licenses,'options'=>$options,'users'=>$users]);
 
 	}
 
@@ -1729,12 +1590,12 @@ class AssetController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$vpnusers = DB::table('vpn')
-		->select('vpn.Id','users.Name','users.Position','users.Department','vpn.User_ID','vpn.Password')
+		->select('vpn.Id','users.Name','users.Position','vpn.User_ID','vpn.Password')
 		->leftJoin('users','users.Id','=','vpn.UserId')
 		->get();
 
 		$nasusers = DB::table('nas')
-		->select('nas.Id','users.Name','users.Position','users.Department','nas.PC_Name','nas.User_ID','nas.Password','nas.Share_Folders')
+		->select('nas.Id','users.Name','users.Position','nas.PC_Name','nas.User_ID','nas.Password','nas.Share_Folders')
 		->leftJoin('users','users.Id','=','nas.UserId')
 		->get();
 
@@ -2309,7 +2170,7 @@ class AssetController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$agreement = DB::table('agreement')
-		->select('agreement.Id','agreement.Type','agreement.Department','agreement.Date_of_Agreement','agreement.Description_of_Agreement','agreement.Expiry_Date','agreement.Remarks','files.Web_Path')
+		->select('agreement.Id','agreement.Type','agreement.Company','agreement.Date_of_Agreement','agreement.Description_of_Agreement','agreement.Expiry_Date','agreement.Remarks','files.Web_Path')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Agreement" Group By TargetId) as max'), 'max.TargetId', '=', 'agreement.Id')
 		->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="Agreement"'))
 		->get();
@@ -2330,7 +2191,7 @@ class AssetController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$property = DB::table('property')
-		->select('property.Id','property.Type','property.Address','property.Landlord','property.Tenant','property.Company','property.Department',
+		->select('property.Id','property.Type','property.Address','property.Landlord','property.Tenant','property.Company',
 		'property.Business','property.Area','property.Property_Type','property.Status','property.Rental','property.TNB','property.Water','property.IWK',
 		'property.Start','property.End','property.Security_Deposit','property.Utility_Deposit','property.Termination_Notice','property.Agreement','property.Keys',
 		'property.Owner','property.Contact_Person','property.Remarks','files.Web_Path')
@@ -2370,7 +2231,7 @@ class AssetController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$property = DB::table('property')
-		->select(DB::raw('"" as button'),'property.Id','property.Type','property.Address','property.Landlord','property.Tenant','property.Company','property.Department',
+		->select(DB::raw('"" as button'),'property.Id','property.Type','property.Address','property.Landlord','property.Tenant','property.Company',
 		'property.Business','property.Area','property.Property_Type','property.Status','property.Rental','property.TNB','property.Water','property.IWK',
 		'property.Start','property.End','property.Security_Deposit','property.Utility_Deposit','property.Termination_Notice','property.Agreement','property.Keys',
 		'property.Owner','property.Contact_Person','property.Remarks','files.Web_Path')
@@ -2410,7 +2271,7 @@ class AssetController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$agreement = DB::table('agreement')
-		->select('agreement.Id','agreement.Type','agreement.Department','agreement.Date_of_Agreement','agreement.Description_of_Agreement','agreement.Expiry_Date','agreement.Remarks','files.Web_Path')
+		->select('agreement.Id','agreement.Type','agreement.Company','agreement.Date_of_Agreement','agreement.Description_of_Agreement','agreement.Expiry_Date','agreement.Remarks','files.Web_Path')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Agreement" Group By TargetId) as max'), 'max.TargetId', '=', 'agreement.Id')
 		->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="Agreement"'))
 		->get();

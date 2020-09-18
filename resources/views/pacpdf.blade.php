@@ -178,12 +178,6 @@ h1.pagetitle{
             <td tyle="width:25%">{{$input["SupplierName"]}}</td>
         </tr>
         <tr>
-            <td>Project Code:</td>
-            <td>{{$input["ProjectCode"]}}</td>
-            <td>Project Name :</td>
-            <td>{{$input["ProjectName"]}}</td>
-        </tr>
-        <tr>
             <td>Payment Terms:</td>
             <td>{{$input["PaymentTerms"]}}</td>
             <td>SubcontractorNo</td>

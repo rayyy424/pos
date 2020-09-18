@@ -148,9 +148,6 @@ table.total{
                       <td class="info"><b>Employee Name</b> : </td><td class="info">{{$user->Name}}</td>
                   </tr>
                   <tr>
-                      <td class="info"><b>Department</b> : </td><td class="info">{{$user->Department}}</td>
-                  </tr>
-                  <tr>
                       <td class="info"><b>Job Title</b> : </td><td class="info">{{$user->Position}}</td>
                   </tr>
                   <tr>
@@ -565,7 +562,7 @@ table.total{
                           @if ($bl==false)
 
                             <tr>
-                                <td class="info" style="width:40%;">Febraury</td>
+                                <td class="info" style="width:40%;">February</td>
                                 <td class="info" style="width:10%;">-</td>
                                 <td class="info" style="width:50%;"></td>
                             </tr>

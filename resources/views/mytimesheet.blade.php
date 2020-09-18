@@ -126,28 +126,6 @@
                                           label: "Next Person:",
                                           name: "timesheets.Next_Person"
                                    },{
-                                          label: "Project Code:",
-                                          name: "timesheets.Project_Code_Id",
-                                          type:  'select',
-                                          options: [
-                                              { label :"", value: "0" },
-                                              @foreach($projectcodes as $projectcode)
-                                                  { label :"{{$projectcode->Project_Code}}", value: "{{$projectcode->Id}}" },
-                                              @endforeach
-
-                                          ],
-                                   },{
-                                          label: "Project Name:",
-                                          name: "timesheets.ProjectId",
-                                          type:  'select',
-                                          options: [
-                                              { label :"", value: "0" },
-                                              @foreach($projects as $project)
-                                                  { label :"{{$project->Project_Name}} - {{$project->Name}}", value: "{{$project->Id}}" },
-                                              @endforeach
-
-                                          ],
-                                   },{
                                           label: "Site Name:",
                                           name: "timesheets.Site_Name"
                                    },{
@@ -212,7 +190,7 @@
 
                                    }
                                  },
-                                 columnDefs: [{ "visible": false, "targets": [0,1,2,3,4,5,6,16,17,18,19,20,22,23,24,25,26,27] },{"className": "dt-center", "targets": "_all"}],
+                                 columnDefs: [{ "visible": false, "targets": [0,1,2,3,4,5,6,16,17,18,20,21,22,23,24,25] },{"className": "dt-center", "targets": "_all"}],
                                 //  rowId: 'timesheets.Id',
                                 colReorder: false,
                                 sScrollX: "100%",
@@ -273,10 +251,8 @@
                                         { data: "timesheets.Time_Out",title:'Time Out' },
                                          { data: "timesheets.Leader_Member",title:'Leader_Member'},
                                          { data: "timesheets.Next_Person",title:'Next_Person'},
-                                         { data: "projectcodes.Project_Code", editField: "timesheets.Project_Code_Id",title:'Project_Code' },
-                                         { data: "projects.Project_Name", editField: "timesheets.ProjectId",title:'Department' },
 
-                                         { data: "timesheets.State",title:'State' },
+                                         { data: "timesheets.State",title:'State' },//18
                                          { data: "timesheets.Work_Description",title:'Work_Description' },
                                          { data: "timesheets.Remarks",title:'Remarks' },
                                          { data: "approver.Name",title:'Name' },
@@ -416,12 +392,11 @@
                   Time_Out=data.timesheets.Time_Out;
                   State=data.timesheets.State;
                   Check_In_Type=data.timesheets.Check_In_Type;
-                  ProjectId=data.timesheets.ProjectId;
 
                   $.ajax({
                               url: "{{ url('/timesheet/calculateallowance') }}",
                               method: "POST",
-                              data: {TimesheetId:Id,D:d,Time_In:Time_In,Time_Out:Time_Out,State:State,Check_In_Type:Check_In_Type,ProjectId:ProjectId},
+                              data: {TimesheetId:Id,D:d,Time_In:Time_In,Time_Out:Time_Out,State:State,Check_In_Type:Check_In_Type},
 
                               success: function(response){
                       }
@@ -624,10 +599,6 @@
               <div class="form-group">
 
                 <div class="col-lg-6">
-                  <label>Department : <i>{{$user->Department}}</i></label>
-                </div>
-
-                <div class="col-lg-6">
 
                   <label>Position : <i>{{$user->Position}}</i></label>
                 </div>
@@ -747,7 +718,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -763,7 +734,6 @@ function Submitforapproval(id)
   var boxes = $('input[type="checkbox"]:checked', timesheettable.fnGetNodes() );
 
   var ids="";
-  var emptyprojectid=false;
   var index=0;
 
   timesheettable.api().rows().every( function ( rowIdx, tableLoop, rowLoop ) {
@@ -772,11 +742,7 @@ function Submitforapproval(id)
     if ($('input[type=checkbox][value='+data.timesheets.Id+']').is(':checked'))
       // if ($('input[type="checkbox"]', timesheettable.fnGetNodes() )[index].checked)
     {
-      if(data.timesheets.ProjectId==0 && !data.timesheetstatuses.Status )
-      {
-
-        emptyprojectid=true;
-      }
+      
 
     }
 
@@ -784,8 +750,6 @@ function Submitforapproval(id)
     // ... do something with data(), or this.node(), etc
   } );
 
-  if (emptyprojectid==false)
-  {
     if (boxes.length>0)
     {
       for (var i = 0; i < boxes.length; i++) {
@@ -846,20 +810,6 @@ function Submitforapproval(id)
 
       $("#ajaxloader").hide();
     }
-
-  }
-  else {
-
-    var errormessage="Project Name cannot be empty!";
-    $("#error-alert ul").html(errormessage);
-    $("#error-alert").modal('show');
-
-
-    $('#Submitforapproval').modal('hide');
-
-    $("#ajaxloader").hide();
-
-  }
 
 }
 

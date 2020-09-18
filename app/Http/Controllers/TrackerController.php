@@ -45,15 +45,10 @@ class TrackerController extends Controller {
 
  		$input = $request->all();
 
-		$project = DB::table('projects')
-		->where('Id', '=', $input["ProjectID"])
-		->first();
-
  		//insert tracker name
  		$trackername = DB::table('trackertemplate')
  		->select('Tracker_Name')
  		->where('Tracker_Name', '=', $input["Tracker_Name"])
-		->where('ProjectId', '=', $input["ProjectID"])
  		->first();
 
 		$criteria1="";
@@ -97,7 +92,6 @@ class TrackerController extends Controller {
  			$id= DB::table('trackertemplate')
  						->insertGetId(array(
  						'Tracker_Name' => $input["Tracker_Name"],
- 						'ProjectID' => $input["ProjectID"],
 						'Criteria1' => $criteria1,
 						'Criteria2' => $criteria2,
 						'Criteria3' => $criteria3,
@@ -107,8 +101,7 @@ class TrackerController extends Controller {
 						'Operator2' => $input["Operator2"],
 						'Operator3' => $input["Operator3"],
 						'Operator4' => $input["Operator4"],
-						'Project_Name' => $project->Project_Name,
-						'Combine'=>DB::raw('concat(Tracker_Name," [",Project_Name,"]")'),
+						'Combine'=>DB::raw('Tracker_Name'),
 						'created_at'=>DB::raw('now()')
  					));
  			if ($id > 0){
@@ -231,7 +224,6 @@ class TrackerController extends Controller {
  			$input = $request->all();
 
 			$trackerline = DB::table('tracker')
-			->leftJoin('projects','projects.Id','=','tracker.ProjectId')
 			->where('tracker.Id', '=', $input["TrackerId"])
 			->first();
 
@@ -239,8 +231,6 @@ class TrackerController extends Controller {
 			{
 				$insert=DB::table('invoicelisting')->insertGetId(array(
 					 'TrackerId' => $input["TrackerId"],
-					 'ProjectId' => $trackerline->ProjectID,
-				 	 'Project' => $trackerline->Operator,
 					 'Customer' => $trackerline->Customer,
 					 'Year' => date("Y"),
 					 'created_by' =>$me->UserId
@@ -265,7 +255,6 @@ class TrackerController extends Controller {
  			$input = $request->all();
 
 					$insert=DB::table('costing')->insertGetId(array(
-						 'ProjectId' => $input["ProjectId"],
 						 'Date' => $input["Date"],
 						 'Cost_Type' => $input["CostType"],
 						 'Amount' => $input["Amount"],
@@ -288,7 +277,7 @@ class TrackerController extends Controller {
 			 $amountArr=Array();
 
 				$temp=DB::table('costing')
-				->select('Date','ProjectId','Amount')
+				->select('Date','Amount')
 				->where('Id',$id)
 				->first();
 
@@ -315,7 +304,7 @@ class TrackerController extends Controller {
 			(select timesheets.Site_Name,radius.Code,COUNT(DISTINCT concat(timesheets.Date,timesheets.Site_Name)) as total from `timesheets`
 			inner join `radius` on `timesheets`.`Site_Name` = radius.Location_Name AND replace(timesheets.Code,' ','') like CONCAT('%', radius.Code ,'%')
 			where str_to_date(timesheets.Date,'%d-%M-%Y')>=str_to_date('".$start."','%d-%M-%Y') AND str_to_date(timesheets.Date,'%d-%M-%Y')<=str_to_date('".$end."','%d-%M-%Y')
-			and `timesheets`.`Site_Name` !='' and `timesheets`.`Time_In` !='' AND timesheets.Site_Name like '%(%)' and timesheets.Code!='' AND timesheets.Code not like '%genset%' AND timesheets.Code not like '%meeting%' and timesheets.Code not like '%store%' and timesheets.Code not like '%Fabyard%' and timesheets.Code not like '%Office%' and timesheets.Code not like '%OTW%' group by timesheets.Site_Name,radius.Code) t ON t.site_name = CONCAT('(', tracker.Project_Code, ')') and
+			and `timesheets`.`Site_Name` !='' and `timesheets`.`Time_In` !='' AND timesheets.Site_Name like '%(%)' and timesheets.Code!='' AND timesheets.Code not like '%speedfreak%' AND timesheets.Code not like '%meeting%' and timesheets.Code not like '%store%' and timesheets.Code not like '%Fabyard%' and timesheets.Code not like '%Office%' and timesheets.Code not like '%OTW%' group by timesheets.Site_Name,radius.Code) t and
 			tracker.Incentive_Code like concat('%',t.Code,'%')");
 
 			foreach($amountArr as $arr){
@@ -323,7 +312,7 @@ class TrackerController extends Controller {
 				$temp=DB::select("
 				SELECT
 					Round((t.total/".$all[0]->totalvisit."
-					)*".$arr['amount'].",2) AS total,tracker.Id,t.total as VisitCount,tracker.Project_Code,
+					)*".$arr['amount'].",2) AS total,tracker.Id,t.total as VisitCount,
 					".$all[0]->totalvisit." as totalvisit
 				FROM
 					tracker
@@ -331,7 +320,7 @@ class TrackerController extends Controller {
 					(select timesheets.Site_Name,radius.Code,COUNT(DISTINCT concat(timesheets.Date,timesheets.Site_Name)) as total from `timesheets`
 					inner join `radius` on `timesheets`.`Site_Name` = radius.Location_Name AND replace(timesheets.Code,' ','') like CONCAT('%', radius.Code ,'%')
 					 where str_to_date(timesheets.Date,'%d-%M-%Y')>=str_to_date('".$start."','%d-%M-%Y') AND str_to_date(timesheets.Date,'%d-%M-%Y')<=str_to_date('".$end."','%d-%M-%Y')
-					 and `timesheets`.`Site_Name` !='' and `timesheets`.`Time_In` !='' AND timesheets.Site_Name like '%(%)' and timesheets.Code!='' AND timesheets.Code not like '%genset%' AND timesheets.Code not like '%meeting%' and timesheets.Code not like '%store%' and timesheets.Code not like '%Fabyard%' and timesheets.Code not like '%Office%' and timesheets.Code not like '%OTW%' group by timesheets.Site_Name,radius.Code) t ON t.site_name = CONCAT('(', tracker.Project_Code, ')') and
+					 and `timesheets`.`Site_Name` !='' and `timesheets`.`Time_In` !='' AND timesheets.Site_Name like '%(%)' and timesheets.Code!='' AND timesheets.Code not like '%speedfreak%' AND timesheets.Code not like '%meeting%' and timesheets.Code not like '%store%' and timesheets.Code not like '%Fabyard%' and timesheets.Code not like '%Office%' and timesheets.Code not like '%OTW%' group by timesheets.Site_Name,radius.Code) t and
 					 tracker.Incentive_Code like concat('%',t.Code,'%')
 
 				");
@@ -355,158 +344,6 @@ class TrackerController extends Controller {
 			 //
 
 		 }
-
-		public function createnewsite(Request $request)
-	  {
-
-			$me = (new CommonController)->get_current_user();
-
-			$input = $request->all();
-
-			$currenttracker=DB::table('trackertemplate')
-			->where('trackertemplate.Id','=',$input["TrackerId"])
-			->first();
-
-			$latestprojectcode = DB::table('tracker')
-			->select('Project_Code')
-			->where('ProjectId', '=',$input["ProjectId"])
-			->orderBy('Id','DESC')
-			->first();
-
-			$project = DB::table('projects')
-			->select('Project_Name')
-			->where('Id', '=',$input["ProjectId"])
-			->first();
-
-			$projectname=$project->Project_Name;
-
-			// if(!$latestprojectcode)
-			// {
-			// 	$new=1;
-			// 	$new=sprintf("%04d", $new);
-			// 	$newcode=$projectname."_".$new;
-			// }
-			// else {
-			// 	# code...
-			// 	$pre=substr($latestprojectcode->Project_Code,0,strlen($latestprojectcode->Project_Code)-4);
-			//
-			// 	$new=substr($latestprojectcode->Project_Code,-4);
-			// 	$new=sprintf("%04d", $new+1);
-			// 	$newcode=$pre.$new;
-			//
-			// }
-
-			$newcode="New Project Code";
-
-			$insert=DB::table('tracker')->insertGetId(array(
-				 'ProjectId' => $input["ProjectId"],
-				 'Project_Code' => $newcode
-
-			 ));
-
-	 		$cri1=array();
-	 		$cri2=array();
-	 		$cri3=array();
-			$cri4=array();
-			$cri5=array();
-
-	 		if($currenttracker->Criteria1)
-	 		{
-	 			$cri1=explode(" | ",$currenttracker->Criteria1);
-
-	 		}
-
-	 		if($currenttracker->Criteria2)
-	 		{
-	 			$cri2=explode(" | ",$currenttracker->Criteria2);
-
-	 		}
-
-	 		if($currenttracker->Criteria3)
-	 		{
-	 			$cri3=explode(" | ",$currenttracker->Criteria3);
-
-	 		}
-
-			if($currenttracker->Criteria4)
-			{
-				$cri4=explode(" | ",$currenttracker->Criteria4);
-
-			}
-
-			if($currenttracker->Criteria5)
-			{
-				$cri5=explode(" | ",$currenttracker->Criteria5);
-
-			}
-
-			 DB::table('trackerupdate')
-					->insert(array(
-					'TrackerId' =>$insert,
-					'Type' =>'Create',
-					'ProjectId' =>$input["ProjectId"],
-					'UserId' =>$me->UserId
-				));
-
-				if($cri1)
-				{
-
-					if($cri1[1]=="=")
-					{
-						DB::table('tracker')
-						->where('Id', '=',$insert)
-						->update([$cri1[0]=>$cri1[2]]);
-
-					}
-				}
-
-				if($cri2)
-				{
-					if($cri2[1]=="=")
-					{
-						DB::table('tracker')
-						->where('Id', '=',$insert)
-						->update([$cri2[0]=>$cri2[2]]);
-
-					}
-				}
-
-				if($cri3)
-				{
-					if($cri3[1]=="=")
-					{
-						DB::table('tracker')
-						->where('Id', '=',$insert)
-						->update([$cri3[0]=>$cri3[2]]);
-
-					}
-				}
-
-				if($cri4)
-				{
-					if($cri4[1]=="=")
-					{
-						DB::table('tracker')
-						->where('Id', '=',$insert)
-						->update([$cri4[0]=>$cri4[2]]);
-
-					}
-				}
-
-				if($cri5)
-				{
-					if($cri5[1]=="=")
-					{
-						DB::table('tracker')
-						->where('Id', '=',$insert)
-						->update([$cri5[0]=>$cri5[2]]);
-
-					}
-				}
-
-			return $insert."|".$newcode;
-
-	   }
 
 		 public function removeitem(Request $request)
 		 {
@@ -533,7 +370,6 @@ class TrackerController extends Controller {
 						 'Site_ID' =>$tracker->{'Site ID'},
 						 'Site_Name' =>$tracker->{'Site Name'},
 						 'Type' =>'Delete',
-						 'ProjectId' =>$input["ProjectId"],
 						 'UserId' =>$me->UserId
 					 ));
 				}
@@ -593,70 +429,13 @@ class TrackerController extends Controller {
 
 				$details="".$input["Column"]."=>".$input["Update"]."";
 
-				$this->updatedependency($input["ProjectId"],$input["Column"],$input["Id"]);
-
-				// //dependency rules
-				// $dependencyrules = DB::table('dependencyrules')
-				// ->where('dependencyrules.ProjectId','=',$input["ProjectId"])
-				// ->where('dependencyrules.Active','=','1')
-				// ->where('dependencyrules.Column1','=',$input["Column"])
-				// ->get();
-				//
-				// $trackerid=$input["Id"];
-				//
-				// foreach ($dependencyrules as $rules) {
-				//
-				// 	$col1=$rules->Column1;
-				// 	$col2=$rules->Column2;
-				// 	$col3=$rules->Column3;
-				//
-				// 	$updatecol=$rules->Target_Column;
-				// 	$update=$rules->Target_Status;
-				//
-				// 	$line = DB::table('tracker')
-				// 	->where('Id', '=',$input["Id"])
-				// 	->first();
-				//
-				// 	$condition="1";
-				//
-				// 	if($line)
-				// 	{
-				//
-				// 		if($rules->Column1 && $rules->Column1_Status=="[nonempty]")
-				// 		{
-				// 			$condition=$condition." AND `".$rules->Column1."`!=''";
-				// 		}
-				//
-				// 		if($rules->Column2 && $rules->Column2_Status=="[nonempty]")
-				// 		{
-				// 			$condition=$condition." AND `".$rules->Column2."`!=''";
-				// 		}
-				//
-				// 		if($rules->Column3 && $rules->Column3_Status=="[nonempty]")
-				// 		{
-				// 			$condition=$condition." AND `".$rules->Column3."`!=''";
-				// 		}
-				//
-				// 	}
-				//
-				// 	if($rules->Target_Column && $rules->Target_Status)
-				// 	{
-				// 		DB::table('tracker')
-				// 		->where('Id', '=',$input["Id"])
-				// 		->whereRaw($condition)
-				// 		->update([$rules->Target_Column =>$rules->Target_Status]);
-				//
-				// 	}
-				//
-				// }
-				// //end of dependency rules
+				$this->updatedependency($input["Column"],$input["Id"]);
 
 				DB::table('trackerupdate')
 					 ->insert(array(
 					 'Details' => $details,
 					 'TrackerId' =>$input["Id"],
 					 'Type' =>'Update',
-					 'ProjectId' =>$input["ProjectId"],
 					 'UserId' =>$me->UserId
 				 ));
 
@@ -687,10 +466,8 @@ class TrackerController extends Controller {
 
 				$completedtaskupdate = DB::table('tasks')
 				->select('Id')
-				->where('tasks.Project_Code', '=',$targetsite->Project_Code)
 				->where('tasks.Current_Task', '=',$col)
 				->get();
-				// dd($targetsite->Project_Code);
 
 				if($completedtaskupdate){
 
@@ -767,19 +544,14 @@ class TrackerController extends Controller {
 						'agings.End_Date',
 						'agings.Threshold',
 						'agingsubscribers.UserId',
-						'agings.ProjectId',
 						'users.Player_Id',
-						'users.Id as UserId',
-						'tracker.Project_Code'
+						'users.Id as UserId'
 					)
-					->whereRaw('agings.ProjectId = "'.$input["ProjectId"][$i].'" AND Start_Date = "'.$input["Column"][$i].'" ')
-					// ->where('Start_Date', $input["Column"][$i])
+					->where('Start_Date', $input["Column"][$i])
 					->join('agingsubscribers', 'agingsubscribers.AgingId', '=', 'agings.Id')
 					->join('users', 'users.Id', '=', 'agingsubscribers.UserId')
 					->join('tracker', 'tracker.Id', '=', DB::raw($input["Id"][$i]))
 					->get();
-						// dd($agingsubscribers);
-					// notify subscribers
 					if (count($agingsubscribers)) {
 						$groups = [];
 
@@ -795,10 +567,8 @@ class TrackerController extends Controller {
 		                        'Current_Task'  => $subscriber->End_Date,
 		                        'Previous_Task' => $input["Column"][$i],
 		                        'Previous_Task_Date' => $input["Update"][$i],
-		                        'Project_Code'     => $subscriber->Project_Code,
 		                        'Site_Name'     => $subscriber->Site_Name,
 		                        'Threshold'     => $subscriber->Threshold,
-		                        'ProjectId'  => $subscriber->ProjectId,
 		                        'UserId' => $subscriber->UserId,
 		                        'assign_by' => $me->UserId
 		                    ]);
@@ -813,7 +583,7 @@ class TrackerController extends Controller {
 
 						foreach ($groups as $group) {
 							$playerids 	= $group['playerids'];
-							$message 	= 'Task ' . $input["Column"][$i] .' '.$subscriber->Project_Code.' '.$subscriber->Project_Code. ' completed. ' . current($group['users'])->End_Date . ' started.';
+							$message 	= 'Task ' . $input["Column"][$i] .' completed. ' . current($group['users'])->End_Date . ' started.';
 							$type 		= 'Task';
 							$title  	= 'New Task Assigned';
 
@@ -824,19 +594,18 @@ class TrackerController extends Controller {
 
 				$details="".$input["Column"][$i]."=>".$input["Update"][$i]."";
 
-				$this->updatedependency($input["ProjectId"][$i],$input["Column"][$i],$input["Id"][$i]);
+				$this->updatedependency($input["Column"][$i],$input["Id"][$i]);
 
 				DB::table('trackerupdate')
 				->insert(array(
 					'Details' => $details,
 					'TrackerId' =>$input["Id"][$i],
 					'Type' =>'Update',
-					'ProjectId' =>$input["ProjectId"][$i],
 					'UserId' =>$me->UserId
 			 	));
 
 				//update ntp date based on site awards and survey precon cme yes not condition
-				if($input["ProjectId"][$i]==31 && ($input["Column"][$i]=="Survey (Y/N)" || $input["Column"][$i]=="Site Award Date") )
+				if($input["Column"][$i]=="Survey (Y/N)" || $input["Column"][$i]=="Site Award Date")
 				{
 
 					$trackerline= DB::table('tracker')
@@ -859,7 +628,7 @@ class TrackerController extends Controller {
 					}
 				}
 
-				else if($input["ProjectId"][$i]==31 && ($input["Column"][$i]=="Precon (Y/N)" || $input["Column"][$i]=="Site Award Date") )
+				else if($input["Column"][$i]=="Precon (Y/N)" || $input["Column"][$i]=="Site Award Date")
 				{
 					$trackerline= DB::table('tracker')
 					->where('tracker.Id', '=',$input["Id"][$i])
@@ -881,7 +650,7 @@ class TrackerController extends Controller {
 					}
 				}
 
-				else if($input["ProjectId"][$i]==31 && $input["Column"][$i]=="CME (Y/N)" && strtoupper($input["Update"][$i])=="YES")
+				else if($input["Column"][$i]=="CME (Y/N)" && strtoupper($input["Update"][$i])=="YES")
 				{
 					$trackerline= DB::table('tracker')
 					->where('tracker.Id', '=',$input["Id"][$i])
@@ -913,7 +682,6 @@ class TrackerController extends Controller {
 				{
 
 					$trackeritem= DB::table('tracker')
-					->leftJoin('projects','projects.Id','=','tracker.ProjectId')
 					->where('tracker.Id', '=',$input["Id"][$i])
 					->first();
 
@@ -947,8 +715,6 @@ class TrackerController extends Controller {
 					 	// code...
 						$insert=DB::table('invoicelisting')->insertGetId(array(
 							'TrackerId' => $input["Id"][$i],
-							'ProjectId' => $trackeritem->ProjectID,
-						 	'Project' => $trackeritem->Operator,
 							'Customer' => $trackeritem->Customer,
 							'Year' => date("Y"),
 							'PO_Milestone'=>$milestone,
@@ -1004,21 +770,12 @@ class TrackerController extends Controller {
 
 				if($line)
 				{
-				 	$project = DB::table('projects')
-				 	->where('Id', '=',$line->ProjectID)
-				 	->first();
-
-					$locationname="(".$line->Project_Code.")";
-
 				 	$split=explode(",",$line->Incentive_Code);
 
 				 	foreach ($split as $s) {
 				 		// code...
 				 		$radius = DB::table('radius')
-				 		->where('Location_Name','=',$locationname)
 				 		->whereRaw('(Code="'.$s.'" or Code="")')
-						->whereRaw('(Client="'.$project->Customer.'" or Client="")')
-						->where('ProjectId','=',$line->ProjectID)
 				 		->first();
 
 						if($s)
@@ -1033,8 +790,7 @@ class TrackerController extends Controller {
 						 				'Latitude' => $line->Latitude,
 							 			'Longitude' => $line->Longitude,
 							 			'Completion_Date'=>$line->{'Closed Date'},
-										'Code' => $s,
-										'ProjectId'=>$line->ProjectID
+										'Code' => $s
 						 			]);
 					 			}
 					 			if($input['Column'][$i] == "CME Start Date")
@@ -1045,8 +801,7 @@ class TrackerController extends Controller {
 							 			'Latitude' => $line->Latitude,
 							 			'Longitude' => $line->Longitude,
 							 			'Start_Date'=>$line->{'CME Start Date'},
-										'Code' => $s,
-										'ProjectId'=>$line->ProjectID
+										'Code' => $s
 						 			]);
 					 			}
 					 		}
@@ -1054,27 +809,24 @@ class TrackerController extends Controller {
 					 			// code...
 					 			$insert=DB::table('radius')->insertGetId(
 					 				[
-					 					'Client' => $project->Customer,
 						 				'Location_Name' => $locationname,
 						 				'Latitude' => $line->Latitude,
 						 				'Longitude' => $line->Longitude,
 						 				'Code' => $s,
 						 				'Start_Date'=>$line->{'CME Start Date'},
-						 				'Completion_Date'=>$line->{'Closed Date'},
-						 				'ProjectId'=>$line->ProjectID
+						 				'Completion_Date'=>$line->{'Closed Date'}
 					 				]
 					 			);
 					 		}
 						}
 				 	}
 
-					if(!$line->Incentive_Code && $line->ProjectID==146)
+					if(!$line->Incentive_Code)
 					{
 
 						$radius = DB::table('radius')
 				 		->where('Location_Name','=',$locationname)
 						->whereRaw('(Client="'.$line->{'Client Name'}.'" or Client="")')
-						->where('ProjectId','=',$line->ProjectID)
 				 		->first();
 
 						if($radius)
@@ -1085,8 +837,7 @@ class TrackerController extends Controller {
 							->update([
 								'Latitude' => $line->Latitude,
 								'Longitude' => $line->Longitude,
-								'Client'=>$line->{'Client Name'},
-								'ProjectId'=>$line->ProjectID
+								'Client'=>$line->{'Client Name'}
 							]);
 						}
 						else {
@@ -1096,8 +847,7 @@ class TrackerController extends Controller {
 									'Client' => $line->{'Client Name'},
 									'Location_Name' => $locationname,
 									'Latitude' => $line->Latitude,
-									'Longitude' => $line->Longitude,
-									'ProjectId'=>$line->ProjectID
+									'Longitude' => $line->Longitude
 								]
 							);
 						}
@@ -1243,15 +993,13 @@ class TrackerController extends Controller {
 	      $input = $request->all();
 
 				$tracker = DB::table('tracker')
-				->select('Site_Name','Project_Name')
-				->leftJoin('projects', 'projects.Id', '=', 'tracker.ProjectId')
+				->select('Site_Name')
 				->where('tracker.Id', '=',$input["TrackerId"])
 				->first();
 
-				$projectname=$tracker->Project_Name;
 				$SiteId=$tracker->Site_Name;
 
-				$files = File::allFiles(public_path().'/private/upload/Site Document/'.$projectname.'/'.$SiteId.'/');
+				$files = File::allFiles(public_path().'/private/upload/Site Document/'.$SiteId.'/');
 				foreach ($files as $file)
 				{
 						$name=(string)$file;
@@ -1291,11 +1039,8 @@ class TrackerController extends Controller {
 			{
 				$me = (new CommonController)->get_current_user();
 
-				$projectids = explode("|",$me->ProjectIds);
-
 				$assignments = DB::table('assignments')
-				->select('assignments.Status','projects.Project_Name','assignments.Site_Name','assignments.Staff','assignments.Subcon','assignments.Due_Date','assignments.Completed_Date','assignments.Remarks','users.Name as Created_By','assignments.created_at','assignments.updated_at')
-				->leftJoin('projects', 'projects.Id', '=','assignments.ProjectId' )
+				->select('assignments.Status','assignments.Site_Name','assignments.Staff','assignments.Subcon','assignments.Due_Date','assignments.Completed_Date','assignments.Remarks','users.Name as Created_By','assignments.created_at','assignments.updated_at')
 				->leftJoin('users', 'assignments.created_by', '=', 'users.Id')
 				->orderBy('assignments.Status','desc')
 				->orderBy(DB::raw('str_to_date(assignments.Due_Date,"%d-%M-%Y")'),'asc')
@@ -1311,11 +1056,7 @@ class TrackerController extends Controller {
 				->orderBy('Name','asc')
 				->get();
 
-				$project = DB::table('projects')
-				->whereIn('Id',$projectids)
-				->get();
-
-		    return view('assignment', ['me' => $me,'assignments'=>$assignments,'staff'=>$staff,'contractor'=>$contractor,'projects'=>$project,'name'=>$name]);
+		    return view('assignment', ['me' => $me,'assignments'=>$assignments,'staff'=>$staff,'contractor'=>$contractor,'name'=>$name]);
 
 			}
 
@@ -1323,17 +1064,10 @@ class TrackerController extends Controller {
 			{
 				$me = (new CommonController)->get_current_user();
 
-				$projectids = explode("|",$me->ProjectIds);
-
 				$siteissue = DB::table('siteissue')
-				->select('siteissue.Status','projects.Project_Name','siteissue.Site_ID','siteissue.Site_Name','siteissue.Scope_Of_Work','siteissue.Issue_Description','siteissue.Person_In_Charge','siteissue.Date','siteissue.Time','siteissue.Remarks','siteissue.Solution','users.Name as Created_By','siteissue.created_at','siteissue.updated_at')
-				->leftJoin('projects', 'projects.Id', '=','siteissue.ProjectId' )
+				->select('siteissue.Status','siteissue.Site_ID','siteissue.Site_Name','siteissue.Scope_Of_Work','siteissue.Issue_Description','siteissue.Person_In_Charge','siteissue.Date','siteissue.Time','siteissue.Remarks','siteissue.Solution','users.Name as Created_By','siteissue.created_at','siteissue.updated_at')
 				->leftJoin('users', 'siteissue.created_by', '=', 'users.Id')
 				->orderBy('siteissue.Status','desc')
-				->get();
-
-				$project = DB::table('projects')
-				->whereIn('Id',$projectids)
 				->get();
 
 				$options= DB::table('options')
@@ -1342,7 +1076,7 @@ class TrackerController extends Controller {
 				->orderBy('Option','asc')
 				->get();
 
-		    return view('siteissue', ['me' => $me,'siteissue'=>$siteissue,'projects'=>$project,'options'=>$options]);
+		    return view('siteissue', ['me' => $me,'siteissue'=>$siteissue,'options'=>$options]);
 
 			}
 
@@ -1368,70 +1102,13 @@ class TrackerController extends Controller {
 
 						$details="".$input["Column"]."=>".$input["Update"]."";
 
-						$this->updatedependency($input["ProjectId"],$input["Column"],$id);
-
-						// //dependency rules
-						// $dependencyrules = DB::table('dependencyrules')
-						// ->where('dependencyrules.ProjectId','=',$input["ProjectId"])
-						// ->where('dependencyrules.Active','=','1')
-						// ->where('dependencyrules.Column1','=',$input["Column"])
-						// ->get();
-						//
-						// $trackerid=$id;
-						//
-						// foreach ($dependencyrules as $rules) {
-						//
-						// 	$col1=$rules->Column1;
-						// 	$col2=$rules->Column2;
-						// 	$col3=$rules->Column3;
-						//
-						// 	$updatecol=$rules->Target_Column;
-						// 	$update=$rules->Target_Status;
-						//
-						// 	$line = DB::table('tracker')
-						// 	->where('Id', '=',$id)
-						// 	->first();
-						//
-						// 	$condition="1";
-						//
-						// 	if($line)
-						// 	{
-						//
-						// 		if($rules->Column1 && $rules->Column1_Status=="[nonempty]")
-						// 		{
-						// 			$condition=$condition." AND `".$rules->Column1."`!=''";
-						// 		}
-						//
-						// 		if($rules->Column2 && $rules->Column2_Status=="[nonempty]")
-						// 		{
-						// 			$condition=$condition." AND `".$rules->Column2."`!=''";
-						// 		}
-						//
-						// 		if($rules->Column3 && $rules->Column3_Status=="[nonempty]")
-						// 		{
-						// 			$condition=$condition." AND `".$rules->Column3."`!=''";
-						// 		}
-						//
-						// 	}
-						//
-						// 	if($rules->Target_Column && $rules->Target_Status)
-						// 	{
-						// 		DB::table('tracker')
-						// 		->where('Id', '=',$id)
-						// 		->whereRaw($condition)
-						// 		->update([$rules->Target_Column =>$rules->Target_Status]);
-						//
-						// 	}
-						//
-						// }
-						// //end of dependency rules
+						$this->updatedependency($input["Column"],$id);
 
 						DB::table('trackerupdate')
 							 ->insert(array(
 							 'Details' => $details,
 							 'TrackerId' =>$id,
 							 'Type' =>'Update',
-							 'ProjectId' =>$input["ProjectId"],
 							 'UserId' =>$me->UserId
 						 ));
 
@@ -1513,7 +1190,6 @@ class TrackerController extends Controller {
 
 			$id= DB::table('assignments')
 									->insertGetId(array(
-									'ProjectId' => $input["ProjectId"],
 									'Site_Name' => $input["Site_Name"],
 									'Remarks' => $input["Remarks"],
 									'Staff' => $input["Staff"],
@@ -1572,7 +1248,7 @@ public function renametracker(Request $request)
 		$blsuccess=DB::table('trackertemplate')
 		->where('Id', '=',$input["TrackerId"])
 		->update(['Tracker_Name'=>$input["TrackerName"],
-		'Combine'=>DB::raw('concat(Tracker_Name," [",Project_Name,"]")'),
+		'Combine'=>DB::raw('Tracker_Name'),
 		'Criteria1' => $criteria1,
 		'Criteria2' => $criteria2,
 		'Criteria3' => $criteria3,
@@ -1742,33 +1418,19 @@ public function renametracker(Request $request)
 			return 1;
 }
 
-  public function trackerview($projectid = null, $trackerid = null, $condition = null)
+  public function trackerview($trackerid = null, $condition = null)
   {
     	$me = (new CommonController)->get_current_user();
 
 			$today = date('d-M-Y', strtotime('today'));
-
-			$projectids = explode("|",$me->ProjectIds);
-
-      if ($projectid==null)
-  		{
-          $projectid=0;
-  		}
 
   		if ($trackerid==null)
   		{
         $trackerid=0;
   		}
 
-			if ($condition==null)
-  		{
-          $condition="`tracker`.`ProjectId` <> \"null\"";
-  		}
-
 			$trackerlist = DB::table('trackertemplate')
-			->leftJoin('projects', 'projects.Id', '=', 'trackertemplate.ProjectId')
-			->select('projects.Project_Name', 'trackertemplate.Tracker_Name','trackertemplate.Id')
-			->where('trackertemplate.ProjectId','=',$projectid)
+			->select('trackertemplate.Tracker_Name','trackertemplate.Id')
 			->whereRaw('trackertemplate.Id in (SELECT TrackerTemplateId from templateaccess where UserId='.$me->UserId.')')
 			->orderBy('trackertemplate.Id','ASC')
 			->get();
@@ -1808,7 +1470,7 @@ public function renametracker(Request $request)
 				}
   		}
 
-			$columns="`Id`,`ProjectId`,`Project_Code`,".$columns;
+			$columns="`Id`,".$columns;
 			$columns=rtrim($columns,",");
 
 			// dd($condition);
@@ -1817,7 +1479,6 @@ public function renametracker(Request $request)
 			{
 				$trackerview = DB::table('tracker')
 	      ->select(DB::raw($columns))
-	      ->where('tracker.ProjectID', '=', $projectid)
 				->whereRaw($condition)
 	      ->get();
 
@@ -1825,7 +1486,6 @@ public function renametracker(Request $request)
 			else {
 				$trackerview = DB::table('tracker')
 	      ->select(DB::raw($columns))
-	      ->where('tracker.ProjectID', '=', $projectid)
 	      ->get();
 			}
 
@@ -1838,15 +1498,8 @@ public function renametracker(Request $request)
       ->get();
 
 			$poitems = DB::table('po')
-			->select('po.Id','po.PO_No','po.ProjectId','po.Shipment_Num','po.PO_Line_No','po.Item_Description','po.Site_ID','po.Site_Name')
-			->where('po.ProjectId','=',$projectid)
+			->select('po.Id','po.PO_No','po.Shipment_Num','po.PO_Line_No','po.Item_Description','po.Site_ID','po.Site_Name')
 			->orderBy('po.PO_No','ASC')
-			->get();
-
-			$projectcodes = DB::table('projectcodes')
-			->select('projectcodes.Id','projectcodes.Project_Code','projectcodes.Site_ID')
-			->where('projectcodes.ProjectId','=',$projectid)
-			->orderBy('projectcodes.Project_Code','ASC')
 			->get();
 
 			$options= DB::table('options')
@@ -1859,14 +1512,8 @@ public function renametracker(Request $request)
 			->orderBy('Name','asc')
 			->get();
 
-			$project = DB::table('projects')
-			->where('Id','=',$projectid)
-			->first();
-
 			$invoices = DB::table('invoices')
-			->select('invoices.Id','invoices.Invoice_No','invoices.ProjectId','projects.Project_Name','invoices.Company','invoices.Invoice_Type','invoices.Invoice_Date','invoices.Invoice_Description','invoices.Invoice_Amount','invoices.Invoice_Status')
-					->leftJoin('projects', 'invoices.ProjectId', '=', 'projects.Id')
-			->whereIn('invoices.ProjectId',$projectids)
+			->select('invoices.Id','invoices.Invoice_No','invoices.Company','invoices.Invoice_Type','invoices.Invoice_Date','invoices.Invoice_Description','invoices.Invoice_Amount','invoices.Invoice_Status')
 			->orderBy('invoices.Invoice_No','ASC')
 			->get();
 
@@ -1879,11 +1526,9 @@ public function renametracker(Request $request)
 			->leftJoin('leavestatuses', 'leavestatuses.Id', '=', DB::raw('max.`maxid`'))
 			->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
 			->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-			->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
 			->select('applicant.Name','leaves.Leave_Type','leaves.Start_Date','leaves.End_Date','leavestatuses.Leave_Status as Status')
 			->where(DB::raw('str_to_date(leaves.Start_Date,"%d-%M-%Y")'), '<=', DB::raw('str_to_date("'.$today.'","%d-%M-%Y")'))
 			->where(DB::raw('str_to_date(leaves.End_Date,"%d-%M-%Y")'), '>=', DB::raw('str_to_date("'.$today.'","%d-%M-%Y")'))
-			->where('leaves.ProjectId','=', $projectid)
 			->orderBy('leaves.Id','desc')
 			->get();
 
@@ -1892,24 +1537,18 @@ public function renametracker(Request $request)
 			->leftJoin('users','users.Id','=','timesheets.UserId')
 			->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Timesheet" Group By TargetId) as maxfile'), 'maxfile.TargetId', '=', 'timesheets.Id')
 			->leftJoin('files', 'files.Id', '=', DB::raw('maxfile.`maxid` and files.`Type`="Timesheet"'))
-			->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-			->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 			->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
 			->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
 			->leftJoin('users as approver', 'timesheetstatuses.UserId', '=', 'approver.Id')
 			->where(DB::raw('str_to_date(timesheets.Date,"%d-%M-%Y")'), '=', DB::raw('str_to_date("'.$today.'","%d-%M-%Y")'))
-			->where('timesheets.ProjectId','=',$projectid)
 			->orderBy('timesheets.Id','desc')
 			->get();
 
 			$lastedit = DB::table('trackerupdate')
 			->select('trackerupdate.Updated_At','users.Name')
 			->leftJoin('users', 'users.Id', '=', 'trackerupdate.UserId')
-			->where( 'trackerupdate.ProjectId','=', $projectid)
 			->orderBy('trackerupdate.Id','DESC')
 			->first();
-
-			//dd($projectstaff);
 
 			$optionkey = DB::table('trackercolumn')
   		->select('trackercolumn.Column_Name')
@@ -1926,61 +1565,27 @@ public function renametracker(Request $request)
 
 			//dd($optionvalue);
 
-      return view('projecttracker',['me' => $me,'options'=>$options,'users'=>$users,'project'=> $project,'projectcodes'=>$projectcodes,'poitems'=>$poitems,'invoices'=>$invoices, 'projectid'=>$projectid,'trackerid'=>$trackerid, 'condition'=>$condition, 'trackerlist' => $trackerlist, 'trackerview' => $trackerview, 'columns'=>$columns,
-			'trackercolumns' => $trackercolumns, 'allavailablecolumns' =>$allavailablecolumns, 'project'=>$project, 'trackername'=> $trackername, 'leaves'=>$leaves, 'timesheetdetail'=>$timesheetdetail, 'lastedit'=>$lastedit, 'optionkey'=>$optionkey, 'optionvalue'=>$optionvalue]);
+      return view('projecttracker',['me' => $me,'options'=>$options,'users'=>$users,'poitems'=>$poitems,'invoices'=>$invoices,'trackerid'=>$trackerid, 'condition'=>$condition, 'trackerlist' => $trackerlist, 'trackerview' => $trackerview, 'columns'=>$columns,
+			'trackercolumns' => $trackercolumns, 'allavailablecolumns' =>$allavailablecolumns, 'trackername'=> $trackername, 'leaves'=>$leaves, 'timesheetdetail'=>$timesheetdetail, 'lastedit'=>$lastedit, 'optionkey'=>$optionkey, 'optionvalue'=>$optionvalue]);
 
   }
 
-	public function handsontable($projectid = null, $trackerid = null, $condition = null)
+	public function handsontable($trackerid = null, $condition = null)
 	{
 		$me = (new CommonController)->get_current_user();
 
 		$today = date('d-M-Y', strtotime('today'));
-
-		$projectids = explode("|",$me->ProjectIds);
-
-		$projects = DB::table('projects')
-		->whereIn('Id',$projectids)
-		->get();
-
-		if ($projectid==null)
-		{
-				$projectid=0;
-		}
 
 		if ($trackerid==null)
 		{
 			$trackerid=0;
 		}
 
-		if ($condition==null)
-		{
-				$condition="`tracker`.`ProjectId` <> \"null\"";
-		}
-
-		// if($me->UserId==775 ||$me->UserId==974)
-		// {
 			$trackerlist = DB::table('trackertemplate')
-			->leftJoin('projects', 'projects.Id', '=', 'trackertemplate.ProjectId')
-			->select('projects.Project_Name', 'trackertemplate.Tracker_Name','trackertemplate.Id')
-			->where('trackertemplate.ProjectId','=',$projectid)
+			->select('trackertemplate.Tracker_Name','trackertemplate.Id')
 			->whereRaw('trackertemplate.Id in (SELECT TrackerTemplateId from templateaccess where UserId='.$me->UserId.')')
 			->orderBy('trackertemplate.Id','ASC')
 			->get();
-
-		// }
-		// else {
-		// 	# code...
-		// 	$trackerlist = DB::table('trackertemplate')
-		// 	->leftJoin('projects', 'projects.Id', '=', 'trackertemplate.ProjectId')
-		// 	->select('projects.Project_Name', 'trackertemplate.Tracker_Name','trackertemplate.Id')
-		// 	->where('trackertemplate.ProjectId','=',$projectid)
-		// 	// ->whereRaw('trackertemplate.Id in (SELECT TrackerTemplateId from templateaccess where UserId='.$me->UserId.')')
-		// 	->orderBy('trackertemplate.Id','ASC')
-		// 	->get();
-		// }
-
-
 
 		if($trackerid==0)
 		{
@@ -2178,7 +1783,6 @@ public function renametracker(Request $request)
 
 		$allavailablecolumns= DB::table('trackercolumn')
 		->select(DB::raw('DISTINCT (Column_Name) As Col'))
-		->whereRaw('TrackerTemplateId in (select ID from trackertemplate where ProjectId='.$projectid.')')
 		->orderBy('Column_Name')
 		->get();
 
@@ -2242,7 +1846,7 @@ public function renametracker(Request $request)
 				$columns=$columns.'format(((SELECT SUM(HDD+GV+MH+Poles+Subduct+Cables) FROM `fibrelog` WHERE fibrelog.trackerid = tracker.Id GROUP BY trackerid))/((SELECT SUM(Total_HDD+Total_GV+Total_MH+Total_Poles+Total_Subduct+Total_Cable) FROM `tracker` a WHERE a.Id = tracker.Id GROUP BY a.Id))*100,2) as `'.$quote->Column_Name."`,";
 
 			}
-			else if(strtoupper($quote->Column_Name)=="INVOICE AMOUNT" && ($projectid==131 || $projectid==51 || $projectid==135 || $projectid==136))
+			else if(strtoupper($quote->Column_Name)=="INVOICE AMOUNT")
 			{
 				$columns=$columns.'(SELECT sum(`1st Claim Invoice Amount`+`2nd Claim Invoice Amount`+`3rd Claim Invoice Amount`+`Retention Invoice Amount`) FROM `tracker` a WHERE a.Id=tracker.Id GROUP BY a.Id) as `'.$quote->Column_Name."`,";
 			}
@@ -2252,16 +1856,9 @@ public function renametracker(Request $request)
 			}
 			else if($quote->Column_Name=="PO Amount")
 			{
-				if($projectid == 146)
-				{
-				$columns=$columns.'(SELECT SUM(total_amount) FROM `salesorder` WHERE salesorder.projectId = 146 AND salesorder.trackerid = tracker.Id GROUP BY salesorder.trackerid) as `'.$quote->Column_Name."`,";
-				}
-				else
-				{
-					$columns=$columns.'tracker.`'.$quote->Column_Name."`,";
-				}
+				$columns=$columns.'tracker.`'.$quote->Column_Name."`,";
 			}
-			else if($quote->Column_Name=="Invoice Amount" && $projectid == 146)
+			else if($quote->Column_Name=="Invoice Amount")
 			{
 				$columns=$columns.'(SELECT SUM(total_amount) FROM `salesorder` WHERE salesorder.invoice_number != "" AND salesorder.trackerid = tracker.Id GROUP BY trackerid) as `'.$quote->Column_Name."`,";
 			}
@@ -2303,8 +1900,8 @@ public function renametracker(Request $request)
 				when (SELECT COUNT(distinct tt.Date) FROM timesheets tt WHERE tt.Code!="" AND tt.Site_Name like "%(%" AND tt.Site_Name=t.Site_Name AND replace(tt.Code," ","")=replace(t.Code," ","") AND str_to_date(tt.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y"))<=scopeofwork.KPI then Incentive_1
 				else 0 END) as Incentive
 				from tracker a left join
-				(select Site_Name,Code,count(distinct Date) as c from timesheets where timesheets.Code!="" and timesheets.Site_Name like "%(%" group by Site_Name,Code) t on `t`.`Site_Name` = CONCAT("(",`Project_Code`,")") and a.Incentive_Code like CONCAT("%",replace(t.Code," ",""),"%")
-				left join `radius` on `t`.`Site_Name` = radius.Location_Name AND replace(t.Code," ","") like CONCAT("%", radius.Code ,"%") left join `scopeofwork` on `radius`.`Code` = `scopeofwork`.`Code` where `tracker`.`ProjectId` = '.$projectid.'
+				(select Site_Name,Code,count(distinct Date) as c from timesheets where timesheets.Code!="" and timesheets.Site_Name like "%(%" group by Site_Name,Code) t on a.Incentive_Code like CONCAT("%",replace(t.Code," ",""),"%")
+				left join `radius` on `t`.`Site_Name` = radius.Location_Name AND replace(t.Code," ","") like CONCAT("%", radius.Code ,"%") left join `scopeofwork` on `radius`.`Code` = `scopeofwork`.`Code`
 				AND a.Id=tracker.Id group by a.Id) as `'.$quote->Column_Name."`,";
 			}
 			else if($quote->Column_Name=="E-wallet")
@@ -2326,16 +1923,8 @@ public function renametracker(Request $request)
 
 		}
 
-		//$columns="(SELECT COUNT(files.id) as count FROM files WHERE TargetId=tracker.Id AND (Type='Acceptance_Documents' or Type='Tracker') GROUP BY TargetId) as '-',tracker.`Id`,tracker.`ProjectId`,tracker.`Project_Code`,".$columns."";
-
-			if($projectid == 146)
-			{
-
-			$columns="(SELECT COUNT(files.id) as count FROM files WHERE TargetId=tracker.Id AND Type='Tracker' GROUP BY TargetId) as '-',tracker.`Id`,tracker.`ProjectId`,tracker.`Project_Code`,".$columns."";
-			}
-			else{
-			$columns="(SELECT COUNT(files.id) as count FROM files WHERE TargetId=tracker.Id AND Type='Tracker' GROUP BY TargetId) as '-',tracker.`Id`,tracker.`ProjectId`,tracker.`Project_Code`,".$columns."";
-			}
+			$columns="(SELECT COUNT(files.id) as count FROM files WHERE TargetId=tracker.Id AND Type='Tracker' GROUP BY TargetId) as '-',tracker.`Id`,".$columns."";
+			
 			$columns=rtrim($columns,",");
 
 			//prepare total claim and unclaim
@@ -2393,9 +1982,9 @@ public function renametracker(Request $request)
 					$povalue=substr($povalue,0,strlen($povalue)-1);
 					$totalclaim=substr($totalclaim,0,strlen($totalclaim)-1);
 
-					$additionalcolumns="FORMAT((SELECT sum(".$povalue.") FROM tracker a WHERE a.`Unique ID`=tracker.`Unique ID` and a.ProjectID=tracker.ProjectId  GROUP BY `Unique ID`),2) as `Total PO`,
-					FORMAT((SELECT sum(".$totalclaim.") FROM tracker a WHERE a.`Unique ID`=tracker.`Unique ID` and a.ProjectID=tracker.ProjectId  GROUP BY `Unique ID`),2) as `Total Claim`,
-					FORMAT((SELECT sum(".$povalue.")-SUM(".$totalclaim.") FROM tracker a WHERE a.`Unique ID`=tracker.`Unique ID` and a.ProjectID=tracker.ProjectId  GROUP BY `Unique ID`),2) as `Total Unclaim`
+					$additionalcolumns="FORMAT((SELECT sum(".$povalue.") FROM tracker a WHERE a.`Unique ID`=tracker.`Unique ID` GROUP BY `Unique ID`),2) as `Total PO`,
+					FORMAT((SELECT sum(".$totalclaim.") FROM tracker a WHERE a.`Unique ID`=tracker.`Unique ID` GROUP BY `Unique ID`),2) as `Total Claim`,
+					FORMAT((SELECT sum(".$povalue.")-SUM(".$totalclaim.") FROM tracker a WHERE a.`Unique ID`=tracker.`Unique ID` GROUP BY `Unique ID`),2) as `Total Unclaim`
 					";
 
 					$columns=$columns.",".$additionalcolumns;
@@ -2450,11 +2039,9 @@ public function renametracker(Request $request)
 		{
 			$trackerview = DB::table('tracker')
 			->select(DB::raw($columns))
-			->where('tracker.ProjectID', '=', $projectid)
 			->whereRaw($condition)
 			->whereRaw("(".$criteria.")")
 			->whereRaw($filt)
-			// ->orderBy('tracker.Project_Code','DESC')
 			->orderByRaw('tracker.Id DESC')
 			->get();
 
@@ -2462,10 +2049,8 @@ public function renametracker(Request $request)
 		else {
 			$trackerview = DB::table('tracker')
 			->select(DB::raw($columns))
-			->where('tracker.ProjectID', '=', $projectid)
 			->whereRaw("(".$criteria.")")
 			->whereRaw($filt)
-			// ->orderBy('tracker.Project_Code','DESC')
 			->orderByRaw('tracker.Id DESC')
 			->get();
 		}
@@ -2541,14 +2126,6 @@ public function renametracker(Request $request)
 
 		}
 
-		$options= DB::table('options')
-		->leftJoin('optionprojects','options.Id','=','optionprojects.OptionId')
-		->whereIn('Table', ["tracker"])
-		->where('optionprojects.ProjectId','=',$projectid)
-		->orderBy('Table','asc')
-		->orderBy('Option','asc')
-		->get();
-
 		$staff= DB::table('users')
 		->where('User_Type','!=','Contractor')
 		->orderBy('Name','asc')
@@ -2559,63 +2136,15 @@ public function renametracker(Request $request)
 		->orderBy('Name','asc')
 		->get();
 
-		$project = DB::table('projects')
-		->where('Id','=',$projectid)
-		->first();
-
-		// $invoices = DB::table('invoices')
-		// ->select('invoices.Id','invoices.Invoice_No','invoices.ProjectId','projects.Project_Name','invoices.Company','invoices.Invoice_Type','invoices.Invoice_Date','invoices.Invoice_Description','invoices.Invoice_Amount','invoices.Invoice_Status')
-		// 		->leftJoin('projects', 'invoices.ProjectId', '=', 'projects.Id')
-		// ->whereIn('invoices.ProjectId',$projectids)
-		// ->orderBy('invoices.Invoice_No','ASC')
-		// ->get();
-
 		$trackername = DB::table("trackertemplate")
 		->where('trackertemplate.Id','=',$trackerid)
 		->get();
 
-		// $issue=DB::table("siteissue")
-		// ->select('siteissue.Status','siteissue.Site_ID','siteissue.Site_Name','Person_In_Charge','Scope_Of_Work','Issue_Description','Date','Time','siteissue.Remarks','Solution','users.Name as Created_By','siteissue.created_at','siteissue.updated_at')
-		// ->leftJoin('users', 'siteissue.created_by', '=', 'users.Id')
-		// ->limit(1)
-    // ->get();
-
-		// $leaves = DB::table('leaves')
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,LeaveId from leavestatuses Group By LeaveId) as max'), 'max.LeaveId', '=', 'leaves.Id')
-		// ->leftJoin('leavestatuses', 'leavestatuses.Id', '=', DB::raw('max.`maxid`'))
-		// ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
-		// ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-		// ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
-		// ->select('applicant.Name','leaves.Leave_Type','leaves.Start_Date','leaves.End_Date','leavestatuses.Leave_Status as Status')
-		// ->where(DB::raw('str_to_date(leaves.Start_Date,"%d-%M-%Y")'), '<=', DB::raw('str_to_date("'.$today.'","%d-%M-%Y")'))
-		// ->where(DB::raw('str_to_date(leaves.End_Date,"%d-%M-%Y")'), '>=', DB::raw('str_to_date("'.$today.'","%d-%M-%Y")'))
-		// ->where('leaves.ProjectId','=', $projectid)
-		// ->orderBy('leaves.Id','desc')
-		// ->get();
-
-		// $timesheetdetail = DB::table('timesheets')
-		// ->select('users.Name','timesheets.Check_In_Type','timesheets.Time_In','timesheets.Time_Out')
-		// ->leftJoin('users','users.Id','=','timesheets.UserId')
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Timesheet" Group By TargetId) as maxfile'), 'maxfile.TargetId', '=', 'timesheets.Id')
-		// ->leftJoin('files', 'files.Id', '=', DB::raw('maxfile.`maxid` and files.`Type`="Timesheet"'))
-		// ->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-		// ->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
-		// ->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
-		// ->leftJoin('users as approver', 'timesheetstatuses.UserId', '=', 'approver.Id')
-		// ->where(DB::raw('str_to_date(timesheets.Date,"%d-%M-%Y")'), '=', DB::raw('str_to_date("'.$today.'","%d-%M-%Y")'))
-		// ->where('timesheets.ProjectId','=',$projectid)
-		// ->orderBy('timesheets.Id','desc')
-		// ->get();
-
 		$lastedit = DB::table('trackerupdate')
 		->select('trackerupdate.Updated_At','users.Name')
 		->leftJoin('users', 'users.Id', '=', 'trackerupdate.UserId')
-		->where( 'trackerupdate.ProjectId','=', $projectid)
 		->orderBy('trackerupdate.Id','DESC')
 		->first();
-
-		//dd($projectstaff);
 
 		$optionkey = DB::table('trackercolumn')
 		->select('trackercolumn.Column_Name')
@@ -2642,8 +2171,7 @@ public function renametracker(Request $request)
 		}
 
 		$existingtracker = DB::table('trackertemplate')
-		->select('trackertemplate.Id','trackertemplate.Tracker_Name','projects.Project_Name')
-		->leftJoin('projects','projects.Id','=','trackertemplate.ProjectId')
+		->select('trackertemplate.Id','trackertemplate.Tracker_Name')
 		->orderBy('trackertemplate.Tracker_Name','ASC')
 		->get();
 
@@ -2660,34 +2188,20 @@ public function renametracker(Request $request)
 			}
 		}
 
-		return view('handsontable',['me' => $me,'options'=>$options,'staff'=>$staff,'contractor'=>$contractor,'project'=> $project, 'projectid'=>$projectid,'trackerid'=>$trackerid, 'condition'=>$condition, 'trackerlist' => $trackerlist, 'trackerview' => $trackerview, 'columns'=>$columns,
-		'trackercolumns' => $trackercolumns, 'allavailablecolumns' =>$allavailablecolumns, 'project'=>$project, 'trackername'=> $trackername,  'lastedit'=>$lastedit, 'optionkey'=>$optionkey,'trackerwriteaccess'=>$trackerwriteaccess,'trackerdeleteaccess'=>$trackerdeleteaccess, 'optionvalue'=>$optionvalue,
-		'Scope'=>$scope,'Region'=>$region,'existingtracker'=>$existingtracker,'cri1'=>$cri1,'cri2'=>$cri2,'cri3'=>$cri3,'cri4'=>$cri4,'cri5'=>$cri5,'criteria'=>$criteria,'colorcodes'=>$colorcodes,'additionalcolumns'=>$additionalcolumns,'arrsum'=>$arrsum,'current'=>$current,'projects'=>$projects]);
+		return view('handsontable',['me' => $me,'staff'=>$staff,'contractor'=>$contractor,'trackerid'=>$trackerid, 'condition'=>$condition, 'trackerlist' => $trackerlist, 'trackerview' => $trackerview, 'columns'=>$columns,
+		'trackercolumns' => $trackercolumns, 'allavailablecolumns' =>$allavailablecolumns, 'trackername'=> $trackername,  'lastedit'=>$lastedit, 'optionkey'=>$optionkey,'trackerwriteaccess'=>$trackerwriteaccess,'trackerdeleteaccess'=>$trackerdeleteaccess, 'optionvalue'=>$optionvalue,
+		'Scope'=>$scope,'Region'=>$region,'existingtracker'=>$existingtracker,'cri1'=>$cri1,'cri2'=>$cri2,'cri3'=>$cri3,'cri4'=>$cri4,'cri5'=>$cri5,'criteria'=>$criteria,'colorcodes'=>$colorcodes,'additionalcolumns'=>$additionalcolumns,'arrsum'=>$arrsum,'current'=>$current]);
 
 	}
 
-	public function invoicelisting($year = null, $projectid = null)
+	public function invoicelisting($year = null)
 	{
 		$me = (new CommonController)->get_current_user();
 
-		$projectids = explode("|",$me->ProjectIds);
 
 		DB::setFetchMode(PDO::FETCH_ASSOC);
 
 		$filter="1";
-
-		if($projectid==null)
-		{
-			$filter=$filter." AND invoicelisting.ProjectId=0";
-		}
-		else if($projectid=="All")
-		{
-
-		}
-		else {
-			// code...
-			$filter=$filter." AND invoicelisting.ProjectId=".$projectid;
-		}
 
 		if($year==null)
 		{
@@ -2705,24 +2219,15 @@ public function renametracker(Request $request)
 
 
 		$invoicelisting = DB::table('invoicelisting')
-		->select(DB::raw('(SELECT COUNT(files.id) as count FROM files WHERE TargetId=tracker.Id AND Type="Tracker" GROUP BY TargetId) as "-"'),'invoicelisting.Id','invoicelisting.TrackerId','tracker.Project_Code','invoicelisting.Project','invoicelisting.Customer','invoicelisting.Customer','tracker.Region',
+		->select(DB::raw('(SELECT COUNT(files.id) as count FROM files WHERE TargetId=tracker.Id AND Type="Tracker" GROUP BY TargetId) as "-"'),'invoicelisting.Id','invoicelisting.TrackerId','invoicelisting.Customer','invoicelisting.Customer','tracker.Region',
 		DB::raw('CONCAT(tracker.`Site ID / LRD`,"-",tracker.`Site ID`,"-",tracker.`LRD`,"-",tracker.`Site LRD`) as "Site_ID"'),'invoicelisting.Year','invoicelisting.Month','invoicelisting.PO_Milestone','invoicelisting.PO_No','invoicelisting.PO_Date','invoicelisting.PO_Amount','invoicelisting.Invoice_No','invoicelisting.Invoice_Date','invoicelisting.Invoice_Amount','users.Name')
-		->leftJoin('tracker','invoicelisting.TrackerId','=',DB::raw('tracker.Id and invoicelisting.ProjectId=tracker.ProjectId'))
+		->leftJoin('tracker','invoicelisting.TrackerId','=','tracker.Id')
 		->leftJoin('users','users.Id','=','invoicelisting.created_by')
 		->whereRaw($filter)
 		->orderBy('invoicelisting.Id','DESC')
 		->get();
 
 		DB::setFetchMode(PDO::FETCH_CLASS);
-
-		$projects = DB::table('projects')
-		->whereIn('Id',$projectids)
-		->get();
-
-		$projectcodes = DB::table('tracker')
-		->select('Id','Project_Code','Site ID','Site ID / LRD','Site LRD','LRD')
-		->where('ProjectId','=',$projectid)
-		->get();
 
 		$years= DB::select("
 			SELECT Year(Now())-1 as yearname UNION ALL
@@ -2732,58 +2237,30 @@ public function renametracker(Request $request)
 			$months= ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
 		$milestones= DB::table('options')
-		->leftJoin('optionprojects','options.Id','=','optionprojects.OptionId')
 		->whereIn('Table', ["tracker"])
 		->where('Field', '=','PO Milestone')
-		->where('optionprojects.ProjectId','=',$projectid)
 		->orderBy('Option','asc')
 		->get();
 
-		return view('invoicelisting',['me' => $me,'invoicelisting'=>$invoicelisting,'projects'=>$projects,'year'=>$year,'projectid'=>$projectid,'projectcodes'=>$projectcodes,'years'=>$years,'milestones'=>$milestones,'months'=>$months]);
+		return view('invoicelisting',['me' => $me,'invoicelisting'=>$invoicelisting,'year'=>$year,'years'=>$years,'milestones'=>$milestones,'months'=>$months]);
 
 	}
 
-	public function costing($projectid = null)
+	public function costing()
 	{
 		$me = (new CommonController)->get_current_user();
-
-		$projectids = explode("|",$me->ProjectIds);
 
 		DB::setFetchMode(PDO::FETCH_ASSOC);
 
 		$filter="1";
 
-		if($projectid==null)
-		{
-			$filter=$filter." AND costing.ProjectId=0";
-		}
-		else if($projectid=="All")
-		{
-
-		}
-		else {
-			// code...
-			$filter=$filter." AND costing.ProjectId=".$projectid;
-		}
-
 		$costing = DB::table('costing')
-		->select('costing.Id','projects.Project_Name','costing.Date','costing.Cost_Type','costing.Amount','costing.Remarks','users.Name','costing.created_at')
-		->leftJoin('tracker','costing.TrackerId','=',DB::raw('tracker.Id and costing.ProjectId=tracker.ProjectId'))
+		->select('costing.Id','costing.Date','costing.Cost_Type','costing.Amount','costing.Remarks','users.Name','costing.created_at')
+		->leftJoin('tracker','costing.TrackerId','=','tracker.Id')
 		->leftJoin('users','users.Id','=','costing.created_by')
-		->leftJoin('projects','projects.Id','=','costing.ProjectId')
-		// ->whereRaw($filter)
 		->get();
 
 		DB::setFetchMode(PDO::FETCH_CLASS);
-
-		$projects = DB::table('projects')
-		->whereIn('Id',$projectids)
-		->get();
-
-		$projectcodes = DB::table('tracker')
-		->select('Id','Project_Code','Site ID','Site LRD')
-		->where('ProjectId','=',$projectid)
-		->get();
 
 		$costtype= DB::table('options')
 		->whereIn('Table', ["costing"])
@@ -2791,14 +2268,13 @@ public function renametracker(Request $request)
 		->orderBy('Option','asc')
 		->get();
 
-		return view('costing',['me' => $me,'costing'=>$costing,'projects'=>$projects,'projectid'=>$projectid,'projectcodes'=>$projectcodes,'costtype'=>$costtype]);
+		return view('costing',['me' => $me,'costing'=>$costing,'costtype'=>$costtype]);
 
 	}
 
 	public function sitetransportcharges($start=null,$end=null,$site=null)
 	{
 		$me = (new CommonController)->get_current_user();
-		// dd($start,$end,$projecttype,$companyid);
 
 		if ($start==null)
 		{
@@ -2831,9 +2307,8 @@ public function renametracker(Request $request)
 		->leftJoin('radius','radius.Id','=','deliveryform.Location')
 		->leftJoin('deliverylocation','deliverylocation.area','=','radius.Area')
 		->leftJoin('roadtax','roadtax.Id','=','deliveryform.roadtaxId')
-		->leftJoin('projects','projects.Id','=','deliveryform.ProjectId')
 		->leftJoin('companies','companies.Id','=','deliveryform.company_id')
-		->select('deliveryform.Id','users.Name','deliveryform.DO_No','radius.Location_Name','projects.Project_Name','deliveryform.project_type','companies.Company_Name','deliverylocation.area','roadtax.Lorry_Size',
+		->select('deliveryform.Id','users.Name','deliveryform.DO_No','radius.Location_Name','companies.Company_Name','deliverylocation.area','roadtax.Lorry_Size',
 			DB::raw('(CASE WHEN roadtax.Lorry_Size = "10 Tan Crane" THEN price_10ton_crane WHEN roadtax.Lorry_Size = "10 Tan" THEN price_10ton WHEN roadtax.Lorry_Size = "5 Tan Crane" THEN price_5ton_crane ELSE price_2ton_to_5ton END) AS driverincentive'))
 		->where('deliverylocation.type','=','charges')
 		->where('radius.Client','=',$site)
@@ -2847,9 +2322,8 @@ public function renametracker(Request $request)
 		->leftJoin('radius','radius.Id','=','deliveryform.Location')
 		->leftJoin('deliverylocation','deliverylocation.area','=','radius.Area')
 		->leftJoin('roadtax','roadtax.Id','=','deliveryform.roadtaxId')
-		->leftJoin('projects','projects.Id','=','deliveryform.ProjectId')
 		->leftJoin('companies','companies.Id','=','deliveryform.company_id')
-		->select('deliveryform.Id','users.Name','deliveryform.DO_No','radius.Location_Name','projects.Project_Name','deliveryform.project_type','companies.Company_Name','deliverylocation.area','roadtax.Lorry_Size',
+		->select('deliveryform.Id','users.Name','deliveryform.DO_No','radius.Location_Name','companies.Company_Name','deliverylocation.area','roadtax.Lorry_Size',
 			DB::raw('(CASE WHEN roadtax.Lorry_Size = "10 Tan Crane" THEN price_10ton_crane WHEN roadtax.Lorry_Size = "10 Tan" THEN price_10ton WHEN roadtax.Lorry_Size = "5 Tan Crane" THEN price_5ton_crane ELSE price_2ton_to_5ton END) AS driverincentive'))
 		->where('deliverylocation.type','=','charges')
 		->where(DB::raw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")'),">=",DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
@@ -2864,7 +2338,6 @@ public function renametracker(Request $request)
 	public function transportcharges($start=null,$end=null)
 	{
 		$me = (new CommonController)->get_current_user();
-		// dd($start,$end,$projecttype,$companyid);
 
 		if ($start==null)
 		{
@@ -2898,10 +2371,9 @@ public function renametracker(Request $request)
 		->leftJoin('radius','radius.Id','=','deliveryform.Location')
 		->leftJoin('deliverylocation','deliverylocation.area','=','radius.Area')
 		->leftJoin('roadtax','roadtax.Id','=','deliveryform.roadtaxId')
-		->leftJoin('projects','projects.Id','=','deliveryform.ProjectId')
 		->leftJoin('companies','companies.Id','=','deliveryform.company_id')
 		->leftJoin('companies as client','client.Id','=','deliveryform.client')
-		->select('deliveryform.Id','roadtax.Vehicle_No','deliveryform.delivery_date','users.Name','deliveryform.DO_No','radius.Location_Name','projects.Project_Name','deliveryform.project_type','client.Company_Name as client','companies.Company_Name','deliveryform.trip','deliverylocation.area','roadtax.Lorry_Size',
+		->select('deliveryform.Id','roadtax.Vehicle_No','deliveryform.delivery_date','users.Name','deliveryform.DO_No','radius.Location_Name','client.Company_Name as client','companies.Company_Name','deliveryform.trip','deliverylocation.area','roadtax.Lorry_Size',
 			DB::raw('
 					(CASE
 						WHEN (deliveryform.trip LIKE "%1 Way Trip%")
@@ -2955,9 +2427,8 @@ public function renametracker(Request $request)
 		->leftJoin('radius','radius.Id','=','deliveryform.Location')
 		->leftJoin('deliverylocation','deliverylocation.area','=','radius.Area')
 		->leftJoin('roadtax','roadtax.Id','=','deliveryform.roadtaxId')
-		->leftJoin('projects','projects.Id','=','deliveryform.ProjectId')
 		->leftJoin('companies','companies.Id','=','deliveryform.company_id')
-		->select('deliveryform.delivery_date','deliveryform.roadtaxId','users.Name','deliveryform.DO_No','radius.Location_Name','projects.Project_Name','deliveryform.project_type','companies.Company_Name','deliverylocation.area','roadtax.Lorry_Size',
+		->select('deliveryform.delivery_date','deliveryform.roadtaxId','users.Name','deliveryform.DO_No','radius.Location_Name','companies.Company_Name','deliverylocation.area','roadtax.Lorry_Size',
 			DB::raw('
 					(CASE
 						WHEN (deliveryform.trip LIKE "%1 Way Trip%")
@@ -3020,9 +2491,8 @@ public function renametracker(Request $request)
 		->leftJoin('radius','radius.Id','=','deliveryform.Location')
 		->leftJoin('deliverylocation','deliverylocation.area','=','radius.Area')
 		->leftJoin('roadtax','roadtax.Id','=','deliveryform.roadtaxId')
-		->leftJoin('projects','projects.Id','=','deliveryform.ProjectId')
 		->leftJoin('companies','companies.Id','=','deliveryform.company_id')
-		->select('deliveryform.Id','deliveryform.delivery_date','users.Name','deliveryform.DO_No','radius.Location_Name','projects.Project_Name','deliveryform.project_type','companies.Company_Name','deliveryform.trip','deliverylocation.area','roadtax.Lorry_Size',
+		->select('deliveryform.Id','deliveryform.delivery_date','users.Name','deliveryform.DO_No','radius.Location_Name','companies.Company_Name','deliveryform.trip','deliverylocation.area','roadtax.Lorry_Size',
 			DB::raw('(CASE WHEN roadtax.Lorry_Size = "10 Tan Crane" THEN price_10ton_crane WHEN roadtax.Lorry_Size = "10 Tan" THEN price_10ton WHEN roadtax.Lorry_Size = "5 Tan Crane" THEN price_5ton_crane ELSE price_2ton_to_5ton END) AS driverincentive'))
         ->where('deliveryform.roadtaxId','=',$roadtaxid)
         ->where('deliveryform.delivery_date','=',$date)
@@ -3044,14 +2514,9 @@ public function renametracker(Request $request)
 		return 1;
 	}
 
-	public function reportpreview($trackerid,$projectid = null)
+	public function reportpreview($trackerid)
 	{
 		$me = (new CommonController)->get_current_user();
-
-		if ($projectid==null)
-		{
-				$projectid=12;
-		}
 
 		$trackerdetail = DB::table('tracker')
 		->select()
@@ -3071,17 +2536,12 @@ public function renametracker(Request $request)
 
 		// dd($trackerdetail);
 
-		return view('reportpreview',['me' => $me,'projectid'=>$projectid, 'trackerid'=>$trackerid,'trackerdetail'=>$trackerdetail, 'gallery'=>$gallery,'reportexist'=>$reportexist]);
+		return view('reportpreview',['me' => $me, 'trackerid'=>$trackerid,'trackerdetail'=>$trackerdetail, 'gallery'=>$gallery,'reportexist'=>$reportexist]);
 	}
 
-	public function reportdraft($trackerid,$projectid = null)
+	public function reportdraft($trackerid)
 	{
 		$me = (new CommonController)->get_current_user();
-
-		if ($projectid==null)
-		{
-				$projectid=75;
-		}
 
 		$trackerdetail = DB::table('tracker')
 		->select()
@@ -3102,17 +2562,14 @@ public function renametracker(Request $request)
 
 		// dd($trackerdetail);
 
-		return view('reportdraft',['me' => $me,'projectid'=>$projectid, 'trackerid'=>$trackerid,'trackerdetail'=>$trackerdetail, 'gallery'=>$gallery,'reportexist'=>$reportexist]);
+		return view('reportdraft',['me' => $me, 'trackerid'=>$trackerid,'trackerdetail'=>$trackerdetail, 'gallery'=>$gallery,'reportexist'=>$reportexist]);
 	}
 
-	public function reportpdf(Request $request, $trackerid,$projectid = null)
+	public function reportpdf(Request $request, $trackerid)
 	{
 
 		$me = (new CommonController)->get_current_user();
-		if ($projectid==null)
-		{
-				$projectid=75;
-		}
+
 		$reportexist = DB::table('report_contents')
 		->select()
 		->where('report_contents.TrackerId','=',$trackerid)
@@ -3125,20 +2582,15 @@ public function renametracker(Request $request)
 		->where('tracker.Id','=',$trackerid)
 		->first();
 
-		$html= view('reportpdf',['me'=>$me,'projectid'=>$projectid, 'trackerid'=>$trackerid,'reportexist'=>$reportexist]);
+		$html= view('reportpdf',['me'=>$me, 'trackerid'=>$trackerid,'reportexist'=>$reportexist]);
 
 		(new ExportPDFController)->Export($html);
 
 	}
 
-	public function inventoryreportdraft($trackerid,$projectid = null)
+	public function inventoryreportdraft($trackerid)
 	{
 		$me = (new CommonController)->get_current_user();
-
-		if ($projectid==null)
-		{
-				$projectid=12;
-		}
 
 		$trackerdetail = DB::table('tracker')
 		->select()
@@ -3156,20 +2608,16 @@ public function renametracker(Request $request)
 		->where('report_contents.Report_Type','=','Inventory Report')
 		->first();
 
-		return view("inventoryreportdraft",['me'=>$me,'projectid'=>$projectid,'gallery'=>$gallery, 'trackerid'=>$trackerid,'reportexist'=>$reportexist]);
+		return view("inventoryreportdraft",['me'=>$me,'gallery'=>$gallery, 'trackerid'=>$trackerid,'reportexist'=>$reportexist]);
 
 
 	}
 
-	public function inventoryreportpreview(Request $request,$trackerid,$projectid = null)
+	public function inventoryreportpreview(Request $request,$trackerid)
 	{
 		$me = (new CommonController)->get_current_user();
 		$input = $request->all();
 
-		if ($projectid==null)
-		{
-				$projectid=12;
-		}
 		$reportexist = DB::table('report_contents')
 		->select()
 		->where('report_contents.TrackerId','=',$trackerid)
@@ -3185,18 +2633,15 @@ public function renametracker(Request $request)
 		->where('files.TargetId','=',$trackerid)
 		->get();
 
-		return view("inventoryreportpreview",['me'=>$me,'projectid'=>$projectid, 'trackerid'=>$trackerid,'gallery'=>$gallery,'reportexist'=>$reportexist]);
+		return view("inventoryreportpreview",['me'=>$me, 'trackerid'=>$trackerid,'gallery'=>$gallery,'reportexist'=>$reportexist]);
 
 
 	}
 
-	public function inventoryreportpdf($trackerid,$projectid = null)
+	public function inventoryreportpdf($trackerid)
 	{
 		$me = (new CommonController)->get_current_user();
-		if ($projectid==null)
-		{
-				$projectid=12;
-		}
+
 		$reportexist = DB::table('report_contents')
 		->select()
 		->where('report_contents.TrackerId','=',$trackerid)
@@ -3209,20 +2654,16 @@ public function renametracker(Request $request)
 		->where('tracker.Id','=',$trackerid)
 		->first();
 
-		return view('inventoryreportpdf',['me'=>$me,'projectid'=>$projectid, 'trackerid'=>$trackerid,'reportexist'=>$reportexist]);
+		return view('inventoryreportpdf',['me'=>$me, 'trackerid'=>$trackerid,'reportexist'=>$reportexist]);
 
 		// (new ExportPDFController)->ExportLandscape($html);
 
 	}
 
-	public function coveragereportdraft($trackerid,$projectid = null)
+	public function coveragereportdraft($trackerid)
 	{
 		$me = (new CommonController)->get_current_user();
 
-		if ($projectid==null)
-		{
-				$projectid=12;
-		}
 		$reportexist = DB::table('report_contents')
 		->select()
 		->where('report_contents.TrackerId','=',$trackerid)
@@ -3241,19 +2682,15 @@ public function renametracker(Request $request)
 
 		// dd($gallery);
 
-		return view("coveragereportdraft",['me'=>$me,'projectid'=>$projectid, 'trackerid'=>$trackerid,'reportexist'=>$reportexist,'gallery'=>$gallery]);
+		return view("coveragereportdraft",['me'=>$me, 'trackerid'=>$trackerid,'reportexist'=>$reportexist,'gallery'=>$gallery]);
 
 
 	}
 
-	public function coveragereportpreview($trackerid,$projectid = null)
+	public function coveragereportpreview($trackerid)
 	{
 		$me = (new CommonController)->get_current_user();
 
-		if ($projectid==null)
-		{
-				$projectid=12;
-		}
 		$reportexist = DB::table('report_contents')
 		->select()
 		->where('report_contents.TrackerId','=',$trackerid)
@@ -3270,21 +2707,17 @@ public function renametracker(Request $request)
 		->where('files.TargetId','=',$trackerid)
 		->get();
 
-		return view("coveragereportpreview",['me'=>$me,'projectid'=>$projectid, 'trackerid'=>$trackerid,'gallery'=>$gallery,'reportexist'=>$reportexist]);
+		return view("coveragereportpreview",['me'=>$me, 'trackerid'=>$trackerid,'gallery'=>$gallery,'reportexist'=>$reportexist]);
 
 
 	}
 
-	public function coveragereportpdf(Request $request,$trackerid,$projectid = null)
+	public function coveragereportpdf(Request $request,$trackerid)
 	{
 
 		$me = (new CommonController)->get_current_user();
 		$input = $request->all();
 
-		if ($projectid==null)
-		{
-				$projectid=12;
-		}
 		$reportexist = DB::table('report_contents')
 		->select()
 		->where('report_contents.TrackerId','=',$trackerid)
@@ -3296,20 +2729,17 @@ public function renametracker(Request $request)
 		->where('tracker.Id','=',$trackerid)
 		->first();
 
-		return view('coveragereportpdf',['me'=>$me,'projectid'=>$projectid, 'trackerid'=>$trackerid, 'reportexist'=>$reportexist, 'input'=>$input]);
+		return view('coveragereportpdf',['me'=>$me, 'trackerid'=>$trackerid, 'reportexist'=>$reportexist, 'input'=>$input]);
 
 		// (new ExportPDFController)->ExportLandscape($html);
 
 
 	}
 
-	public function assetreportdraft($trackerid,$projectid = null)
+	public function assetreportdraft($trackerid)
 	{
 		$me = (new CommonController)->get_current_user();
-		if ($projectid==null)
-		{
-				$projectid=12;
-		}
+
 		$reportexist = DB::table('report_contents')
 		->select()
 		->where('report_contents.TrackerId','=',$trackerid)
@@ -3326,18 +2756,15 @@ public function renametracker(Request $request)
 		->where('files.TargetId','=',$trackerid)
 		->get();
 
-		return view("assetreportdraft",['me'=>$me,'projectid'=>$projectid, 'trackerid'=>$trackerid,'gallery'=>$gallery,'reportexist'=>$reportexist]);
+		return view("assetreportdraft",['me'=>$me, 'trackerid'=>$trackerid,'gallery'=>$gallery,'reportexist'=>$reportexist]);
 
 
 	}
 
-	public function assetreportpreview($trackerid,$projectid = null)
+	public function assetreportpreview($trackerid)
 	{
 		$me = (new CommonController)->get_current_user();
-		if ($projectid==null)
-		{
-				$projectid=12;
-		}
+
 		$reportexist = DB::table('report_contents')
 		->select()
 		->where('report_contents.TrackerId','=',$trackerid)
@@ -3354,7 +2781,7 @@ public function renametracker(Request $request)
 		->where('files.TargetId','=',$trackerid)
 		->get();
 
-		return view("assetreportpreview",['me'=>$me,'projectid'=>$projectid, 'trackerid'=>$trackerid,'gallery'=>$gallery,'reportexist'=>$reportexist]);
+		return view("assetreportpreview",['me'=>$me, 'trackerid'=>$trackerid,'gallery'=>$gallery,'reportexist'=>$reportexist]);
 
 
 	}
@@ -3362,10 +2789,7 @@ public function renametracker(Request $request)
 	public function assetreportpdf(Request $request)
 	{
 		$me = (new CommonController)->get_current_user();
-		if ($projectid==null)
-		{
-				$projectid=12;
-		}
+
 		$reportexist = DB::table('report_contents')
 		->select()
 		->where('report_contents.TrackerId','=',$trackerid)
@@ -3378,7 +2802,7 @@ public function renametracker(Request $request)
 		->where('tracker.Id','=',$trackerid)
 		->first();
 
-		$html= view('assetreportpdf',['me'=>$me,'projectid'=>$projectid, 'trackerid'=>$trackerid,'reportexist'=>$reportexist]);
+		$html= view('assetreportpdf',['me'=>$me, 'trackerid'=>$trackerid,'reportexist'=>$reportexist]);
 
 		(new ExportPDFController)->Export($html);
 
@@ -3494,11 +2918,7 @@ public function renametracker(Request $request)
 
 
 		$requirement = DB::table('projectrequirements')
-		->select('projectrequirements.Id','projectrequirements.ProjectId','projectrequirements.Type','projectrequirements.Requirement', 'projectrequirements.Start_Date','projectrequirements.End_Date')
-		->where('projectrequirements.ProjectId','=',$projectid)
-		->get();
-
-		$projects = DB::table('projects')
+		->select('projectrequirements.Id','projectrequirements.Type','projectrequirements.Requirement', 'projectrequirements.Start_Date','projectrequirements.End_Date')
 		->get();
 
 		$options= DB::table('options')
@@ -3507,7 +2927,7 @@ public function renametracker(Request $request)
 		->orderBy('Option','asc')
 		->get();
 
-		return view("projectrequirement",['me'=>$me, 'requirement'=>$requirement, 'projects'=>$projects, 'projectid'=>$projectid, 'options'=>$options]);
+		return view("projectrequirement",['me'=>$me, 'requirement'=>$requirement, 'options'=>$options]);
 	}
 
 	public function resourcecalendar($start = null, $end = null, $role = null)
@@ -3562,7 +2982,6 @@ public function renametracker(Request $request)
 			$query.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y') THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
 			$query2.="COUNT(DISTINCT users.Id) AS '". date('d-M-Y', $startTime) ."',";
 			$query3.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(userprojects.Start_Date,'%d-%M-%Y') AND str_to_date(userprojects.End_Date,'%d-%M-%Y') THEN 1 ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
-			//$query6.="(COUNT(DISTINCT users.Id))-(SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(userprojects.Start_Date,'%d-%M-%Y') AND str_to_date(userprojects.End_Date,'%d-%M-%Y')  AND userprojects.Assigned_As='".$role."' THEN 1 ELSE 0 END)) AS '". date('d-M-Y', $startTime) ."',";
 			$query4.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y') THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
 			$query5.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(userprojects.Start_Date,'%d-%M-%Y') AND str_to_date(userprojects.End_Date,'%d-%M-%Y') THEN 1 ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
 			$query7.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y') THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
@@ -3590,27 +3009,25 @@ public function renametracker(Request $request)
 		$first7 ="SUM(CASE WHEN str_to_date('". date('d-M-Y', $start1) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y') THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $start1) ."'";
 
 		$resourcecalendar = DB::select("
-					SELECT null AS ProjectId,'Total Available' As Project_Name,
+					SELECT
 					".$first2.",
 					".$query2."
 					FROM users
 					LEFT JOIN userability ON users.Id=userability.UserId
 					WHERE Ability<>'' UNION ALL
-					SELECT projects.Id,projects.Project_Name,
+					SELECT 
 					".$first4.",
 					".$query4."
-					FROM projects
-					LEFT JOIN projectrequirements on projectrequirements.ProjectId=projects.Id
-					GROUP BY projects.Id UNION ALL
+					FROM projectrequirements
+					GROUP BY projectsrequirements.Type UNION ALL
 					SELECT null,'Total Required',
 					".$first7.",
 					".$query7."
-					FROM projects
-					LEFT JOIN projectrequirements on projectrequirements.ProjectId=projects.Id
+					FROM projectrequirements
 			");
 
 		$assign = DB::select("
-				SELECT null as ProjectId,'Total Assigned',
+				SELECT 'Total Assigned',
 				".$first3.",
 				".$query3."
 				from users
@@ -3641,45 +3058,42 @@ public function renametracker(Request $request)
 		while ($i < count($arr)-1) {
 		   $a = $arr[$i];
 			 $querytype.= "SELECT '".$a."' As User_Type,".$first2.",".$query2." FROM users LEFT JOIN userability ON users.Id=userability.UserId WHERE Ability = '".$a."' UNION ALL ";
-			 $querytype1.= "SELECT users.Id, '".$a."' As User_Type,".$first2.",".$query2." FROM users LEFT JOIN userability ON users.Id=userability.UserId LEFT JOIN userprojects ON users.Id=userprojects.UserId WHERE Ability = '".$a."' AND userprojects.ProjectId ='' UNION ALL ";
+			 $querytype1.= "SELECT users.Id, '".$a."' As User_Type,".$first2.",".$query2." FROM users LEFT JOIN userability ON users.Id=userability.UserId LEFT JOIN userprojects ON users.Id=userprojects.UserId WHERE Ability = '".$a."' UNION ALL ";
 
 		 	 $i++;
 		}
 
 		$last= "SELECT '".$arr[count($arr)-1]."' As User_Type,".$first2.",".$query2."FROM users LEFT JOIN userability ON users.Id=userability.UserId WHERE Ability = '".$arr[count($arr)-1]."'";
-		$last1= "SELECT users.Id, '".$arr[count($arr)-1]."' As User_Type,".$first2.",".$query2."FROM users LEFT JOIN userability ON users.Id=userability.UserId LEFT JOIN userprojects ON users.Id=userprojects.UserId WHERE Ability = '".$arr[count($arr)-1]."' AND userprojects.ProjectId = '' ";
+		$last1= "SELECT users.Id, '".$arr[count($arr)-1]."' As User_Type,".$first2.",".$query2."FROM users LEFT JOIN userability ON users.Id=userability.UserId LEFT JOIN userprojects ON users.Id=userprojects.UserId WHERE Ability = '".$arr[count($arr)-1]."' ";
 
 		$totalavailable = DB::select("".$querytype." ".$last."");
 
 		$totalunassigned = DB::select("".$querytype1." ".$last1."");
 
 		$projecttype = DB::select("
-				SELECT projects.Project_Name,projectrequirements.Type,
+				SELECT projectrequirements.Type,
 				".$first4.",
 				".$query4."
-				FROM projects
-				LEFT JOIN projectrequirements on projectrequirements.ProjectId=projects.Id
-				GROUP BY projects.Id, projectrequirements.Type
+				FROM projectrequirements
+				GROUP BY projectrequirements.Type
 		");
 
 		$totalrequired= DB::select("
 				SELECT null,projectrequirements.Type as User_Type,
 				".$first7.",
 				".$query7."
-				FROM projects
-				LEFT JOIN projectrequirements on projectrequirements.ProjectId=projects.Id
+				FROM projectrequirements
 				GROUP BY projectrequirements.Type
 		");
 
 		$totalassigned = DB::select("
-				SELECT userprojects.ProjectId, projects.Project_Name, userprojects.Assigned_As,
+				SELECT userprojects.Assigned_As,
 				".$first3.",
 				".$query3."
 				from users
 				LEFT JOIN userprojects on users.Id=userprojects.UserId
-				LEFT JOIN projects on projects.Id=userprojects.ProjectId
 				where userprojects.Assigned_As <> ''
-				GROUP BY userprojects.ProjectId, userprojects.Assigned_As
+				GROUP BY userprojects.Assigned_As
 
 		");
 
@@ -3692,7 +3106,6 @@ public function renametracker(Request $request)
 	 			$query.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y')  AND projectrequirements.Type='".$role."' THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
 	 			$query2.="COUNT(DISTINCT users.Id) AS '". date('d-M-Y', $startTime) ."',";
 	 			$query3.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(userprojects.Start_Date,'%d-%M-%Y') AND str_to_date(userprojects.End_Date,'%d-%M-%Y')  AND userprojects.Assigned_As='".$role."' THEN 1 ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
-	 			//$query6.="(COUNT(DISTINCT users.Id))-(SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(userprojects.Start_Date,'%d-%M-%Y') AND str_to_date(userprojects.End_Date,'%d-%M-%Y')  AND userprojects.Assigned_As='".$role."' THEN 1 ELSE 0 END)) AS '". date('d-M-Y', $startTime) ."',";
 	 			$query4.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y') THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
 	 			$query5.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(userprojects.Start_Date,'%d-%M-%Y') AND str_to_date(userprojects.End_Date,'%d-%M-%Y') THEN 1 ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
 	 			$query7.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y') THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
@@ -3714,33 +3127,30 @@ public function renametracker(Request $request)
 	 		$first ="SUM(CASE WHEN str_to_date('". date('d-M-Y', $start1) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y')  AND projectrequirements.Type='".$role."' THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $start1) ."'";
 	 		$first2 ="COUNT(DISTINCT users.Id) AS '". date('d-M-Y', $start1) ."'";
 	 		$first3="SUM(CASE WHEN str_to_date('". date('d-M-Y', $start1) ."','%d-%M-%Y') BETWEEN str_to_date(userprojects.Start_Date,'%d-%M-%Y') AND str_to_date(userprojects.End_Date,'%d-%M-%Y')  AND userprojects.Assigned_As='".$role."' THEN 1 ELSE 0 END) AS '". date('d-M-Y', $start1) ."'";
-	 		//$first6="(COUNT(DISTINCT users.Id))-(SUM(CASE WHEN str_to_date('". date('d-M-Y', $start1) ."','%d-%M-%Y') BETWEEN str_to_date(userprojects.Start_Date,'%d-%M-%Y') AND str_to_date(userprojects.End_Date,'%d-%M-%Y')  AND userprojects.Assigned_As='".$role."' THEN 1 ELSE 0 END)) AS '". date('d-M-Y', $startTime) ."'";
 	 		$first4 ="SUM(CASE WHEN str_to_date('". date('d-M-Y', $start1) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y') THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $start1) ."'";
 	 		$first5="SUM(CASE WHEN str_to_date('". date('d-M-Y', $start1) ."','%d-%M-%Y') BETWEEN str_to_date(userprojects.Start_Date,'%d-%M-%Y') AND str_to_date(userprojects.End_Date,'%d-%M-%Y') THEN 1 ELSE 0 END) AS '". date('d-M-Y', $startTime) ."'";
 	 		$first7 ="SUM(CASE WHEN str_to_date('". date('d-M-Y', $start1) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y') THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $start1) ."'";
 
 	 		$resourcecalendar = DB::select("
-	 				SELECT null AS ProjectId,'Total Available' As Project_Name,
+	 				SELECT 
 	 				".$first2.",
 	 				".$query2."
 	 				FROM users
 	 				LEFT JOIN userability ON users.Id=userability.UserId
 	 				WHERE Ability = '".$role."' UNION ALL
-	 				SELECT projects.Id,projects.Project_Name,
+	 				SELECT
 	 				".$first.",
 	 				".$query."
-	 				FROM projects
-	 				LEFT JOIN projectrequirements on projectrequirements.ProjectId=projects.Id
-	 				GROUP BY projects.Id UNION ALL
+	 				FROM projectrequirements
+	 				GROUP BY projectrequirements.Type UNION ALL
 	 				SELECT null,'Total Required',
 	 				".$first.",
 	 				".$query."
-	 				FROM projects
-	 				LEFT JOIN projectrequirements on projectrequirements.ProjectId=projects.Id
+	 				FROM projectrequirements
 	 		");
 
 	 		$assign = DB::select("
-	 				SELECT null as ProjectId,'Total Assigned',
+	 				SELECT 'Total Assigned',
 	 				".$first3.",
 	 				".$query3."
 	 				from users
@@ -3752,15 +3162,10 @@ public function renametracker(Request $request)
 			$totalassigned = "";
 			$totalavailable = "";
 			$totalrequired = "";
-			$projecttype = "";
 			$totalunassigned ="";
 
 		}
 
-
-		$projects = DB::table('projects')
-		->get();
-
 		$options= DB::table('options')
 		->whereIn('Table', ["users","userability"])
 		->orderBy('Table','asc')
@@ -3769,240 +3174,8 @@ public function renametracker(Request $request)
 
 
 
-		return view("resourcecalendar",['me'=>$me,'start' =>$start,'end'=>$end, 'resourcecalendar'=>$resourcecalendar, 'projects'=>$projects, 'options'=>$options, 'role'=>$role, 'daterange'=>$daterange, 'assign'=>$assign, 'totalavailable'=>$totalavailable, 'totalrequired'=>$totalrequired, 'projecttype'=>$projecttype, 'totalassigned'=>$totalassigned , 'totalunassigned'=>$totalunassigned]);
+		return view("resourcecalendar",['me'=>$me,'start' =>$start,'end'=>$end, 'resourcecalendar'=>$resourcecalendar, 'options'=>$options, 'role'=>$role, 'daterange'=>$daterange, 'assign'=>$assign, 'totalavailable'=>$totalavailable, 'totalrequired'=>$totalrequired, 'totalassigned'=>$totalassigned , 'totalunassigned'=>$totalunassigned]);
 
-	}
-
-	public function viewproject($start = null, $end = null, $role = null,$projectid =null){
-
-		$me = (new CommonController)->get_current_user();
-
-		if ($start==null)
-		{
-			$start=date('d-M-Y', strtotime('first day of this month'));
-
-		}
-
-		if ($end==null)
-		{
-			// $end=date('d-M-Y', strtotime('today'));
-			// $end=date('d-M-Y', strtotime($end . " +1 days"));
-			$end=date('d-M-Y', strtotime('last day of this month'));
-
-		}
-
-		if ($role==null)
-		{
-			$role="All";
-
-		}
-
-		$startTime = strtotime($start);
-		$endTime = strtotime($end);
-
-		$query="";
-		$query2="";
-		$query3="";
-		$query4="";
-		$query5="";
-		$query6="";
-		$query7="";
-
-		$first="";
-		$first2="";
-		$first3="";
-		$first4="";
-		$first5="";
-		$first6="";
-		$first7="";
-		$daterange=[];
-
-		$startTime=strtotime("+1 days",$startTime);
-
-		$project = DB::table('projects')
-		->where('Id', '=',$projectid)
-		->first();
-
-		if ($role=='All'){
-
-				while ($startTime <= $endTime){
-	 			$query.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y') AND projectrequirements.ProjectId='".$projectid."' THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
-	 			$query2.="COUNT(*) AS '". date('d-M-Y', $startTime) ."',";
-	 			$query3.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(userprojects.Start_Date,'%d-%M-%Y') AND str_to_date(userprojects.End_Date,'%d-%M-%Y') AND userprojects.ProjectId='".$projectid."' THEN 1 ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
-	 			// $query6.="SUM(CASE WHEN userability.Ability like '%".$role."%' AND userprojects.ProjectId='".$projectid."' THEN 1 ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
-	 			// $query4.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y') THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
-	 			// $query5.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(userprojects.Start_Date,'%d-%M-%Y') AND str_to_date(userprojects.End_Date,'%d-%M-%Y') THEN 1 ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
-	 			$query7.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y') THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
-
-	 			$daterange[].= date('d-M-Y', $startTime);
-	 			$startTime=strtotime("+1 days",$startTime);
-	 		 }
-
-	 		$query=substr($query,0,strlen($query)-1);
-	 		$query2=substr($query2,0,strlen($query2)-1);
-	 		$query3=substr($query3,0,strlen($query3)-1);
-	 		// $query4=substr($query4,0,strlen($query4)-1);
-	 		// $query5=substr($query5,0,strlen($query5)-1);
-	 		// $query6=substr($query6,0,strlen($query6)-1);
-	 		$query7=substr($query7,0,strlen($query7)-1);
-
-	 		$start1 = strtotime($start);
-
-	 		$first ="SUM(CASE WHEN str_to_date('". date('d-M-Y', $start1) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y') AND projectrequirements.ProjectId='".$projectid."' THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $start1) ."'";
-	 		$first2 ="COUNT(*) AS '". date('d-M-Y', $start1) ."'";
-	 		$first3="SUM(CASE WHEN str_to_date('". date('d-M-Y', $start1) ."','%d-%M-%Y') BETWEEN str_to_date(userprojects.Start_Date,'%d-%M-%Y') AND str_to_date(userprojects.End_Date,'%d-%M-%Y') AND userprojects.ProjectId='".$projectid."' THEN 1 ELSE 0 END) AS '". date('d-M-Y', $start1) ."'";
-	 		// $first6="SUM(CASE WHEN userability.Ability like '%".$role."%' AND userprojects.ProjectId='".$projectid."' THEN 1 ELSE 0 END) AS '". date('d-M-Y', $startTime) ."'";
-	 		// $first4 ="SUM(CASE WHEN str_to_date('". date('d-M-Y', $start1) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y') THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $start1) ."'";
-	 		// $first5="SUM(CASE WHEN str_to_date('". date('d-M-Y', $start1) ."','%d-%M-%Y') BETWEEN str_to_date(userprojects.Start_Date,'%d-%M-%Y') AND str_to_date(userprojects.End_Date,'%d-%M-%Y') THEN 1 ELSE 0 END) AS '". date('d-M-Y', $startTime) ."'";
-	 		$first7 ="SUM(CASE WHEN str_to_date('". date('d-M-Y', $start1) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y') THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $start1) ."'";
-
-			$viewproject = DB::select("
-					SELECT 'Total Available' As Project_Name,
-					".$first2.",
-					".$query2."
-					FROM users
-					LEFT JOIN userability ON users.Id=userability.UserId
-					WHERE Ability<>'' UNION ALL
-					SELECT 'Total Required' As Project_Name,
-					".$first7.",
-					".$query7."
-					FROM projects
-					LEFT JOIN projectrequirements on projectrequirements.ProjectId=projects.Id
-					WHERE projects.Id=".$projectid."
-			");
-
-	 		$assign = DB::select("
-	 				SELECT 'Total Assigned' As Project_Name,
-	 				".$first3.",
-	 				".$query3."
-	 				from users
-	 				LEFT JOIN userprojects on users.Id=userprojects.UserId
-
-	 		");
-
-			$data="";
-			$ability= DB::select("SELECT `Option`
-				FROM  `options`
-				WHERE  `Field` LIKE  'Ability'
-				");
-
-				foreach($ability as $key => $quote){
-
-	  			$data.= $quote->Option.",";
-				}
-				$s=rtrim($data,",");
-				$arr = explode(",", $s);
-
-
-			$i=0;
-			$type1="";
-			$type2="";
-			while ($i < count($arr)-1) {
-			   $a = $arr[$i];
-				 $type1.= "SELECT '".$a."' As User_Type,".$first2.",".$query2." FROM users LEFT JOIN userability ON users.Id=userability.UserId WHERE Ability = '".$a."' UNION ALL ";
-
-			 	 $i++;
-			}
-
-			$type2= "SELECT '".$arr[count($arr)-1]."' As User_Type,".$first2.",".$query2."FROM users LEFT JOIN userability ON users.Id=userability.UserId WHERE Ability = '".$arr[count($arr)-1]."'";
-
-			$totalavailable = DB::select("".$type1." ".$type2."");
-
-
-			$totalrequired = DB::select("
-					SELECT null,projectrequirements.Type as User_Type,
-					".$first.",
-					".$query."
-					FROM projects
-					LEFT JOIN projectrequirements on projectrequirements.ProjectId=projects.Id
-					GROUP BY projectrequirements.Type
-			");
-
-			$totalassigned = DB::select("
-	 				SELECT userprojects.Assigned_As,
-	 				".$first3.",
-	 				".$query3."
-	 				from users
-					LEFT JOIN userprojects on users.Id=userprojects.UserId
-					WHERE userprojects.Assigned_As <>''
-					GROUP BY userprojects.Assigned_As
-
-	 		");
-
-		}
-		else {
-
-			//$totalrequired="";
-			while ($startTime <= $endTime){
- 			$query.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y')  AND projectrequirements.Type='".$role."' AND projectrequirements.ProjectId='".$projectid."' THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
- 			$query2.="COUNT(*) AS '". date('d-M-Y', $startTime) ."',";
- 			$query3.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(userprojects.Start_Date,'%d-%M-%Y') AND str_to_date(userprojects.End_Date,'%d-%M-%Y')  AND userprojects.Assigned_As='".$role."' AND userprojects.ProjectId='".$projectid."' THEN 1 ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
- 			// $query6.="SUM(CASE WHEN userability.Ability like '%".$role."%' AND userprojects.ProjectId='".$projectid."' THEN 1 ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
- 			// $query4.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y') THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
- 			// $query5.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(userprojects.Start_Date,'%d-%M-%Y') AND str_to_date(userprojects.End_Date,'%d-%M-%Y') THEN 1 ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
- 			$query7.="SUM(CASE WHEN str_to_date('". date('d-M-Y', $startTime) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y') THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $startTime) ."',";
-
- 			$daterange[].= date('d-M-Y', $startTime);
- 			$startTime=strtotime("+1 days",$startTime);
- 		 }
-
- 		$query=substr($query,0,strlen($query)-1);
- 		$query2=substr($query2,0,strlen($query2)-1);
- 		$query3=substr($query3,0,strlen($query3)-1);
- 		// $query4=substr($query4,0,strlen($query4)-1);
- 		// $query5=substr($query5,0,strlen($query5)-1);
- 		// $query6=substr($query6,0,strlen($query6)-1);
- 		$query7=substr($query7,0,strlen($query7)-1);
-
- 		$start1 = strtotime($start);
-
- 		$first ="SUM(CASE WHEN str_to_date('". date('d-M-Y', $start1) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y')  AND projectrequirements.Type='".$role."' AND projectrequirements.ProjectId='".$projectid."' THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $start1) ."'";
- 		$first2 ="COUNT(*) AS '". date('d-M-Y', $start1) ."'";
- 		$first3="SUM(CASE WHEN str_to_date('". date('d-M-Y', $start1) ."','%d-%M-%Y') BETWEEN str_to_date(userprojects.Start_Date,'%d-%M-%Y') AND str_to_date(userprojects.End_Date,'%d-%M-%Y')  AND userprojects.Assigned_As='".$role."' AND userprojects.ProjectId='".$projectid."' THEN 1 ELSE 0 END) AS '". date('d-M-Y', $start1) ."'";
- 		// $first6="SUM(CASE WHEN userability.Ability like '%".$role."%' AND userprojects.ProjectId='".$projectid."' THEN 1 ELSE 0 END) AS '". date('d-M-Y', $startTime) ."'";
- 		// $first4 ="SUM(CASE WHEN str_to_date('". date('d-M-Y', $start1) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y') THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $start1) ."'";
- 		// $first5="SUM(CASE WHEN str_to_date('". date('d-M-Y', $start1) ."','%d-%M-%Y') BETWEEN str_to_date(userprojects.Start_Date,'%d-%M-%Y') AND str_to_date(userprojects.End_Date,'%d-%M-%Y') THEN 1 ELSE 0 END) AS '". date('d-M-Y', $startTime) ."'";
- 		$first7 ="SUM(CASE WHEN str_to_date('". date('d-M-Y', $start1) ."','%d-%M-%Y') BETWEEN str_to_date(projectrequirements.Start_Date,'%d-%M-%Y') AND str_to_date(projectrequirements.End_Date,'%d-%M-%Y')  AND THEN projectrequirements.Requirement ELSE 0 END) AS '". date('d-M-Y', $start1) ."'";
-
- 		$viewproject = DB::select("
- 				SELECT 'Total Available' As Project_Name,
- 				".$first2.",
- 				".$query2."
- 				FROM users
- 				LEFT JOIN userability ON users.Id=userability.UserId
- 				WHERE Ability = '".$role."' UNION ALL
- 				SELECT 'Total Required' As Project_Name,
- 				".$first.",
- 				".$query."
- 				FROM projects
- 				LEFT JOIN projectrequirements on projectrequirements.ProjectId=projects.Id
- 		");
-
- 		$assign = DB::select("
- 				SELECT 'Total Assigned' As Project_Name,
- 				".$first3.",
- 				".$query3."
- 				from users
- 				LEFT JOIN userprojects on users.Id=userprojects.UserId
-
- 		");
-
-		$totalrequired = "";
-		$totalavailable = "";
-		$totalassigned= "";
-
-		}
-
-		$projects = DB::table('projects')
-		->get();
-
-		$options= DB::table('options')
-		->whereIn('Table', ["users","userability"])
-		->orderBy('Table','asc')
-		->orderBy('Option','asc')
-		->get();
-
-		return view("viewproject",['me'=>$me, 'project'=>$project, 'start'=>$start,'end'=>$end,'projectid'=>$projectid,'viewproject'=>$viewproject, 'projects'=>$projects, 'options'=>$options, 'role'=>$role, 'daterange'=>$daterange, 'assign'=>$assign, 'totalrequired'=>$totalrequired, 'totalassigned'=>$totalassigned, 'totalavailable'=>$totalavailable]);
 	}
 
 	public function typelist(Request $request){
@@ -4012,7 +3185,6 @@ public function renametracker(Request $request)
 		$typelist = DB::table('userprojects')
 		->select('users.Name','userprojects.Assigned_As', 'userprojects.Start_Date', 'userprojects.End_Date')
 		->leftJoin('users','users.Id','=','userprojects.UserId')
-		->where('userprojects.ProjectId', '=', $input["ProjectId"])
 		->where('userprojects.Assigned_As', '=', $input["Assigned_As"])
 		->where(DB::raw('str_to_date(userprojects.Start_Date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$input["Date"].'","%d-%M-%Y")'))
 		->where(DB::raw('str_to_date(userprojects.End_Date,"%d-%M-%Y")'),">=",DB::raw('str_to_date("'.$input["Date"].'","%d-%M-%Y")'))
@@ -4141,16 +3313,11 @@ public function renametracker(Request $request)
 		$me = (new CommonController)->get_current_user();
 
 		$unassignedusers = DB::table('users')
-		->select('userprojects.Id','users.StaffId','users.Name',  DB::raw('"" as Assign'),'userability.Ability','projects.Project_Name','userprojects.Assigned_As','userprojects.Start_Date','userprojects.End_Date')
+		->select('userprojects.Id','users.StaffId','users.Name',  DB::raw('"" as Assign'),'userability.Ability','userprojects.Assigned_As','userprojects.Start_Date','userprojects.End_Date')
 		->leftJoin('userprojects','userprojects.UserId','=','users.Id')
-		->leftJoin('projects', 'userprojects.ProjectId', '=', 'projects.Id')
 		->leftJoin('userability','users.Id','=','userability.UserId')
 		->where('userability.Ability','=', "$role")
 		->where('userprojects.Assigned_As','=',"")
-		//->where('userprojects.UserId','=','581')
-		->get();
-
-		$projects = DB::table('projects')
 		->get();
 
 		$assigned_as = DB::table('userability')
@@ -4162,7 +3329,7 @@ public function renametracker(Request $request)
 		 ->orderBy('Option','asc')
 		 ->get();
 
-		return view('unassigned',['role' => $role, 'me'=>$me, 'unassignedusers'=>$unassignedusers, 'projects'=>$projects,'options'=>$options, 'assigned_as'=>$assigned_as ]);
+		return view('unassigned',['role' => $role, 'me'=>$me, 'unassignedusers'=>$unassignedusers,'options'=>$options, 'assigned_as'=>$assigned_as ]);
 	}
 
 	public function deletedocument(Request $request)
@@ -4213,87 +3380,33 @@ public function renametracker(Request $request)
 		// dd($site);
 	  $DocumentType=$input["DocumentType"];	//BOQ, Invoice, PO etc
 	  $Type="Tracker";	//Tracker
-	  //$uploadcount=count($request->file('document')); //1
-		$ProjectCode=$site->Project_Code;
-	  $ProjectId=$input["projectid"]; //30
-	  //$SiteId="undefined"; //undefined
-
-	  $submitdate=$input["submitdate"]; //""
-
-	  //dd($UserId, $TrackerId, $DocumentType, $Type, $ProjectId, $SiteId, $submitdate);
-
-	  $project = DB::table('projects')
-	  // ->select('Project_Name')
-	  ->where('Id','=',$ProjectId)
-	  ->get();
-
-	  // dd($project);
-
-	  //dd($SiteId, $TrackerId);
-
-
-	  // if($submitdate)
-	  // {
-	  // 	DB::table('tracker')
-	  // 	->where('Id', '=',$TrackerId)
-	  // 	->where('tracker.ProjectID','=',$ProjectId)
-	  // 	->where('tracker.Site_ID','=',$SiteId)
-	  // 	->update([$submitdate => DB::raw("DATE_FORMAT(NOW(),'%d-%b-%Y')")]);
-	  // }
-
-	  foreach ($project as $project1) {
-	    $projectname = $project1->Project_Name;
-	  }
-
-		// if (!file_exists('/private/upload/Site Document/'.$projectname.'/'.$SiteId.'/'.$DocumentType)) {
-
-		// 	 File::makeDirectory('/private/upload/Site Document/'.$projectname.'/'.$SiteId.'/'.$DocumentType, 0777, true, true);
-
-		// 	 File::makeDirectory('/private/upload/Site Document/'.$projectname.'/'.$SiteId.'/'.$DocumentType, 0777, true, true);
-
-		//  }
 
 	        $file=$_FILES['file']['name'];
-
-	        // $ext = pathinfo($file, PATHINFO_EXTENSION);
-					//
-					// $versionnumber= DB::table('files')
-					// ->select(DB::raw('count(*) as count'))
-					// ->where('File_Name','like',DB::raw('"%'.$SiteId."_".$DocumentType.'%"'))
-					// ->first();
 
 	        $filename=$file;
 	        // $filename = $file;
 	        $size=$_FILES['file']['size'];
 	        if($request->file('file')->isValid()) {
-						$request->file('file')->move("private/upload/Site Document/".$projectname."/".$ProjectCode."/".$DocumentType."/", $filename);
-	        // if(move_uploaded_file($_FILES["file"]["tmp_name"], "private/upload/Site Document/".$projectname."/".$SiteId."/".$DocumentType."/".$filename))
-	        // {
+						$request->file('file')->move("private/upload/Site Document/".$DocumentType."/", $filename);
 	            $insert=DB::table('files')->insertGetId(
 	              ['Type' => $Type,
 	               'UserId' => $me->UserId,
 	               'TargetId' => $TrackerId,
-	               //'File_Name' => $originalName, //original
 	               'File_Name' => $filename,
 	               'Document_Type' => $DocumentType,
 	               'File_Size' => $size,
-	               //'Web_Path' => '/private/upload/Site Document/'.$projectname.'/'.$SiteId.'/'.$DocumentType.'/'.$filename //Original
-	               'Web_Path' => '/private/upload/Site Document/'.$projectname.'/'.$ProjectCode."/".$DocumentType.'/'.$filename
+	               'Web_Path' => '/private/upload/Site Document/'.$DocumentType.'/'.$filename
 	              ]
 	            );
-	        // }
+	        
 	        }
-	        // $filenames.= $insert."|".url('/private/upload/'.$projectname.'/'.$SiteId.'/'.$DocumentType.'/'.$fileName)."|" .$originalName; //Original
-	        $filenames.= $insert."|".url('/private/upload/'.$projectname.'/'.$ProjectCode."/".$DocumentType.'/'.$filename);
+	        $filenames.= $insert."|".url('/private/upload/'.$DocumentType.'/'.$filename);
 
-	      // }
+	      
 
 				$options = DB::table('options')
-				->select('options.Id','options.Table','options.Field','options.Option','projects.Project_Name','options.Update_Column')
-				->leftJoin('optionprojects','options.Id','=','optionprojects.OptionId')
-				->leftJoin('projects','projects.Id','=','optionprojects.ProjectId')
+				->select('options.Id','options.Table','options.Field','options.Option','options.Update_Column')
 				->where('options.Option', '=',$DocumentType)
-				->where('optionprojects.ProjectId', '=',$ProjectId)
 				->orderBy('options.Field', 'asc')
 				->get();
 					// dd($options);
@@ -4303,15 +3416,6 @@ public function renametracker(Request $request)
 
 					if($opt->Update_Column)
 					{
-						// $opt->Update_Column=htmlspecialchars_decode($opt->Update_Column);
-						// DB::table('tracker')
-						// ->where('Id', '=',$TrackerId)
-						// ->where('tracker.ProjectID','=',$ProjectId)
-						// ->where(DB::raw('`'.$opt->Update_Column.'`'),'=','')
-						// ->update([$opt->Update_Column=>DB::raw('now()')]);
-
-						// $this->updatedependency($ProjectId,$opt->Update_Column,$TrackerId);
-
 
 						$opt->Update_Column=htmlspecialchars_decode($opt->Update_Column);
 
@@ -4319,11 +3423,10 @@ public function renametracker(Request $request)
 						// dd($updatedata);
 						DB::table('tracker')
 						->where('Id', '=',$TrackerId)
-						->where('tracker.ProjectID','=',$ProjectId)
 						->where(DB::raw('`'.$opt->Update_Column.'`'),'=','')
 						->update([$opt->Update_Column=>$updatedata]);
 
-						$this->updatedependency($ProjectId,$updatedata,$TrackerId);
+						$this->updatedependency($updatedata,$TrackerId);
 						$this->updatetask($opt->Update_Column,$updatedata,$TrackerId);
 
 						if (trim($opt->Update_Column != '')) {
@@ -4335,13 +3438,10 @@ public function renametracker(Request $request)
 								'agings.End_Date',
 								'agings.Threshold',
 								'agingsubscribers.UserId',
-								'agings.ProjectId',
 								'users.Player_Id',
-								'users.Id as UserId',
-								'tracker.Project_Code'
+								'users.Id as UserId'
 							)
-							->whereRaw('agings.ProjectId = "'.$ProjectId.'" AND Start_Date = "'.$opt->Update_Column.'" ')
-							// ->where('Start_Date', $input["Column"][$i])
+							->where('Start_Date', $input["Column"][$i])
 							->join('agingsubscribers', 'agingsubscribers.AgingId', '=', 'agings.Id')
 							->join('users', 'users.Id', '=', 'agingsubscribers.UserId')
 							->join('tracker', 'tracker.Id', '=',DB::raw($TrackerId))
@@ -4355,25 +3455,15 @@ public function renametracker(Request $request)
 								foreach ($agingsubscribers as $subscriber) {
 
 									if ($subscriber->Player_Id) {
-										// $groups[$subscriber->AgingId]['users'][] = $subscriber;
-										// $groups[$subscriber->AgingId]['playerids'][] = $subscribe
-
-											// $subscriber->AgingId[
-												// 'UserId' => $subscriber->UserId,
 												array_push($groups,$subscriber->Player_Id);
-											// ]
-
-
 									}
 
 									$taskId = DB::table('tasks')->insertGetId([
 										'Current_Task'  => $subscriber->End_Date,
 										'Previous_Task' => $opt->Update_Column,
 										'Previous_Task_Date' => $updatedata,
-										'Project_Code'     => $subscriber->Project_Code,
 										'Site_Name'     => $subscriber->Site_Name,
 										'Threshold'     => $subscriber->Threshold,
-										'ProjectId'  => $subscriber->ProjectId,
 										'UserId' => $subscriber->UserId,
 										'assign_by' => $me->UserId
 									]);
@@ -4385,10 +3475,8 @@ public function renametracker(Request $request)
 									]);
 								}
 
-// dd($groups);
-								// foreach ($groups as $group => $g) {
 									$playerids 	= $groups;
-									$message 	= 'Task ' .$opt->Update_Column.' '.$subscriber->Project_Code. ' completed. '.$subscriber->End_Date. ' has started';
+									$message 	= 'Task ' .$opt->Update_Column.' completed. '.$subscriber->End_Date. ' has started';
 									$type 		= 'Task';
 									$title  	= 'Task Completed Notification';
 
@@ -4401,11 +3489,6 @@ public function renametracker(Request $request)
 
 	      return $filenames;
 
-     //return '/private/upload/'.$fileName;
-	    // }
-	    // else {
-	    // 	return 0;
-	    // }
 	}
 
 
@@ -4422,7 +3505,6 @@ public function renametracker(Request $request)
 			$TrackerId=$input["selectedtrackerid"];
 
 			$site = DB::table('tracker')
-		  // ->select('Project_Name')
 		  ->where('Id','=',$TrackerId)
 		  ->first();
 
@@ -4450,46 +3532,29 @@ public function renametracker(Request $request)
 			$DocumentType=$input["DocumentType"];
 			$Type="Tracker";
 			$uploadcount=count($request->file('document'));
-			// dd($uploadcount);
-			$ProjectId=$input["projectid"];
-			$ProjectCode=$site->Project_Code;
-			// $SiteId=$input["selectedtrackerid"];
-			//$SiteId=$input["SiteId"];
 
 			$submitdate=$input["submitdate"];
-
-			$project = DB::table('projects')
-			->where('Id','=',$ProjectId)
-			->get();
 
 			if($submitdate)
 			{
 
 				DB::table('tracker')
 			  ->where('Id', '=',$TrackerId)
-				->where('tracker.ProjectID','=',$ProjectId)
 				->where('tracker.Site_ID','=',$SiteId)
 			  ->update([$submitdate => DB::raw("DATE_FORMAT(NOW(),'%d-%b-%Y')")]);
 			}
 
 
-			foreach ($project as $project1) {
-				$projectname = $project1->Project_Name;
-			}
+				if (!file_exists('/private/upload/Site Document/'.$DocumentType)) {
 
-				if (!file_exists('/private/upload/Site Document/'.$projectname.'/'.$ProjectCode."/".$DocumentType)) {
+				  File::makeDirectory('/private/upload/Site Document/'.$DocumentType, 0777, true, true);
 
-				  File::makeDirectory('/private/upload/Site Document/'.$projectname.'/'.$ProjectCode."/".$DocumentType, 0777, true, true);
-
-		    	File::makeDirectory('/private/upload/Site Document/'.$projectname.'/'.$ProjectCode."/".$DocumentType, 0777, true, true);
+		    	File::makeDirectory('/private/upload/Site Document/'.$DocumentType, 0777, true, true);
 				}
 
 				$options = DB::table('options')
-				->select('options.Id','options.Table','options.Field','options.Option','projects.Project_Name','options.Update_Column')
-				->leftJoin('optionprojects','options.Id','=','optionprojects.OptionId')
-				->leftJoin('projects','projects.Id','=','optionprojects.ProjectId')
+				->select('options.Id','options.Table','options.Field','options.Option','options.Update_Column')
 				->where('options.Option', '=',$DocumentType)
-				->where('optionprojects.ProjectId', '=',$ProjectId)
 				->orderBy('options.Field', 'asc')
 				->get();
 
@@ -4499,7 +3564,7 @@ public function renametracker(Request $request)
 
 						# code...
 						$file = $request->file('document')[$i];
-						$destinationPath=public_path()."/private/upload/Site Document/".$projectname."/".$ProjectCode."/".$DocumentType;
+						$destinationPath=public_path()."/private/upload/Site Document/".$DocumentType;
 						$extension = $file->getClientOriginalExtension();
 						$originalName=$file->getClientOriginalName();
 						$fileSize=$file->getSize();
@@ -4522,19 +3587,16 @@ public function renametracker(Request $request)
 							 'File_Name' => $originalName,
 							 'Document_Type' => $DocumentType,
 							 'File_Size' => $fileSize,
-							 'Web_Path' => '/private/upload/Site Document/'.$projectname.'/'.$ProjectCode."/".$DocumentType.'/'.$filename
+							 'Web_Path' => '/private/upload/Site Document/'.$DocumentType.'/'.$filename
 							]
 						);
 
 
-						$filenames.= $insert."|".url('/private/upload/'.$projectname.'/'.$ProjectCode."/".$DocumentType.'/'.$filename)."|" .$originalName;
+						$filenames.= $insert."|".url('/private/upload/'.$DocumentType.'/'.$filename)."|" .$originalName;
 
 						$options = DB::table('options')
-						->select('options.Id','options.Table','options.Field','options.Option','projects.Project_Name','options.Update_Column')
-						->leftJoin('optionprojects','options.Id','=','optionprojects.OptionId')
-						->leftJoin('projects','projects.Id','=','optionprojects.ProjectId')
+						->select('options.Id','options.Table','options.Field','options.Option','options.Update_Column')
 						->where('options.Option', '=',$DocumentType)
-						->where('optionprojects.ProjectId', '=',$ProjectId)
 						->orderBy('options.Field', 'asc')
 						->get();
 						foreach ($options as $opt) {
@@ -4549,11 +3611,10 @@ public function renametracker(Request $request)
 								// dd($updatedata);
 								DB::table('tracker')
 								->where('Id', '=',$TrackerId)
-								->where('tracker.ProjectID','=',$ProjectId)
 								->where(DB::raw('`'.$opt->Update_Column.'`'),'=','')
 								->update([$opt->Update_Column=>$updatedata]);
 
-								$this->updatedependency($ProjectId,$updatedata,$TrackerId);
+								$this->updatedependency($updatedata,$TrackerId);
 								$this->updatetask($opt->Update_Column,$updatedata,$TrackerId);
 								// dd($opt->Update_Column,$updatedata,$TrackerId);
 								//
@@ -4566,13 +3627,10 @@ public function renametracker(Request $request)
 										'agings.End_Date',
 										'agings.Threshold',
 										'agingsubscribers.UserId',
-										'agings.ProjectId',
 										'users.Player_Id',
-										'users.Id as UserId',
-										'tracker.Project_Code'
+										'users.Id as UserId'
 									)
-									->whereRaw('agings.ProjectId = "'.$ProjectId.'" AND Start_Date = "'.$opt->Update_Column.'" ')
-									// ->where('Start_Date', $input["Column"][$i])
+									->where('Start_Date', $input["Column"][$i])
 									->join('agingsubscribers', 'agingsubscribers.AgingId', '=', 'agings.Id')
 									->join('users', 'users.Id', '=', 'agingsubscribers.UserId')
 									->join('tracker', 'tracker.Id', '=',DB::raw($TrackerId))
@@ -4602,10 +3660,8 @@ public function renametracker(Request $request)
 												'Current_Task'  => $subscriber->End_Date,
 												'Previous_Task' => $opt->Update_Column,
 												'Previous_Task_Date' => $updatedata,
-												'Project_Code'     => $subscriber->Project_Code,
 												'Site_Name'     => $subscriber->Site_Name,
 												'Threshold'     => $subscriber->Threshold,
-												'ProjectId'  => $subscriber->ProjectId,
 												'UserId' => $subscriber->UserId,
 												'assign_by' => $me->UserId
 											]);
@@ -4620,7 +3676,7 @@ public function renametracker(Request $request)
 										// dd($groups);
 										// foreach ($groups as $group => $g) {
 											$playerids 	= $groups;
-											$message 	= 'Task ' .$opt->Update_Column.' '.$subscriber->Project_Code. ' completed. '.$subscriber->End_Date. ' has started';
+											$message 	= 'Task ' .$opt->Update_Column.' completed. '.$subscriber->End_Date. ' has started';
 											$type 		= 'Task';
 											$title  	= 'Task Completed Notification';
 
@@ -4640,122 +3696,15 @@ public function renametracker(Request $request)
 				else {
 					return Redirect::back();
 				}
-		}
-
-	// public function submitdocument(Request $request)
-	// {
-	// 	$filenames="";
-	// 	$input = $request->all();
-	//
-	// 	// dd($input);
-	//
-	// 	$UserId=$input["UserId"];
-	// 	$TrackerId=$input["selectedtrackerid"];
-	// 	$DocumentType=$input["DocumentType"];
-	// 	$Type="Tracker";
-	// 	$uploadcount=count($request->file('document'));
-	// 	// dd($uploadcount);
-	// 	$ProjectId=$input["ProjectId"];
-	// 	$SiteId=$input["SiteId"];
-	//
-	// 	$submitdate=$input["submitdate"];
-	//
-	// 	$project = DB::table('projects')
-	// 	->where('Id','=',$ProjectId)
-	// 	->get();
-	//
-	// 	if($submitdate)
-	// 	{
-	//
-	// 		DB::table('tracker')
-	// 	  ->where('Id', '=',$TrackerId)
-	// 		->where('tracker.ProjectID','=',$ProjectId)
-	// 		->where('tracker.Site_ID','=',$SiteId)
-	// 	  ->update([$submitdate => DB::raw("DATE_FORMAT(NOW(),'%d-%b-%Y')")]);
-	// 	}
-	//
-	//
-	// 	foreach ($project as $project1) {
-	// 		$projectname = $project1->Project_Name;
-	// 	}
-	//
-	// 		if (!file_exists('/private/upload/Site Document/'.$projectname.'/'.$SiteId.'/'.$DocumentType)) {
-	//
-	// 		  File::makeDirectory('/private/upload/Site Document/'.$projectname.'/'.$SiteId.'/'.$DocumentType, 0777, true, true);
-	//
-	//     	File::makeDirectory('/private/upload/Site Document/'.$projectname.'/'.$SiteId.'/'.$DocumentType, 0777, true, true);
-	// 		}
-	//
-	// 		if ($request->hasFile('document')) {
-	//
-	// 			for ($i=0; $i <$uploadcount ; $i++) {
-	//
-	// 				# code...
-	// 				$file = $request->file('document')[$i];
-	// 				$destinationPath=public_path()."/private/upload/Site Document/".$projectname."/".$SiteId."/".$DocumentType;
-	// 				$extension = $file->getClientOriginalExtension();
-	// 				$originalName=$file->getClientOriginalName();
-	// 				$fileSize=$file->getSize();
-	// 				$fileName=time()."_".$i.".".$extension;
-	// 				$upload_success = $file->move($destinationPath, $fileName);
-	// 				$insert=DB::table('files')->insertGetId(
-	// 					['Type' => $Type,
-	// 					 'UserId' => $UserId,
-	// 					 'TargetId' => $TrackerId,
-	// 					 'File_Name' => $originalName,
-	// 					 'Document_Type' => $DocumentType,
-	// 					 'File_Size' => $fileSize,
-	// 					 'Web_Path' => '/private/upload/Site Document/'.$projectname.'/'.$SiteId.'/'.$DocumentType.'/'.$fileName
-	// 					]
-	// 				);
-	//
-	//
-	// 				$filenames.= $insert."|".url('/private/upload/'.$projectname.'/'.$SiteId.'/'.$DocumentType.'/'.$fileName)."|" .$originalName;
-	//
-	// 			}
-	//
-	// 			return $filenames;
-	//
-	// 			//return '/private/upload/'.$fileName;
-	// 		}
-	// 		else {
-	// 			return 0;
-	// 		}
-	// }
-
-	public function projectaccess()
-	{
-		$me = (new CommonController)->get_current_user();
-
-		$bystaff = DB::table('users')
-		->select('users.Id','users.StaffId', 'users.Name','projects.Project_Name')
-		->leftJoin('projectaccess', 'users.Id', '=', 'projectaccess.UserId')
-		->leftJoin('projects', 'projects.Id', '=', 'projectaccess.ProjectId')
-		->get();
-
-		$byproject = DB::table('projects')
-		->select('projects.Id','projects.Project_Name', 'users.Name')
-		->leftJoin('projectaccess', 'projects.Id', '=', 'projectaccess.ProjectId')
-		->leftJoin('users', 'users.Id', '=', 'projectaccess.UserId')
-		->get();
-
-		$projects = DB::table('projects')
-		->get();
-
-		$users = DB::table('users')
-		->get();
-
-		return view('projectaccess',['me'=>$me, 'byproject'=>$byproject, 'bystaff'=>$bystaff,  'projects'=>$projects, 'users'=>$users]);
+		
 
 	}
 
-	public function autodate($projectid =null)
+	public function autodate()
 	{
 		$me = (new CommonController)->get_current_user();
 
-		if($projectid==null)
-		{
-			$projectid=0;
+
 
 			$columns = DB::table('trackercolumn')
 			->select(DB::raw('DISTINCT Column_Name'))
@@ -4763,214 +3712,56 @@ public function renametracker(Request $request)
 			->where('Type', '=', 'Date')
 			->orderBy('Column_Name','ASC')
 			->get();
-		}
-		else {
 
-			// $tracker = DB::table('trackertemplate')
-			// ->select('Id')
-			// ->where('ProjectId', '=', $projectid)
-			// ->get();
-
-			$columns = DB::table('trackercolumn')
-			->select(DB::raw('DISTINCT Column_Name'))
-			->where('Type', '=', 'Date')
-			// ->whereIn('TrackerTemplateId',DB::raw('SELECT ID FROM trackertemplate WHERE ProjectId='.$projectid))
-			->whereIn('TrackerTemplateId',function($query) use ($projectid){
-    		$query->select('Id')
-            ->from('trackertemplate')
-						->where('ProjectId', '=',$projectid);
-			})
-			->orderBy('Column_Name','ASC')
-			->get();
-
-		}
-
-		$projectids = explode("|",$me->ProjectIds);
-
-		if($projectid>0)
-		{
 
 			$autodate = DB::table('autodate')
-			->select('autodate.Id','autodate.ProjectId', 'autodate.Active','projects.Project_Name','autodate.Date_2','autodate.Days','autodate.Type','autodate.Date_1','creator.Name as Creator')
-			->leftJoin('projects', 'projects.Id', '=', 'autodate.ProjectId')
-			->leftJoin('users as creator', 'creator.Id', '=', 'autodate.UserId')
-			->where('ProjectId', '=',$projectid)
-			->get();
-
-			$projects = DB::table('projects')
-			->where('Id','=',$projectid)
-			->get();
-
-		}
-		else {
-
-			$autodate = DB::table('autodate')
-			->select('autodate.Id','autodate.ProjectId', 'autodate.Active','projects.Project_Name','autodate.Date_2','autodate.Days','autodate.Type','autodate.Date_1','creator.Name as Creator')
-			->leftJoin('projects', 'projects.Id', '=', 'autodate.ProjectId')
+			->select('autodate.Id', 'autodate.Active','autodate.Date_2','autodate.Days','autodate.Type','autodate.Date_1','creator.Name as Creator')
 			->leftJoin('users as creator', 'creator.Id', '=', 'autodate.UserId')
 			->get();
 
-			$projects = DB::table('projects')
-			->whereIn('Id',$projectids)
-			->get();
 
-		}
-
-		return view("autodate",['me'=>$me, 'projectid'=>$projectid,'autodate'=>$autodate, 'projects'=>$projects,'columns'=>$columns]);
+		return view("autodate",['me'=>$me,'autodate'=>$autodate,'columns'=>$columns]);
 
 	}
 
-	public function agingrules($projectid =null)
+	public function agingrules()
 	{
 		$me = (new CommonController)->get_current_user();
-
-		if($projectid==null)
-		{
-			$projectid=0;
 
 			$columns = DB::table('trackercolumn')
 			->select(DB::raw('DISTINCT Column_Name'))
 			// ->where('Type', '=', 'Date')
 			->orderBy('Column_Name','ASC')
 			->get();
-		}
-		else {
-
-			// $tracker = DB::table('trackertemplate')
-			// ->select('Id')
-			// ->where('ProjectId', '=', $projectid)
-			// ->get();
-
-			$columns = DB::table('trackercolumn')
-			->select(DB::raw('DISTINCT Column_Name'))
-			// ->where('Type', '=', 'Date')
-			// ->whereIn('TrackerTemplateId',DB::raw('SELECT ID FROM trackertemplate WHERE ProjectId='.$projectid))
-			->whereIn('TrackerTemplateId',function($query) use ($projectid){
-    		$query->select('Id')
-            ->from('trackertemplate')
-						->where('ProjectId', '=',$projectid);
-			})
-			->orderBy('Column_Name','ASC')
-			->get();
-
-		}
-
-		$projectids = explode("|",$me->ProjectIds);
-
-		if($projectid>0)
-		{
 
 			$agingrules = DB::table('agings')
-			->select(DB::raw('"" as button'),'agings.Id','agings.ProjectId', 'agings.Active','projects.Project_Name','agings.Title','agings.Type','agings.Start_Date','agings.End_Date','agings.Threshold','agings.Sequence','creator.Name as Creator','users.Name as Subscriber')
+			->select(DB::raw('"" as button'),'agings.Id', 'agings.Active','agings.Title','agings.Type','agings.Start_Date','agings.End_Date','agings.Threshold as Threshold(days)','agings.Sequence','creator.Name as Creator','users.Name as Subscriber')
 			->leftjoin('agingsubscribers','agingsubscribers.AgingId','=','agings.Id')
-			->leftJoin('projects', 'projects.Id', '=', 'agings.ProjectId')
-			->leftJoin('users as creator', 'creator.Id', '=', 'agings.UserId')
-			->leftjoin('users','users.Id','=','agingsubscribers.UserId')
-			->where('ProjectId', '=',$projectid)
-			->get();
-
-			$projects = DB::table('projects')
-			->where('Id','=',$projectid)
-			->get();
-
-		}
-		else {
-
-			$agingrules = DB::table('agings')
-			->select(DB::raw('"" as button'),'agings.Id','agings.ProjectId', 'agings.Active','projects.Project_Name','agings.Title','agings.Type','agings.Start_Date','agings.End_Date','agings.Threshold as Threshold(days)','agings.Sequence','creator.Name as Creator','users.Name as Subscriber')
-			->leftjoin('agingsubscribers','agingsubscribers.AgingId','=','agings.Id')
-			->leftJoin('projects', 'projects.Id', '=', 'agings.ProjectId')
 			->leftJoin('users as creator', 'creator.Id', '=', 'agings.UserId')
 			->leftjoin('users','users.Id','=','agingsubscribers.UserId')
 			->get();
 
-			$projects = DB::table('projects')
-			->whereIn('Id',$projectids)
-			->get();
-
-		}
-
-		return view("agingmaintenance",['me'=>$me, 'projectid'=>$projectid,'agingrules'=>$agingrules, 'projects'=>$projects,'columns'=>$columns]);
+		return view("agingmaintenance",['me'=>$me,'agingrules'=>$agingrules,'columns'=>$columns]);
 
 	}
 
-	public function dependencyrules($projectid =null)
+	public function dependencyrules()
 	{
 		$me = (new CommonController)->get_current_user();
 
-		if($projectid==null)
-		{
-			$projectid=0;
-
 			$columns = DB::table('trackercolumn')
 			->select(DB::raw('DISTINCT Column_Name'))
 			->orderBy('Column_Name','ASC')
 			->get();
 
-		}
-		else {
-
-			$columns = DB::table('trackercolumn')
-			->select(DB::raw('DISTINCT Column_Name'))
-			->where('Type', '=', 'Date')
-			// ->whereIn('TrackerTemplateId',DB::raw('SELECT ID FROM trackertemplate WHERE ProjectId='.$projectid))
-			->whereIn('TrackerTemplateId',function($query) use ($projectid){
-    		$query->select('Id')
-            ->from('trackertemplate')
-						->where('ProjectId', '=',$projectid);
-			})
-			->orderBy('Column_Name','ASC')
-			->get();
-
-		}
-
-		$projectids = explode("|",$me->ProjectIds);
-
-		if($projectid>0)
-		{
-
 			$dependencyrules = DB::table('dependencyrules')
-			->select('dependencyrules.Id','dependencyrules.ProjectId', 'dependencyrules.Active','projects.Project_Name','dependencyrules.Title','dependencyrules.Sequence','dependencyrules.Column1','dependencyrules.Column1_Status','dependencyrules.Column2','dependencyrules.Column2_Status','dependencyrules.Column3','dependencyrules.Column3_Status','dependencyrules.Target_Column','dependencyrules.Target_Status','creator.Name as Creator','notify.Name as Notify')
+			->select('dependencyrules.Id', 'dependencyrules.Active','dependencyrules.Title','dependencyrules.Sequence','dependencyrules.Column1','dependencyrules.Column1_Status','dependencyrules.Column2','dependencyrules.Column2_Status','dependencyrules.Column3','dependencyrules.Column3_Status','dependencyrules.Target_Column','dependencyrules.Target_Status','creator.Name as Creator','notify.Name as Notify')
 			->leftJoin('dependencynotification', 'dependencynotification.DependencyRulesId', '=', 'dependencyrules.Id')
 			->leftJoin('users as notify', 'notify.Id', '=', 'dependencynotification.UserId')
-			->leftJoin('projects', 'projects.Id', '=', 'dependencyrules.ProjectId')
-			->leftJoin('users as creator', 'creator.Id', '=', 'dependencyrules.UserId')
-			->where('dependencyrules.ProjectId', '=',$projectid)
-			->get();
-
-			$bystaff = DB::table('users')
-			->select('users.Id','users.StaffId', 'users.Name','trackertemplate.Tracker_Name','trackertemplate2.Tracker_Name as Tracker_Name_2','trackertemplate3.Tracker_Name as Tracker_Name_3')
-			->leftJoin('templateaccess', 'templateaccess.UserId', '=', 'users.Id')
-			->leftJoin('trackertemplate', 'trackertemplate.Id', '=', 'templateaccess.TrackerTemplateId')
-			->leftJoin('templatewriteaccess', 'templatewriteaccess.UserId', '=', 'users.Id')
-			->leftJoin('templatedeleteaccess', 'templatedeleteaccess.UserId', '=', 'users.Id')
-			->leftJoin('trackertemplate as trackertemplate2', 'trackertemplate2.Id', '=', 'templatewriteaccess.TrackerTemplateId')
-			->leftJoin('trackertemplate as trackertemplate3', 'trackertemplate3.Id', '=', 'templatedeleteaccess.TrackerTemplateId')
-			->limit(1)
-			->get();
-
-			$projects = DB::table('projects')
-			->where('Id','=',$projectid)
-			->get();
-
-		}
-		else {
-
-			$dependencyrules = DB::table('dependencyrules')
-			->select('dependencyrules.Id','dependencyrules.ProjectId', 'dependencyrules.Active','projects.Project_Name','dependencyrules.Title','dependencyrules.Sequence','dependencyrules.Column1','dependencyrules.Column1_Status','dependencyrules.Column2','dependencyrules.Column2_Status','dependencyrules.Column3','dependencyrules.Column3_Status','dependencyrules.Target_Column','dependencyrules.Target_Status','creator.Name as Creator','notify.Name as Notify')
-			->leftJoin('dependencynotification', 'dependencynotification.DependencyRulesId', '=', 'dependencyrules.Id')
-			->leftJoin('users as notify', 'notify.Id', '=', 'dependencynotification.UserId')
-			->leftJoin('projects', 'projects.Id', '=', 'dependencyrules.ProjectId')
 			->leftJoin('users as creator', 'creator.Id', '=', 'dependencyrules.UserId')
 			->get();
 
-			$projects = DB::table('projects')
-			->whereIn('Id',$projectids)
-			->get();
-
-		}
-
-		return view("dependencymaintenance",['me'=>$me, 'projectid'=>$projectid,'dependencyrules'=>$dependencyrules, 'projects'=>$projects,'columns'=>$columns]);
+		return view("dependencymaintenance",['me'=>$me,'dependencyrules'=>$dependencyrules,'columns'=>$columns]);
 
 	}
 
@@ -4986,8 +3777,7 @@ public function renametracker(Request $request)
 		if($rule->Type=="Between 2 Date")
 		{
 			$agings = DB::table('tracker')
-			->select(DB::raw('TIMESTAMPDIFF(Day,str_to_date(tracker.`'.$rule->Start_Date.'`, "%d-%M-%Y"),curdate()) as "Aging (days)"'),'Site_ID','Site_Name','Project_Name',DB::raw('`'.$rule->Start_Date.'`'))
-			->leftJoin('projects', 'projects.Id', '=', 'tracker.ProjectId')
+			->select(DB::raw('TIMESTAMPDIFF(Day,str_to_date(tracker.`'.$rule->Start_Date.'`, "%d-%M-%Y"),curdate()) as "Aging (days)"'),'Site_ID','Site_Name',DB::raw('`'.$rule->Start_Date.'`'))
 			->where($rule->Start_Date, '<>', '')
 			->where($rule->End_Date, '=', '')
 			->orderBy(DB::raw('`Aging (days)`'),'desc')
@@ -4996,8 +3786,7 @@ public function renametracker(Request $request)
 		}
 		elseif($rule->Type=="By Period") {
 			$agings = DB::table('tracker')
-			->select(DB::raw('TIMESTAMPDIFF(Day,str_to_date(tracker.`'.$rule->Start_Date.'`, "%d-%M-%Y"),curdate()) as "Aging (days)"'),'Site_ID','Site_Name','Project_Name',DB::raw($rule->Start_Date))
-			->leftJoin('projects', 'projects.Id', '=', 'tracker.ProjectId')
+			->select(DB::raw('TIMESTAMPDIFF(Day,str_to_date(tracker.`'.$rule->Start_Date.'`, "%d-%M-%Y"),curdate()) as "Aging (days)"'),'Site_ID','Site_Name',DB::raw($rule->Start_Date))
 			->where($rule->Start_Date, '<>', '')
 			->where($rule->End_Date, '=', '')
 			->orderBy(DB::raw('`Aging (days)`'),'desc')
@@ -5036,8 +3825,7 @@ public function renametracker(Request $request)
 		SUM(IF(WEEKOFYEAR(NOW())-2>=week(str_to_date(`'.$rule->Target_Field.'`, "%d-%M-%Y")),1,0)) as "Week '. ($weekno-1) .'",
 		SUM(IF(WEEKOFYEAR(NOW())-1>=week(str_to_date(`'.$rule->Target_Field.'`, "%d-%M-%Y")),1,0)) as "Week '. ($weekno) .'"
 		'.$targetweekquery.'
-		FROM tracker
-		LEFT JOIN projects on tracker.ProjectId=projects.ID');
+		FROM tracker');
 
 		$label=array();
 		$data=array();
@@ -5086,98 +3874,32 @@ public function renametracker(Request $request)
 
 	}
 
-	public function targetrules($projectid =null)
+	public function targetrules()
 	{
 		$me = (new CommonController)->get_current_user();
 
-		if($projectid==null)
-		{
-			$projectid=0;
-
 			$columns = DB::table('trackercolumn')
 			->select(DB::raw('DISTINCT Column_Name'))
 			->where('Type', '=', 'Date')
 			->orderBy('Column_Name','ASC')
 			->get();
-		}
-		else {
-
-			$columns = DB::table('trackercolumn')
-			->select(DB::raw('DISTINCT Column_Name'))
-			->where('Type', '=', 'Date')
-			// ->whereIn('TrackerTemplateId',DB::raw('SELECT ID FROM trackertemplate WHERE ProjectId='.$projectid))
-			->whereIn('TrackerTemplateId',function($query) use ($projectid){
-    		$query->select('Id')
-            ->from('trackertemplate')
-						->where('ProjectId', '=',$projectid);
-			})
-			->orderBy('Column_Name','ASC')
-			->get();
-
-		}
-
-		$projectids = explode("|",$me->ProjectIds);
-
-		if($projectid>0)
-		{
 
 			$targetrules = DB::table('targets')
-			->select('targets.Id','targets.ProjectId', 'targets.Active','projects.Project_Name','targets.Title','targets.Target_Field','targets.Target_Date','targets.Target','creator.Name as Creator','users.Name as Subscriber')
+			->select('targets.Id', 'targets.Active','targets.Title','targets.Target_Field','targets.Target_Date','targets.Target','creator.Name as Creator','users.Name as Subscriber')
 			->leftjoin('targetsubscribers','targetsubscribers.TargetId','=','targets.Id')
-			->leftJoin('projects', 'projects.Id', '=', 'targets.ProjectId')
-			->leftJoin('users as creator', 'creator.Id', '=', 'targets.UserId')
-			->leftjoin('users','users.Id','=','targetsubscribers.UserId')
-			->where('ProjectId', '=',$projectid)
-			->get();
-
-			$projects = DB::table('projects')
-			->where('Id','=',$projectid)
-			->get();
-
-		}
-		else {
-
-			$targetrules = DB::table('targets')
-			->select('targets.Id','targets.ProjectId', 'targets.Active','projects.Project_Name','targets.Title','targets.Target_Field','targets.Target_Date','targets.Target','creator.Name as Creator','users.Name as Subscriber')
-			->leftjoin('targetsubscribers','targetsubscribers.TargetId','=','targets.Id')
-			->leftJoin('projects', 'projects.Id', '=', 'targets.ProjectId')
 			->leftJoin('users as creator', 'creator.Id', '=', 'targets.UserId')
 			->leftjoin('users','users.Id','=','targetsubscribers.UserId')
 			->get();
 
-			$projects = DB::table('projects')
-			->whereIn('Id',$projectids)
-			->get();
-
-		}
-
-		return view("targetmaintenance",['me'=>$me, 'projectid'=>$projectid,'targetrules'=>$targetrules, 'projects'=>$projects,'columns'=>$columns]);
+		return view("targetmaintenance",['me'=>$me,'targetrules'=>$targetrules,'columns'=>$columns]);
 
 	}
 
-	public function templateaccess($projectid=null)
+	public function templateaccess()
 	{
 		$me = (new CommonController)->get_current_user();
 
 		set_time_limit(0);
-
-		$projectids = explode("|",$me->ProjectIds);
-
-		$projects = DB::table('projects')
-		->whereIn('Id', $projectids)
-		->get();
-
-		if(!$projectid)
-		{
-			if($projects)
-			{
-				$projectid=$projects[0]->Id;
-			}
-			else {
-				// code...
-				$projectid=0;
-			}
-		}
 
 		$bystaff = DB::table('users')
 		->select('users.Id','users.StaffId', 'users.Name','trackertemplate.Tracker_Name','trackertemplate2.Tracker_Name as Tracker_Name_2','trackertemplate3.Tracker_Name as Tracker_Name_3')
@@ -5196,7 +3918,7 @@ public function renametracker(Request $request)
 		$users =  DB::table('users')
 		->get();
 
-		return view("templateaccess",['me'=>$me, 'trackertemplate'=>$trackertemplate,'bystaff'=>$bystaff,  'users'=>$users,'projects'=>$projects,'projectid'=>$projectid]);
+		return view("templateaccess",['me'=>$me, 'trackertemplate'=>$trackertemplate,'bystaff'=>$bystaff,  'users'=>$users]);
 
 	}
 
@@ -5257,7 +3979,6 @@ public function renametracker(Request $request)
 										 'Details' => $details,
 										 'TrackerId' =>$id,
 										 'Type' =>'Delete',
-										 'ProjectId' => $input["ProjectId"],
 										 'UserId' =>$me->UserId
 									 ));
 
@@ -5268,7 +3989,7 @@ public function renametracker(Request $request)
 
 
 								}
-								elseif($fields[$i]=="No" || $fields[$i]=="Action" || $fields[$i]=='-' || $fields[$i]=="ProjectId" || $fields[$i]=="Gantt")
+								elseif($fields[$i]=="No" || $fields[$i]=="Action" || $fields[$i]=='-' || $fields[$i]=="Gantt")
 								{
 
 
@@ -5325,8 +4046,6 @@ public function renametracker(Request $request)
 							}
 							else {
 
-								$arrRow=$arrRow + array('ProjectId' => $input["ProjectId"]);
-
 								if(!empty($arrRow)){
 
 									$arrRow=$arrRow + array('Import_Date' => date("d-M-Y"));
@@ -5352,8 +4071,6 @@ public function renametracker(Request $request)
 		$me = (new CommonController)->get_current_user();
 
 		$input = $request->all();
-
-		$projectid=$input["ProjectId3"];
 
 		$file = Input::file('import3');
 
@@ -5427,7 +4144,7 @@ public function renametracker(Request $request)
 							else {
 
 								$insert=DB::table('tracker')->insertGetId(
-									['ProjectId'=>$projectid,
+									[
 									'DUID' => $row["site_code"],
 									'Site Name' => $row["site_name"],
 									'PO_Status' => $row["po_status"],
@@ -5544,9 +4261,8 @@ public function renametracker(Request $request)
 
 	}
 
-	public function filerenderer2($projectid,$trackerid,$option)
+	public function filerenderer2($trackerid,$option)
 	{
-		// dd($projectid,$trackerid,$option);
 		$me = (new CommonController)->get_current_user();
 
 		// $files = DB::table('options')
@@ -5562,48 +4278,25 @@ public function renametracker(Request $request)
 		->where('Document_type','=', $option)
 		->orderBy('documenttypeaccess.Document_Type','asc')
 		->first();
-		if($projectid == 146)
-		{
 
 		$files = DB::table('options')
-		// ->select('files.Id','options.Option','files.created_at AS Submission_Date','users.Name as Submitted_By',DB::raw("files.Web_Path AS Download"),'files.File_Name',DB::raw("'' AS Upload"),'files.TargetId as TargetId','files.UserId', DB::raw('projects.Id AS projectid'))
-		->select('files.Web_Path', 'files.File_Name', 'files.UserId','users.Name','files.created_at', 'files.TargetId', 'options.Option', DB::raw('projects.Id AS projectid'), 'files.Id','salesorder.SO_Number','files.salesorderid')
+		->select('files.Web_Path', 'files.File_Name', 'files.UserId','users.Name','files.created_at', 'files.TargetId', 'options.Option', 'files.Id')
 		->leftJoin('files','files.Document_Type','=', DB::raw('options.Option AND files.TargetId='.$trackerid))
 		->leftJoin('users','files.UserId','=','users.Id')
 		->leftJoin('tracker','tracker.Id', '=', 'files.TargetId')
-		->leftJoin('projects','projects.Id','=', 'tracker.ProjectId')
-		->leftJoin('salesorder','tracker.Id','=','salesorder.TrackerId')
-		->where('files.TargetId', '=',$trackerid)
-		->where('options.Option', '=',$option)
-		->whereRaw('(files.Type = "Acceptance_Documents" OR files.Type = "Tracker")')
-		->groupBy('files.Id')
-		->get();
-
-		}
-		else
-		{
-		$files = DB::table('options')
-		// ->select('files.Id','options.Option','files.created_at AS Submission_Date','users.Name as Submitted_By',DB::raw("files.Web_Path AS Download"),'files.File_Name',DB::raw("'' AS Upload"),'files.TargetId as TargetId','files.UserId', DB::raw('projects.Id AS projectid'))
-		->select('files.Web_Path', 'files.File_Name', 'files.UserId','users.Name','files.created_at', 'files.TargetId', 'options.Option', DB::raw('projects.Id AS projectid'), 'files.Id')
-		->leftJoin('files','files.Document_Type','=', DB::raw('options.Option AND files.TargetId='.$trackerid))
-		->leftJoin('users','files.UserId','=','users.Id')
-		->leftJoin('tracker','tracker.Id', '=', 'files.TargetId')
-		->leftJoin('projects','projects.Id','=', 'tracker.ProjectId')
 		->where('files.TargetId', '=',$trackerid)
 		->where('options.Option', '=',$option)
 		->where('files.Type', '=','Tracker')
 		->groupBy('files.Id')
 		->get();
-		}
+		
 
 		if(!$files)
 		{
 			$me = (new CommonController)->get_current_user();
 
 			$files = DB::table('tracker')
-			->select(DB::raw('null as Web_Path'), DB::raw('null as File_Name'), DB::raw('"'.$option .'" as `Option`'),DB::raw('null as UserId'), DB::raw($projectid .' as projectid'), DB::raw($trackerid .' as TargetId'))
-			// ->leftJoin('options', 'options.Option', '=', $option)
-			->where('tracker.ProjectId', '=',$projectid)
+			->select(DB::raw('null as Web_Path'), DB::raw('null as File_Name'), DB::raw('"'.$option .'" as `Option`'),DB::raw('null as UserId'), DB::raw($trackerid .' as TargetId'))
 			->where('tracker.Id', '=', $trackerid)
 			// ->where('options.Option', '=',$option)
 			->limit(1)
@@ -5614,32 +4307,15 @@ public function renametracker(Request $request)
 
 		//Default value
 		$category2 = DB::table('options')
-		->select('options.Option',DB::raw('tracker.Id AS TargetId'), DB::raw('projects.Id AS projectid'))
+		->select('options.Option',DB::raw('tracker.Id AS TargetId'))
 		->leftJoin('files','files.Document_Type','=', DB::raw('options.Option'))
 		->leftJoin('users','files.UserId','=','users.Id')
-		->leftJoin('projects','projects.Id','=', DB::raw($projectid))
-		->leftJoin('tracker','tracker.ProjectID', '=', 'projects.Id')
 		->where('options.Field', '=','Document_Type')
 		->where('tracker.Id', '=', DB::raw($trackerid))
 		->where('options.Option', '=',$option)
 		->whereNotIn('options.Option',['Panaromic Photos','Site Photos','Videos'])
-		->groupBy('options.Option', 'tracker.Id', 'projects.Id')
+		->groupBy('options.Option', 'tracker.Id')
 		->get();
-
-		// $category2 = DB::table('options')
-		// ->select('files.Id','options.Option','files.created_at AS Submission_Date','users.Name as Submitted_By',DB::raw("files.Web_Path AS Download"),'files.File_Name',DB::raw("'' AS Upload"),'files.TargetId as TargetId','files.UserId', DB::raw('projects.Id AS projectid'))
-		// ->leftJoin('files','files.Document_Type','=', DB::raw('options.Option AND files.TargetId='.$trackerid))
-		// ->leftJoin('users','files.UserId','=','users.Id')
-		// ->leftJoin('projects','projects.Id','=', DB::raw($projectid))
-		// ->leftJoin('tracker','tracker.Id', '=', 'projects.Id')
-		// ->where('options.Field', '=','Document_Type')
-		// ->whereNotIn('options.Option',['Panaromic Photos','Site Photos','Videos'])
-		// ->where('TargetId', '=',$trackerid)
-		// ->where('Type', '=','Tracker')
-		// ->distinct()->get(['Document_Type']);
-		// ->orderBy('options.Option')
-		// ->groupBy('options.option')
-		// ->get();
 
 		$files2 = DB::table('options')
 		->where('options.Option', '=',$option)
@@ -5650,13 +4326,11 @@ public function renametracker(Request $request)
 		->select(DB::raw('CASE WHEN files.Id IS NOT NULL THEN 1 ELSE 0 END AS Id'))
 		->leftJoin('files','files.Document_Type','=', DB::raw('options.Option'))
 		->leftJoin('users','files.UserId','=','users.Id')
-		->leftJoin('projects','projects.Id','=', DB::raw($projectid))
-		->leftJoin('tracker','tracker.ProjectID', '=', 'projects.Id')
 		->where('options.Field', '=','Document_Type')
 		->where('tracker.Id', '=', DB::raw($trackerid))
 		->where('options.Option', '=',$option)
 		->whereNotIn('options.Option',['Panaromic Photos','Site Photos','Videos'])
-		->groupBy('options.Option', 'tracker.Id', 'projects.Id')
+		->groupBy('options.Option', 'tracker.Id')
 		->get();
 
 		$site = DB::table('tracker')
@@ -5665,7 +4339,7 @@ public function renametracker(Request $request)
 
 		// dd($files, $category2, $empty);
 
-		return view("filerenderer2",['me'=>$me,'files'=>$files, 'files2'=>$files2,'type'=>$option,'trackerid'=>$trackerid, 'category2'=>$category2, 'empty'=>$empty,'documentaccess'=>$documentaccess,'ProjectId'=>$projectid,'site'=>$site]);
+		return view("filerenderer2",['me'=>$me,'files'=>$files, 'files2'=>$files2,'type'=>$option,'trackerid'=>$trackerid, 'category2'=>$category2, 'empty'=>$empty,'documentaccess'=>$documentaccess,'site'=>$site]);
 
 	}
 
@@ -5682,9 +4356,7 @@ public function renametracker(Request $request)
 		->delete();
 
 		$options = DB::table('options')
-		->select('options.Id','options.Table','options.Field','options.Option','projects.Project_Name','options.Update_Column')
-		->leftJoin('optionprojects','options.Id','=','optionprojects.OptionId')
-		->leftJoin('projects','projects.Id','=','optionprojects.ProjectId')
+		->select('options.Id','options.Table','options.Field','options.Option','options.Update_Column')
 		->where('options.Option', '=',$file->Document_Type)
 		->orderBy('options.Field', 'asc')
 		->first();
@@ -5746,7 +4418,7 @@ public function renametracker(Request $request)
 	}
 
 	//Firdaus 20180621 - New Controller for displaying Folders in Submitted Document (Drag n Drop)
-	public function filecategory2($projectid, $trackerid)
+	public function filecategory2($trackerid)
 	{
 
 		$me = (new CommonController)->get_current_user();
@@ -5755,15 +4427,10 @@ public function renametracker(Request $request)
 		// $TrackerId=$input["Id"];
 
 		$category2 = DB::table('options')
-		->select('files.Id','options.Option','options.Section','options.Description','files.created_at AS Submission_Date','users.Name as Submitted_By',DB::raw("files.Web_Path AS Download"),'files.File_Name',DB::raw("'' AS Upload"),DB::raw('tracker.Id AS TargetId'),'files.UserId', DB::raw('projects.Id AS projectid'),'documenttypeaccess.Read')
+		->select('files.Id','options.Option','options.Section','options.Description','files.created_at AS Submission_Date','users.Name as Submitted_By',DB::raw("files.Web_Path AS Download"),'files.File_Name',DB::raw("'' AS Upload"),DB::raw('tracker.Id AS TargetId'),'files.UserId','documenttypeaccess.Read')
 		->leftJoin('files','files.Document_Type','=', DB::raw('options.Option'))
 		->leftJoin('users','files.UserId','=','users.Id')
-		->leftJoin('projects','projects.Id','=', DB::raw($projectid))
-		//->leftJoin('tracker','tracker.Id', '=', 'projects.Id')
-		->leftJoin('tracker','tracker.ProjectID', '=', 'projects.Id')
-		->leftJoin('optionprojects','options.Id','=','optionprojects.OptionId')
 		->leftJoin('documenttypeaccess','documenttypeaccess.Document_Type','=','options.Option')
-		->where('optionprojects.ProjectId','=',$projectid)
 		->where('options.Field', '=','Document_Type')
 		->where('tracker.Id', '=', DB::raw($trackerid))
 		->whereNotIn('options.Option',['Panaromic Photos','Site Photos','Videos'])
@@ -5776,34 +4443,16 @@ public function renametracker(Request $request)
 		->orderByRaw('CAST(options.Description as SIGNED)')
 		->get();
 
-		if($projectid == 146)
-		{
 		$files = DB::table('options')
-		// ->select('files.Id','options.Option','files.created_at AS Submission_Date','users.Name as Submitted_By',DB::raw("files.Web_Path AS Download"),'files.File_Name',DB::raw("'' AS Upload"),'files.TargetId as TargetId','files.UserId', DB::raw('projects.Id AS projectid'))
 		->select(DB::raw('files.Document_Type,Count(DISTINCT files.Id) as count'))
 		->leftJoin('files','files.Document_Type','=', DB::raw('options.Option AND files.TargetId='.$trackerid))
 		->leftJoin('users','files.UserId','=','users.Id')
 		->leftJoin('tracker','tracker.Id', '=', 'files.TargetId')
-		->leftJoin('projects','projects.Id','=', 'tracker.ProjectId')
-		->where('files.TargetId', '=',$trackerid)
-		->whereRaw('files.Type = "Acceptance_Documents" OR files.Type = "Tracker"')
-		->groupBy('options.Option')
-		->get();
-		}
-		else
-		{
-		$files = DB::table('options')
-		// ->select('files.Id','options.Option','files.created_at AS Submission_Date','users.Name as Submitted_By',DB::raw("files.Web_Path AS Download"),'files.File_Name',DB::raw("'' AS Upload"),'files.TargetId as TargetId','files.UserId', DB::raw('projects.Id AS projectid'))
-		->select(DB::raw('files.Document_Type,Count(DISTINCT files.Id) as count'))
-		->leftJoin('files','files.Document_Type','=', DB::raw('options.Option AND files.TargetId='.$trackerid))
-		->leftJoin('users','files.UserId','=','users.Id')
-		->leftJoin('tracker','tracker.Id', '=', 'files.TargetId')
-		->leftJoin('projects','projects.Id','=', 'tracker.ProjectId')
 		->where('files.TargetId', '=',$trackerid)
 		->where('files.Type', '=','Tracker')
 		->groupBy('options.Option')
 		->get();
-		}
+		
 
 		$documentaccess = DB::table('documenttypeaccess')
 		->where('AccessControlTemplateId','=', $me->AccessControlTemplateId)
@@ -5815,37 +4464,19 @@ public function renametracker(Request $request)
 		->first();
 
 		// return view("filecategory",['me'=>$me,'category'=>$category,'trackerid'=>$trackerid]); //original
-		return view('filecategory2',['me' => $me, 'ProjectId'=>$projectid,'category2'=>$category2,'documentaccess'=>$documentaccess,'site'=>$site,'files'=>$files]);
+		return view('filecategory2',['me' => $me,'category2'=>$category2,'documentaccess'=>$documentaccess,'site'=>$site,'files'=>$files]);
 
 	}
 
-	public function projectfolder()
-	{
-
-		$me = (new CommonController)->get_current_user();
-
-
-		$projectids = explode("|",$me->ProjectIds);
-
-		$projects = DB::table('projects')
-		->whereIn('Id',$projectids)
-		->orderBy('projects.Project_Name','asc')
-		->get();
-
-		return view('projectfolder',['me' => $me, 'projects'=>$projects]);
-
-	}
-
-	public function sitefolder($ProjectId)
+	public function sitefolder()
 	{
 
 		$me = (new CommonController)->get_current_user();
 
 		$sitelist = DB::table('tracker')
-		->where('ProjectId','=',$ProjectId)
 		->get();
 
-		return view('sitefolder',['me' => $me, 'ProjectId'=>$ProjectId,'sitelist'=>$sitelist]);
+		return view('sitefolder',['me' => $me,'sitelist'=>$sitelist]);
 
 	}
 
@@ -5915,20 +4546,12 @@ public function duplicatetracker(Request $request)
 
 		}
 		else {
-			// code...
-			$project = DB::table('projects')
-			->where('Id', '=', $exist[0]->ProjectID)
-			->first();
 
-			$project2 = DB::table('projects')
-			->where('Id', '=', $input["ProjectId"])
-			->first();
 
 			$insert=DB::table('trackertemplate')->insertGetId(
-				['ProjectId' =>$input["ProjectId"],
+				[
 				'Tracker_Name' => $input["TrackerName"],
-				'Project_Name' => $project2->Project_Name,
-				'Combine'=>$input["TrackerName"]." [".$project2->Project_Name."]"
+				'Combine'=>$input["TrackerName"]
 				]
 			);
 
@@ -5983,14 +4606,13 @@ public function duplicatetracker(Request $request)
 
 		}
 
-		public function updatedependency($projectid,$column,$id)
+		public function updatedependency($column,$id)
 		{
 
 			$me = (new CommonController)->get_current_user();
 
 			//dependency rules
 			$dependencyrules = DB::table('dependencyrules')
-			->where('dependencyrules.ProjectId','=',$projectid)
 			->where('dependencyrules.Active','=','1')
 			// ->where('dependencyrules.Column1','=',$column)
 			->orderBy('dependencyrules.Sequence','asc')
@@ -6037,7 +4659,6 @@ public function duplicatetracker(Request $request)
 				if($rules->Target_Column && $rules->Target_Status && $condition!="1")
 				{
 					DB::table('tracker')
-					->where('ProjectId', '=',$projectid)
 					->whereRaw($condition)
 					->update([$rules->Target_Column =>$rules->Target_Status]);
 
@@ -6048,7 +4669,6 @@ public function duplicatetracker(Request $request)
 
 			//notify
 			$dependencyrules = DB::table('dependencyrules')
-			->where('dependencyrules.ProjectId','=',$projectid)
 			->where('dependencyrules.Active','=','1')
 			->whereRaw('(dependencyrules.Column1="'.$column.'" OR dependencyrules.Column2="'.$column.'" OR dependencyrules.Column3="'.$column.'")')
 			->orderBy('dependencyrules.Sequence','asc')
@@ -6099,20 +4719,19 @@ public function duplicatetracker(Request $request)
 					}
 
 					$line = DB::table('tracker')
-					->select('Project_Name','Project_Code','Site_ID','Site_Name',DB::raw($column.' As "Target"'))
-					->leftJoin('projects','projects.Id','=','tracker.ProjectId')
+					->select('Site_ID','Site_Name',DB::raw($column.' As "Target"'))
 					->where('tracker.Id', '=',$id)
 					->first();
 
 					if($emails)
 					{
-						Mail::send('emails.dependencynotification', ['me' => $me,'column' => $column,'line'=>$line], function($message) use ($emails,$column)
-						{
-							$emails = array_filter($emails);
-							array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-							$message->to($emails)->subject('Dependency Notification ['.$column.']');
+						// Mail::send('emails.dependencynotification', ['me' => $me,'column' => $column,'line'=>$line], function($message) use ($emails,$column)
+						// {
+						// 	$emails = array_filter($emails);
+						// 	array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+						// 	$message->to($emails)->subject('Dependency Notification ['.$column.']');
 
-						});
+						// });
 					}
 
 				}
@@ -6135,7 +4754,6 @@ public function duplicatetracker(Request $request)
 			->leftJoin('templateaccess','templateaccess.TrackerTemplateId','=',DB::raw('trackertemplate.Id AND templateaccess.UserId='.$input["UserId"]))
 			->leftJoin('templatewriteaccess','templatewriteaccess.TrackerTemplateId','=',DB::raw('trackertemplate.Id AND templatewriteaccess.UserId='.$input["UserId"]))
 			->leftJoin('templatedeleteaccess','templatedeleteaccess.TrackerTemplateId','=',DB::raw('trackertemplate.Id AND templatedeleteaccess.UserId='.$input["UserId"]))
-			->where('ProjectId', '=',$input["ProjectId"])
 			->get();
 
 			return json_encode($tracker);
@@ -6151,17 +4769,14 @@ public function duplicatetracker(Request $request)
 
 			DB::table('templateaccess')
 			->where('UserId', '=',$input["UserId"])
-			->whereRaw('TrackerTemplateId In (select Id from trackertemplate where ProjectId='.$input["ProjectId"].')')
 			->delete();
 
 			DB::table('templatewriteaccess')
 			->where('UserId', '=',$input["UserId"])
-			->whereRaw('TrackerTemplateId In (select Id from trackertemplate where ProjectId='.$input["ProjectId"].')')
 			->delete();
 
 			DB::table('templatedeleteaccess')
 			->where('UserId', '=',$input["UserId"])
-			->whereRaw('TrackerTemplateId In (select Id from trackertemplate where ProjectId='.$input["ProjectId"].')')
 			->delete();
 
 			foreach(explode(",",$input["Read"]) as $trackerId)
@@ -6230,11 +4845,6 @@ public function duplicatetracker(Request $request)
 				 $input["Id"] = $input['UpdateId'];
 				 unset($input['UpdateId']);
 			 }
-			 else if($key=="ProjectId3")
-			 {
-				 $input['ProjectId'] = $input['ProjectId3'];
-				 unset($input['ProjectId3']);
-			 }
 			 else if($key=="TrackerId")
 			 {
 				 unset($input['TrackerId']);
@@ -6273,7 +4883,6 @@ public function duplicatetracker(Request $request)
 				 ->insert(array(
 				 'TrackerId' =>$update,
 				 'Type' =>'Update',
-				 'ProjectId' =>$input["ProjectId"],
 				 'UserId' =>$me->UserId,
 				 'Details' => json_encode($input),
 			 ));
@@ -6311,12 +4920,6 @@ public function duplicatetracker(Request $request)
 						'Write' => 1
 						]
 					);
-
-					DB::table('optionprojects')->insertGetId(
-						['ProjectId' =>$input["ProjectId"],
-						'OptionId' => $optionid
-						]
-					);
 				}
 				else {
 					// code...
@@ -6337,12 +4940,6 @@ public function duplicatetracker(Request $request)
 						]
 					);
 
-					DB::table('optionprojects')->insertGetId(
-						['ProjectId' =>$input["ProjectId"],
-						'OptionId' => $optionid
-						]
-					);
-
 				}
 
 				return 1;
@@ -6352,7 +4949,6 @@ public function duplicatetracker(Request $request)
 			public function downloadall(Request $request)
 			{
 				$input = $request->all();
-				// dd($projectid,$trackerid,$option);
 				$me = (new CommonController)->get_current_user();
 
 				$documentaccess = DB::table('documenttypeaccess')
@@ -6362,12 +4958,10 @@ public function duplicatetracker(Request $request)
 				->first();
 
 				$files = DB::table('options')
-				// ->select('files.Id','options.Option','files.created_at AS Submission_Date','users.Name as Submitted_By',DB::raw("files.Web_Path AS Download"),'files.File_Name',DB::raw("'' AS Upload"),'files.TargetId as TargetId','files.UserId', DB::raw('projects.Id AS projectid'))
 				->select('files.Web_Path')
 				->leftJoin('files','files.Document_Type','=', DB::raw('options.Option AND files.TargetId='.$input["TrackerId"]))
 				->leftJoin('users','files.UserId','=','users.Id')
 				->leftJoin('tracker','tracker.Id', '=', 'files.TargetId')
-				->leftJoin('projects','projects.Id','=', 'tracker.ProjectId')
 
 				->where('files.TargetId', '=',$input["TrackerId"])
 				->where('options.Option', '=',$input["Type"])
@@ -6409,7 +5003,6 @@ public function duplicatetracker(Request $request)
 							$split2=explode("|",$val);
 
 							$trackerline = DB::table('tracker')
-							->leftJoin('projects','projects.Id','=','tracker.ProjectId')
 							->where('tracker.Id', '=', $split2[0])
 							->first();
 
@@ -6435,8 +5028,6 @@ public function duplicatetracker(Request $request)
 
 								$insert=DB::table('invoicelisting')->insertGetId(array(
 									 'TrackerId' => $split2[0],
-									 'ProjectId' => $trackerline->ProjectID,
-									 'Project' => $trackerline->Operator,
 									 'Customer' => $trackerline->Customer,
 									 'Year' => date("Y"),
 									 'PO_Milestone' =>$milestone,
@@ -6467,39 +5058,15 @@ public function duplicatetracker(Request $request)
 				$input = $request->all();
 				$type=$input["Type"];
 				$PO=$input["PO"];
-				$ProjectCode=$input["Project_Code"];
 				$Site=$input["Site"];
-				$ProjectId=$input["ProjectId"];
 
 				$filter="1 AND ";
 
-				if(!$ProjectId)
-				{
 					$allavailablecolumns= DB::table('trackercolumn')
 					->select(DB::raw('DISTINCT (Column_Name) As Col'))
 					->whereRaw('Column_Name like "%PO%" AND Column_Name like "%No%" AND Column_Name not like "%Invoice%"')
 					->orderBy('Column_Name')
 					->get();
-				}
-				else {
-					// code...
-					$allavailablecolumns= DB::table('trackercolumn')
-					->select(DB::raw('DISTINCT (Column_Name) As Col'))
-					->whereRaw('TrackerTemplateId in (select ID from trackertemplate where ProjectId='.$ProjectId.')')
-					->whereRaw('Column_Name like "%PO%" AND Column_Name like "%No%" AND Column_Name not like "%Invoice%"')
-					->orderBy('Column_Name')
-					->get();
-				}
-
-				if($ProjectCode)
-				{
-					$filter.="Project_Code='".$ProjectCode."' AND ";
-				}
-
-				if($ProjectId!="All" && $ProjectId)
-				{
-					$filter.="tracker.ProjectId='".$ProjectId."' AND ";
-				}
 
 				if($Site)
 				{
@@ -6516,11 +5083,11 @@ public function duplicatetracker(Request $request)
 							{
 								if($PO)
 								{
-									$query.="SELECT Id,Project_Code,CONCAT(tracker.`Site ID / LRD`,'-',tracker.`Site ID`,'-',tracker.`LRD`,'-',tracker.`Site LRD`) as 'Site_ID','".$col->Col."' as PO_Milestone,`".$col->Col."` as PO_No FROM tracker WHERE ".$filter." AND `".$col->Col."`='".$PO."' UNION ALL ";
+									$query.="SELECT Id,CONCAT(tracker.`Site ID / LRD`,'-',tracker.`Site ID`,'-',tracker.`LRD`,'-',tracker.`Site LRD`) as 'Site_ID','".$col->Col."' as PO_Milestone,`".$col->Col."` as PO_No FROM tracker WHERE ".$filter." AND `".$col->Col."`='".$PO."' UNION ALL ";
 								}
 								else {
 									// code...
-									$query.="SELECT Id,Project_Code,CONCAT(tracker.`Site ID / LRD`,'-',tracker.`Site ID`,'-',tracker.`LRD`,'-',tracker.`Site LRD`) as 'Site_ID','".$col->Col."' as PO_Milestone,`".$col->Col."` as PO_No FROM tracker WHERE ".$filter." AND `".$col->Col."`!='' UNION ALL ";
+									$query.="SELECT Id,CONCAT(tracker.`Site ID / LRD`,'-',tracker.`Site ID`,'-',tracker.`LRD`,'-',tracker.`Site LRD`) as 'Site_ID','".$col->Col."' as PO_Milestone,`".$col->Col."` as PO_No FROM tracker WHERE ".$filter." AND `".$col->Col."`!='' UNION ALL ";
 								}
 
 							}
@@ -6560,8 +5127,6 @@ public function duplicatetracker(Request $request)
 
 				$logs = DB::select("
 						SELECT trackerupdate.Type,
-							projects.Project_Name,
-							tracker.Project_Code,
 							tracker.`Unique ID`,
 							CASE
 						  	WHEN trackerupdate.Type='Delete' THEN trackerupdate.Site_ID
@@ -6578,13 +5143,12 @@ public function duplicatetracker(Request $request)
 						FROM trackerupdate
 						LEFT JOIN tracker ON trackerupdate.TrackerId=tracker.Id
 						LEFT JOIN users ON users.Id = trackerupdate.UserId
-						LEFT JOIN projects ON projects.Id = trackerupdate.ProjectId
 						WHERE `trackerupdate`.`Updated_At` Between str_to_date('".$start."','%d-%M-%Y') AND str_to_date('".$end."','%d-%M-%Y')
 						Order By Updated_At Asc");
 		    return view("trackerupdatetracker",['me'=>$me, 'logs'=>$logs, 'start'=>$start, 'end'=>$end]);
 		  }
 
-			public function opendocument($projectid,$id,$col)
+			public function opendocument($id,$col)
 			{
 
 				$me = (new CommonController)->get_current_user();
@@ -6592,12 +5156,10 @@ public function duplicatetracker(Request $request)
 				$col=str_replace("|||","/",$col);
 
 				$files = DB::table('options')
-				// ->select('files.Id','options.Option','files.created_at AS Submission_Date','users.Name as Submitted_By',DB::raw("files.Web_Path AS Download"),'files.File_Name',DB::raw("'' AS Upload"),'files.TargetId as TargetId','files.UserId', DB::raw('projects.Id AS projectid'))
-				->select('files.Web_Path', 'files.File_Name', 'files.UserId','users.Name','files.created_at', 'files.TargetId', 'options.Option', DB::raw('projects.Id AS projectid'), 'files.Id')
+				->select('files.Web_Path', 'files.File_Name', 'files.UserId','users.Name','files.created_at', 'files.TargetId', 'options.Option', 'files.Id')
 				->leftJoin('files','files.Document_Type','=', DB::raw('options.Option AND files.TargetId='.$id))
 				->leftJoin('users','files.UserId','=','users.Id')
 				->leftJoin('tracker','tracker.Id', '=', 'files.TargetId')
-				->leftJoin('projects','projects.Id','=', 'tracker.ProjectId')
 
 				->where('files.TargetId', '=',$id)
 				->where('options.Update_Column', '=',$col)
@@ -6667,110 +5229,6 @@ public function duplicatetracker(Request $request)
 	    curl_close($ch);
 	}
 
-	public function trackersummary($projectid=null)
-	{
-		$me = (new CommonController)->get_current_user();
-
-		$projectids = explode("|",$me->ProjectIds);
-
-		$projects = DB::table('projects')
-		->whereIn('Id', $projectids)
-		->get();
-
-		 if(!$projectid)
-		 {
-			 $projectid=0;
-		 }
-
-		 if($projectid==131 || $projectid==51 || $projectid==135 || $projectid==136)
-		 {
-			 $invoiceamount='(select sum(`1st Claim Invoice Amount`+`2nd Claim Invoice Amount`+`3rd Claim Invoice Amount`+`Retention Invoice Amount`) FROM `tracker` a WHERE a.Id=tracker.Id GROUP BY a.Id) as `Invoice Amount`';
-		 }
-		 else {
-		 	// code...
-			$invoiceamount='tracker.`Invoice Amount`';
-		 }
-
-		 $filter="tracker.ProjectId=".$projectid;
-
-		$summary = DB::table('tracker')
-		->select('tracker.Id',
-		'tracker.Unique ID',
-		'tracker.Site Name',
-
-		DB::raw('(SELECT SUM(Total) FROM material
-			left join (select Max(Id) as maxid,MaterialId from materialstatus group by MaterialId) as max on max.MaterialId=material.Id
-			left join materialstatus on materialstatus.Id=max.maxid
-			 WHERE material.TrackerId=tracker.Id and materialstatus.Status!="Recalled" GROUP BY material.TrackerId) as `MR_Budget`'),
-		'tracker.BOQ Approved Amount',
-		DB::raw('"" as `BOQ Approved VS Budget Costing`'),
-		'tracker.PO Value (RM)',
-
-		DB::raw($invoiceamount),
-		DB::raw('(select FORMAT(sum(materialpoitem.Qty*materialpoitem.Price),2) as Cost from material
-		left join tracker a on material.TrackerId=a.id
-		left join materialpo on materialpo.MaterialId=material.id
-		left join materialpoitem on materialpoitem.POId=materialpo.Id
-		where materialpo.Status!="Cancelled" and a.Id=tracker.Id
-		Group By a.Id) as `Actual Costing`'),
-		DB::raw('"" as `All Costing`'),
-		DB::raw('(SELECT SUM(FORMAT(Amount,2)) FROM ewallet WHERE ewallet.TrackerId=tracker.Id GROUP BY ewallet.TrackerId) as `E-Wallet`'),
-		DB::raw('(select SUM(Case when (SELECT COUNT(distinct tt.Date) FROM timesheets tt WHERE tt.Code!="" and tt.Site_Name like "%(%" AND tt.Site_Name=t.Site_Name AND tt.Code=t.Code AND str_to_date(tt.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y"))>=scopeofwork.KPI+4 then Incentive_5
-		when (SELECT COUNT(distinct tt.Date) FROM timesheets tt WHERE tt.Code!="" AND tt.Site_Name like "%(%" AND tt.Site_Name=t.Site_Name AND tt.Code=t.Code AND str_to_date(tt.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y"))>=scopeofwork.KPI+3 then Incentive_4
-		when (SELECT COUNT(distinct tt.Date) FROM timesheets tt WHERE tt.Code!="" AND tt.Site_Name like "%(%" AND tt.Site_Name=t.Site_Name AND tt.Code=t.Code AND str_to_date(tt.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y"))>=scopeofwork.KPI+2 then Incentive_3
-		when (SELECT COUNT(distinct tt.Date) FROM timesheets tt WHERE tt.Code!="" AND tt.Site_Name like "%(%" AND tt.Site_Name=t.Site_Name AND tt.Code=t.Code AND str_to_date(tt.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y"))>=scopeofwork.KPI+1 then Incentive_2
-		when (SELECT COUNT(distinct tt.Date) FROM timesheets tt WHERE tt.Code!="" AND tt.Site_Name like "%(%" AND tt.Site_Name=t.Site_Name AND tt.Code=t.Code AND str_to_date(tt.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y"))<=scopeofwork.KPI then Incentive_1
-		else 0 END) as Incentive from tracker a left join (select Site_Name,Code,count(distinct Date) as c from timesheets where timesheets.Code!="" and timesheets.Site_Name like "%(%" group by Site_Name,Code) t on `t`.`Site_Name` = CONCAT("(",`Project_Code`,")") and t.Code=a.Incentive_Code left join `radius` on `t`.`Site_Name` = radius.Location_Name AND t.Code like CONCAT("%", radius.Code ,"%") left join `scopeofwork` on `radius`.`Code` = `scopeofwork`.`Code` where `tracker`.`ProjectId` = '.$projectid.' AND a.Id=tracker.Id group by a.Id) as `Incentive`'),
-		DB::raw('(select
-					Format(SUM(Amount),2) from manday where manday.TrackerId=tracker.Id) as `Manday`'),
-
-		DB::raw('"" as `PO VS Budget Costing`'),
-		DB::raw('"" as `PO VS Actual Costing`'),
-		DB::raw('"" as `Invoice VS Budget Costing`'),
-		DB::raw('"" as `Invoice VS Actual Costing`'),
-		DB::raw('"" as `PO VS All Costing`'),
-		DB::raw('"" as `Invoice VS All Costing`')
-		)
-		->whereRaw($filter)
-		->get();
-
-		if(!$summary)
-		{
-			$summary = DB::table('tracker')
-			->select(
-				DB::raw('"" as Id'),
-				DB::raw('"" as `Unique ID`'),
-				DB::raw('"" as `Site Name`'),
-
-				DB::raw('"" as `MR_Budget`'),
-				DB::raw('"" as `BOQ Approved Amount`'),
-				DB::raw('"" as `BOQ Approved VS Budget Costing`'),
-
-				DB::raw('"" as `PO Value (RM)`'),
-				DB::raw('"" as `Invoice Amount`'),
-				DB::raw('"" as `Actual Costing`'),
-
-				DB::raw('"" as `All Costing`'),
-				DB::raw('"" as `E-Wallet`'),
-				DB::raw('"" as `Incentive`'),
-				DB::raw('"" as `Manday`'),
-
-				DB::raw('"" as `PO VS Budget Costing`'),
-				DB::raw('"" as `PO VS Actual Costing`'),
-				DB::raw('"" as `Invoice VS Budget Costing`'),
-				DB::raw('"" as `Invoice VS Actual Costing`'),
-				DB::raw('"" as `PO VS All Costing`'),
-				DB::raw('"" as `Invoice VS All Costing`')
-			)
-				->limit(1)
-				->get();
-
-		}
-
-		return view("trackersummary",['me'=>$me, 'summary'=>$summary,'projects'=>$projects,'projectid'=>$projectid]);
-
-	}
-
 	public function cashbook($start=null,$end=null,$company=null){
 
 		$me=(new CommonController)->get_current_user();
@@ -6808,10 +5266,9 @@ public function duplicatetracker(Request $request)
 			DB::raw('"" as Note'),
 			DB::raw('case when ewallet.Expenses_Type="Hardware" then "6001/H01" when ewallet.Expenses_Type="Hotel" then "6001/A01" when ewallet.Expenses_Type="Petrol Or Tol" then "6001/P01" when ewallet.Expenses_Type="Petrol" then "6001/P01" when ewallet.Expenses_Type="Tol" then "6001/P01" when ewallet.Expenses_Type="Site Expenses" then "6001/S01" end as  AccNo'),
 			DB::raw('"1.00000000" as ToAccountRate'),
-			DB::raw('tracker.Project_Code as ProjNo'),
-			DB::raw('case when users.Company="Midascom Network Sdn Bhd" then "CME" when users.Company="OMNI AVENUE SDN BHD" then "GENSET" when users.Company="MIDASCOM PERKASA SDN BHD" then "FABYARD" end as DeptNo'),
+			DB::raw('case when users.Company="Midascom Network Sdn Bhd" then "CME" when users.Company="OMNI AVENUE SDN BHD" then "SPEEDFREAK" when users.Company="MIDASCOM PERKASA SDN BHD" then "FABYARD" end as DeptNo'),
 			DB::raw('"" as TaxType'),
-			DB::raw('concat(ewallet.`Expenses_Type`,"-",ewallet.`Remarks`," [",tracker.Project_Code,"]") as DetailDescription'),
+			DB::raw('concat(ewallet.`Expenses_Type`,"-",ewallet.`Remarks`) as DetailDescription'),
 			DB::raw('"" as FurtherDescription'),
 			DB::raw('"" as SalesAgent'),
 			DB::raw('ewallet.Amount as Amount'),
@@ -6829,7 +5286,6 @@ public function duplicatetracker(Request $request)
 		->leftJoin('tracker','ewallet.TrackerId','=','tracker.Id')
 		->leftJoin('users','ewallet.UserId','=','users.Id')
 		->leftJoin('users as creator','ewallet.created_by','=','creator.Id')
-		->leftJoin('projects','ewallet.ProjectId','=','projects.Id')
 		->whereRaw($condition)
 		->whereRaw($cond)
 		->where('ewallet.Expenses_Type','!=','')
@@ -6869,7 +5325,6 @@ public function duplicatetracker(Request $request)
 				DB::raw('"" as RCHQDate'))
 			->leftJoin('tracker','ewallet.TrackerId','=','tracker.Id')
 			->leftJoin('users','ewallet.UserId','=','users.Id')
-			->leftJoin('projects','ewallet.ProjectId','=','projects.Id')
 			->limit(1)
 			->get();
 
@@ -6919,8 +5374,7 @@ public function duplicatetracker(Request $request)
 			DB::raw('DATE_FORMAT(materialpo.created_at,"%d/%m/%Y") as DocDate'),
 			DB::raw('vendor.CreditorCode'),
 			DB::raw('materialpo.SupplierInvoiceNo'),
-			DB::raw('tracker.Project_Code as ProjNo'),
-			DB::raw('case when company.Company_Name like "Midascom Network Sdn Bhd%" then "CME" when company.Company_Name like "OMNI AVENUE SDN BHD%" then "GENSET" when company.Company_Name like "MIDASCOM PERKASA SDN BHD%" then "FABYARD" end as DeptNo'),
+			DB::raw('case when company.Company_Name like "Midascom Network Sdn Bhd%" then "CME" when company.Company_Name like "OMNI AVENUE SDN BHD%" then "SPEEDFREAK" when company.Company_Name like "MIDASCOM PERKASA SDN BHD%" then "FABYARD" end as DeptNo'),
 			DB::raw('users.Name as Created_By')
 			)
 		->leftjoin('material','material.Id','=','materialpo.MaterialId')
@@ -6997,7 +5451,7 @@ public function duplicatetracker(Request $request)
 			DB::raw('"1.00000000" as ToAccountRate'),
 			DB::raw('salesorderitem.description as DetailDescription'),
 			DB::raw('client.type as ProjNo'),
-			DB::raw('"GENSET" as DeptNo'),
+			DB::raw('"SPEEDFREAK" as DeptNo'),
 			DB::raw('"" as TaxType'),
 			// DB::raw('FORMAT(salesorderitem.qty*salesorderitem.price,2) as TaxableAmt'),
 			DB::raw('FORMAT(salesorder.total_amount,2) as TaxableAmt'),
@@ -7095,8 +5549,7 @@ public function duplicatetracker(Request $request)
 			DB::raw('materialpoitem.AccNo as AccNo'),
 			DB::raw('"1.00000000" as ToAccountRate'),
 			DB::raw('concat(materialpoitem.Description," ",materialpoitem.Add_Description) as DetailDescription'),
-			DB::raw('tracker.Project_Code as ProjNo'),
-			DB::raw('case when company.Company_Name like "Midascom Network Sdn Bhd%" then "CME" when company.Company_Name like "OMNI AVENUE SDN BHD%" then "GENSET" when company.Company_Name like "MIDASCOM PERKASA SDN BHD%" then "FABYARD" end as DeptNo'),
+			DB::raw('case when company.Company_Name like "Midascom Network Sdn Bhd%" then "CME" when company.Company_Name like "OMNI AVENUE SDN BHD%" then "SPEEDFREAK" when company.Company_Name like "MIDASCOM PERKASA SDN BHD%" then "FABYARD" end as DeptNo'),
 			// DB::raw('company.Company_Name as DeptNo'),
 			DB::raw('"" as TaxType'),
 			DB::raw('FORMAT(materialpoitem.Qty*materialpoitem.Price,2) as TaxableAmt'),
@@ -7138,7 +5591,6 @@ public function duplicatetracker(Request $request)
 			DB::raw('"1.00000000" as ToAccountRate'),
 			DB::raw('"Transport Charges" as DetailDescription'),
 			DB::raw(' TRIM( TRAILING ")" FROM TRIM( LEADING "(" FROM radius.Location_Name)) as ProjNo'),
-			DB::raw('deliveryform.project_type as DeptNo'),
 			DB::raw('"" as TaxType'),
 			DB::raw('deliveryform.charges as TaxableAmt'),
 			DB::raw('"" as TaxAdjustment'),
@@ -7298,35 +5750,22 @@ public function duplicatetracker(Request $request)
 			inner join
 				users on users.Id = `timesheets`.UserId
 			where  `timesheets`.`Site_Name` !='' and `timesheets`.`Time_In` !='' AND timesheets.Site_Name like '%(%)' and timesheets.Code!=''
-				AND timesheets.Code not like '%genset%' AND timesheets.Code not like '%meeting%' and timesheets.Code not like '%store%'
+				AND timesheets.Code not like '%SPEEDFREAK%' AND timesheets.Code not like '%meeting%' and timesheets.Code not like '%store%'
 				and timesheets.Code not like '%Fabyard%' and timesheets.Code not like '%Office%' and timesheets.Code not like '%OTW%'
-				) t ON t.site_name = CONCAT('(', tracker.Project_Code, ')') and
+				) t ON 
 				tracker.Incentive_Code like CONCAT('%', t.Code, '%')
 		Where tracker.Id=".$id);
 		return view('mandaydetails',['me'=>$me,'data'=>$data]);
 	}
 
-	public function dashboard($projectid=null)
+	public function dashboard()
   {
 		$me = (new CommonController)->get_current_user();
-		$projectids = explode("|",$me->ProjectIds);
 		$start=isset($_GET['start']) ? $_GET['start']:null;
 		$end=isset($_GET['end']) ? $_GET['end']:null;
-		$projects= DB::table('projects')
-		->whereIn('Id', $projectids)
-		->get();
 
-		$project= DB::table('projects')
-		->where('Id', '=',$projectid)
-		->first();
 		$filter="1";
 
-		if($projectid && $projectid!="null" && $projectid != 0	)
-		{
-			$filter.=' AND tracker.ProjectId='.$projectid;
-		}else{
-			$projectid=0;
-		}
 		$region=isset($_GET['region']) ? $_GET['region']:false;
 		if(isset($_GET['end']) && isset($_GET['start'])){
 			// $filter.=' AND (str_to_date(tracker.`1st Claim Invoice Date`,"%d-%M-%Y") BETWEEN "'.$start.'" AND "'.$end.'" OR
@@ -7398,7 +5837,7 @@ public function duplicatetracker(Request $request)
 			when (SELECT COUNT(distinct tt.Date) FROM timesheets tt WHERE tt.Code!="" AND tt.Site_Name like "%(%" AND tt.Site_Name=t.Site_Name AND replace(tt.Code," ","")=replace(t.Code," ","") AND str_to_date(tt.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y"))>=scopeofwork.KPI+2 then Incentive_3
 			when (SELECT COUNT(distinct tt.Date) FROM timesheets tt WHERE tt.Code!="" AND tt.Site_Name like "%(%" AND tt.Site_Name=t.Site_Name AND replace(tt.Code," ","")=replace(t.Code," ","") AND str_to_date(tt.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y"))>=scopeofwork.KPI+1 then Incentive_2
 			when (SELECT COUNT(distinct tt.Date) FROM timesheets tt WHERE tt.Code!="" AND tt.Site_Name like "%(%" AND tt.Site_Name=t.Site_Name AND replace(tt.Code," ","")=replace(t.Code," ","") AND str_to_date(tt.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y"))=scopeofwork.KPI then Incentive_1
-			else 0 END) as Total from tracker left join (select Site_Name,Code,count(distinct Date) as c from timesheets where timesheets.Code!="" and timesheets.Site_Name like "%(%" group by Site_Name,Code) t on `t`.`Site_Name` = CONCAT("(",`Project_Code`,")") and replace(t.Code," ","")=tracker.Incentive_Code left join `radius` on `t`.`Site_Name` = radius.Location_Name AND t.Code like CONCAT("%", radius.Code ,"%")
+			else 0 END) as Total from tracker left join (select Site_Name,Code,count(distinct Date) as c from timesheets where timesheets.Code!="" and timesheets.Site_Name like "%(%" group by Site_Name,Code) t replace(t.Code," ","")=tracker.Incentive_Code left join `radius` on `t`.`Site_Name` = radius.Location_Name AND t.Code like CONCAT("%", radius.Code ,"%")
 			left join `scopeofwork` on `radius`.`Code` = `scopeofwork`.`Code`
 			where '.$filter." group by tracker.Region");
 
@@ -7418,7 +5857,7 @@ public function duplicatetracker(Request $request)
 				else $item->Total_Incentive=0;
 				return $item;
 			});
-			return view('dashboard1',['me'=>$me,'total'=>$total,'projectid'=>$project? $project->Id:0 ,'date'=>$date,'start'=>$start,'end'=>$end]);
+			return view('dashboard1',['me'=>$me,'total'=>$total ,'date'=>$date,'start'=>$start,'end'=>$end]);
 		}
 
 
@@ -7445,7 +5884,6 @@ public function duplicatetracker(Request $request)
 		->select(DB::raw('SUM(item.Total) as Total_Cost'))
 	    ->leftJoin('material','material.Id','=','materialpo.MaterialId')
 	    ->leftJoin('tracker','tracker.Id','=','material.TrackerId')
-	    ->leftJoin('projects','projects.Id','=','material.ProjectId')
 	    ->leftJoin(DB::raw('(SELECT Type,PoId,SUM(Round(Qty*Price,2)) as total from materialpoitem group by PoId) as item'),'item.PoId','=','materialpo.Id')
 		->whereRaw($filter)
 		->first();
@@ -7471,14 +5909,14 @@ public function duplicatetracker(Request $request)
 		when (SELECT COUNT(distinct tt.Date) FROM timesheets tt WHERE tt.Code!="" AND tt.Site_Name like "%(%" AND tt.Site_Name=t.Site_Name AND replace(tt.Code," ","")=replace(t.Code," ","") AND str_to_date(tt.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y"))>=scopeofwork.KPI+2 then Incentive_3
 		when (SELECT COUNT(distinct tt.Date) FROM timesheets tt WHERE tt.Code!="" AND tt.Site_Name like "%(%" AND tt.Site_Name=t.Site_Name AND replace(tt.Code," ","")=replace(t.Code," ","") AND str_to_date(tt.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y"))>=scopeofwork.KPI+1 then Incentive_2
 		when (SELECT COUNT(distinct tt.Date) FROM timesheets tt WHERE tt.Code!="" AND tt.Site_Name like "%(%" AND tt.Site_Name=t.Site_Name AND replace(tt.Code," ","")=replace(t.Code," ","") AND str_to_date(tt.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y"))=scopeofwork.KPI then Incentive_1
-		else 0 END) as Total from tracker left join (select Site_Name,Code,count(distinct Date) as c from timesheets where timesheets.Code!="" and timesheets.Site_Name like "%(%" group by Site_Name,Code) t on `t`.`Site_Name` = CONCAT("(",`Project_Code`,")") and replace(t.Code," ","")=tracker.Incentive_Code left join `radius` on `t`.`Site_Name` = radius.Location_Name AND t.Code like CONCAT("%", radius.Code ,"%")
+		else 0 END) as Total from tracker left join (select Site_Name,Code,count(distinct Date) as c from timesheets where timesheets.Code!="" and timesheets.Site_Name like "%(%" group by Site_Name,Code) t replace(t.Code," ","")=tracker.Incentive_Code left join `radius` on `t`.`Site_Name` = radius.Location_Name AND t.Code like CONCAT("%", radius.Code ,"%")
 		left join `scopeofwork` on `radius`.`Code` = `scopeofwork`.`Code`
 		where '.$filter);
 		$totalewallet = DB::select("SELECT SUM(ewallet.Amount) as Total
 		FROM ewallet left join tracker on ewallet.TrackerId=tracker.Id
 		where ".$filter);
 
-		return view('dashboard',['me'=>$me,'total'=>$total,'totalinvoiced'=>$totalinvoiced,'totalcost'=>$totalcost,'totalsites'=>$totalsites,'project'=>$project,'projects'=>$projects,'projectid'=>$projectid,'totalmanday'=>$totalmanday,'totalincentive'=>$totalincentive,'totalewallet'=>$totalewallet,
+		return view('dashboard',['me'=>$me,'total'=>$total,'totalinvoiced'=>$totalinvoiced,'totalcost'=>$totalcost,'totalsites'=>$totalsites,'totalmanday'=>$totalmanday,'totalincentive'=>$totalincentive,'totalewallet'=>$totalewallet,
 		'start'=>$start,'end'=>$end,'date'=>$date]);
 	}
 
@@ -7488,7 +5926,6 @@ public function duplicatetracker(Request $request)
 
 		$start=isset($_GET['start']) ? $_GET['start']:"";
 		$end=isset($_GET['end']) ? $_GET['end']:"";
-		$projectid=isset($_GET['project']) ? $_GET['project']:null;
 		$date=isset($_GET['check']) ? json_decode($_GET['check']):false;
 		$filter="1 ";
 		if($start != ""){
@@ -7497,12 +5934,7 @@ public function duplicatetracker(Request $request)
 			$start=date('d-M-Y');
 			$end=date('d-M-Y');
 		}
-		$projects=DB::Table('projects')
-		->where('Project_Name','NOT LIKE','%department%')
-		->get();
-		if($projectid && $projectid != 'all'){
-			$filter.=" AND tracker.ProjectId=".$projectid;
-		}
+
 		$surveytotal=DB::table('tracker')
 		->select(
 			DB::raw('SUM(IF(`Survey (Y/N)` = "Yes", 1, 0)) AS Survey'),
@@ -7621,7 +6053,6 @@ public function duplicatetracker(Request $request)
 			DB::raw('round(`PO Value (RM)`,2) as total_po')
 
 		)
-		// ->whereIn('ProjectId',[31,51,135,136,131])
 		->whereRaw($filter)
 		->get();
 		if(!$qs[0]->total_site){
@@ -7647,7 +6078,6 @@ public function duplicatetracker(Request $request)
 			DB::raw('SUM(IF((tracker.`BOQ Approved Amount` <> "N/A" OR tracker.`BOQ Approved Amount` <> "") AND `Site Status`="KIV",1,0)) as kiv'),
 			DB::raw('SUM(IF((tracker.`BOQ Approved Amount` <> "N/A" OR tracker.`BOQ Approved Amount` <> "") AND `Site Status`="CANCELLED/DROP",1,0)) as cancelled')
 		)
-		// ->whereIn('ProjectId',[31,51,131])
 		->whereRaw($filter)
 		->get();
 		if(!$rollout[0]->total_site){
@@ -7677,7 +6107,6 @@ public function duplicatetracker(Request $request)
 			DB::raw('SUM(IF((`TNB` NOT IN ("No") OR `TNB (Y/N)` = "Yes") AND (`TNB Installation Date` <> "" OR `TNB/SESB Installation Date` <> "" OR `Installation TNB Date` <> "") ,1,0)) as total_tnb_installation'),
 			DB::raw('SUM(IF((`TNB` NOT IN ("No") OR `TNB (Y/N)` = "Yes") AND (`TNB Invoice Date` <> "" OR `TNB/SESB Invoice Date` <> "") ,1,0)) as total_tnb_invoice')
 		)
-		// ->whereIn('ProjectId',[31,51,131])
 		->whereRaw($filter)
 		->get();
 		if(!$tnb[0]->total_site){
@@ -7697,7 +6126,6 @@ public function duplicatetracker(Request $request)
 		}
 		$assr=DB::Table('tracker')
 		->select(
-			DB::raw('SUM(IF(ProjectId = 51,1,0)) as total_site'),
 			DB::Raw('SUM(IF(`ASSR / GE Submit Date` <> "",1,0)) as total_submit'),
 			DB::Raw('SUM(IF(`ASSR / GE Approval Date` <> "",1,0)) as total_approval'),
 			DB::Raw('SUM(IF(`LOI Signed Date` <> "",1,0)) as total_loi'),
@@ -7707,7 +6135,6 @@ public function duplicatetracker(Request $request)
 			DB::Raw('SUM(IF(`Actual CSI` <> "",1,0)) as total_csi')
 
 			)
-		// ->where('ProjectId',51)
 		->whereRaw($filter)
 		->get();
 		if(!$assr[0]->total_site){
@@ -7727,7 +6154,6 @@ public function duplicatetracker(Request $request)
 		}
 		$lc=DB::table('tracker')
 		->select(
-			DB::raw('SUM(IF(ProjectId = 51,1,0)) as total_site'),
 			DB::Raw('SUM(IF(`LOI Signed Date` <> "",1,0)) as total_loi'),
 			DB::Raw('SUM(IF(`TA SIGNED DATE` <> "",1,0)) as total_ta'),
 			DB::Raw('SUM(IF(`TA Stamp Date` <> "",1,0)) as total_stamp'),
@@ -7743,7 +6169,6 @@ public function duplicatetracker(Request $request)
 			DB::Raw('SUM(IF(`Bomba Submission` <> "",1,0)) as total_bomba'),
 			DB::Raw('SUM(IF(`LC/LA Approval Date` <> "",1,0)) as total_lc')
 		)
-		// ->where('ProjectId',51)
 		->whereRaw($filter)
 		->get();
 		if(!$lc[0]->total_site){
@@ -7775,7 +6200,6 @@ public function duplicatetracker(Request $request)
 			DB::raw('count(*) as total_site'),
 			DB::Raw('SUM(IF(`Doc Attachment` <> "" ,1,0)) as total_doc')
 		)
-		// ->where('ProjectId',136)
 		->whereRaw($filter)
 		->get();
 		if(!$renewal[0]->total_site){
@@ -7798,7 +6222,6 @@ public function duplicatetracker(Request $request)
 			DB::raw('SUM(IF(`LC/LA Approval Date` <> "",1,0)) as total_approval')
 
 		)
-		// ->where('ProjectId',135)
 		->whereRaw($filter)
 		->get();
 		if(!$legalization[0]->total_site){
@@ -7824,7 +6247,6 @@ public function duplicatetracker(Request $request)
 			DB::Raw('SUM(IF(`SP Approved` <> "" OR (`ROR Approved By Digi Admin` <> "" AND `ROR Approved By Digi Admin` <> "N/A"),1,0)) as total_to_invoice'),
 			DB::Raw('SUM(IF(`SO` <> "" OR `SO Readines` <> "" ,1,0)) as total_so')
 		)
-		// ->whereRaw('ProjectId In (31,51,135,136) OR `LC Submission (Y/N)` = "Yes"')
 		->whereRaw($filter)
 		->get();
 		if(!$osu[0]->total_site){
@@ -7841,14 +6263,12 @@ public function duplicatetracker(Request $request)
 		}
 		$osu2=DB::Table('tracker')
 		->select(
-			DB::raw('SUM(IF(ProjectId IN (31,51),1,0)) as total_site'),
 			DB::raw('"?" as site_done'),
-			DB::Raw('SUM(IF(ProjectId IN (31,51) AND `SP Readiness` <> "",1,0)) as total_site_pack'),
+			DB::Raw('SUM(IF(`SP Readiness` <> "",1,0)) as total_site_pack'),
 			DB::Raw('SUM(IF((`SP Approved` <> "" OR `ROR Approved by Digi Admin` <> ""),1,0)) as total_to_invoice'),
 			DB::Raw('SUM(IF( (`SO` <> "" OR `SO Readines` <> ""),1,0)) as total_so')
 
 		)
-		// ->whereIn('ProjectId',[31,51])
 		->whereRaw($filter)
 		->get();
 		if(!$osu2[0]->total_site){
@@ -7864,8 +6284,7 @@ public function duplicatetracker(Request $request)
 		}
 
 			// dd($assr);
-		return view('dashboard2',['me'=>$me,'surveytotal'=>$surveytotal,'surveytotal'=>$surveytotal,'draftertotal'=>$draftertotal,'drafterpo2'=>$drafterpo2,'qs'=>$qs,'rollout'=>$rollout,'tnb'=>$tnb,'assr'=>$assr,'renewal'=>$renewal,'lc'=>$lc,'legalization'=>$legalization,'osu'=>$osu,'osu2'=>$osu2,
-		'projects'=>$projects,'projectid'=>$projectid,'start'=>$start,'end'=>$end,'date'=>$date]);
+		return view('dashboard2',['me'=>$me,'surveytotal'=>$surveytotal,'surveytotal'=>$surveytotal,'draftertotal'=>$draftertotal,'drafterpo2'=>$drafterpo2,'qs'=>$qs,'rollout'=>$rollout,'tnb'=>$tnb,'assr'=>$assr,'renewal'=>$renewal,'lc'=>$lc,'legalization'=>$legalization,'osu'=>$osu,'osu2'=>$osu2,'start'=>$start,'end'=>$end,'date'=>$date]);
 	}
 
 	public function dashboard3()
@@ -7873,11 +6292,9 @@ public function duplicatetracker(Request $request)
 		$me = (new CommonController)->get_current_user();
 		$start=isset($_GET['start']) ? $_GET['start']:"";
 		$end=isset($_GET['end']) ? $_GET['end']:"";
-		$projectid=isset($_GET['project']) ? $_GET['project']:0;
 		$date=isset($_GET['check']) ? json_decode($_GET['check']):false;
 		$filter="1 ";
 		$template=DB::table('trackertemplate')
-		->where('ProjectId',$projectid)
 		->get();
 		$template=collect($template);
 		if($start != ""){
@@ -7887,17 +6304,12 @@ public function duplicatetracker(Request $request)
 			$end=date('d-M-Y');
 		}
 
-		$projects=DB::Table('projects')
-		->where('Project_Name','NOT LIKE','%department%')
-		->get();
-		$filter.=" AND tracker.ProjectId=".$projectid;
 		$totalsites=DB::table('tracker')
 		->select(DB::raw('COUNT(*) AS Total'),
 			DB::raw('SUM(IF(`Site Status` = "Completed", 1, 0)) AS Completed'),
 			DB::raw('SUM(replace(`BOQ Approved Amount`,",","")) as boq'),
 			DB::raw('SUM(`Invoice Amount`)+SUM(`1st Claim Invoice Amount`)+SUM(`2nd Claim Invoice Amount`)+SUM(`3rd Claim Invoice Amount`)+SUM(`Retention Invoice Amount`) as invoice')
 		)
-		// ->whereIn('ProjectId',[31,51,131,135])
 		->whereRaw($filter)
 		->get();
 		if(!$totalsites[0]->Total){
@@ -7919,7 +6331,6 @@ public function duplicatetracker(Request $request)
 			DB::raw('SUM(IF(`BOQ Approved Amount` <> "" ,1,0)) as approved'),
 			DB::raw('SUM(IF(`PO Value (RM)` <> "",1,0)) as po')
 		)
-		// ->whereIn('ProjectId',[31,51,131])
 		->whereRaw($filter)
 		->get();
 		if(!$projected[0]->total_boq){
@@ -7944,7 +6355,6 @@ public function duplicatetracker(Request $request)
 			DB::Raw('SUM(`PO Value (RM)`) as total_po'),
 			DB::Raw('SUM(IF(`PO Value (RM)`<>"",1,0)) as po')
 		)
-		// ->where('ProjectId',136)
 		->whereRaw($filter)
 		->get();
 		if(!$renewal[0]->total_boq){
@@ -7969,7 +6379,6 @@ public function duplicatetracker(Request $request)
 			DB::raw('SUM(IF(`PO Value (RM)`<>"",1,0)) as po')
 
 		)
-		// ->where('ProjectId',135)
 		->whereRaw($filter)
 		->get();
 		if(!$legalization[0]->total_boq){
@@ -8010,10 +6419,8 @@ public function duplicatetracker(Request $request)
 			DB::raw('SUM(If(`Site Status` = "Cancelled/Drop",1,0)) as cancelled'),
 			DB::raw('SUM(IF(`Site Status` = "Cancelled/Drop",`BOQ Approved Amount`,0)) as boq_cancelled')
 		)
-		// ->whereIn('ProjectId',[31,51,131])
 		->whereRaw($filter)
 		->get();
-		// dd($project);
 		if(!$project[0]->pending_ntp && $project[0]->pending_ntp != 0){
 			$project=collect([
 				(object)[
@@ -8066,7 +6473,6 @@ public function duplicatetracker(Request $request)
 			DB::raw('SUM(IF(`OSU Milestone` = "Cancelled" OR `Milestone`="Cancelled",`BOQ Approved Amount`,0)) as cancelled')
 
 		)
-		// ->whereIn('ProjectId',[31,51,131,135])
 		->whereRaw($filter)
 		->get();
 		if(!$milestone[0]->total_pcc){
@@ -8116,7 +6522,7 @@ public function duplicatetracker(Request $request)
 			when (SELECT COUNT(distinct tt.Date) FROM timesheets tt WHERE tt.Code!="" AND tt.Site_Name like "%(%" AND tt.Site_Name=t.Site_Name AND replace(tt.Code," ","")=replace(t.Code," ","") AND str_to_date(tt.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y"))>=scopeofwork.KPI+2 then Incentive_3
 			when (SELECT COUNT(distinct tt.Date) FROM timesheets tt WHERE tt.Code!="" AND tt.Site_Name like "%(%" AND tt.Site_Name=t.Site_Name AND replace(tt.Code," ","")=replace(t.Code," ","") AND str_to_date(tt.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y"))>=scopeofwork.KPI+1 then Incentive_2
 			when (SELECT COUNT(distinct tt.Date) FROM timesheets tt WHERE tt.Code!="" AND tt.Site_Name like "%(%" AND tt.Site_Name=t.Site_Name AND replace(tt.Code," ","")=replace(t.Code," ","") AND str_to_date(tt.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y"))=scopeofwork.KPI then Incentive_1
-			else 0 END) as Incentive from tracker a left join (select Site_Name,Code,count(distinct Date) as c from timesheets where timesheets.Code!="" and timesheets.Site_Name like "%(%" group by Site_Name,Code) t on `t`.`Site_Name` = CONCAT("(",`Project_Code`,")") and replace(t.Code," ","")=a.Incentive_Code left join `radius` on `t`.`Site_Name` = radius.Location_Name AND t.Code like CONCAT("%", radius.Code ,"%") left join `scopeofwork` on `radius`.`Code` = `scopeofwork`.`Code`) as total_incentive'),
+			else 0 END) as Incentive from tracker a left join (select Site_Name,Code,count(distinct Date) as c from timesheets where timesheets.Code!="" and timesheets.Site_Name like "%(%" group by Site_Name,Code) t replace(t.Code," ","")=a.Incentive_Code left join `radius` on `t`.`Site_Name` = radius.Location_Name AND t.Code like CONCAT("%", radius.Code ,"%") left join `scopeofwork` on `radius`.`Code` = `scopeofwork`.`Code`) as total_incentive'),
 			DB::raw('(SELECT SUM(If(TrackerId <> 0,ewallet.`Amount`,0)) from ewallet inner join tracker on ewallet.TrackerId = tracker.Id where '.$filter.') as total_ewallet'),
 			DB::raw('(SELECT COUNT(Distinct(TrackerId)) from ewallet left join tracker on tracker.Id = ewallet.TrackerId where TrackerId <> 0 AND '.$filter.') as ewallet')
 
@@ -8141,7 +6547,7 @@ public function duplicatetracker(Request $request)
 			]);
 		}
 
-		return view('dashboard3',['me'=>$me,'totalsites'=>$totalsites,'projected'=>$projected,'renewal'=>$renewal,'legalization'=>$legalization,'project'=>$project,'milestone'=>$milestone,'projects'=>$projects,'projectid'=>$projectid,'date'=>$date,'end'=>$end,'start'=>$start,
+		return view('dashboard3',['me'=>$me,'totalsites'=>$totalsites,'projected'=>$projected,'renewal'=>$renewal,'legalization'=>$legalization,'project'=>$project,'milestone'=>$milestone,'date'=>$date,'end'=>$end,'start'=>$start,
 		'gross'=>$gross,'template'=>$template]);
 	}
 
@@ -8149,7 +6555,6 @@ public function duplicatetracker(Request $request)
 		$me=(new CommonController)->get_current_user();
 
 		$region=isset($_GET['region']) ? $_GET['region']:null;
-		$proj=isset($_GET['project'])? $_GET['project']:null;
 
 		$filter="1 ";
 		$group="";
@@ -8160,25 +6565,6 @@ public function duplicatetracker(Request $request)
 
 		$tracId=isset($_GET['trackerId']) ? $_GET['trackerId']:0;
 
-		if($proj && $proj != "0"){
-			$filter.=" AND tracker.ProjectId = {$proj}";
-			if(isset($_GET['group'])){
-				$col='tracker.Region';
-				$group='tracker.Region';
-			}else{
-				$group='projects.Project_Name';
-				$col='projects.Project_Name';
-			}
-		}elseif($proj === "0"){
-			if(isset($_GET['group'])){
-				$col='tracker.Region';
-				$group='tracker.Region';
-			}else{
-				$group='projects.Project_Name';
-				$col='projects.Project_Name';
-			}
-			$filter.=" AND projects.Project_Name IN ('MY_DIGI','MY_UM','MY_SBC','MY_(DIGI) LEGALIZATION','MY_(DIGI) RENEWAL PERMIT')";
-		}
 		if(isset($_GET['region']) && $region == ""){
 			$filter.=" AND tracker.Region IS NULL OR tracker.Region= '{$region}' ";
 			$group='tracker.`Unique ID`';
@@ -8192,7 +6578,6 @@ public function duplicatetracker(Request $request)
 		}
 		$tracker=DB::table('tracker')
 		->select('tracker.Id',DB::raw("CONCAT(tracker.`Unique ID`,'-',tracker.`Site ID`,'-',tracker.`Site LRD`,'-',tracker.`Site Name`) as 'site'"))
-		->leftjoin('projects','projects.Id','=','projects.Project_Name')
 		->whereRaw($filter)
 		->get();
 
@@ -8213,7 +6598,6 @@ public function duplicatetracker(Request $request)
 		->leftjoin('materialpo','materialpo.Id','=','materialpoitem.POId')
 		->leftjoin('material','material.Id','=','materialpoitem.MaterialId')
 		->leftjoin('tracker','tracker.Id','=','material.TrackerId')
-		->leftjoin('projects','projects.Id','=','tracker.ProjectId')
 		->whereRaw($filter)
 		;
 		$total=$details->groupBy('materialpoitem.Type')->orderBy('materialpoitem.Type')->get();
@@ -8222,7 +6606,6 @@ public function duplicatetracker(Request $request)
 		->leftjoin('material','material.Id','=','materialpoitem.MaterialId')
 		->leftjoin('materialpo','materialpo.Id','=','materialpoitem.MaterialId')
 		->leftjoin('tracker','tracker.Id','=','material.TrackerId')
-		->leftjoin('projects','projects.Id','=','material.ProjectId')
 		->whereRaw($filter)
 		->groupBy(DB::raw($group))
 		->orderBy(DB::raw($col),'desc')
@@ -8336,9 +6719,8 @@ public function duplicatetracker(Request $request)
 		->leftJoin('users','users.Id','=','deliveryform.DriverId')
 		->leftJoin('radius','radius.Id','=','deliveryform.Location')
 		->leftJoin('roadtax','roadtax.Id','=','deliveryform.roadtaxId')
-		->leftJoin('projects','projects.Id','=','deliveryform.ProjectId')
 		->leftJoin('companies','companies.Id','=','deliveryform.company_id')
-		->select('deliveryform.Id','deliveryform.roadtaxId','deliveryform.delivery_date','users.Name','deliveryform.DO_No','radius.Location_Name','projects.Project_Name','deliveryform.project_type','companies.Company_Name','deliveryform.distance_km','deliveryform.charges_rate','deliveryform.charges','deliveryform.incentive_rate','deliveryform.basicincentive','deliveryform.ontime',DB::raw('IFNULL(deliveryform.incentive,0)'),DB::Raw(' (IFNULL(deliveryform.basicincentive,0) + IFNULL(deliveryform.ontime,0) + IFNULL(deliveryform.incentive,0) ) as totalincentive'))
+		->select('deliveryform.Id','deliveryform.roadtaxId','deliveryform.delivery_date','users.Name','deliveryform.DO_No','radius.Location_Name','companies.Company_Name','deliveryform.distance_km','deliveryform.charges_rate','deliveryform.charges','deliveryform.incentive_rate','deliveryform.basicincentive','deliveryform.ontime',DB::raw('IFNULL(deliveryform.incentive,0)'),DB::Raw(' (IFNULL(deliveryform.basicincentive,0) + IFNULL(deliveryform.ontime,0) + IFNULL(deliveryform.incentive,0) ) as totalincentive'))
 		->whereRaw('(deliverystatuses.delivery_status = "Completed" OR deliverystatuses.delivery_status = "Incomplete") AND roadtax.Type != "TRUCK" AND DO_NO NOT LIKE BINARY "%\_R%"')
 		->where(DB::raw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")'),">=",DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
         ->where(DB::raw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))

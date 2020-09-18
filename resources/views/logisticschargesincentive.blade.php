@@ -102,16 +102,16 @@
                           rowId:"deliveryform.Id",
                           fnInitComplete: function(oSettings, json) {
                             var api = this.api();
-                            var charges = api.column(12,{search:"applied"}).data().sum();
-                            var incentive = api.column(17,{search:"applied"}).data().sum();
+                            var charges = api.column(10,{search:"applied"}).data().sum();
+                            var incentive = api.column(15,{search:"applied"}).data().sum();
                            $("#total").html("RM" + charges.toFixed(2));
                            $("#totalincentive").html("RM" + incentive.toFixed(2));
                           },
                           "drawCallback":  function( settings ) {
 
                             var api = this.api();
-                            var charges = api.column(12,{search:"applied"}).data().sum();
-                            var incentive = api.column(17,{search:"applied"}).data().sum();
+                            var charges = api.column(10,{search:"applied"}).data().sum();
+                            var incentive = api.column(15,{search:"applied"}).data().sum();
                            $("#total").html("RM" + charges.toFixed(2));
                            $("#totalincentive").html("RM" + incentive.toFixed(2));
                           }, 
@@ -124,9 +124,7 @@
                           { data: "users.Name", title:"Driver Name"},
                           { data: "deliveryform.DO_No", title:"DO Number"},
                           { data: "radius.Location_Name", title:"Site"},
-                          { data: "projects.Project_Name", title:"Project"},
-                          { data: "deliveryform.project_type", title:"Project Type"},
-                          { data: "companies.Company_Name", title:"Company"},
+                          { data: "companies.Company_Name", title:"Company"},//7
                           { data: "deliveryform.distance_km", title:"Distance(KM)"},
                           { data: "deliveryform.charges_rate", title:"Charges Rate"},
                           { data: "deliveryform.charges", title:"Tranpsort Charges"},
@@ -256,32 +254,6 @@
                    </div>
                  </div>
 
-                 <!--<div class="col-md-2">
-                   <div class="input-group">
-                    <label>Company:</label>
-
-                     <select class="select2 form-control" id="company" name="company">
-                      <option value=""></option>
-                      @foreach ($company as $c)
-                      <option value="{{$c->Id}}"   >{{$c->Company_Name}}</option>
-                      @endforeach
-                     </select>
-
-                   </div>
-                 </div>
-
-                  <div class="col-md-2">
-                   <div class="input-group">
-                    <label>Project Type:</label>
-                     <select class="select2 form-control" id="projecttype" name="projecttype">
-                      <option value=""></option>
-                      @foreach($projecttype as $pt)
-                      <option value="{{$pt->type}}"  >{{$pt->type}}</option>
-                      @endforeach
-                     </select>
-                   </div>
-                 </div>-->
-
                  <div class="col-md-2">
                   <br>
                      <div class="input-group">
@@ -368,7 +340,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.
@@ -391,22 +363,8 @@
 
       var d=$('#range').val();
       var arr = d.split(" - ");
-      var projecttype = $('#projecttype').val();
-      var company = $('#company').val();
-      console.log(projecttype,company)
 
-      if((projecttype == null || projecttype == "") && (company == null || company == ""))
-      {
-        window.location.href ="{{ url("/logisticschargesincentive") }}/"+arr[0]+"/"+arr[1];
-      }
-      else if((company == null || company == ""))
-      {
-        window.location.href ="{{ url("/logisticschargesincentive") }}/"+arr[0]+"/"+arr[1]+"/"+projecttype;
-      }
-      else if((projecttype == null || projecttype == ""))
-      {
-        window.location.href ="{{ url("/logisticschargesincentive") }}/"+arr[0]+"/"+arr[1]+"/"+ null +"/"+company;
-      }
+      window.location.href ="{{ url("/logisticschargesincentive") }}/"+arr[0]+"/"+arr[1];
     }
 
     function updateincentive(id,value)

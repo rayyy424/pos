@@ -218,10 +218,6 @@
                                    ],
 
                            },{
-                                   label: "Department:",
-                                   name: "property.Department"
-
-                           },{
                                    label: "Business:",
                                    name: "property.Business"
 
@@ -347,11 +343,11 @@
                    sScrollY: "100%",
                    sScrollX: "100%",
                    @if ($type=="OWN PROPERTY")
-                     columnDefs: [{ "visible": false, "targets": [1,2,5,7,23] },{"className": "dt-left", "targets": [3,23,24,25]},{"className": "dt-center", "targets": "_all"}],
+                     columnDefs: [{ "visible": false, "targets": [1,2,5,22] },{"className": "dt-left", "targets": [3,22,23,24]},{"className": "dt-center", "targets": "_all"}],
                    @elseif ($type=="RENTAL")
-                     columnDefs: [{ "visible": false, "targets": [1,2,4,6,22] },{"className": "dt-left", "targets": [3,23,24,25]},{"className": "dt-center", "targets": "_all"}],
+                     columnDefs: [{ "visible": false, "targets": [1,2,4,6,21] },{"className": "dt-left", "targets": [3,22,23,24]},{"className": "dt-center", "targets": "_all"}],
                     @else
-                     columnDefs: [{ "visible": false, "targets": [1,2,4,5,6,7,8,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25] },{"className": "dt-left", "targets": [3,23,24,25]},{"className": "dt-center", "targets": "_all"}],
+                     columnDefs: [{ "visible": false, "targets": [1,2,4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24] },{"className": "dt-left", "targets": [3,22,23,24]},{"className": "dt-center", "targets": "_all"}],
                    @endif
                    bScrollCollapse: true,
                    columns: [
@@ -362,7 +358,6 @@
                      {data:'property.Landlord', title:"Landlord"},
                      {data:'property.Company', title:"Company"},
                      {data:'property.Tenant', title:"Tenant"},
-                     {data:'property.Department', title:"Department"},
                      {data:'property.Business', title:"Business"},
                      {data:'property.Area', title:"Area"},
                      {data:'property.Property_Type', title:"Type"},
@@ -644,7 +639,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

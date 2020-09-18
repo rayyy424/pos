@@ -166,17 +166,6 @@
                     <div class="form-group">
 
                         <div class="col-lg-4">
-                            <label>Project : </label>
-
-                            <select class="form-control select2" id="ProjectId" name="ProjectId" style="width: 100%;">
-                              <option></option>
-                              @foreach ($projects as $project)
-                                  <option  value="{{$project->Id}}">{{$project->Project_Name}}</option>
-                              @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-lg-4">
                           <label> Position : </label>
                           @foreach ($users as $user)
                             <input type="text" class="form-control" id="Position" name="Position" value="{{$user->Position}}" disabled>
@@ -360,7 +349,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.
@@ -402,14 +391,6 @@ function applyadvance() {
     });
 
     $("#ajaxloader").show();
-
-    // leave_type=$('[name="Leave_Type"]').val();
-    // leave_term=$($('input[name=Leave_Term]:checked')).val();
-    // start_date=$('[name="Start_Date"]').val();
-    // end_date=$('[name="End_Date"]').val();
-    // reason=$('[name="Reason"]').val();
-    // project=$('[name="Project"]').val();
-    // approver=$('[name="Approver"]').val();
 
 
 

@@ -82,7 +82,7 @@
                        "userid": "{{ $me->UserId }}"
                    }
                  },
-                  columnDefs: [{ "visible": false, "targets": [1,2,3,4] },{"className": "dt-center", "targets": "_all"}],
+                  columnDefs: [{ "visible": false, "targets": [1,2,3] },{"className": "dt-center", "targets": "_all"}],
                   colReorder: false,
                   bAutoWidth: true,
                   dom: "Brt",
@@ -109,7 +109,6 @@
                            },
                           { data: "assets.Id",title:"Id"},
                           { data: "assettrackings.Id",title:"TrackingId"},
-                          { data: "assettrackings.ProjectId",title:"ProjectId"},
                           { data: "assettrackings.UserId",title:"UserId"},
                           { data: "assets.Label" ,title:"Label"},
                           { data: "assets.Type" ,title:"Type"},
@@ -224,7 +223,6 @@
                       {data:'Name', title:'Name'},
                       {data:'Grade', title:'Grade'},
                       {data:'Company', title:'Company'},
-                      {data:'Department', title:'Department'},
                       {data:'Position', title:'Position'},
                       {data:'Joining_Date', title:'Joining Date'},
                       {data:'Confirmation_Date', title:'Confirmation Date'},
@@ -338,15 +336,6 @@
 
             <input type="hidden" id="transfertrackingid" name="transfertrackingid" value=0>
 
-            {{-- <div class="form-group">
-                <label>Transfer to [Project]</label>
-                  <select class="form-control select2" id="ProjectId" name="ProjectId" style="width: 100%;">
-                    <option value="0">No Project</option>
-                    @foreach ($projects as $project)
-                       <option value="{{$project->Id}}">{{$project->Project_Name}}</option>
-                    @endforeach
-                  </select>
-              </div> --}}
               <div class="form-group">
                 <label>Transfer to [Staff]</label>
 
@@ -439,23 +428,6 @@
     </div>
 
     <!--on leave list -->
-    <div class="modal fade" id="projectview" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title" id="myModalLabel">Project without approval setting</h4>
-            </div>
-            <div class="modal-body" name="projectlabel" id="projectlabel">
-
-            </div>
-            <div class="modal-footer">
-              <center><img src="{{ URL::to('/') ."/img/ajax-loader.gif" }}" width="50px" height="50px" alt="Loading" name='ajaxloader5' id="ajaxloader5"></center>
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-          </div>
-        </div>
-    </div>
 
     <div class="modal fade" id="scheduleview" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -860,7 +832,18 @@
                   <div class="small-box bg-green">
                     <div class="inner">
                       @foreach($assetsummary as $item)
-                      <h3>{{$item -> Laptop}} / {{$item -> LaptopTotal}}</h3>
+                      <h3>@if($item -> Laptop!=null)
+                            {{$item -> Laptop}} 
+                          @else 
+                            0 
+                          @endif 
+                          /
+                          @if($item -> LaptopTotal!=null)
+                            {{$item -> LaptopTotal}} 
+                          @else 
+                            0 
+                          @endif
+                      </h3>
                       @endforeach
 
                       <p>Laptop<br><br></p>
@@ -877,7 +860,18 @@
                   <div class="small-box bg-green">
                     <div class="inner">
                       @foreach($assetsummary as $item)
-                      <h3>{{$item -> Desktop}} / {{$item -> DesktopTotal}}</h3>
+                      <h3>@if($item -> Desktop!=null)
+                            {{$item -> Desktop}} 
+                          @else 
+                            0 
+                          @endif 
+                          /
+                          @if($item -> DesktopTotal!=null)
+                            {{$item -> DesktopTotal}} 
+                          @else 
+                            0 
+                          @endif
+                      </h3>
                       @endforeach
 
                       <p>Desktop<br><br></p>
@@ -908,7 +902,6 @@
                     <th>Action</th>
                     <th>Id</th>
                     <th>TrackingId</th>
-                    <th>ProjectId</th>
                     <th>UserId</th>
                     <th>Label</th>
                     <th>Type</th>
@@ -1000,60 +993,6 @@
 
 
 
-
-    {{-- @if($me->Create_Project || $me->Create_Project_Code)
-      <div class="row">
-        <div class="col-md-12">
-          <h4 class="box-title"><b>PO & Invoice<b></h4>
-        </div>
-          @if($pendingpo)
-            <div class="col-lg-2 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-red">
-                <div class="inner">
-                    <h3>{{$pendingpo[0]->pending}}</h3>
-                  <p>Job Pending PO</p>
-                </div>
-                <div class="icon">
-                  <i class="ion ion-social-usd"></i>
-                </div>
-                  <a href="{{ url('/POSummary') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-          @endif
-          @if($pendinginvoice)
-            <div class="col-lg-2 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-red">
-                <div class="inner">
-                    <h3>{{$pendinginvoice[0]->pending}}</h3>
-                  <p>Job Done Pending Invoice</p>
-                </div>
-                <div class="icon">
-                  <i class="ion ion-social-usd"></i>
-                </div>
-                  <a href="{{ url('/InvoiceSummary') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-          @endif
-          @if($pendingpayment)
-            <div class="col-lg-2 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-red">
-                <div class="inner">
-                    <h3>{{$pendingpayment[0]->pending}}</h3>
-                  <p>Invoiced Pending Payment</p>
-                </div>
-                <div class="icon">
-                  <i class="ion ion-social-usd"></i>
-                </div>
-                  <a href="{{ url('/InvoiceSummary') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-          @endif
-      </div>
-    @endif --}}
-
       @if($me->Admin)
           <div class="row">
             <div class="col-xs-12 table-responsive">
@@ -1075,7 +1014,6 @@
                           <th>Name</th>
                           <th>Grade</th>
                           <th>Company</th>
-                          <th>Department</th>
                           <th>Position</th>
                           <th>Joining Date</th>
                           <th>Confirmation Date</th>
@@ -1214,7 +1152,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -1653,41 +1591,7 @@ function labelview(type)
                     }
       });
     }
-    function projectview($type)
-     {
-        $('#projectview').modal('show');
-        $("#projectlabel").html("");
-        $.ajaxSetup({
-           headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') }
-        });
-        $("#ajaxloader5").show();
-        $.ajax({
-                    url: "{{ url('/approval/project/') }}/"+$type,
-                    success: function(response){
-                      if (response==0)
-                      {
-                        var message ="Failed to retrieve on project list!";
-                        $("#warning-alert ul").html(message);
-                        $("#warning-alert").show();
-                        $("#ajaxloader5").hide();
-                      }
-                      else {
-                        var myObject = JSON.parse(response);
-                        var display='<table border="1" align="center" class="projecttable" cellspacing="0" width="100%" padding="30px" style="font-size: 13px;">';
-                        display+='<tr class="projectheader"><td>Project Name</td></tr>';
-                        $.each(myObject, function(i,item){
-                          display+="<tr>";
-                          display+='<td>'+item.Project_Name+'</td>';
-                          display+="</tr>";
-                        });
-                        $("#exist-alert").hide();
-                        var myObject = JSON.parse(response);
-                          $("#projectlabel").html(display);
-                          $("#ajaxloader5").hide();
-                        }
-                      }
-        });
-      }
+
       function scheduleview()
       {
          $('#scheduleview').modal('show');

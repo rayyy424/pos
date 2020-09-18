@@ -25,20 +25,6 @@ class ClaimController extends Controller {
 	{
 		$me = (new CommonController)->get_current_user();
 
-      // $myclaim = DB::table('claims')
-      // ->leftJoin('claimstatuses', 'claims.Id', '=', 'claimstatuses.ClaimId')
-      // ->leftJoin('users as submitter', 'claims.UserId', '=', 'submitter.Id')
-      // ->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
-      // ->select('claims.Id','claims.Claim_Name','submitter.Name','claims.Date','claims.Project_Code','claims.Project','claims.Site_Name','claims.State','claims.Work_Description','claims.Expenses_Type','claims.GST_No','claims.GST_Amount','claims.Total_Amount','claims.Remarks','approver.Name as Approver','claimstatuses.Claim_Status as Status','claimstatuses.updated_at as Review_Date','claimstatuses.Comment')
-      // ->where('claims.UserId', '=', $me->UserId)
-			// ->orderBy('claims.Id','desc')
-      // ->get();
-
-			// $myclaim = DB::table('claimsheets')
-      // ->select('claimsheets.Id','claimsheets.UserId','claimsheets.Claim_Sheet_Name','claimsheets.Remarks','claimsheets.Status','claimsheets.created_at as Created_Date')
-      // ->where('claimsheets.UserId', '=', $me->UserId)
-			// ->orderBy('claimsheets.Id','desc')
-      // ->get();
 
 			$paymentmonth = DB::table('cutoff')
 			->orderBy(DB::raw('str_to_date(cutoff.Payment_Month,"%M %Y")'))
@@ -58,33 +44,13 @@ class ClaimController extends Controller {
 			->groupBy('claimsheets.Id','claimstatuses.UserId','claimstatuses.Status')
 			->get();
 
-			// $myclaim = DB::table('claims')
-      // ->select('claims.Id','claims.UserId','claims.Date','projectcodes.Project_Code','projects.Project_Name','claims.Site_Name','claims.State','claims.Work_Description',
-			// 'claims.Next_Person','claims.Car_No','claims.Mileage','claims.Expenses_Type','claims.GST_No','claims.GST_Amount','claims.Total_Amount','claims.Remarks','approver.Name as Approver','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Updated_At','files.Web_Path')
-			// ->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Claim" Group By TargetId) as maxfile'), 'maxfile.TargetId', '=', 'claims.Id')
-			// ->leftJoin('files', 'files.Id', '=', DB::raw('maxfile.`maxid` and files.`Type`="Claim"'))
-			// ->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-			// ->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
-			// ->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
-	    // ->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
-			// ->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
-      // ->where('claims.UserId', '=', $me->UserId)
-			// ->orderBy('claims.Id','desc')
-      // ->get();
-
-			$projects = DB::table('projects')
-			->get();
-
-			$projectcodes = DB::table('projectcodes')
-			->get();
-
 			$options= DB::table('options')
 			->whereIn('Table', ["users","claims"])
 			->orderBy('Table','asc')
 			->orderBy('Option','asc')
 			->get();
 
-			return view('myclaim', ['me' => $me, 'myclaim' => $myclaim, 'projects' =>$projects,'projectcodes' =>$projectcodes,'options' =>$options,'current'=>$current,'paymentmonth'=>$paymentmonth]);
+			return view('myclaim', ['me' => $me, 'myclaim' => $myclaim,'options' =>$options,'current'=>$current,'paymentmonth'=>$paymentmonth]);
 
 	}
 
@@ -247,57 +213,6 @@ class ClaimController extends Controller {
 		->groupBy('claimsheets.Id')
 		->get();
 
-		// $claims = DB::table('claims')
-		// ->select(DB::raw('submitter.Id,submitter.Name as Submitter,count(*) as Claims,claimstatuses.Status'))
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
-		// ->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
-		// ->leftJoin('users as submitter', 'claims.UserId', '=', 'submitter.Id')
-		// ->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
-		// ->where('claimstatuses.UserId', '=', $me->UserId)
-		// ->orderBy('submitter.Name','asc')
-		// ->groupBy('submitter.Name','claimstatuses.Status')
-		// ->get();
-
-		// $claims = DB::table('claims')
-		// ->select(DB::raw('submitter.Id,CONCAT(Year(STR_TO_DATE(claims.Date, "%d-%b-%Y")),"-",Monthname(STR_TO_DATE(claims.Date, "%d-%b-%Y"))) as Month,submitter.Name as Submitter,count(*) as Claims,claimstatuses.Status'))
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
-		// ->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
-		// ->leftJoin('users as submitter', 'claims.UserId', '=', 'submitter.Id')
-		// ->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
-		// // ->where('claimstatuses.UserId', '=', $me->UserId)
-		// ->orderBy('submitter.Name','asc')
-		// ->groupBy(DB::raw('Month'),'submitter.Name','claimstatuses.Status')
-		// ->get();
-
-			// $claimmanagement = DB::table('claims')
-			// ->leftJoin('claimstatuses', 'claims.Id', '=', 'claimstatuses.ClaimId')
-      // ->leftJoin('users as submitter', 'claims.UserId', '=', 'submitter.Id')
-      // ->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
-      // ->select('claimstatuses.Id','claims.Claim_Name','submitter.Name','claims.Date','claims.Project_Code','claims.Project','claims.Site_Name','claims.State','claims.Work_Description','claims.Expenses_Type','claims.GST_No','claims.GST_Amount','claims.Total_Amount','claims.Remarks','approver.Name as Approver','claimstatuses.Claim_Status as Status','claimstatuses.updated_at as Review_Date','claimstatuses.Comment')
-      // ->where('claimstatuses.UserId', '=', $me->UserId)
-			// ->orderBy('claims.Id','desc')
-      // ->get();
-
-			// $claims = DB::table('claims')
-			// ->leftJoin('claimitems', 'claimitems.ClaimId', '=', 'claims.Id')
-			// ->leftJoin('claimitemstatuses', 'claimitemstatuses.ClaimItemId', '=', 'claimitems.Id')
-			// ->leftJoin('users as submitter', 'claims.UserId', '=', 'submitter.Id')
-			// ->leftJoin('users as approver', 'claimitemstatuses.UserId', '=', 'approver.Id')
-			// ->select('claimitems.Id','claimitems.Date','projectcodes.Project_Code','projects.Project_Name','pm.Name as Project_Manager','claimitems.Site_Name','claimitems.State','claimitems.Work_Description','Expenses_Type','GST_No','GST_Amount','Total_Amount','claimitems.Remarks','approver.Name AS Approver','claimitemstatuses.Status','claimitemstatuses.Comment')
-			// ->groupBy('claims.Id','approver.Name')
-			// ->orderBy('claims.Id','Desc')
-			// ->get();
-
-			// $claims = DB::table('claims')
-			// ->leftJoin('claimitems', 'claimitems.ClaimId', '=', 'claims.Id')
-			// ->leftJoin('claimitemstatuses', 'claimitemstatuses.ClaimItemId', '=', 'claimitems.Id')
-			// ->leftJoin('users as submitter', 'claims.UserId', '=', 'submitter.Id')
-			// ->leftJoin('users as approver', 'claimitemstatuses.UserId', '=', 'approver.Id')
-			// ->select('claims.Id','claims.Claim_Name','submitter.Name As Submitter','claims.Date','claims.Remarks','approver.Name As Approver','claimitemstatuses.Status','claimitemstatuses.created_at As Assigned_At','claimitemstatuses.updated_at As Updated_At')
-			// ->groupBy('claims.Id','approver.Name')
-			// ->orderBy('claims.Id','Desc')
-			// ->get();
-
 			return view('claimmanagement', ['me' => $me,'showleave' => $showleave ,'allclaims' =>$allclaims,'allfinalclaims' =>$allfinalclaims,'claims' => $claims ,'start'=>$start,'end'=>$end ]);
 
 	}
@@ -331,13 +246,6 @@ class ClaimController extends Controller {
 		->where('Type', '=', 'Claim')
 		->get();
 
-		$projects = DB::table('projects')
-		->select('projects.Id','projects.Project_Name','users.Name')
-		->leftJoin('users','users.Id','=','projects.Project_Manager')
-		->get();
-
-		$projectcodes = DB::table('projectcodes')
-		->get();
 
 		$options= DB::table('options')
 		->whereIn('Table', ["users","claims"])
@@ -346,10 +254,8 @@ class ClaimController extends Controller {
 		->get();
 
 		$myclaimdetail = DB::table('claims')
-    ->select('claims.Id','claims.ClaimSheetId','claims.Date',DB::raw('"" as Day'),'projectcodes.Project_Code','projects.Project_Name','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
+    ->select('claims.Id','claims.ClaimSheetId','claims.Date',DB::raw('"" as Day'),'claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
 		'claims.Next_Person','claims.Transport_Type','claims.Car_No','claims.Mileage','claims.Currency','claims.Rate','claims.Expenses_Type','claims.Total_Expenses','claims.Petrol_SmartPay',DB::raw('"" as Claims_Amount_Exclude_SmartPay'),'claims.Advance','claims.Total_Amount','claims.GST_Amount','claims.Total_Without_GST','claims.Receipt_No','claims.Company_Name','claims.GST_No','claims.Remarks','approver.Name as Approver','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Updated_At')
-		->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
     ->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
@@ -357,18 +263,8 @@ class ClaimController extends Controller {
 		->orderBy('claims.Id','desc')
     ->get();
 
-			// $myclaimdetail = DB::table('claims')
-			// ->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
-			// ->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-			// ->leftJoin('claimstatuses', 'claims.Id', '=', 'claimstatuses.ClaimId')
-			// ->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
-			// ->select('claimitems.Id','claimitems.Date','projectcodes.Project_Code','projects.Project_Name','pm.Name as Project_Manager','claimitems.Site_Name','claimitems.State','claimitems.Work_Description','Expenses_Type','GST_No','GST_Amount','Total_Amount','claimitems.Remarks','approver.Name AS Approver','claimitemstatuses.Status','claimitemstatuses.Comment')
-			// //->select('timesheetitems.Id','timesheetitems.Date_Time','timesheetitems.Leader_Member','timesheetitems.Project_Code','timesheetitems.Project','timesheetitems.Site_Name','timesheetitems.State','timesheetitems.Check_In_Type','timesheetitems.Time_In','timesheetitems.Time_Out','timesheetitems.Allowance','timesheetitems.Reason','timesheetitems.Remarks','timesheetitems.Checked_Date')
-			// ->where('claimitems.ClaimId', '=', $id)
-			// ->orderBy('claimitems.Date','Asc')
-			// ->get();
 
-			return view('myclaimdetail', ['me' => $me, 'myclaim' => $myclaim, 'myclaimdetail' => $myclaimdetail,'myreceipt' =>$myreceipt, 'projects' =>$projects,'projectcodes' =>$projectcodes, 'options' =>$options]);
+			return view('myclaimdetail', ['me' => $me, 'myclaim' => $myclaim, 'myclaimdetail' => $myclaimdetail,'myreceipt' =>$myreceipt, 'options' =>$options]);
 			//return view('mytimesheet', ['me' => $me,'showleave' =>$showleave, 'mytimesheet' => $mytimesheet, 'hierarchy' => $hierarchy, 'final' => $final]);
 
 	}
@@ -419,7 +315,7 @@ class ClaimController extends Controller {
 		}
 
 		$user = DB::table('users')
-		->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Department','Position','Emergency_Contact_Person',
+		->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Position','Emergency_Contact_Person',
 		'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','files.Web_Path')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
@@ -441,12 +337,6 @@ class ClaimController extends Controller {
 		->where('Type', '=', 'Claim')
 		->get();
 
-		$projects = DB::table('projects')
-		->get();
-
-		$projectcodes = DB::table('projectcodes')
-		->get();
-
 		$options= DB::table('options')
 		->whereIn('Table', ["users","claims"])
 		->orderBy('Table','asc')
@@ -456,10 +346,8 @@ class ClaimController extends Controller {
 
 
 		$claimdetail = DB::table('claims')
-		->select('claimstatuses.Id','claims.Id as ClaimId','claimstatuses.Status','claims.Date',DB::raw('"" as Day'),'projectcodes.Project_Code','projects.Project_Name','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
+		->select('claimstatuses.Id','claims.Id as ClaimId','claimstatuses.Status','claims.Date',DB::raw('"" as Day'),'claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
 		'claims.Next_Person','claims.Transport_Type','claims.Car_No','claims.Mileage','claims.Currency','claims.Rate','claims.Expenses_Type','claims.Total_Expenses','claims.Petrol_SmartPay',DB::raw('"" as Claims_Amount_Exclude_SmartPay'),'claims.Advance','claims.Summon','claims.Total_Amount','allowance.Allowance','allowance.Monetary_Comp','claims.GST_Amount','claims.Total_Without_GST','claims.Receipt_No','claims.Company_Name','claims.GST_No','claims.Remarks','approver.Name as Approver','claimstatuses.Comment','claimstatuses.updated_at as Review_Date')
-		->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
 		->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
@@ -470,11 +358,9 @@ class ClaimController extends Controller {
 
 		$timesheetdetail = DB::table('timesheets')
 		->select('timesheetstatuses.Id','timesheets.Id as TimesheetId','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheetstatuses.Status','timesheets.Date',DB::raw('"" as Day'),'timesheets.Check_In_Type',
-		 'timesheets.Time_In','timesheets.Time_Out','timesheets.State','timesheets.Allowance','timesheets.Monetary_Comp','timesheets.OT1','timesheets.OT2','timesheets.OT3','timesheets.Leader_Member','timesheets.Next_Person','projectcodes.Project_Code','projects.Project_Name','timesheets.Site_Name','timesheets.Work_Description','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Comment','timesheetstatuses.updated_at as Review_Date','timesheetchecked.Timesheet_Status','checker.Name as Checked_By','timesheetchecked.Updated_At')
+		 'timesheets.Time_In','timesheets.Time_Out','timesheets.State','timesheets.Allowance','timesheets.Monetary_Comp','timesheets.OT1','timesheets.OT2','timesheets.OT3','timesheets.Leader_Member','timesheets.Next_Person','timesheets.Site_Name','timesheets.Work_Description','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Comment','timesheetstatuses.updated_at as Review_Date','timesheetchecked.Timesheet_Status','checker.Name as Checked_By','timesheetchecked.Updated_At')
 		 ->leftJoin( DB::raw('(select Max(Id) as maxid2,TimesheetId from timesheetchecked Group By TimesheetId) as max2'), 'max2.TimesheetId', '=', 'timesheets.Id')
 		 ->leftJoin('timesheetchecked', 'timesheetchecked.Id', '=', DB::raw('max2.`maxid2`'))
-		->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
 		->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'timesheetstatuses.UserId', '=', 'approver.Id')
@@ -501,29 +387,14 @@ class ClaimController extends Controller {
 
 		$mylevel = DB::table('approvalsettings')
 		->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 		->where('approvalsettings.Type', '=', 'Claim')
 		->where('approvalsettings.UserId', '=', $me->UserId)
 		->orderBy('approvalsettings.Country','asc')
 
 		// ->orderBy('approvalsettings.Level','Final Approval","5th Approval","4th Approval","3rd Approval","2nd Approval","1st Approval")
 		->orderByRaw("FIELD(approvalsettings.Level , 'Final Approval', '5th Approval', '4th Approval','3rd Approval','2nd Approval','1st Approval') ASC")
-		->orderBy('projects.Project_Name','asc')
 		->first();
-
-		// $claimdetail = DB::table('claimitems')
-		// ->leftJoin('projects', 'claimitems.ProjectId', '=', 'projects.Id')
-		// ->leftJoin('projectcodes', 'claimitems.Project_Code_Id', '=', 'projectcodes.Id')
-		// ->leftJoin('users as pm', 'projects.Project_Manager', '=', 'pm.Id')
-		// ->leftJoin('claimitemstatuses', 'claimitems.Id', '=', 'claimitemstatuses.ClaimItemId')
-		// ->leftJoin('users as approver', 'claimitemstatuses.UserId', '=', 'approver.Id')
-		// ->select('claimitemstatuses.Id','claimitemstatuses.ClaimItemId','claimitems.Date','projectcodes.Project_Code','projects.Project_Name','pm.Name as Project_Manager','claimitems.Site_Name','claimitems.State','claimitems.Work_Description','Expenses_Type','GST_No','GST_Amount','Total_Amount','claimitems.Remarks','approver.Name AS Approver','claimitemstatuses.Status','claimitemstatuses.Comment')
-		// //->select('timesheetitems.Id','timesheetitems.Date_Time','timesheetitems.Leader_Member','timesheetitems.Project_Code','timesheetitems.Project','timesheetitems.Site_Name','timesheetitems.State','timesheetitems.Check_In_Type','timesheetitems.Time_In','timesheetitems.Time_Out','timesheetitems.Allowance','timesheetitems.Reason','timesheetitems.Remarks','timesheetitems.Checked_Date')
-		// ->where('claimitems.ClaimId', '=', $id)
-		// ->where('approver.Id', '=', $me->UserId)
-		// ->orderBy('claimitems.Date','Asc')
-		// ->get();
 
 		$startmonth=date('d-M-Y', strtotime('-5 months'));
 		$endmonth = date('d-M-Y', strtotime("today"));
@@ -566,7 +437,7 @@ class ClaimController extends Controller {
 
 			// dd($mileageconflict);
 
-		return view('claimdetail', ['me' => $me,'ClaimsheetId'=>$id,'viewall'=>$viewall, 'claim' =>$claim,'receipts' =>$receipts, 'Id' =>$id, 'user' =>$user,'claimdetail' => $claimdetail,'projects' =>$projects,'projectcodes' =>$projectcodes, 'options' =>$options,'mylevel' => $mylevel,
+		return view('claimdetail', ['me' => $me,'ClaimsheetId'=>$id,'viewall'=>$viewall, 'claim' =>$claim,'receipts' =>$receipts, 'Id' =>$id, 'user' =>$user,'claimdetail' => $claimdetail, 'options' =>$options,'mylevel' => $mylevel,
 			'approver' =>$approver,'months'=>$months,'timesheetdetail'=>$timesheetdetail,'start' => $start,'end' => $end,'mileageconflict'=>$mileageconflict]);
 
 	}
@@ -599,11 +470,9 @@ class ClaimController extends Controller {
 		$Id = explode(",", $input["Id"]);
 
 		$claims = DB::table('claimsheets')
-		->select('claims.Id','claimsheets.Id as ClaimsheetId','claimsheets.UserId as SubmitterId','claims.Date','projectcodes.Project_Code','projects.Project_Name','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
+		->select('claims.Id','claimsheets.Id as ClaimsheetId','claimsheets.UserId as SubmitterId','claims.Date','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
 		'claims.Next_Person','claims.Transport_Type','claims.Car_No','claims.Mileage','claims.Currency','claims.Rate','claims.Expenses_Type','claims.Total_Amount','claims.GST_Amount','claims.Total_Without_GST','claims.Receipt_No','claims.Company_Name','claims.GST_No','claims.Remarks','approver.Name','claimstatuses.UserId','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Updated_At')
 		->leftJoin('claims', 'claims.ClaimSheetId', '=', 'claimsheets.Id')
-		->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
 		->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
@@ -613,74 +482,25 @@ class ClaimController extends Controller {
 
 		$mylevel = DB::table('approvalsettings')
 		->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 		->where('approvalsettings.Type', '=', 'Claim')
 		->where('approvalsettings.UserId', '=', $me->UserId)
 		->orderBy('approvalsettings.Country','asc')
-		->orderBy('projects.Project_Name','asc')
 		// ->orderBy('approvalsettings.Level','Final Approval","5th Approval","4th Approval","3rd Approval","2nd Approval","1st Approval")
 		->orderByRaw("FIELD(approvalsettings.Level , 'Final Approval', '5th Approval', '4th Approval','3rd Approval','2nd Approval','1st Approval') ASC")
 		->get();
 
-		// $approver = DB::table('approvalsettings')
-		// ->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		// ->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		// ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
-		// ->where('approvalsettings.Type', '=', 'Claim')
-		// ->where(function ($query) {
-    //             $query->where('approvalsettings.Level', '=', '1st Approval')
-    //                   ->orWhere('approvalsettings.Level', '=', 'Final Approval');
-    //         })
-		// // ->where('approvalsettings.Level', '=', '1st Approval')
-		// // ->orWhere('approvalsettings.Level', '=', 'Final Approval')
-		// ->where('approvalsettings.ProjectId', '<>', '0')
-		// ->orderBy('approvalsettings.Country','asc')
-		// ->orderBy('projects.Project_Name','asc')
-		// ->orderBy('approvalsettings.Level','asc')
-		// ->get();
-
 		$approver = DB::table('approvalsettings')
 		->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 		->where('approvalsettings.Type', '=', 'Claim')
-		// ->where(function ($query) {
-    //             $query->where('approvalsettings.Level', '=', '1st Approval')
-    //                   ->orWhere('approvalsettings.Level', '=', 'Final Approval');
-    //         })
-		// // ->where('approvalsettings.Level', '=', '1st Approval')
-		// // ->orWhere('approvalsettings.Level', '=', 'Final Approval')
-		->where('approvalsettings.ProjectId', '<>', '0')
 		->orderBy('approvalsettings.Country','asc')
-		->orderBy('projects.Project_Name','asc')
 		->orderByRaw("FIELD(approvalsettings.Level , '1st Approval', '2nd Approval', '3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
 		->get();
-
-		// $countryapprover = DB::table('approvalsettings')
-		// ->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		// ->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		// ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
-		// ->where('approvalsettings.Type', '=', 'Claim')
-		// ->where(function ($query) {
-    //             $query->where('approvalsettings.Level', '=', '1st Approval')
-    //                   ->orWhere('approvalsettings.Level', '=', 'Final Approval');
-    //         })
-		// // ->where('approvalsettings.Level', '=', '1st Approval')
-		// // ->orWhere('approvalsettings.Level', '=', 'Final Approval')
-		// ->where('approvalsettings.ProjectId', '=', '0')
-		// ->where('approvalsettings.Country', '<>', '')
-		// ->orderBy('approvalsettings.Country','asc')
-		// ->orderBy('projects.Project_Name','asc')
-		// ->orderBy('approvalsettings.Level','asc')
-		// ->get();
 
 		foreach ($claims as $claim) {
 			# code...
 			foreach ($mylevel as $level) {
-
-				if ($level->Project_Name==$claim->Project_Name)
-				{
 
 					if($level->Level=="Final Approval")
 					{
@@ -688,15 +508,13 @@ class ClaimController extends Controller {
 					}
 
 					break;
-				}
-
 			}
 
 			if(!$mylevel)
 			{
-
-				$level = (object) ['Id'=>0,'Name'=>"",'Level'=>0,'Country'=>'','Project_Name'=>''];
+				$level = (object) ['Id'=>0,'Name'=>"",'Level'=>0,'Country'=>''];
 			}
+			else
 
 			$submitted=false;
 			foreach ($approver as $user) {
@@ -706,7 +524,7 @@ class ClaimController extends Controller {
 					$user->Level="6 Final Approval";
 				}
 
-					if (!empty($user->Id) && $user->Project_Name==$claim->Project_Name && $claim->UserId != $user->Id && filter_var($level->Level, FILTER_SANITIZE_NUMBER_INT)<filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT))
+					if (!empty($user->Id) && $claim->UserId != $user->Id && filter_var($level->Level, FILTER_SANITIZE_NUMBER_INT)<filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT))
 					{
 
 						DB::table('claimstatuses')->insert(
@@ -720,7 +538,7 @@ class ClaimController extends Controller {
 
 						break;
 					}
-					elseif (!empty($user->Id) && $user->Project_Name==$claim->Project_Name && $claim->SubmitterId == $user->Id && $level->Id == $user->Id && $level->Level=="6 Final Approval")
+					elseif (!empty($user->Id) && $claim->SubmitterId == $user->Id && $level->Id == $user->Id && $level->Level=="6 Final Approval")
 					{
 
 						DB::table('claimstatuses')->insert(
@@ -734,7 +552,7 @@ class ClaimController extends Controller {
 
 						break;
 					}
-					elseif (!empty($user->Id) && $user->Project_Name==$claim->Project_Name && $claim->UserId == $user->Id && $claim->Status=="Recalled")
+					elseif (!empty($user->Id) && $claim->UserId == $user->Id && $claim->Status=="Recalled")
 					{
 
 						DB::table('claimstatuses')->insert(
@@ -748,7 +566,7 @@ class ClaimController extends Controller {
 
 						break;
 					}
-					elseif (!empty($user->Id) && $user->Project_Name==$claim->Project_Name && $claim->UserId == $user->Id) {
+					elseif (!empty($user->Id) && $claim->UserId == $user->Id) {
 						# code...
 						if(str_contains($claim->Status, 'Rejected') || str_contains($claim->Status, 'Recalled'))
 						{
@@ -866,10 +684,8 @@ class ClaimController extends Controller {
 			}
 
 			$claims = DB::table('claims')
-			->select('claims.Id','claims.Date','projectcodes.Project_Code','projects.Project_Name','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
+			->select('claims.Id','claims.Date','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
 			'claims.Next_Person','claims.Transport_Type','claims.Car_No','claims.Mileage','claims.Currency','claims.Rate','claims.Expenses_Type','claims.Total_Expenses','claims.Petrol_SmartPay',DB::raw('"" as Claims_Amount_Exclude_SmartPay'),'claims.Advance','claims.Total_Amount','claims.Remarks','approver.Name as Approver','claimstatuses.UserId','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Updated_At')
-			->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-			->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
 			->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
 			->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
 			->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
@@ -877,13 +693,13 @@ class ClaimController extends Controller {
 			->orderBy('claims.Date','asc')
 			->get();
 
-			Mail::send('emails.claimapproval', ['me' => $me,'claims' => $claims], function($message) use ($emails,$me,$NotificationSubject)
-			{
-					$emails = array_filter($emails);
-					array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-					$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+			// Mail::send('emails.claimapproval', ['me' => $me,'claims' => $claims], function($message) use ($emails,$me,$NotificationSubject)
+			// {
+			// 		$emails = array_filter($emails);
+			// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+			// 		$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
 
-			});
+			// });
 
 			return 1;
 		}
@@ -905,10 +721,8 @@ class ClaimController extends Controller {
 		$Id = explode(",", $input["Id"]);
 
 		$claims = DB::table('claims')
-		->select('claims.Id','claimstatuses.Id as ClaimStatusId','claims.Date','projectcodes.Project_Code','projects.Project_Name','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
+		->select('claims.Id','claimstatuses.Id as ClaimStatusId','claims.Date','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
 		'claims.Next_Person','claims.Transport_Type','claims.Car_No','claims.Mileage','claims.Currency','claims.Rate','claims.Expenses_Type','claims.Total_Expenses','claims.Petrol_SmartPay',DB::raw('"" as Claims_Amount_Exclude_SmartPay'),'claims.Advance','claims.Total_Amount','claims.GST_Amount','claims.Total_Without_GST','claims.Receipt_No','claims.Company_Name','claims.GST_No','claims.Remarks','approver.Name','claimstatuses.UserId','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Updated_At')
-		->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
 		->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
@@ -979,10 +793,8 @@ class ClaimController extends Controller {
 			}
 
 			$claims = DB::table('claims')
-			->select('claims.Id','claims.Date','projectcodes.Project_Code','projects.Project_Name','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
+			->select('claims.Id','claims.Date','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
 			'claims.Next_Person','claims.Transport_Type','claims.Car_No','claims.Mileage','claims.Currency','claims.Rate','claims.Expenses_Type','claims.Total_Expenses','claims.Petrol_SmartPay',DB::raw('"" as Claims_Amount_Exclude_SmartPay'),'claims.Advance','claims.Total_Amount','claims.GST_Amount','claims.Total_Without_GST','claims.Receipt_No','claims.Company_Name','claims.GST_No','claims.Remarks','approver.Name as Approver','claimstatuses.UserId','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Updated_At')
-			->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-			->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
 			->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
 			->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
 			->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
@@ -990,13 +802,13 @@ class ClaimController extends Controller {
 			->orderBy('claims.Date','asc')
 			->get();
 
-			Mail::send('emails.claimrecall', ['me' => $me,'claims' => $claims], function($message) use ($emails,$me,$NotificationSubject)
-			{
-					$emails = array_filter($emails);
-					array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-					$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+			// Mail::send('emails.claimrecall', ['me' => $me,'claims' => $claims], function($message) use ($emails,$me,$NotificationSubject)
+			// {
+			// 		$emails = array_filter($emails);
+			// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+			// 		$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
 
-			});
+			// });
 		}
 
 		return 1;
@@ -1105,8 +917,6 @@ class ClaimController extends Controller {
 						['UserId' => $me->UserId,
 						 'Claim_Name' => $input["Claim_Name"],
 						 'Date' => $input["Date"],
-						 'Project_Code' => $input["Project_Code"],
-						 'ProjectId' => $input["ProjectId"],
 						 'Site_Name' => $input["Site_Name"],
 						 'State' => $input["State"],
 						 'Work_Description' => $input["Work_Description"],
@@ -1141,11 +951,9 @@ class ClaimController extends Controller {
 		$Id = explode(",", $input["Id"]);
 
 		$claims = DB::table('claims')
-		->select('claims.Id','claimsheets.UserId','claims.Date','projectcodes.Project_Code','projects.Project_Name','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
+		->select('claims.Id','claimsheets.UserId','claims.Date','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
 		'claims.Next_Person','claims.Transport_Type','claims.Car_No','claims.Mileage','claims.Currency','claims.Rate','claims.Expenses_Type','claims.Total_Expenses','claims.Petrol_SmartPay',DB::raw('"" as Claims_Amount_Exclude_SmartPay'),'claims.Advance','claims.Total_Amount','claims.GST_Amount','claims.Total_Without_GST','claims.Receipt_No','claims.Company_Name','claims.GST_No','claims.Remarks','approver.Name','claimstatuses.UserId','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Updated_At')
 		->leftJoin('claimsheets', 'claimsheets.Id', '=', 'claims.ClaimSheetId')
-		->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
 		->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
@@ -1155,25 +963,11 @@ class ClaimController extends Controller {
 
 		$approver = DB::table('approvalsettings')
 		->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 		->where('approvalsettings.Type', '=', 'Claim')
-		->where('approvalsettings.ProjectId', '<>', '0')
 		->orderBy('approvalsettings.Country','asc')
-		->orderBy('projects.Project_Name','asc')
 		->orderByRaw("FIELD(approvalsettings.Level , '1st Approval','2nd Approval','3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
 		->get();
-
-		// $countryapprover = DB::table('approvalsettings')
-		// ->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		// ->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		// ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
-		// ->where('approvalsettings.Type', '=', 'Claim')
-		// ->where('approvalsettings.ProjectId', '=', '0')
-		// ->orderBy('approvalsettings.Country','asc')
-		// ->orderBy('projects.Project_Name','asc')
-		// ->orderByRaw("FIELD(approvalsettings.Level , '1st Approval','2nd Approval','3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
-		// ->get();
 
 		$submittedfornextapproval=false;
 		$final=false;
@@ -1187,7 +981,7 @@ class ClaimController extends Controller {
 
 				foreach ($approver as $user) {
 
-						if (!empty($user->Id) && $user->Project_Name==$claim->Project_Name && $claim->UserId != $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($claim->Status, FILTER_SANITIZE_NUMBER_INT))
+						if (!empty($user->Id) && $claim->UserId != $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($claim->Status, FILTER_SANITIZE_NUMBER_INT))
 						{
 
 							DB::table('claimstatuses')->insert(
@@ -1203,13 +997,13 @@ class ClaimController extends Controller {
 
 							break;
 						}
-						elseif (!empty($user->Id) && $user->Project_Name==$claim->Project_Name && $claim->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($claim->Status, FILTER_SANITIZE_NUMBER_INT))
+						elseif (!empty($user->Id) && $claim->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($claim->Status, FILTER_SANITIZE_NUMBER_INT))
 						{
 							# code...
 								$submitted=true;
 								array_push($emaillist,$user->Id);
 						}
-						elseif (!empty($user->Id) && $user->Project_Name==$claim->Project_Name && $claim->UserId == $user->Id && $claim->Status=="Recalled")
+						elseif (!empty($user->Id) && $claim->UserId == $user->Id && $claim->Status=="Recalled")
 						{
 
 							DB::table('claimstatuses')->insert(
@@ -1224,7 +1018,7 @@ class ClaimController extends Controller {
 
 							break;
 						}
-						elseif (!empty($user->Id) && $user->Project_Name==$claim->Project_Name && $claim->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($claim->Status, FILTER_SANITIZE_NUMBER_INT))
+						elseif (!empty($user->Id) && $claim->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($claim->Status, FILTER_SANITIZE_NUMBER_INT))
 						{
 							# code...
 								$submitted=true;
@@ -1232,7 +1026,7 @@ class ClaimController extends Controller {
 								array_push($emaillist,$user->Id);
 								array_push($emaillist,$claim->UserId);
 						}
-						elseif (!empty($user->Id) && $user->Project_Name==$claim->Project_Name && $claim->UserId != $user->Id && $user->Level=="Final Approval")
+						elseif (!empty($user->Id) && $claim->UserId != $user->Id && $user->Level=="Final Approval")
 						{
 
 							DB::table('claimstatuses')->insert(
@@ -1401,11 +1195,9 @@ class ClaimController extends Controller {
 			}
 
 			$claims = DB::table('claims')
-			->select('claims.Id','claimsheets.UserId','claims.Date','submitter.Name as Submitter','projectcodes.Project_Code','projects.Project_Name','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
+			->select('claims.Id','claimsheets.UserId','claims.Date','submitter.Name as Submitter','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
 			'claims.Next_Person','claims.Transport_Type','claims.Car_No','claims.Mileage','claims.Currency','claims.Rate','claims.Expenses_Type','claims.Total_Expenses','claims.Petrol_SmartPay',DB::raw('"" as Claims_Amount_Exclude_SmartPay'),'claims.Advance','claims.Total_Amount','claims.GST_Amount','claims.Total_Without_GST','claims.Receipt_No','claims.Company_Name','claims.GST_No','claims.Remarks','approver.Name as Approver','claimstatuses.UserId','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Updated_At')
 			->leftJoin('claimsheets', 'claimsheets.Id', '=', 'claims.ClaimSheetId')
-			->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-			->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
 			->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
 			->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
 			->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
@@ -1414,13 +1206,13 @@ class ClaimController extends Controller {
 			->orderBy('claims.Date','asc')
 			->get();
 
-			Mail::send('emails.claimapproval2', ['me' => $me,'claims' => $claims], function($message) use ($emails,$claims,$NotificationSubject)
-			{
-					$emails = array_filter($emails);
-					array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-					$message->to($emails)->subject($NotificationSubject.' ['.$claims[0]->Submitter.']');
+			// Mail::send('emails.claimapproval2', ['me' => $me,'claims' => $claims], function($message) use ($emails,$claims,$NotificationSubject)
+			// {
+			// 		$emails = array_filter($emails);
+			// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+			// 		$message->to($emails)->subject($NotificationSubject.' ['.$claims[0]->Submitter.']');
 
-			});
+			// });
 
 			return 1;
 		}
@@ -1436,7 +1228,7 @@ class ClaimController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$user = DB::table('users')
-		->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Department','Position','Emergency_Contact_Person',
+		->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Position','Emergency_Contact_Person',
 		'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','files.Web_Path')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
@@ -1455,36 +1247,15 @@ class ClaimController extends Controller {
 		->where('Type', '=', 'Claim')
 		->get();
 
-		$projects = DB::table('projects')
-		->get();
-
-		$projectcodes = DB::table('projectcodes')
-		->get();
-
 		$options= DB::table('options')
 		->whereIn('Table', ["users","claims"])
 		->orderBy('Table','asc')
 		->orderBy('Option','asc')
 		->get();
 
-		// $claimdetail = DB::table('claims')
-    // 	->select('claims.Date','projectcodes.Project_Code','projects.Project_Name','claims.Site_Name','claims.State','claims.Work_Description',
-		// 'claims.Next_Person','claims.Car_No','claims.Mileage','claims.Expenses_Type','claims.Total_Expenses','claims.Petrol_SmartPay',DB::raw('"" as Claims_Amount_Exclude_SmartPay'),'claims.Advance','claims.Total_Amount','claims.GST_Amount','claims.Total_Without_GST','claims.Receipt_No','claims.Company_Name','claims.GST_No','claims.Remarks','approver.Name as Approver','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Updated_At')
-		// ->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-		// ->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
-		// ->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
-		// ->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
-		// ->where('claims.ClaimSheetId', '=', $id)
-		// ->where('claimstatuses.Status', 'like','%Final Approved%')
-		// ->orderBy(DB::raw('str_to_date(claims.Date,"%d-%M-%Y")'),'asc')
-		// ->get();
-
 		$claimdetail = DB::table('claims')
-		->select('claims.Date',DB::raw('"" as Day'),'projects.Project_Name as Project','claims.Depart_From As From','claims.Destination As To','claims.Site_Name As Site','claims.State',
+		->select('claims.Date',DB::raw('"" as Day'),'claims.Depart_From As From','claims.Destination As To','claims.Site_Name As Site','claims.State',
 		'claims.Next_Person as Next_P','claims.Transport_Type as Type','claims.Car_No AS Number','claims.Mileage','claims.Currency as Cur','claims.Rate','claims.Expenses_Type AS Exp_Type','claims.Total_Expenses as Tot_Exp','claims.Petrol_SmartPay as SmartP',DB::raw('"-" as Exc_SmartP'),'claims.Advance as Adv','claims.Summon','claims.Total_Amount as Tot','allowance.Allowance','claims.GST_Amount as GST','claims.Total_Without_GST As Without_GST','claims.Receipt_No as Receipt','claims.Company_Name AS Company','claims.GST_No','claims.Remarks','approver.Name as Approver','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Review_Date')
-		->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
 		->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
@@ -1498,9 +1269,7 @@ class ClaimController extends Controller {
 
 			$timesheetdetail = DB::table('timesheets')
 			->select('timesheets.Date',DB::raw('"" as Day'),'timesheets.Check_In_Type',
-			 'timesheets.Time_In','timesheets.Time_Out','timesheets.State','timesheets.Allowance','timesheets.Monetary_Comp','timesheets.OT1','timesheets.OT2','timesheets.OT3','timesheets.Leader_Member','timesheets.Next_Person','projectcodes.Project_Code','projects.Project_Name','timesheets.Site_Name','timesheets.Work_Description','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Review_Date')
-			->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-			->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
+			 'timesheets.Time_In','timesheets.Time_Out','timesheets.State','timesheets.Allowance','timesheets.Monetary_Comp','timesheets.OT1','timesheets.OT2','timesheets.OT3','timesheets.Leader_Member','timesheets.Next_Person','timesheets.Site_Name','timesheets.Work_Description','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Review_Date')
 			->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
 			->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
 			->leftJoin('users as approver', 'timesheetstatuses.UserId', '=', 'approver.Id')
@@ -1526,12 +1295,10 @@ class ClaimController extends Controller {
 
 		$mylevel = DB::table('approvalsettings')
 		->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 		->where('approvalsettings.Type', '=', 'Claim')
 		->where('approvalsettings.UserId', '=', $me->UserId)
 		->orderBy('approvalsettings.Country','asc')
-		->orderBy('projects.Project_Name','asc')
 		// ->orderBy('approvalsettings.Level','Final Approval","5th Approval","4th Approval","3rd Approval","2nd Approval","1st Approval")
 		->orderByRaw("FIELD(approvalsettings.Level , 'Final Approval', '5th Approval', '4th Approval','3rd Approval','2nd Approval','1st Approval') ASC")
 		->first();
@@ -1545,8 +1312,7 @@ class ClaimController extends Controller {
 		->where('claimstatuses.Status', 'like','%Approved%')
 		->get();
 
-			$html = view('exportclaim', ['me' => $me, 'claim' =>$claim,'receipts' =>$receipts, 'Id' =>$id, 'user' =>$user,'claimdetail' => $claimdetail,'timesheetdetail' => $timesheetdetail,'projects' =>$projects,
-			'projectcodes' =>$projectcodes, 'options' =>$options,'mylevel' => $mylevel,'total' => $total,'TotalAllowance'=>($allowance->TotalAllowance + $allowance->TotalMoney)]);
+			$html = view('exportclaim', ['me' => $me, 'claim' =>$claim,'receipts' =>$receipts, 'Id' =>$id, 'user' =>$user,'claimdetail' => $claimdetail,'timesheetdetail' => $timesheetdetail, 'options' =>$options,'mylevel' => $mylevel,'total' => $total,'TotalAllowance'=>($allowance->TotalAllowance + $allowance->TotalMoney)]);
 			(new ExportPDFController)->ExportLandscape($html);
 
 	}
@@ -1557,7 +1323,7 @@ class ClaimController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$user = DB::table('users')
-		->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Department','Position','Emergency_Contact_Person',
+		->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Position','Emergency_Contact_Person',
 		'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','files.Web_Path')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
@@ -1576,36 +1342,15 @@ class ClaimController extends Controller {
 		->where('Type', '=', 'Claim')
 		->get();
 
-		$projects = DB::table('projects')
-		->get();
-
-		$projectcodes = DB::table('projectcodes')
-		->get();
-
 		$options= DB::table('options')
 		->whereIn('Table', ["users","claims"])
 		->orderBy('Table','asc')
 		->orderBy('Option','asc')
 		->get();
 
-		// $claimdetail = DB::table('claims')
-    // 	->select('claims.Date','projectcodes.Project_Code','projects.Project_Name','claims.Site_Name','claims.State','claims.Work_Description',
-		// 'claims.Next_Person','claims.Car_No','claims.Mileage','claims.Expenses_Type','claims.Total_Expenses','claims.Petrol_SmartPay',DB::raw('"" as Claims_Amount_Exclude_SmartPay'),'claims.Advance','claims.Total_Amount','claims.GST_Amount','claims.Total_Without_GST','claims.Receipt_No','claims.Company_Name','claims.GST_No','claims.Remarks','approver.Name as Approver','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Updated_At')
-		// ->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-		// ->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
-		// ->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
-		// ->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
-		// ->where('claims.ClaimSheetId', '=', $id)
-		// ->where('claimstatuses.Status', 'like','%Final Approved%')
-		// ->orderBy(DB::raw('str_to_date(claims.Date,"%d-%M-%Y")'),'asc')
-		// ->get();
-
 		$claimdetail = DB::table('claims')
-		->select('claims.Date',DB::raw('"" as Day'),'projects.Project_Name as Project','claims.Depart_From As From','claims.Destination As To','claims.Site_Name As Site','claims.State',
+		->select('claims.Date',DB::raw('"" as Day'),'claims.Depart_From As From','claims.Destination As To','claims.Site_Name As Site','claims.State',
 		'claims.Next_Person as Next_P','claims.Transport_Type as Type','claims.Car_No AS Number','claims.Mileage','claims.Currency as Cur','claims.Rate','claims.Expenses_Type AS Exp_Type','claims.Total_Expenses as Tot_Exp','claims.Petrol_SmartPay as SmartP',DB::raw('"-" as Exc_SmartP'),'claims.Advance as Adv','claims.Summon','claims.Total_Amount as Tot','allowance.Allowance','claims.GST_Amount as GST','claims.Total_Without_GST As Without_GST','claims.Receipt_No as Receipt','claims.Company_Name AS Company','claims.GST_No','claims.Remarks','approver.Name as Approver','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Review_Date')
-		->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
 		->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
@@ -1619,9 +1364,7 @@ class ClaimController extends Controller {
 
 			$timesheetdetail = DB::table('timesheets')
 			->select('timesheets.Date',DB::raw('"" as Day'),'timesheets.Check_In_Type',
-			 'timesheets.Time_In','timesheets.Time_Out','timesheets.State','timesheets.Allowance','timesheets.Monetary_Comp','timesheets.OT1','timesheets.OT2','timesheets.OT3','timesheets.Leader_Member','timesheets.Next_Person','projectcodes.Project_Code','projects.Project_Name','timesheets.Site_Name','timesheets.Work_Description','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Review_Date')
-			->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-			->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
+			 'timesheets.Time_In','timesheets.Time_Out','timesheets.State','timesheets.Allowance','timesheets.Monetary_Comp','timesheets.OT1','timesheets.OT2','timesheets.OT3','timesheets.Leader_Member','timesheets.Next_Person','timesheets.Site_Name','timesheets.Work_Description','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Review_Date')
 			->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
 			->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
 			->leftJoin('users as approver', 'timesheetstatuses.UserId', '=', 'approver.Id')
@@ -1647,12 +1390,10 @@ class ClaimController extends Controller {
 
 		$mylevel = DB::table('approvalsettings')
 		->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 		->where('approvalsettings.Type', '=', 'Claim')
 		->where('approvalsettings.UserId', '=', $me->UserId)
 		->orderBy('approvalsettings.Country','asc')
-		->orderBy('projects.Project_Name','asc')
 		// ->orderBy('approvalsettings.Level','Final Approval","5th Approval","4th Approval","3rd Approval","2nd Approval","1st Approval")
 		->orderByRaw("FIELD(approvalsettings.Level , 'Final Approval', '5th Approval', '4th Approval','3rd Approval','2nd Approval','1st Approval') ASC")
 		->first();
@@ -1666,8 +1407,7 @@ class ClaimController extends Controller {
 		->where('claimstatuses.Status', 'like','%Approved%')
 		->get();
 
-			$html = view('exportclaim', ['me' => $me, 'claim' =>$claim,'receipts' =>$receipts, 'Id' =>$id, 'user' =>$user,'claimdetail' => $claimdetail,'timesheetdetail' => $timesheetdetail,'projects' =>$projects,
-			'projectcodes' =>$projectcodes, 'options' =>$options,'mylevel' => $mylevel,'total' => $total,'TotalAllowance'=>($allowance->TotalAllowance + $allowance->TotalMoney)]);
+			$html = view('exportclaim', ['me' => $me, 'claim' =>$claim,'receipts' =>$receipts, 'Id' =>$id, 'user' =>$user,'claimdetail' => $claimdetail,'timesheetdetail' => $timesheetdetail, 'options' =>$options,'mylevel' => $mylevel,'total' => $total,'TotalAllowance'=>($allowance->TotalAllowance + $allowance->TotalMoney)]);
 			(new ExportPDFController)->ExportLandscape($html);
 
 	}
@@ -1678,7 +1418,7 @@ class ClaimController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$user = DB::table('users')
-		->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Department','Position','Emergency_Contact_Person',
+		->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Position','Emergency_Contact_Person',
 		'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','files.Web_Path')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
@@ -1697,11 +1437,7 @@ class ClaimController extends Controller {
 		->where('Type', '=', 'Claim')
 		->get();
 
-		$projects = DB::table('projects')
-		->get();
 
-		$projectcodes = DB::table('projectcodes')
-		->get();
 
 		$options= DB::table('options')
 		->whereIn('Table', ["users","claims"])
@@ -1709,24 +1445,10 @@ class ClaimController extends Controller {
 		->orderBy('Option','asc')
 		->get();
 
-		// $claimdetail = DB::table('claims')
-    // 	->select('claims.Date','projectcodes.Project_Code','projects.Project_Name','claims.Site_Name','claims.State','claims.Work_Description',
-		// 'claims.Next_Person','claims.Car_No','claims.Mileage','claims.Expenses_Type','claims.Total_Expenses','claims.Petrol_SmartPay',DB::raw('"" as Claims_Amount_Exclude_SmartPay'),'claims.Advance','claims.Total_Amount','claims.GST_Amount','claims.Total_Without_GST','claims.Receipt_No','claims.Company_Name','claims.GST_No','claims.Remarks','approver.Name as Approver','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Updated_At')
-		// ->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-		// ->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
-		// ->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
-		// ->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
-		// ->where('claims.ClaimSheetId', '=', $id)
-		// ->where('claimstatuses.Status', 'like','%Final Approved%')
-		// ->orderBy(DB::raw('str_to_date(claims.Date,"%d-%M-%Y")'),'asc')
-		// ->get();
 
 		$claimdetail = DB::table('claims')
-		->select('claims.Date',DB::raw('"" as Day'),'projects.Project_Name','claims.Depart_From As From','claims.Destination As To','claims.Site_Name','claims.State',
+		->select('claims.Date',DB::raw('"" as Day'),'claims.Depart_From As From','claims.Destination As To','claims.Site_Name','claims.State',
 		'claims.Next_Person','claims.Transport_Type as Type','claims.Car_No AS Vehicle_No','claims.Mileage','claims.Currency','claims.Rate','claims.Expenses_Type AS Exp_Type','claims.Total_Expenses as Tot_Exp','claims.Petrol_SmartPay as SmartPay',DB::raw('"-" as Exclude_SmartPay'),'claims.Advance as Adv','claims.Summon','claims.Total_Amount as Tot','allowance.Allowance','claims.GST_Amount','claims.Total_Without_GST As Tot_Without_GST','claims.Receipt_No','claims.Company_Name AS Company','claims.GST_No','claims.Remarks','approver.Name as Approver','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Review_Date')
-		->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
 		->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
@@ -1749,12 +1471,10 @@ class ClaimController extends Controller {
 
 		$mylevel = DB::table('approvalsettings')
 		->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 		->where('approvalsettings.Type', '=', 'Claim')
 		->where('approvalsettings.UserId', '=', $me->UserId)
 		->orderBy('approvalsettings.Country','asc')
-		->orderBy('projects.Project_Name','asc')
 		// ->orderBy('approvalsettings.Level','Final Approval","5th Approval","4th Approval","3rd Approval","2nd Approval","1st Approval")
 		->orderByRaw("FIELD(approvalsettings.Level , 'Final Approval', '5th Approval', '4th Approval','3rd Approval','2nd Approval','1st Approval') ASC")
 		->first();
@@ -1768,8 +1488,7 @@ class ClaimController extends Controller {
 		->where('claimstatuses.Status', 'like','%Approved%')
 		->get();
 
-		$html = view('exportclaim', ['me' => $me, 'claim' =>$claim,'receipts' =>$receipts, 'Id' =>$id, 'user' =>$user,'claimdetail' => $claimdetail,'timesheetdetail' => $timesheetdetail,'projects' =>$projects,
-		'projectcodes' =>$projectcodes, 'options' =>$options,'mylevel' => $mylevel,'total' => $total,'TotalAllowance'=>($allowance->TotalAllowance + $allowance->TotalMoney)]);
+		$html = view('exportclaim', ['me' => $me, 'claim' =>$claim,'receipts' =>$receipts, 'Id' =>$id, 'user' =>$user,'claimdetail' => $claimdetail,'timesheetdetail' => $timesheetdetail, 'options' =>$options,'mylevel' => $mylevel,'total' => $total,'TotalAllowance'=>($allowance->TotalAllowance + $allowance->TotalMoney)]);
 		(new ExportPDFController)->ExportLandscape($html);
 
 	}
@@ -1940,7 +1659,6 @@ class ClaimController extends Controller {
 				LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 				LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
 				WHERE Expenses_Type NOT IN ('Advance','Petrol SmartPay') AND claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-					AND users.Department IN ('Sales','Admin','HR','Finance')
 				GROUP BY claims.Expenses_Type UNION all
 
 				SELECT 'Staff_Allowance',SUM(Allowance),'0.00'
@@ -1950,7 +1668,7 @@ class ClaimController extends Controller {
 				LEFT JOIN timesheetstatuses on timesheetstatuses.Id=max.`maxid`
 				LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
 				LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' AND users.Department IN ('Sales','Admin','HR','Finance') UNION ALL
+				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."'
 
 				SELECT 'Monetary_Comp',Sum(Monetary_Comp),'0.00'
 				FROM timesheets
@@ -1959,7 +1677,7 @@ class ClaimController extends Controller {
 				LEFT JOIN timesheetstatuses on timesheetstatuses.Id=max.`maxid`
 				LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
 				LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' AND users.Department IN ('Sales','Admin','HR','Finance')
+				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."'
 				ORDER BY Total_Expenses_Without_SmartPay DESC
 		");
 
@@ -1973,7 +1691,7 @@ class ClaimController extends Controller {
 					LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
 					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."' AND users.Department IN ('Sales','Admin','HR','Finance')
+					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
 
 					UNION all
 					SELECT 'Staff_Allowance',SUM(Allowance+Monetary_Comp),'0.00'
@@ -1983,7 +1701,7 @@ class ClaimController extends Controller {
 					LEFT JOIN timesheetstatuses on timesheetstatuses.Id=max.`maxid`
 					LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
 					LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-					WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' AND users.Department IN ('Sales','Admin','HR','Finance')) AS tot UNION ALL
+					WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' AS tot UNION ALL
 
 					SELECT 'Advance',SUM(Advance),'0.00'
 					FROM claims
@@ -1994,7 +1712,6 @@ class ClaimController extends Controller {
 					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
 					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-						AND users.Department IN ('Sales','Admin','HR','Finance')
 					GROUP BY 1 UNION all
 
 					SELECT 'Summon',SUM(Summon),'0.00'
@@ -2006,7 +1723,6 @@ class ClaimController extends Controller {
 					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
 					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-						AND users.Department IN ('Sales','Admin','HR','Finance')
 					GROUP BY 1 UNION all
 
 					SELECT 'Petrol_SmartPay',SUM(Petrol_SmartPay),'0.00'
@@ -2018,7 +1734,6 @@ class ClaimController extends Controller {
 					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
 					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-						AND users.Department IN ('Sales','Admin','HR','Finance')
 					GROUP BY 1
 
 		");
@@ -2033,7 +1748,6 @@ class ClaimController extends Controller {
 				LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 				LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
 				WHERE Expenses_Type NOT IN ('Advance','Petrol SmartPay') AND claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-					AND users.Department IN ('Engineering')
 				GROUP BY claims.Expenses_Type UNION all
 
 				SELECT 'Staff_Allowance',SUM(Allowance),'0.00'
@@ -2043,7 +1757,7 @@ class ClaimController extends Controller {
 				LEFT JOIN timesheetstatuses on timesheetstatuses.Id=max.`maxid`
 				LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
 				LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' AND users.Department IN ('Engineering') UNION ALL
+				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' UNION ALL
 
 				SELECT 'Monetary_Comp',Sum(Monetary_Comp),'0.00'
 				FROM timesheets
@@ -2052,7 +1766,7 @@ class ClaimController extends Controller {
 				LEFT JOIN timesheetstatuses on timesheetstatuses.Id=max.`maxid`
 				LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
 				LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' AND users.Department IN ('Engineering')
+				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."'
 				ORDER BY Total_Expenses_Without_SmartPay DESC
 		");
 
@@ -2067,7 +1781,7 @@ class ClaimController extends Controller {
 					LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
 					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."' AND users.Department IN ('Engineering')
+					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
 
 					UNION all
 					SELECT 'Staff_Allowance',SUM(Allowance+Monetary_Comp),'0.00'
@@ -2077,7 +1791,7 @@ class ClaimController extends Controller {
 					LEFT JOIN timesheetstatuses on timesheetstatuses.Id=max.`maxid`
 					LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
 					LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-					WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' AND users.Department IN ('Engineering')) AS tot UNION ALL
+					WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' AS tot UNION ALL
 
 					SELECT 'Advance',SUM(Advance),'0.00'
 					FROM claims
@@ -2088,7 +1802,6 @@ class ClaimController extends Controller {
 					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
 					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-						AND users.Department IN ('Engineering')
 					GROUP BY 1 UNION all
 
 					SELECT 'Summon',SUM(Summon),'0.00'
@@ -2100,7 +1813,6 @@ class ClaimController extends Controller {
 					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
 					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-						AND users.Department IN ('Engineering')
 					GROUP BY 1 UNION all
 
 					SELECT 'Petrol_SmartPay',SUM(Petrol_SmartPay),'0.00'
@@ -2112,7 +1824,6 @@ class ClaimController extends Controller {
 					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
 					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-						AND users.Department IN ('Engineering')
 					GROUP BY 1
 
 		");
@@ -2297,8 +2008,8 @@ class ClaimController extends Controller {
 		");
 
 
-		$byproject = DB::select("
-		SELECT projects.Id,projects.Project_Name,
+		$bytype = DB::select("
+		SELECT claims.Id,claims.Expenses_Type,
 
 		(SELECT SUM(Petrol_SmartPay)
 		FROM claims
@@ -2307,7 +2018,7 @@ class ClaimController extends Controller {
 		LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
 		LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 		LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."' and claims.ProjectId=projects.Id) as 'Total_Petrol_SmartPay',
+		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."') as 'Total_Petrol_SmartPay',
 
 		(SELECT SUM(Total_Expenses)
 		FROM claims
@@ -2316,7 +2027,7 @@ class ClaimController extends Controller {
 		LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
 		LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 		LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."' and claims.ProjectId=projects.Id) as 'Total_Claim_With_SmartPay',
+		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."') as 'Total_Claim_With_SmartPay',
 
 		(SELECT SUM(Total_Expenses-Petrol_SmartPay)
 		FROM claims
@@ -2325,19 +2036,19 @@ class ClaimController extends Controller {
 		LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
 		LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 		LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."' and claims.ProjectId=projects.Id) as 'Total_Claim_Without_SmartPay',
+		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."') as 'Total_Claim_Without_SmartPay',
 
 		(SELECT SUM(Allowance)
 		FROM timesheets
 		LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
 		LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-		WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' and timesheets.ProjectId=projects.Id) as 'Staff_Allowance',
+		WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."') as 'Staff_Allowance',
 
 		(SELECT SUM(Monetary_Comp)
 		FROM timesheets
 		LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
 		LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-		WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' and timesheets.ProjectId=projects.Id) as 'Staff_Monetary_Comp',
+		WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."') as 'Staff_Monetary_Comp',
 
 		'' As Total_Claim_With_Allowance_Monetary,
 
@@ -2348,7 +2059,7 @@ class ClaimController extends Controller {
 		LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
 		LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 		LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."' and claims.ProjectId=projects.Id) as 'Total_Advance',
+		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."') as 'Total_Advance',
 
 		(SELECT SUM(Summon)
 		FROM claims
@@ -2357,18 +2068,18 @@ class ClaimController extends Controller {
 		LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
 		LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 		LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."' and claims.ProjectId=projects.Id) as 'Total_Summon',
+		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."') as 'Total_Summon',
 
 		'' as Total_Payable
-		FROM projects
-		GROUP BY projects.Id
-		ORDER BY projects.Project_Name ASC
+		FROM claims
+		GROUP BY claims.Expenses_Type
+		ORDER BY claims.Id ASC
 		");
 
 		//revert month back to long month name
 		$month=$orimonth;
 
-		return view("claimsummary2", ['me' => $me, 'month' => $month , 'year' =>$year,'start' => $start,'end' =>$end, 'summary' => $summary,'total' => $total,'summary2' => $summary2,'total2' => $total2,'summary3' => $summary3,'total3' => $total3, 'data' => $data, 'title' => $title, 'byperson' => $byperson, 'byperson2' => $byperson2, 'byproject' => $byproject, 'options'=>$options]);
+		return view("claimsummary2", ['me' => $me, 'month' => $month , 'year' =>$year,'start' => $start,'end' =>$end, 'summary' => $summary,'total' => $total,'summary2' => $summary2,'total2' => $total2,'summary3' => $summary3,'total3' => $total3, 'data' => $data, 'title' => $title, 'byperson' => $byperson, 'byperson2' => $byperson2, 'bytype' => $bytype, 'options'=>$options]);
 	}
 
 	public function summary3($month=null, $year=null)
@@ -2537,7 +2248,6 @@ class ClaimController extends Controller {
 				LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 				LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
 				WHERE Expenses_Type NOT IN ('Advance','Petrol SmartPay') AND claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-					AND users.Department IN ('Sales','Admin','HR','Finance')
 				GROUP BY claims.Expenses_Type UNION all
 
 				SELECT 'Staff_Allowance',SUM(Allowance),'0.00'
@@ -2547,7 +2257,7 @@ class ClaimController extends Controller {
 				LEFT JOIN timesheetstatuses on timesheetstatuses.Id=max.`maxid`
 				LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
 				LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' AND users.Department IN ('Sales','Admin','HR','Finance') UNION ALL
+				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' UNION ALL
 
 				SELECT 'Monetary_Comp',Sum(Monetary_Comp),'0.00'
 				FROM timesheets
@@ -2556,7 +2266,7 @@ class ClaimController extends Controller {
 				LEFT JOIN timesheetstatuses on timesheetstatuses.Id=max.`maxid`
 				LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
 				LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' AND users.Department IN ('Sales','Admin','HR','Finance')
+				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."'
 				ORDER BY Total_Expenses_Without_SmartPay DESC
 		");
 
@@ -2570,7 +2280,7 @@ class ClaimController extends Controller {
 					LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
 					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."' AND users.Department IN ('Sales','Admin','HR','Finance')
+					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
 
 					UNION all
 					SELECT 'Staff_Allowance',SUM(Allowance+Monetary_Comp),'0.00'
@@ -2580,7 +2290,7 @@ class ClaimController extends Controller {
 					LEFT JOIN timesheetstatuses on timesheetstatuses.Id=max.`maxid`
 					LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
 					LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-					WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' AND users.Department IN ('Sales','Admin','HR','Finance')) AS tot UNION ALL
+					WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' AS tot UNION ALL
 
 					SELECT 'Advance',SUM(Advance),'0.00'
 					FROM claims
@@ -2591,7 +2301,6 @@ class ClaimController extends Controller {
 					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
 					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-						AND users.Department IN ('Sales','Admin','HR','Finance')
 					GROUP BY 1 UNION all
 
 					SELECT 'Summon',SUM(Summon),'0.00'
@@ -2603,7 +2312,6 @@ class ClaimController extends Controller {
 					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
 					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-						AND users.Department IN ('Sales','Admin','HR','Finance')
 					GROUP BY 1 UNION all
 
 					SELECT 'Petrol_SmartPay',SUM(Petrol_SmartPay),'0.00'
@@ -2615,7 +2323,6 @@ class ClaimController extends Controller {
 					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
 					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-						AND users.Department IN ('Sales','Admin','HR','Finance')
 					GROUP BY 1
 
 		");
@@ -2630,7 +2337,6 @@ class ClaimController extends Controller {
 				LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 				LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
 				WHERE Expenses_Type NOT IN ('Advance','Petrol SmartPay') AND claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-					AND users.Department IN ('Engineering')
 				GROUP BY claims.Expenses_Type UNION all
 
 				SELECT 'Staff_Allowance',SUM(Allowance),'0.00'
@@ -2640,7 +2346,7 @@ class ClaimController extends Controller {
 				LEFT JOIN timesheetstatuses on timesheetstatuses.Id=max.`maxid`
 				LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
 				LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' AND users.Department IN ('Engineering') UNION ALL
+				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' UNION ALL
 
 				SELECT 'Monetary_Comp',Sum(Monetary_Comp),'0.00'
 				FROM timesheets
@@ -2649,7 +2355,7 @@ class ClaimController extends Controller {
 				LEFT JOIN timesheetstatuses on timesheetstatuses.Id=max.`maxid`
 				LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
 				LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' AND users.Department IN ('Engineering')
+				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."'
 				ORDER BY Total_Expenses_Without_SmartPay DESC
 		");
 
@@ -2664,7 +2370,7 @@ class ClaimController extends Controller {
 					LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
 					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."' AND users.Department IN ('Engineering')
+					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
 
 					UNION all
 					SELECT 'Staff_Allowance',SUM(Allowance+Monetary_Comp),'0.00'
@@ -2674,7 +2380,7 @@ class ClaimController extends Controller {
 					LEFT JOIN timesheetstatuses on timesheetstatuses.Id=max.`maxid`
 					LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
 					LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-					WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' AND users.Department IN ('Engineering')) AS tot UNION ALL
+					WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' AS tot UNION ALL
 
 					SELECT 'Advance',SUM(Advance),'0.00'
 					FROM claims
@@ -2685,7 +2391,6 @@ class ClaimController extends Controller {
 					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
 					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-						AND users.Department IN ('Engineering')
 					GROUP BY 1 UNION all
 
 					SELECT 'Summon',SUM(Summon),'0.00'
@@ -2697,7 +2402,6 @@ class ClaimController extends Controller {
 					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
 					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-						AND users.Department IN ('Engineering')
 					GROUP BY 1 UNION all
 
 					SELECT 'Petrol_SmartPay',SUM(Petrol_SmartPay),'0.00'
@@ -2709,7 +2413,6 @@ class ClaimController extends Controller {
 					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
 					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-						AND users.Department IN ('Engineering')
 					GROUP BY 1
 
 		");
@@ -2888,8 +2591,8 @@ class ClaimController extends Controller {
 		");
 
 
-		$byproject = DB::select("
-		SELECT projects.Id,projects.Project_Name,
+		$bytype = DB::select("
+		SELECT claims.Id,claims.Expenses_Type,
 
 		(SELECT SUM(Petrol_SmartPay)
 		FROM claims
@@ -2898,7 +2601,7 @@ class ClaimController extends Controller {
 		LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
 		LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 		LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."' and claims.ProjectId=projects.Id) as 'Total_Petrol_SmartPay',
+		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."') as 'Total_Petrol_SmartPay',
 
 		(SELECT SUM(IF(claims.Rate>0,Total_Expenses*claims.Rate,Total_Expenses))
 		FROM claims
@@ -2907,7 +2610,7 @@ class ClaimController extends Controller {
 		LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
 		LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 		LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."' and claims.ProjectId=projects.Id) as 'Total_Claim_With_SmartPay',
+		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."') as 'Total_Claim_With_SmartPay',
 
 		(SELECT SUM(IF(claims.Rate>0,(Total_Expenses-Petrol_SmartPay)*claims.Rate,Total_Expenses-Petrol_SmartPay))
 		FROM claims
@@ -2916,19 +2619,19 @@ class ClaimController extends Controller {
 		LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
 		LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 		LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."' and claims.ProjectId=projects.Id) as 'Total_Claim_Without_SmartPay',
+		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."') as 'Total_Claim_Without_SmartPay',
 
 		(SELECT SUM(Allowance)
 		FROM timesheets
 		LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
 		LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-		WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' and timesheets.ProjectId=projects.Id) as 'Staff_Allowance',
+		WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."') as 'Staff_Allowance',
 
 		(SELECT SUM(Monetary_Comp)
 		FROM timesheets
 		LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
 		LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-		WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."' and timesheets.ProjectId=projects.Id) as 'Staff_Monetary_Comp',
+		WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."') as 'Staff_Monetary_Comp',
 
 		'' As Total_Claim_With_Allowance_Monetary,
 
@@ -2939,7 +2642,7 @@ class ClaimController extends Controller {
 		LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
 		LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 		LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."' and claims.ProjectId=projects.Id) as 'Total_Advance',
+		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."') as 'Total_Advance',
 
 		(SELECT SUM(Summon)
 		FROM claims
@@ -2948,18 +2651,18 @@ class ClaimController extends Controller {
 		LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
 		LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
 		LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."' and claims.ProjectId=projects.Id) as 'Total_Summon',
+		WHERE claimstatuses.Status like '%Final Approved%' AND claimsheetstatuses.Claim_Status='". $month.' '.$year ."') as 'Total_Summon',
 
 		'' as Total_Payable
-		FROM projects
-		GROUP BY projects.Id
-		ORDER BY projects.Project_Name ASC
+		FROM claims
+		GROUP BY claims.Expenses_Type
+		ORDER BY claims.Id ASC
 		");
 
 		//revert month back to long month name
 		$month=$orimonth;
 
-		return view("claimsummary2", ['me' => $me, 'month' => $month , 'year' =>$year,'start' => $start,'end' =>$end, 'summary' => $summary,'total' => $total,'summary2' => $summary2,'total2' => $total2,'summary3' => $summary3,'total3' => $total3, 'data' => $data, 'title' => $title, 'byperson' => $byperson, 'byperson2' => $byperson2, 'byproject' => $byproject, 'options'=>$options]);
+		return view("claimsummary2", ['me' => $me, 'month' => $month , 'year' =>$year,'start' => $start,'end' =>$end, 'summary' => $summary,'total' => $total,'summary2' => $summary2,'total2' => $total2,'summary3' => $summary3,'total3' => $total3, 'data' => $data, 'title' => $title, 'byperson' => $byperson, 'byperson2' => $byperson2, 'bytype' => $bytype, 'options'=>$options]);
 	}
 
 	public function summary($start=null, $end=null)
@@ -3208,7 +2911,7 @@ class ClaimController extends Controller {
 		");
 		//dd($byperson2);
 
-		$byproject = DB::select("select projects.Id,projects.Project_Name,
+		$bytype = DB::select("select claims.Id,claims.Expenses_Type,
 		'' as Total_Petrol_SmartPay,
 		'' as Total_Claim_With_SmartPay,
 		'' as Total_Claim_Without_SmartPay,
@@ -3217,44 +2920,12 @@ class ClaimController extends Controller {
 		'' as Total_Advance,
 		'' as Total_Summon,
 		'' as Total_Payable
-		from projects group by projects.id
+		from claims group by claims.Expenses_Type
 
 		");
 
-		// $byproject = DB::table('claims')
-		// ->leftJoin('claimsheets', 'claimsheets.Id', '=', 'claims.ClaimSheetId')
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
-		// ->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
-		// ->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
-		// ->select('projects.Id','projects.Project_Name',
-		// DB::raw('SUM(claims.Petrol_SmartPay) As Total_Petrol_SmartPay'),
-		// DB::raw('SUM(claims.Total_Expenses) As Total_Claim_With_SmartPay'),
-		// DB::raw('SUM(claims.Total_Expenses-claims.Petrol_SmartPay) As Total_Claim_Without_SmartPay'),
-		// DB::raw("(SELECT SUM(Allowance)
-		// FROM timesheets
-		// LEFT JOIN (select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max on max.TimesheetId=timesheets.Id
-		// LEFT JOIN timesheetstatuses on timesheetstatuses.Id=max.`maxid`
-		// WHERE timesheetstatuses.Status like '%Final Approved%' and str_to_date(timesheets.Date,'%d-%M-%Y') Between str_to_date('".$start."','%d-%M-%Y') and str_to_date('".$end."','%d-%M-%Y') and timesheets.ProjectId=claims.ProjectId
-		// ) As 'Staff_Allowance'"),
-		// DB::raw("(SELECT Sum(Monetary_Comp)
-		// FROM timesheets
-		// LEFT JOIN (select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max on max.TimesheetId=timesheets.Id
-		// LEFT JOIN timesheetstatuses on timesheetstatuses.Id=max.`maxid`
-		// WHERE timesheetstatuses.Status like '%Final Approved%' and str_to_date(timesheets.Date,'%d-%M-%Y') Between str_to_date('".$start."','%d-%M-%Y') and str_to_date('".$end."','%d-%M-%Y') and timesheets.ProjectId=claims.ProjectId
-		// ) As 'Staff_Monetary_Comp'"),
-		// DB::raw("'' As Total_Claim_With_Allowance_Monetary"),
-		// DB::raw("SUM(claims.Advance) As Total_Advance"),
-		// DB::raw("SUM(claims.Summon) As Total_Summon"),
-		// DB::raw("'' as Total_Payable"))
-		// ->where('claimstatuses.Status', 'like','%Final Approved%')
-		// ->where(DB::raw('str_to_date(claims.Date,"%d-%M-%Y")'), '>=', DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-		// ->where(DB::raw('str_to_date(claims.Date,"%d-%M-%Y")'), '<=', DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-		// ->groupBy('projects.Project_Name')
-		// ->orderBy('Total_Expenses','DESC')
-		// ->get();
 
-
-		return view("claimsummary", ['me' => $me, 'start' => $start,'end' =>$end, 'summary' => $summary,'total' => $total, 'data' => $data, 'title' => $title, 'byperson' => $byperson, 'byperson2' => $byperson2, 'byproject' => $byproject, 'options'=>$options]);
+		return view("claimsummary", ['me' => $me, 'start' => $start,'end' =>$end, 'summary' => $summary,'total' => $total, 'data' => $data, 'title' => $title, 'byperson' => $byperson, 'byperson2' => $byperson2, 'bytype' => $bytype, 'options'=>$options]);
 	}
 
 	public function userclaimbreakdown($UserId,$start=null, $end=null)
@@ -3262,7 +2933,7 @@ class ClaimController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$user = DB::table('users')
-		->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Department','Position','Emergency_Contact_Person',
+		->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Position','Emergency_Contact_Person',
 		'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','files.Web_Path')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
@@ -3405,7 +3076,7 @@ class ClaimController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$user = DB::table('users')
-		->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Department','Position','Emergency_Contact_Person',
+		->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Position','Emergency_Contact_Person',
 		'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','files.Web_Path')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
@@ -3620,7 +3291,7 @@ class ClaimController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$user = DB::table('users')
-		->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Department','Position','Emergency_Contact_Person',
+		->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Position','Emergency_Contact_Person',
 		'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','files.Web_Path')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
@@ -3828,585 +3499,18 @@ class ClaimController extends Controller {
 
 	}
 
-	public function projectclaimbreakdown2($ProjectId,$month=null, $year=null)
-	{
-		$me = (new CommonController)->get_current_user();
-
-		$d=date('d');
-
-		if ($year==null)
-		{
-			$year=date('Y');
-		}
-
-		if ($month==null)
-		{
-
-			$month=date('F');
-
-			if($d>=16)
-			{
-
-				$start=date('d-M-Y', strtotime('first day of last month'));
-				// $start=date('d-M-Y', strtotime($start,' +16 days'));
-				$start = date('d-M-Y', strtotime($start . " +15 days"));
-
-			}
-			else {
-
-				$start=date('d-M-Y', strtotime('first day of this month'));
-				// $start=date('d-M-Y', strtotime($start,' +16 days'));
-				$start = date('d-M-Y', strtotime($start . " +15 days"));
-
-			}
-
-			if($d>=16)
-			{
-
-				$end=date('d-M-Y', strtotime('first day of next month'));
-				$end = date('d-M-Y', strtotime($end . " +14 days"));
-				// $end=date('d-M-Y', strtotime($end,' +15 days'));
-			}
-			else {
-
-				$end=date('d-M-Y', strtotime('first day of this month'));
-				$end = date('d-M-Y', strtotime($end . " +14 days"));
-				// $end=date('d-M-Y', strtotime($end,' +15 days'));
-
-			}
-
-		}
-		else {
-			$start = strtotime('01 '.$month.' '.$year);
-			$start = date('d F Y', $start);
-			$start = date('d F Y', strtotime('-1 month',strtotime($start)));
-			$start = date('d-M-Y', strtotime($start . " +15 days"));
-
-			$end = strtotime('01 '.$month.' '.$year);
-			$end = date('d F Y', $end);
-			$end = date('d-M-Y', strtotime($end . " +14 days"));
-
-		}
-
-		$project = DB::table('projects')
-		->where( 'projects.Id', '=', $ProjectId)
-		->first();
-
-		$startTime = strtotime($start);
-		$endTime = strtotime($end);
-
-		// $chartdata = DB::table('claims')
-		// ->leftJoin('claimsheets', 'claimsheets.Id', '=', 'claims.ClaimSheetId')
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
-		// ->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
-		// ->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
-		// ->select('claims.Expenses_Type', DB::raw('SUM(claims.Total_Amount) As Total_Payable'))
-		// ->where('claimstatuses.Status', '=','Final Approved')
-		// ->where( 'claims.ProjectId', '=', $ProjectId)
-		// ->where(DB::raw('str_to_date(claims.Date,"%d-%M-%Y")'), '>=', DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-		// ->where(DB::raw('str_to_date(claims.Date,"%d-%M-%Y")'), '<=', DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-		// ->groupBy('claims.Expenses_Type')
-		// ->get();
-
-		$orimonth=$month;
-		$month=substr($month,0,3);
-
-		$chartdata = DB::select("
-				SELECT claims.Expenses_Type, SUM(claims.Total_Expenses-claims.Petrol_SmartPay) As 'Total_Expenses_Without_SmartPay',SUM(claims.GST_Amount) As 'Total_GST'
-				FROM claims
-				LEFT JOIN claimsheets on claims.ClaimsheetId=claimsheets.Id
-				LEFT JOIN (select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max on max.ClaimId=claims.Id
-				LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
-				LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
-				LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-				WHERE Expenses_Type NOT IN ('Advance','Petrol SmartPay') AND claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-				AND claims.ProjectId=".$ProjectId."
-				GROUP BY claims.Expenses_Type UNION all
-
-				SELECT 'Staff_Allowance',SUM(Allowance),'0.00'
-				FROM timesheets
-				LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
-				LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."'
-				AND timesheets.ProjectId=".$ProjectId." UNION ALL
-
-				SELECT 'Monetary_Comp',Sum(Monetary_Comp),'0.00'
-				FROM timesheets
-				LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
-				LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."'
-				AND timesheets.ProjectId=".$ProjectId."
-		");
-		$total = DB::select("
-				SELECT 'Total Without SmartPay',SUM(tot.Total_Expenses_Without_SmartPay),SUM(tot.Total_GST) FROM
-					(SELECT 'Total', SUM(claims.Total_Expenses-claims.Petrol_SmartPay) As 'Total_Expenses_Without_SmartPay',SUM(claims.GST_Amount) As 'Total_GST'
-					FROM claims
-					LEFT JOIN claimsheets on claims.ClaimsheetId=claimsheets.Id
-					LEFT JOIN (select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max on max.ClaimId=claims.Id
-					LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
-					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
-					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-					AND claims.ProjectId=".$ProjectId."
-
-					UNION all
-					SELECT 'Staff_Allowance',SUM(Allowance+Monetary_Comp),'0.00'
-					FROM timesheets
-					LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
-					LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-					WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."'
-					AND timesheets.ProjectId=".$ProjectId.") AS tot UNION ALL
-
-					SELECT 'Petrol_SmartPay',SUM(Petrol_SmartPay),'0.00'
-					FROM claims
-					LEFT JOIN claimsheets on claims.ClaimsheetId=claimsheets.Id
-					LEFT JOIN (select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max on max.ClaimId=claims.Id
-					LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
-					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
-					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-					AND claims.ProjectId=".$ProjectId."
-					GROUP BY 1 UNION all
-
-					SELECT 'Advance',SUM(Advance),'0.00'
-					FROM claims
-					LEFT JOIN claimsheets on claims.ClaimsheetId=claimsheets.Id
-					LEFT JOIN (select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max on max.ClaimId=claims.Id
-					LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
-					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
-					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-					AND claims.ProjectId=".$ProjectId."
-					GROUP BY 1 UNION all
-
-					SELECT 'Summon',SUM(Summon),'0.00'
-					FROM claims
-					LEFT JOIN claimsheets on claims.ClaimsheetId=claimsheets.Id
-					LEFT JOIN (select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max on max.ClaimId=claims.Id
-					LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
-					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
-					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-					AND claims.ProjectId=".$ProjectId."
-					GROUP BY 1
-
-		");
-
-		if ($chartdata==null){
-			$data = "";
-			$title = "";
-		}
-		else {
-
-			$data = "";
-			$title = "";
-
-			foreach($chartdata as $key => $quote){
-				$ret[]=$quote->Total_Expenses_Without_SmartPay;
-
-				$data .= $quote->Total_Expenses_Without_SmartPay.",";
-			}
-
-		}
-
-		foreach($chartdata as $key => $quote){
-			$title .= $quote->Expenses_Type.",";
-		}
-
-		$data=substr($data,0,strlen($data)-1);
-		$title=substr($title,0,strlen($title)-1);
-
-		// $total = DB::table('claims')
-		// ->leftJoin('claimsheets', 'claimsheets.Id', '=', 'claims.ClaimSheetId')
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
-		// ->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
-		// ->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
-		// ->select(DB::raw('"Total_Claim"'), DB::raw('SUM(claims.Total_Amount) As Total_Payable'))
-		// ->where('claimstatuses.Status', '=','Final Approved')
-		// ->where( 'claims.ProjectId', '=', $ProjectId)
-		// ->where(DB::raw('str_to_date(claims.Date,"%d-%M-%Y")'), '>=', DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-		// ->where(DB::raw('str_to_date(claims.Date,"%d-%M-%Y")'), '<=', DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-		// ->groupBy('claims.ProjectId')
-		// ->get();
-
-		$month=$orimonth;
-
-		//dd($chartdata);
-		return view("projectclaimsummary2", ['me' => $me,'project' =>$project, 'month' => $month , 'year' =>$year,'start' => $start,'end' =>$end, 'chartdata' => $chartdata,'total' => $total, 'data' => $data, 'title' => $title]);
-
-
-	}
-
-	public function projectclaimbreakdown3($ProjectId,$month=null, $year=null)
-	{
-		$me = (new CommonController)->get_current_user();
-
-		$d=date('d');
-
-		if ($year==null)
-		{
-			$year=date('Y');
-		}
-
-		if ($month==null)
-		{
-
-			$month=date('F');
-
-			if($d>=16)
-			{
-
-				$start=date('d-M-Y', strtotime('first day of last month'));
-				// $start=date('d-M-Y', strtotime($start,' +16 days'));
-				$start = date('d-M-Y', strtotime($start . " +15 days"));
-
-			}
-			else {
-
-				$start=date('d-M-Y', strtotime('first day of this month'));
-				// $start=date('d-M-Y', strtotime($start,' +16 days'));
-				$start = date('d-M-Y', strtotime($start . " +15 days"));
-
-			}
-
-			if($d>=16)
-			{
-
-				$end=date('d-M-Y', strtotime('first day of next month'));
-				$end = date('d-M-Y', strtotime($end . " +14 days"));
-				// $end=date('d-M-Y', strtotime($end,' +15 days'));
-			}
-			else {
-
-				$end=date('d-M-Y', strtotime('first day of this month'));
-				$end = date('d-M-Y', strtotime($end . " +14 days"));
-				// $end=date('d-M-Y', strtotime($end,' +15 days'));
-
-			}
-
-		}
-		else {
-			$start = strtotime('01 '.$month.' '.$year);
-			$start = date('d F Y', $start);
-			$start = date('d F Y', strtotime('-1 month',strtotime($start)));
-			$start = date('d-M-Y', strtotime($start . " +15 days"));
-
-			$end = strtotime('01 '.$month.' '.$year);
-			$end = date('d F Y', $end);
-			$end = date('d-M-Y', strtotime($end . " +14 days"));
-
-		}
-
-		$project = DB::table('projects')
-		->where( 'projects.Id', '=', $ProjectId)
-		->first();
-
-		$startTime = strtotime($start);
-		$endTime = strtotime($end);
-
-		// $chartdata = DB::table('claims')
-		// ->leftJoin('claimsheets', 'claimsheets.Id', '=', 'claims.ClaimSheetId')
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
-		// ->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
-		// ->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
-		// ->select('claims.Expenses_Type', DB::raw('SUM(claims.Total_Amount) As Total_Payable'))
-		// ->where('claimstatuses.Status', '=','Final Approved')
-		// ->where( 'claims.ProjectId', '=', $ProjectId)
-		// ->where(DB::raw('str_to_date(claims.Date,"%d-%M-%Y")'), '>=', DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-		// ->where(DB::raw('str_to_date(claims.Date,"%d-%M-%Y")'), '<=', DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-		// ->groupBy('claims.Expenses_Type')
-		// ->get();
-
-		$chartdata = DB::select("
-		SELECT claims.Expenses_Type,
-		SUM(IF(claims.Rate>0,(claims.Total_Expenses-claims.Petrol_SmartPay)*claims.Rate,claims.Total_Expenses-claims.Petrol_SmartPay)) As 'Total_Expenses_Without_SmartPay',
-		SUM(IF(claims.Rate>0,claims.GST_Amount*claims.Rate,claims.GST_Amount)) As 'Total_GST'
-		FROM claims
-				LEFT JOIN claimsheets on claims.ClaimsheetId=claimsheets.Id
-				LEFT JOIN (select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max on max.ClaimId=claims.Id
-				LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
-				LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
-				LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-				WHERE Expenses_Type NOT IN ('Advance','Petrol SmartPay') AND claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-				AND claims.ProjectId=".$ProjectId."
-				GROUP BY claims.Expenses_Type UNION all
-
-				SELECT 'Staff_Allowance',SUM(Allowance),'0.00'
-				FROM timesheets
-				LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
-				LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."'
-				AND timesheets.ProjectId=".$ProjectId." UNION ALL
-
-				SELECT 'Monetary_Comp',Sum(Monetary_Comp),'0.00'
-				FROM timesheets
-				LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
-				LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-				WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."'
-				AND timesheets.ProjectId=".$ProjectId."
-		");
-		$total = DB::select("
-		SELECT 'Total',SUM(tot.Total_Expenses_Without_SmartPay),SUM(tot.Total_GST) FROM
-			(SELECT 'Total', SUM(IF(claims.Rate>0,(claims.Total_Expenses-claims.Petrol_SmartPay)*claims.Rate,claims.Total_Expenses-claims.Petrol_SmartPay)) As 'Total_Expenses_Without_SmartPay',
-			SUM(IF(claims.Rate>0,claims.GST_Amount*claims.Rate,claims.GST_Amount)) As 'Total_GST'
-			FROM claims
-					LEFT JOIN claimsheets on claims.ClaimsheetId=claimsheets.Id
-					LEFT JOIN (select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max on max.ClaimId=claims.Id
-					LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
-					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
-					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-					AND claims.ProjectId=".$ProjectId."
-
-					UNION all
-					SELECT 'Staff_Allowance',SUM(Allowance+Monetary_Comp),'0.00'
-					FROM timesheets
-					LEFT JOIN (select Max(Id) as maxid4,TimesheetId from timesheetchecked Group By TimesheetId) as max4 ON max4.TimesheetId=timesheets.Id
-					LEFT JOIN timesheetchecked on timesheetchecked.Id=max4.`maxid4`
-					WHERE timesheetchecked.Payment_Status='". $month.' '.$year ."'
-					AND timesheets.ProjectId=".$ProjectId.") AS tot UNION ALL
-
-					SELECT 'Petrol_SmartPay',SUM(Petrol_SmartPay),'0.00'
-					FROM claims
-					LEFT JOIN claimsheets on claims.ClaimsheetId=claimsheets.Id
-					LEFT JOIN (select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max on max.ClaimId=claims.Id
-					LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
-					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
-					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-					AND claims.ProjectId=".$ProjectId."
-					GROUP BY 1 UNION all
-
-					SELECT 'Advance',SUM(Advance),'0.00'
-					FROM claims
-					LEFT JOIN claimsheets on claims.ClaimsheetId=claimsheets.Id
-					LEFT JOIN (select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max on max.ClaimId=claims.Id
-					LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
-					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
-					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-					AND claims.ProjectId=".$ProjectId."
-					GROUP BY 1 UNION all
-
-					SELECT 'Summon',SUM(Summon),'0.00'
-					FROM claims
-					LEFT JOIN claimsheets on claims.ClaimsheetId=claimsheets.Id
-					LEFT JOIN (select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max on max.ClaimId=claims.Id
-					LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
-					LEFT JOIN (select Max(Id) as maxid3,ClaimSheetId from claimsheetstatuses Group By ClaimSheetId) as max3 ON max3.ClaimSheetId=claimsheets.Id
-					LEFT JOIN claimsheetstatuses on claimsheetstatuses.Id=max3.`maxid3`
-					WHERE claimstatuses.Status like '%Final Approved%' and claimsheetstatuses.Claim_Status='". $month.' '.$year ."'
-					AND claims.ProjectId=".$ProjectId."
-					GROUP BY 1
-
-		");
-
-		if ($chartdata==null){
-			$data = "";
-			$title = "";
-		}
-		else {
-
-			$data = "";
-			$title = "";
-
-			foreach($chartdata as $key => $quote){
-				$ret[]=$quote->Total_Expenses_Without_SmartPay;
-
-				$data .= $quote->Total_Expenses_Without_SmartPay.",";
-			}
-
-		}
-
-		foreach($chartdata as $key => $quote){
-			$title .= $quote->Expenses_Type.",";
-		}
-
-		$data=substr($data,0,strlen($data)-1);
-		$title=substr($title,0,strlen($title)-1);
-
-		// $total = DB::table('claims')
-		// ->leftJoin('claimsheets', 'claimsheets.Id', '=', 'claims.ClaimSheetId')
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
-		// ->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
-		// ->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
-		// ->select(DB::raw('"Total_Claim"'), DB::raw('SUM(claims.Total_Amount) As Total_Payable'))
-		// ->where('claimstatuses.Status', '=','Final Approved')
-		// ->where( 'claims.ProjectId', '=', $ProjectId)
-		// ->where(DB::raw('str_to_date(claims.Date,"%d-%M-%Y")'), '>=', DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-		// ->where(DB::raw('str_to_date(claims.Date,"%d-%M-%Y")'), '<=', DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-		// ->groupBy('claims.ProjectId')
-		// ->get();
-
-		//dd($chartdata);
-		return view("projectclaimsummary2", ['me' => $me,'project' =>$project, 'month' => $month , 'year' =>$year,'start' => $start,'end' =>$end, 'chartdata' => $chartdata,'total' => $total, 'data' => $data, 'title' => $title]);
-
-
-	}
-
-	public function projectclaimbreakdown($ProjectId,$start=null, $end=null)
-	{
-		$me = (new CommonController)->get_current_user();
-
-		$project = DB::table('projects')
-		->where( 'projects.Id', '=', $ProjectId)
-		->first();
-
-		if ($start==null)
-		{
-
-			$start=date('d-M-Y', strtotime('first day of last month'));
-			// $start=date('d-M-Y', strtotime($start,' +16 days'));
-			$start = date('d-M-Y', strtotime($start . " +15 days"));
-		}
-
-		if ($end==null)
-		{
-			$end=date('d-M-Y', strtotime('first day of this month'));
-			$end = date('d-M-Y', strtotime($end . " +14 days"));
-			// $end=date('d-M-Y', strtotime($end,' +15 days'));
-
-		}
-
-		$startTime = strtotime($start);
-		$endTime = strtotime($end);
-
-		// $chartdata = DB::table('claims')
-		// ->leftJoin('claimsheets', 'claimsheets.Id', '=', 'claims.ClaimSheetId')
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
-		// ->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
-		// ->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
-		// ->select('claims.Expenses_Type', DB::raw('SUM(claims.Total_Amount) As Total_Payable'))
-		// ->where('claimstatuses.Status', '=','Final Approved')
-		// ->where( 'claims.ProjectId', '=', $ProjectId)
-		// ->where(DB::raw('str_to_date(claims.Date,"%d-%M-%Y")'), '>=', DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-		// ->where(DB::raw('str_to_date(claims.Date,"%d-%M-%Y")'), '<=', DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-		// ->groupBy('claims.Expenses_Type')
-		// ->get();
-
-		$chartdata = DB::select("
-				SELECT claims.Expenses_Type, SUM(claims.Total_Expenses-claims.Petrol_SmartPay) As 'Total_Expenses_Without_SmartPay',SUM(claims.GST_Amount) As 'Total_GST'
-				FROM claims
-				LEFT JOIN (select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max on max.ClaimId=claims.Id
-				LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
-				WHERE Expenses_Type NOT IN ('Advance','Petrol SmartPay') AND claimstatuses.Status like '%Final Approved%' and str_to_date(claims.Date,'%d-%M-%Y') Between str_to_date('".$start."','%d-%M-%Y') and str_to_date('".$end."','%d-%M-%Y')
-				AND claims.ProjectId=".$ProjectId."
-				GROUP BY claims.Expenses_Type UNION all
-
-				SELECT 'Staff_Allowance',SUM(Allowance),'0.00'
-				FROM timesheets
-				LEFT JOIN (select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max on max.TimesheetId=timesheets.Id
-				LEFT JOIN timesheetstatuses on timesheetstatuses.Id=max.`maxid`
-				WHERE timesheetstatuses.Status like '%Final Approved%' and str_to_date(timesheets.Date,'%d-%M-%Y') Between str_to_date('".$start."','%d-%M-%Y') and str_to_date('".$end."','%d-%M-%Y')
-				AND timesheets.ProjectId=".$ProjectId." UNION ALL
-
-				SELECT 'Monetary_Comp',Sum(Monetary_Comp),'0.00'
-				FROM timesheets
-				LEFT JOIN (select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max on max.TimesheetId=timesheets.Id
-				LEFT JOIN timesheetstatuses on timesheetstatuses.Id=max.`maxid`
-				WHERE timesheetstatuses.Status like '%Final Approved%' and str_to_date(timesheets.Date,'%d-%M-%Y') Between str_to_date('".$start."','%d-%M-%Y') and str_to_date('".$end."','%d-%M-%Y')
-				AND timesheets.ProjectId=".$ProjectId."
-		");
-		$total = DB::select("
-				SELECT 'Total',SUM(tot.Total_Expenses_Without_SmartPay),SUM(tot.Total_GST) FROM
-					(SELECT 'Total', SUM(claims.Total_Expenses-claims.Petrol_SmartPay) As 'Total_Expenses_Without_SmartPay',SUM(claims.GST_Amount) As 'Total_GST'
-					FROM claims
-					LEFT JOIN (select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max on max.ClaimId=claims.Id
-					LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
-					WHERE claimstatuses.Status like '%Final Approved%' and str_to_date(claims.Date,'%d-%M-%Y') Between str_to_date('".$start."','%d-%M-%Y') and str_to_date('".$end."','%d-%M-%Y')
-					AND claims.ProjectId=".$ProjectId."
-				 	UNION all
-					SELECT 'Staff_Allowance',SUM(Allowance+Monetary_Comp),'0.00'
-					FROM timesheets
-					LEFT JOIN (select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max on max.TimesheetId=timesheets.Id
-					LEFT JOIN timesheetstatuses on timesheetstatuses.Id=max.`maxid`
-					WHERE timesheetstatuses.Status like '%Final Approved%' and str_to_date(timesheets.Date,'%d-%M-%Y') Between str_to_date('".$start."','%d-%M-%Y') and str_to_date('".$end."','%d-%M-%Y')
-					AND timesheets.ProjectId=".$ProjectId.") AS tot UNION ALL
-
-					SELECT 'Petrol_SmartPay',SUM(Petrol_SmartPay),'0.00'
-					FROM claims
-					LEFT JOIN (select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max on max.ClaimId=claims.Id
-					LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
-					WHERE claimstatuses.Status like '%Final Approved%' and str_to_date(claims.Date,'%d-%M-%Y') Between str_to_date('".$start."','%d-%M-%Y') and str_to_date('".$end."','%d-%M-%Y')
-					AND claims.ProjectId=".$ProjectId."
-					GROUP BY 1 UNION all
-
-					SELECT 'Advance',SUM(Advance),'0.00'
-					FROM claims
-					LEFT JOIN (select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max on max.ClaimId=claims.Id
-					LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
-					WHERE claimstatuses.Status like '%Final Approved%' and str_to_date(claims.Date,'%d-%M-%Y') Between str_to_date('".$start."','%d-%M-%Y') and str_to_date('".$end."','%d-%M-%Y')
-					AND claims.ProjectId=".$ProjectId."
-					GROUP BY 1 UNION all
-
-					SELECT 'Summon',SUM(Summon),'0.00'
-					FROM claims
-					LEFT JOIN (select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max on max.ClaimId=claims.Id
-					LEFT JOIN claimstatuses on claimstatuses.Id=max.`maxid`
-					WHERE claimstatuses.Status like '%Final Approved%' and str_to_date(claims.Date,'%d-%M-%Y') Between str_to_date('".$start."','%d-%M-%Y') and str_to_date('".$end."','%d-%M-%Y')
-					AND claims.ProjectId=".$ProjectId."
-					GROUP BY 1
-
-		");
-
-		if ($chartdata==null){
-			$data = "";
-			$title = "";
-		}
-		else {
-
-			$data = "";
-			$title = "";
-
-			foreach($chartdata as $key => $quote){
-				$ret[]=$quote->Total_Expenses_Without_SmartPay;
-
-				$data .= $quote->Total_Expenses_Without_SmartPay.",";
-			}
-
-		}
-
-		foreach($chartdata as $key => $quote){
-			$title .= $quote->Expenses_Type.",";
-		}
-
-		$data=substr($data,0,strlen($data)-1);
-		$title=substr($title,0,strlen($title)-1);
-
-		// $total = DB::table('claims')
-		// ->leftJoin('claimsheets', 'claimsheets.Id', '=', 'claims.ClaimSheetId')
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
-		// ->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
-		// ->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
-		// ->select(DB::raw('"Total_Claim"'), DB::raw('SUM(claims.Total_Amount) As Total_Payable'))
-		// ->where('claimstatuses.Status', '=','Final Approved')
-		// ->where( 'claims.ProjectId', '=', $ProjectId)
-		// ->where(DB::raw('str_to_date(claims.Date,"%d-%M-%Y")'), '>=', DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
-		// ->where(DB::raw('str_to_date(claims.Date,"%d-%M-%Y")'), '<=', DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
-		// ->groupBy('claims.ProjectId')
-		// ->get();
-
-		//dd($chartdata);
-		return view("projectclaimsummary", ['me' => $me,'project' =>$project, 'start' => $start,'end' =>$end, 'chartdata' => $chartdata,'total' => $total, 'data' => $data, 'title' => $title]);
-
-
-	}
-
 	public function viewtimesheet(Request $request)
 	{
 
 		$input = $request->all();
 
 		$viewtimesheet = DB::table('timesheets')
-		->select('timesheets.Check_In_Type', 'timesheets.Time_In','timesheets.Time_Out','projects.Project_Name','timesheets.Allowance','timesheets.Leader_Member','timesheets.Next_Person','projectcodes.Project_Code','projects.Project_Name','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Reason','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Review_Date','files.Web_Path')
+		->select('timesheets.Check_In_Type', 'timesheets.Time_In','timesheets.Time_Out','timesheets.Allowance','timesheets.Leader_Member','timesheets.Next_Person','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Reason','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Review_Date','files.Web_Path')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Timesheet" Group By TargetId) as maxfile'), 'maxfile.TargetId', '=', 'timesheets.Id')
 		->leftJoin('files', 'files.Id', '=', DB::raw('maxfile.`maxid` and files.`Type`="Timesheet"'))
-		->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
 		->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'timesheetstatuses.UserId', '=', 'approver.Id')
-		->where('timesheets.ProjectId', '=',  $input["ProjectId"])
 		->where('timesheets.UserId', '=',  $input["UserId"])
 		->where('timesheets.Date', '=',  $input["Date"])
 		->orderBy('timesheets.Id','desc')
@@ -4426,10 +3530,8 @@ class ClaimController extends Controller {
 		$Ids = explode(",", $input["StatusIds"]);
 
 		$claims = DB::table('claims')
-		->select('claimstatuses.Id as StatusId','claims.Id as ClaimId','claims.Date',DB::raw('"" as Day'),'projectcodes.Project_Code','projects.Project_Name','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
+		->select('claimstatuses.Id as StatusId','claims.Id as ClaimId','claims.Date',DB::raw('"" as Day'),'claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
 		'claims.Next_Person','claims.Transport_Type','claims.Car_No','claims.Mileage','claims.Expenses_Type','claims.Total_Expenses','claims.Petrol_SmartPay',DB::raw('"" as Claims_Amount_Exclude_SmartPay'),'claims.Advance','claims.Total_Amount','claims.GST_Amount','claims.Total_Without_GST','claims.Receipt_No','claims.Company_Name','claims.GST_No','claims.Remarks','approver.Name as Approver','claimstatuses.UserId','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Review_Date')
-		->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
 		->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
@@ -4478,10 +3580,8 @@ class ClaimController extends Controller {
 		$Ids = explode(",", $input["StatusIds"]);
 
 		$claims = DB::table('claims')
-		->select('claimstatuses.Id as StatusId','claims.Id as ClaimId','claims.Date',DB::raw('"" as Day'),'projectcodes.Project_Code','projects.Project_Name','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
+		->select('claimstatuses.Id as StatusId','claims.Id as ClaimId','claims.Date',DB::raw('"" as Day'),'claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
 		'claims.Next_Person','claims.Transport_Type','claims.Car_No','claims.Mileage','claims.Expenses_Type','claims.Total_Expenses','claims.Petrol_SmartPay',DB::raw('"" as Claims_Amount_Exclude_SmartPay'),'claims.Advance','claims.Total_Amount','claims.GST_Amount','claims.Total_Without_GST','claims.Receipt_No','claims.Company_Name','claims.GST_No','claims.Remarks','approver.Name as Approver','claimstatuses.UserId','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Review_Date')
-		->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
 		->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
@@ -4506,11 +3606,9 @@ class ClaimController extends Controller {
 		{
 
 			$claims = DB::table('claims')
-			->select('claims.Id','claimsheets.UserId','claims.Date','submitter.Name as Submitter','projectcodes.Project_Code','projects.Project_Name','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
+			->select('claims.Id','claimsheets.UserId','claims.Date','submitter.Name as Submitter','claims.Depart_From','claims.Destination','claims.Site_Name','claims.State','claims.Work_Description',
 			'claims.Next_Person','claims.Transport_Type','claims.Car_No','claims.Mileage','claims.Expenses_Type','claims.Total_Expenses','claims.Petrol_SmartPay',DB::raw('"" as Claims_Amount_Exclude_SmartPay'),'claims.Advance','claims.Total_Amount','claims.GST_Amount','claims.Total_Without_GST','claims.Receipt_No','claims.Company_Name','claims.GST_No','claims.Remarks','approver.Name as Approver','claimstatuses.UserId','claimstatuses.Status','claimstatuses.Comment','claimstatuses.updated_at as Updated_At')
 			->leftJoin('claimsheets', 'claimsheets.Id', '=', 'claims.ClaimSheetId')
-			->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-			->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
 			->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
 			->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
 			->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
@@ -4557,12 +3655,12 @@ class ClaimController extends Controller {
 
 			}
 
-			Mail::send('emails.claimredirected', ['me'=>$me,'claims' => $claims], function($message) use ($emails,$me,$NotificationSubject)
-			{
-					$emails = array_filter($emails);
-					array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-					$message->to($emails)->subject($NotificationSubject);
-			});
+			// Mail::send('emails.claimredirected', ['me'=>$me,'claims' => $claims], function($message) use ($emails,$me,$NotificationSubject)
+			// {
+			// 		$emails = array_filter($emails);
+			// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+			// 		$message->to($emails)->subject($NotificationSubject);
+			// });
 
 			return 1;
 		}
@@ -4728,7 +3826,6 @@ class ClaimController extends Controller {
 		$id = DB::table('leaves')
 		->insertGetId([
 			'UserId' => $input['confirmid'],
-			'ProjectId' => 0,
 			'Leave_Type' => "Medical Leave",
 			'No_of_Days' => 0,
 			'Reason' => "Medical Claim for Non Medical Leave",

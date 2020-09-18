@@ -138,16 +138,6 @@ table#t01 td {
               <td>David</td>
           </tr>
           <tr>
-              <td>Project Name</td>
-              <td>:</td>
-              <td>Celcom Hammer Microwave KV</td>
-          </tr>
-           <tr>
-              <td>Project Code</td>
-              <td>:</td>
-              <td>HW-CL-MWKV</td>
-          </tr>
-          <tr>
               <td>Sub-con TI  Antenna Swap</td>
               <td>:</td>
               <td>LITECORE SDN BHD<td>

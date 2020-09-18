@@ -37,7 +37,6 @@ $('#drag-and-drop-zone').dmUploader({
         'selectedtrackerid':$('#selectedtrackerid').val(),
         'DocumentType':$('#DocumentType').val(),
         'submitdate':$('#submitdate').val(),
-        'projectid':$('#projectid').val(),
 
     },
     onDragEnter: function(){
@@ -747,8 +746,6 @@ var gmarkers = Array();
           </h1>
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li>
-            <li><a href="{{ url('/projectfolder') }}">Project Folder</a></li>
-            <li><a href="{{ url('/projectfolder/sitefolder') }}/{{$ProjectId}}">Site Folder</a></li>
             <li><a href="#">{{ $site->{'Site Name'} }}</a></li>
           </ol>
         </section>
@@ -838,19 +835,18 @@ var gmarkers = Array();
                             <!-- <div id="drag-and-drop-zone-{{$cat->Option}}" class="dm-uploader p-5 text-center"> -->
                             <!-- <div id="drag-and-drop-zone" class="dm-uploader p-5 text-center"> -->
                               <form enctype="multipart/form-data" role="form" method="POST" action="" >
-                                    <a href="{{ URL::to("/")}}/filerenderer2/{{$cat->projectid}}/{{$cat->TargetId}}/{{$cat->Option}}"><img src="{{ url('/img/folder.png') }}" alt="Photo" width="100px" height="100%"/>
+                                    <a href="{{ URL::to("/")}}/filerenderer2/{{$cat->TargetId}}/{{$cat->Option}}"><img src="{{ url('/img/folder.png') }}" alt="Photo" width="100px" height="100%"/>
                                       <!-- Hidden Files -->
                                       <input type="hidden" class="form-control" id="UserId" name="UserId" value="{{$me->UserId}}"> <!--Done-->
                                       <input type="hidden" class="form-control" id="selectedtrackerid" name="selectedtrackerid" value="{{$cat->TargetId}}">
                                       <input type="hidden" class="form-control" id="DocumentType" name="DocumentType" value="{{$cat->Option}}"> <!--Done-->
-                                      <input type="hidden" class="form-control" id="projectid" name="projectid" value="{{$cat->projectid}}">
                                       <!-- <input type="hidden" class="form-control" id="SiteId" name="SiteId" value="'+SiteId+'"> -->
                                       <input type="hidden" class="form-control" id="submitdate" name="submitdate"> <!--Done-->
                                       <!-- Hidden Files -->
                                     </a><br>
                               </form>
 
-                                      <center><a href="{{ URL::to("/")}}/filerenderer2/{{$cat->projectid}}/{{$cat->TargetId}}/{{$cat->Option}}" target="_blank">{{ $cat->Option}}<br>[{{$cat->Description}}]
+                                      <center><a href="{{ URL::to("/")}}/filerenderer2/{{$cat->TargetId}}/{{$cat->Option}}" target="_blank">{{ $cat->Option}}<br>[{{$cat->Description}}]
 
                                         @foreach($files as $file)
                                           @if($file->Document_Type==$cat->Option && $file->count>0)
@@ -906,8 +902,7 @@ function createdocumenttype()
                   url: "{{ url('/tracker/createdocumenttype') }}",
                   method: "POST",
                   data: {
-                    DocumentType:documenttype,
-                    ProjectId:{{$ProjectId}}
+                    DocumentType:documenttype
 
 
                   },

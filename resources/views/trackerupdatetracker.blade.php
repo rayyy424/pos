@@ -205,8 +205,6 @@
                          <tr>
                            <td>No</td>
                            <td>Type</td>
-                           <td>Project_Name</td>
-                           <td>Project_Code</td>
                            <td>Unique ID</td>
                            <td>Site_ID</td>
                            <td>Site_Name</td>
@@ -244,7 +242,7 @@
 
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

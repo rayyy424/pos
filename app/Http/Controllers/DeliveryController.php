@@ -56,38 +56,19 @@ class DeliveryController extends Controller
         ->where('companies.Client','=','Yes')
         ->get();
 
-		// $mydelivery = DB::table('deliveryform')
-  //       ->leftJoin( DB::raw('(select Max(Id) as maxid,deliveryform_Id from deliverystatuses Group By deliveryform_Id) as max'), 'max.deliveryform_Id', '=', 'deliveryform.Id')
-  //       ->leftJoin('deliverystatuses', 'deliverystatuses.Id', '=', DB::raw('max.`maxid`'))
-  //       ->leftJoin('users as requestor', 'deliveryform.RequestorId', '=', 'requestor.Id')
-  //       ->leftJoin('users as approver', 'deliverystatuses.user_Id', '=', 'approver.Id')
-  //       ->leftJoin('users as driver','deliveryform.DriverId','=','driver.Id')
-  //       ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
-  //       ->leftJoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
-  //       // ->leftJoin('companies as company','deliveryform.company_id','=','company.Id')
-  //       // ->leftJoin('companies as client','deliveryform.clientId','=','client.Id')
-  //       ->leftJoin('options','options.Id','=','deliveryform.Purpose')
-  //       // ->leftJoin('visitstatus','visitstatus.Id','=','deliveryform.VisitStatus')
-  //       // ->leftJoin('radius','radius.Id','=','deliveryform.LocationId')
-  //       ->select('deliveryform.Id','deliverystatuses.Id as StatusId','requestor.Name as Requestor','roadtax.Vehicle_No','roadtax.Lorry_Size','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.pickup_date','deliveryform.pick_up_time','deliveryform.Location','projects.Project_Name','options.Option','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at')
-  //       ->where('deliveryform.RequestorId', '=', $me->UserId)
-  //       ->orderBy('deliveryform.created_at','desc')
-  //       ->get();
-
         $processingdelivery = DB::table('deliveryform')
         ->leftJoin( DB::raw('(select Max(Id) as maxid,deliveryform_Id from deliverystatuses Group By deliveryform_Id) as max'), 'max.deliveryform_Id', '=', 'deliveryform.Id')
         ->leftJoin('deliverystatuses', 'deliverystatuses.Id', '=', DB::raw('max.`maxid`'))
         ->leftJoin('users as requestor', 'deliveryform.RequestorId', '=', 'requestor.Id')
         ->leftJoin('users as approver', 'deliverystatuses.user_Id', '=', 'approver.Id')
         ->leftJoin('users as driver','deliveryform.DriverId','=','driver.Id')
-        ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
         ->leftJoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
         // ->leftJoin('companies as company','deliveryform.company_id','=','company.Id')
         // ->leftJoin('companies as client','deliveryform.clientId','=','client.Id')
         ->leftJoin('options','options.Id','=','deliveryform.Purpose')
         // ->leftJoin('visitstatus','visitstatus.Id','=','deliveryform.VisitStatus')
         // ->leftJoin('radius','radius.Id','=','deliveryform.LocationId')
-        ->select('deliveryform.Id','deliverystatuses.Id as StatusId','requestor.Name as Requestor','deliveryform.DO_No','roadtax.Vehicle_No','roadtax.Lorry_Size','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.pickup_date','deliveryform.pick_up_time','deliveryform.Location','projects.Project_Name','options.Option','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at')
+        ->select('deliveryform.Id','deliverystatuses.Id as StatusId','requestor.Name as Requestor','deliveryform.DO_No','roadtax.Vehicle_No','roadtax.Lorry_Size','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.pickup_date','deliveryform.pick_up_time','deliveryform.Location','options.Option','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at')
         ->where('deliveryform.RequestorId', '=', $me->UserId)
         ->orderBy('deliveryform.DO_No','asc')
         ->get();
@@ -98,14 +79,13 @@ class DeliveryController extends Controller
         ->leftJoin('users as requestor', 'deliveryform.RequestorId', '=', 'requestor.Id')
         ->leftJoin('users as approver', 'deliverystatuses.user_Id', '=', 'approver.Id')
         ->leftJoin('users as driver','deliveryform.DriverId','=','driver.Id')
-        ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
         ->leftJoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
         // ->leftJoin('companies as company','deliveryform.company_id','=','company.Id')
         // ->leftJoin('companies as client','deliveryform.clientId','=','client.Id')
         ->leftJoin('options','options.Id','=','deliveryform.Purpose')
         // ->leftJoin('visitstatus','visitstatus.Id','=','deliveryform.VisitStatus')
         // ->leftJoin('radius','radius.Id','=','deliveryform.LocationId')
-        ->select('deliveryform.Id','deliverystatuses.Id as StatusId','requestor.Name as Requestor','deliveryform.DO_No','roadtax.Vehicle_No','roadtax.Lorry_Size','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.pickup_date','deliveryform.pick_up_time','deliveryform.Location','projects.Project_Name','options.Option','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliverystatuses.created_at')
+        ->select('deliveryform.Id','deliverystatuses.Id as StatusId','requestor.Name as Requestor','deliveryform.DO_No','roadtax.Vehicle_No','roadtax.Lorry_Size','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.pickup_date','deliveryform.pick_up_time','deliveryform.Location','options.Option','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliverystatuses.created_at')
         ->where('deliveryform.RequestorId', '=', $me->UserId)
         ->orderBy('deliveryform.DO_No','asc')
         ->get();
@@ -116,14 +96,13 @@ class DeliveryController extends Controller
         ->leftJoin('users as requestor', 'deliveryform.RequestorId', '=', 'requestor.Id')
         ->leftJoin('users as approver', 'deliverystatuses.user_Id', '=', 'approver.Id')
         ->leftJoin('users as driver','deliveryform.DriverId','=','driver.Id')
-        ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
         ->leftJoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
         // ->leftJoin('companies as company','deliveryform.company_id','=','company.Id')
         // ->leftJoin('companies as client','deliveryform.clientId','=','client.Id')
         ->leftJoin('options','options.Id','=','deliveryform.Purpose')
         // ->leftJoin('visitstatus','visitstatus.Id','=','deliveryform.VisitStatus')
         ->leftJoin('radius','radius.Id','=','deliveryform.Location')
-        ->select('deliveryform.Id','deliverystatuses.Id as StatusId','requestor.Name as Requestor','deliveryform.DO_No','roadtax.Vehicle_No','roadtax.Lorry_Size','deliveryform.delivery_date','deliveryform.delivery_time','radius.Location_Name','projects.Project_Name','options.Option','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at')
+        ->select('deliveryform.Id','deliverystatuses.Id as StatusId','requestor.Name as Requestor','deliveryform.DO_No','roadtax.Vehicle_No','roadtax.Lorry_Size','deliveryform.delivery_date','deliveryform.delivery_time','radius.Location_Name','options.Option','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at')
         ->where('deliveryform.RequestorId', '=', $me->UserId)
         ->orderBy('deliveryform.DO_No','asc')
         ->get();
@@ -133,14 +112,13 @@ class DeliveryController extends Controller
         ->leftJoin('users as requestor', 'deliveryform.RequestorId', '=', 'requestor.Id')
         ->leftJoin('users as approver', 'deliverystatuses.user_Id', '=', 'approver.Id')
         ->leftJoin('users as driver','deliveryform.DriverId','=','driver.Id')
-        ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
         ->leftJoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
         // ->leftJoin('companies as company','deliveryform.company_id','=','company.Id')
         // ->leftJoin('companies as client','deliveryform.clientId','=','client.Id')
         ->leftJoin('options','options.Id','=','deliveryform.Purpose')
         // ->leftJoin('visitstatus','visitstatus.Id','=','deliveryform.VisitStatus')
         // ->leftJoin('radius','radius.Id','=','deliveryform.LocationId')
-        ->select('deliveryform.Id','deliverystatuses.Id as StatusId','requestor.Name as Requestor','deliveryform.DO_No','roadtax.Vehicle_No','roadtax.Lorry_Size','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.Location','projects.Project_Name','options.Option','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at','deliverystatuses.remarks')
+        ->select('deliveryform.Id','deliverystatuses.Id as StatusId','requestor.Name as Requestor','deliveryform.DO_No','roadtax.Vehicle_No','roadtax.Lorry_Size','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.Location','options.Option','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at','deliverystatuses.remarks')
         ->where('deliveryform.RequestorId', '=', $me->UserId)
         ->orderBy('deliveryform.DO_No','asc')
         ->get();
@@ -154,14 +132,13 @@ class DeliveryController extends Controller
         ->leftJoin('users as requestor', 'deliveryform.RequestorId', '=', 'requestor.Id')
         ->leftJoin('users as approver', 'deliverystatuses.user_Id', '=', 'approver.Id')
         ->leftJoin('users as driver','deliveryform.DriverId','=','driver.Id')
-        ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
         ->leftJoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
         // ->leftJoin('companies as company','deliveryform.company_id','=','company.Id')
         // ->leftJoin('companies as client','deliveryform.clientId','=','client.Id')
         ->leftJoin('options','options.Id','=','deliveryform.Purpose')
         // ->leftJoin('visitstatus','visitstatus.Id','=','deliveryform.VisitStatus')
         // ->leftJoin('radius','radius.Id','=','deliveryform.LocationId')
-        ->select('deliveryform.Id','deliverystatuses.Id as StatusId','requestor.Name as Requestor','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.Location','projects.Project_Name','options.Option','deliveryform.Remarks','deliverystatuses.remarks','deliveryform.created_at','deliverystatuses.updated_at')
+        ->select('deliveryform.Id','deliverystatuses.Id as StatusId','requestor.Name as Requestor','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.Location','options.Option','deliveryform.Remarks','deliverystatuses.remarks','deliveryform.created_at','deliverystatuses.updated_at')
         ->where('deliveryform.RequestorId', '=', $me->UserId)
         ->orderBy('deliveryform.Id','desc')
         ->get();
@@ -172,27 +149,15 @@ class DeliveryController extends Controller
         ->leftJoin('users as requestor', 'deliveryform.RequestorId', '=', 'requestor.Id')
         ->leftJoin('users as approver', 'deliverystatuses.user_Id', '=', 'approver.Id')
         ->leftJoin('users as driver','deliveryform.DriverId','=','driver.Id')
-        ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
         ->leftJoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
         // ->leftJoin('companies as company','deliveryform.company_id','=','company.Id')
         // ->leftJoin('companies as client','deliveryform.clientId','=','client.Id')
         ->leftJoin('options','options.Id','=','deliveryform.Purpose')
         // ->leftJoin('visitstatus','visitstatus.Id','=','deliveryform.VisitStatus')
         ->leftJoin('radius','radius.Id','=','deliveryform.Location')
-        ->select('deliveryform.Id','deliverystatuses.Id as StatusId','deliveryform.DO_No','deliveryform.delivery_date','deliveryform.delivery_time','radius.Location_Name','projects.Project_Name','options.Option','deliveryform.Remarks','deliverystatuses.remarks','deliverystatuses.created_at','deliverystatuses.updated_at','deliveryform.approve')
+        ->select('deliveryform.Id','deliverystatuses.Id as StatusId','deliveryform.DO_No','deliveryform.delivery_date','deliveryform.delivery_time','radius.Location_Name','options.Option','deliveryform.Remarks','deliverystatuses.remarks','deliverystatuses.created_at','deliverystatuses.updated_at','deliveryform.approve')
         ->where('deliveryform.RequestorId', '=', $me->UserId)
         ->orderBy('deliveryform.Id','desc')
-        ->get();
-
-        $de = "Department";
-        // $project = DB::table('projects')
-        // ->select('projects.Id','Project_Name','projects.Type')
-        // ->where('projects.Customer','Not LIKE','%'.$de.'%')
-        // ->orWhere('projects.Project_Name', 'LIKE', '%MY_DEPARTMENT_GST%')
-        // ->get();
-        $project = DB::table('projects')
-        ->select('Id','Project_Name')
-        ->whereIn('Id',array(31,51,131,142,143,144))
         ->get();
 
 		$itemlist = DB::table('deliveryitem')
@@ -214,13 +179,6 @@ class DeliveryController extends Controller
         ->orderBy('options.Option','asc')
 		->get();
 
-        $projtype= DB::table('options')
-        ->select('options.Option')
-        ->where('Field',['Type'])
-        ->whereIn('Table',["projects"])
-        ->orderBy('options.Option','asc')
-        ->get();
-
         $holidays = DB::table('holidays')
             ->select('holidays.Id','holidays.Holiday','holidays.Start_Date','holidays.End_Date','holidays.State','holidays.Country')
             ->whereRaw('right(Start_Date,4)='.date('Y'))
@@ -234,9 +192,8 @@ class DeliveryController extends Controller
             ->leftJoin('users as applicant', 'deliveryform.RequestorId', '=', 'applicant.Id')
             ->leftJoin('users as driver', 'deliveryform.DriverId', '=', 'driver.Id')
             ->leftJoin('roadtax','roadtax.Id','=','deliveryform.roadtaxId')
-            ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
             ->leftJoin('options','options.Id','=','deliveryform.Purpose')
-            ->select('roadtax.Vehicle_No as Lorry','driver.Name as Driver','applicant.Name as Requestor','deliveryform.delivery_date as Delivery_Date','deliverystatuses.delivery_status as Status','projects.Project_Name','radius.Location_Name','options.Option','deliveryform.created_at','radius.Id','radius.longitude','radius.latitude')
+            ->select('roadtax.Vehicle_No as Lorry','driver.Name as Driver','applicant.Name as Requestor','deliveryform.delivery_date as Delivery_Date','deliverystatuses.delivery_status as Status','radius.Location_Name','options.Option','deliveryform.created_at','radius.Id','radius.longitude','radius.latitude')
             ->where('deliverystatuses.delivery_status', '<>','Recalled')
             // ->where('deliveryform.RequestorId', '=',$me->UserId)
             ->get();
@@ -279,10 +236,9 @@ class DeliveryController extends Controller
             ->leftJoin('deliveryitem','deliveryitem.formId','=','deliveryform.Id')
             ->leftJoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
             ->leftJoin('radius','radius.Id','=','deliveryform.Location')
-            ->leftJoin('projects','projects.Id','=','deliveryform.ProjectId')
             ->leftJoin('companies','companies.Id','=','deliveryform.client')
             ->leftJoin('options','options.Id','=','deliveryform.Purpose')
-            ->select('deliveryform.Id','deliverystatuses.Id','deliveryform.DO_No','deliveryform.created_at','deliveryform.delivery_date','deliveryform.delivery_time','radius.Location_Name','projects.Project_Name','options.Option','deliverystatuses.updated_at')
+            ->select('deliveryform.Id','deliverystatuses.Id','deliveryform.DO_No','deliveryform.created_at','deliveryform.delivery_date','deliveryform.delivery_time','radius.Location_Name','options.Option','deliverystatuses.updated_at')
             // ->where('deliveryitem.stockin','=',1)
             ->get();
 
@@ -295,8 +251,7 @@ class DeliveryController extends Controller
                 ->leftJoin('salesorder', 'salesorder.Id', '=', DB::raw('max.`maxid`'))
                 ->leftjoin('companies','companies.Id','=','salesorder.companyId')
                 ->leftjoin('companies as client','client.Id','=','salesorder.clientId')
-                ->leftjoin('projects','projects.Id','=','salesorder.projectId')
-                ->select('salesorder.Id','tracker.recurring','salesorder.do','salesorder.parentId','companies.Id as company_id','companies.Company_Name','client.Company_Name as client_company','client.Id as client_id','salesorder.projectId','projects.Project_Name','salesorder.po','tracker.Project_Code','salesorder.term')
+                ->select('salesorder.Id','tracker.recurring','salesorder.do','salesorder.parentId','companies.Id as company_id','companies.Company_Name','client.Company_Name as client_company','client.Id as client_id','salesorder.po','salesorder.term')
                 ->where('salesorder.trackerid','=',$trackerid)
                 ->first();
                 // dd($details);
@@ -304,11 +259,6 @@ class DeliveryController extends Controller
 
                 if($details != null || $details != "")
                 {
-                $site = DB::table('radius')
-                ->select('Id','Location_Name')
-                ->where('radius.ProjectId','=',$details->projectId)
-                ->where('radius.Location_Name','LIKE','('.$details->Project_Code.')')
-                ->first();
 
                 $pt = DB::table('companies')
                 ->where('companies.Id','=',$details->client_id)
@@ -349,7 +299,7 @@ class DeliveryController extends Controller
             ->select("Id",'Company_Name')
             ->get();
 
-            return view('mydeliveryrequest', ['me' => $me,'lorry'=>$lorry,'deliveryitems'=>$deliveryitems,'destination'=>$destination,'processingdelivery'=>$processingdelivery,'completedelivery'=>$completedelivery,'incompletedelivery'=>$incompletedelivery,'recalldelivery'=>$recalldelivery,'rejectdelivery'=>$rejectdelivery,'canceldelivery'=>$canceldelivery,'project'=>$project,'itemlist'=>$itemlist,'purpose'=>$purpose,'projtype'=>$projtype,'updateitem'=>$updateitem,'client'=>$client, 'filesByGroup' => $filesByGroup,'holidays'=>$holidays,'showdelivery'=>$showdelivery,'showdeliveryitem'=>$showdeliveryitem,'deliverynote'=>$deliverynote,'condition'=>$condition,'pic'=>$pic,'requestor'=>$requestor,'stockupdate'=>$stockupdate,'vehicleevent'=>$vehicleevent,'details'=>$details,'timenow'=>$timenow,'terminate'=>$terminate,'truck'=>$truck,'soitem'=>$soitem,'site'=>$site, 'trackerid'=>$trackerid,'pt'=>$pt,'company'=>$company]);
+            return view('mydeliveryrequest', ['me' => $me,'lorry'=>$lorry,'deliveryitems'=>$deliveryitems,'destination'=>$destination,'processingdelivery'=>$processingdelivery,'completedelivery'=>$completedelivery,'incompletedelivery'=>$incompletedelivery,'recalldelivery'=>$recalldelivery,'rejectdelivery'=>$rejectdelivery,'canceldelivery'=>$canceldelivery,'itemlist'=>$itemlist,'purpose'=>$purpose,'updateitem'=>$updateitem,'client'=>$client, 'filesByGroup' => $filesByGroup,'holidays'=>$holidays,'showdelivery'=>$showdelivery,'showdeliveryitem'=>$showdeliveryitem,'deliverynote'=>$deliverynote,'condition'=>$condition,'pic'=>$pic,'requestor'=>$requestor,'stockupdate'=>$stockupdate,'vehicleevent'=>$vehicleevent,'details'=>$details,'timenow'=>$timenow,'terminate'=>$terminate,'truck'=>$truck,'soitem'=>$soitem, 'trackerid'=>$trackerid,'pt'=>$pt,'company'=>$company]);
 	}
 
     public function salesorderterminate(Request $request, $salesorderid)
@@ -388,9 +338,8 @@ class DeliveryController extends Controller
         ->where('Id','=',$salesorderid)
         ->first();
 
-        $project = DB::table('tracker')
-        ->leftJoin('projects','projects.Id','=','tracker.ProjectID')
-        ->select('tracker.Project_Code','projects.Project_Name','tracker.sales_order')
+        $trackersales = DB::table('tracker')
+        ->select('tracker.sales_order')
         ->where('tracker.Id','=',$trackerid->trackerid)
         ->first();
 
@@ -401,7 +350,7 @@ class DeliveryController extends Controller
         $days = date("t",strtotime($trackerid->rental_start));
         $diff = strtotime($input['offhire']) - strtotime($trackerid->rental_start);
         $diff = ($diff / (60*60*24) ) +1;
-        if($project->sales_order > 1)
+        if($trackersales->sales_order > 1)
         {
             foreach($item as $i => $val)
             {
@@ -430,7 +379,7 @@ class DeliveryController extends Controller
         $filenames="";
         $attachmentUrl = null;
         $type="Off_Hired_Support_Document";
-        $path = "private/upload/Site Document/".$project->Project_Name."/".$project->Project_Code."/".$type;
+        $path = "private/upload/Site Document/".$type;
         $uploadcount=count($input['terminatedoc']);
         if ($input['terminatedoc'] != null || $input['terminatedoc'] != "") {
             for ($i=0; $i <$uploadcount ; $i++) {
@@ -515,26 +464,14 @@ class DeliveryController extends Controller
             'time' => 'Required',
             'pickup' => 'Required',
             'pickupdate' => 'Required',
-	//    	'lorry' => 'Required',
             'section' => 'required|array'
-	    	// 'project'=>'Required',
-	    	// 'destination'=>'Required',
-            // 'item' => 'array|required',
-	    	// 'company'=>'Required',
-	    	// 'client'=>'Required',
-	    	// 'name'=>'Required',
-	    	// 'contact'=>'Required',
-	    	// 'Purpose'=>'Required',
-	    	// 'item.*'=>'Required',
-	    	// 'Quantity'=>'Required',
+
 	    );
         if ($request->has('section')) {
 
             foreach($request->get('section') as $key => $val)
             {
-                $rules['section.'.$key.'.project'] = 'required';
                 $rules['section.'.$key.'.destination'] = 'required';
-                // $rules['section.'.$key.'.projtype'] = 'required';
                 $rules['section.'.$key.'.client'] = 'required';
                 $rules['section.'.$key.'.PICname'] = 'required';
                 $rules['section.'.$key.'.PICcontact'] = 'required';
@@ -563,10 +500,7 @@ class DeliveryController extends Controller
             'time.required'  =>'The Time field is required',
             'pickupdate.required'  =>'The Pick-up Date field is required',
             'pickup.required'  =>'The Pick-up Time field is required',
-	  //  	'lorry.required'       => 'The Lorry field is required',
-	    	'project.required'  =>'The Project field is required',
             'destination.required'  =>'The Site field is required',
-            // 'projtype.required'  =>'The Project Type field is required',
             'client.required'  =>'The Client field is required',
             'purpose.required'  =>'The Purpose field is required',
             'PICname.required'  =>'The Name is required',
@@ -604,9 +538,7 @@ class DeliveryController extends Controller
             ->leftJoin('options','options.Id','=','deliveryitem.Purpose')
             ->leftJoin('radius','radius.Id','=','deliveryform.Location')
             ->leftJoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-            ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
-            // ->leftJoin('deliveryitem','','=','deliveryform.Id')
-            ->select('approver.Name as Approver_Name','approver.Id as Approver_Id','requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','radius.Location_Name as Site','projects.Project_Name as Project','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','options.Option as Purpose','deliverystatuses.remarks as Reason','deliverystatuses.created_at as Cancel_Request_Date')
+            ->select('approver.Name as Approver_Name','approver.Id as Approver_Id','requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','radius.Location_Name as Site','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','options.Option as Purpose','deliverystatuses.remarks as Reason','deliverystatuses.created_at as Cancel_Request_Date')
             ->orderBy('deliverystatuses.Id','desc')
             ->where('deliveryform.Id', '=',$input["Id"])
             ->first();
@@ -694,12 +626,12 @@ class DeliveryController extends Controller
                 }
 
 
-                Mail::send('emails.deliverycancel', ['deliverydetail' => $deliverydetail,'items' => $items], function($message) use ($emails,$me,$NotificationSubject)
-                {
-                        array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                        $emails = array_filter($emails);
-                        $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
-                });
+                // Mail::send('emails.deliverycancel', ['deliverydetail' => $deliverydetail,'items' => $items], function($message) use ($emails,$me,$NotificationSubject)
+                // {
+                //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                //         $emails = array_filter($emails);
+                //         $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+                // });
 
                 return 1;
             }
@@ -727,9 +659,8 @@ class DeliveryController extends Controller
             ->leftJoin('options','options.Id','=','deliveryitem.Purpose')
             // ->leftJoin('radius','radius.Id','=','deliveryform.LocationId')
             ->leftJoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-            ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
             // ->leftJoin('deliveryitem','','=','deliveryform.Id')
-            ->select('approver.Name as Approver','requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','deliverystatuses.delivery_status as Status','roadtax.Vehicle_No as Lorry','roadtax.Lorry_Size','driver.Name as Driver','deliveryform.Location as Site','projects.Project_Name','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','inventories.Item_Code','deliveryitem.Qty_request','options.Option as Purpose')
+            ->select('approver.Name as Approver','requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','deliverystatuses.delivery_status as Status','roadtax.Vehicle_No as Lorry','roadtax.Lorry_Size','driver.Name as Driver','deliveryform.Location as Site','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','inventories.Item_Code','deliveryitem.Qty_request','options.Option as Purpose')
             ->orderBy('deliverystatuses.Id','desc')
             ->where('deliveryform.Id', '=',$input["Id"])
             ->first();
@@ -786,12 +717,12 @@ class DeliveryController extends Controller
 
                 }
 
-                Mail::send('emails.deliveryreject', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$me,$NotificationSubject)
-                {
-                        array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                        $emails = array_filter($emails);
-                        $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
-                });
+                // Mail::send('emails.deliveryreject', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$me,$NotificationSubject)
+                // {
+                //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                //         $emails = array_filter($emails);
+                //         $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+                // });
 
                 return 1;
             }
@@ -819,9 +750,8 @@ class DeliveryController extends Controller
             ->leftJoin('options','options.Id','=','deliveryitem.Purpose')
             ->leftJoin('radius','radius.Id','=','deliveryform.Location')
             ->leftJoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-            ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
             // ->leftJoin('deliveryitem','','=','deliveryform.Id')
-            ->select('approver.Name as Approver','requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','deliverystatuses.delivery_status as Status','roadtax.Vehicle_No as Lorry','roadtax.Lorry_Size','driver.Name as Driver','radius.Location_Name as Site','projects.Project_Name','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','inventories.Item_Code','deliveryitem.Qty_request','options.Option as Purpose')
+            ->select('approver.Name as Approver','requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','deliverystatuses.delivery_status as Status','roadtax.Vehicle_No as Lorry','roadtax.Lorry_Size','driver.Name as Driver','radius.Location_Name as Site','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','inventories.Item_Code','deliveryitem.Qty_request','options.Option as Purpose')
             ->orderBy('deliverystatuses.Id','desc')
             ->where('deliveryform.Id', '=',$input["Id"])
             ->first();
@@ -941,12 +871,12 @@ class DeliveryController extends Controller
 
                 }
 
-                Mail::send('emails.deliveryrecall', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$me,$NotificationSubject)
-                {
-                        array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                        $emails = array_filter($emails);
-                        $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
-                });
+                // Mail::send('emails.deliveryrecall', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$me,$NotificationSubject)
+                // {
+                //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                //         $emails = array_filter($emails);
+                //         $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+                // });
 
                 return 1;
             }
@@ -1111,7 +1041,6 @@ class DeliveryController extends Controller
                 'pick_up_time' => $input['pickup'],
                 'RequestorId' => $requestor,
                 'representative' => $repre,
-                'ProjectId' => $input['section'][0]['project'],
                 'project_type' => $type->type,
                 'Purpose' => $input['section'][0]['purpose'],
                 'client' => $input['section'][0]['client'],
@@ -1178,14 +1107,8 @@ class DeliveryController extends Controller
 
             $input = $request->all();
 
-
-           // $site= DB::table('tracker')
-           // ->select('Site_Name')
-           // ->where('ProjectId','=',$input['Id'])
-           // ->get();
             $site = DB::table('radius')
             ->select('Id','Location_Name')
-            ->where('ProjectId','=',$input['Id'])
             ->get();
 
             $allclient = DB::table('companies')
@@ -1204,13 +1127,6 @@ class DeliveryController extends Controller
 
             $input = $request->all();
 
-
-
-           // $site= DB::table('tracker')
-           // ->select('Site_Name')
-           // ->where('ProjectId','=',$input['Id'])
-           // ->get();
-
             $client = DB::table('companies')
             ->select('Company_Code')
             ->where('Id','=',$input['clientid'])
@@ -1219,7 +1135,6 @@ class DeliveryController extends Controller
 
             $site = DB::table('radius')
             ->select('Id','Location_Name')
-            ->where('ProjectId','=',$input['projectid'])
             ->where('Client','=',$clientlist[0]['Company_Code'])
             ->get();
 
@@ -1456,7 +1371,6 @@ class DeliveryController extends Controller
                         'pick_up_time'=>$request->get('pickup'),
                         'roadtaxId'=>$request->get('lorry')==""? $input['truck']:$input['lorry'],
                         'representative'=>$helper,
-                        'ProjectId'=>$val['project'],
                         'Location'=>$val['destination'],
                         'project_type'=>$projtype->type,
                         'RequestorId'=>$originrequestor,
@@ -1527,7 +1441,6 @@ class DeliveryController extends Controller
                         'pick_up_time'=>$request->get('pickup'),
                         'roadtaxId'=>$request->get('lorry')==""? $input['truck']:$input['lorry'],
                         'representative'=>$helper,
-                        'ProjectId'=>$val['project'],
                         'Location'=>$val['destination'],
                         'project_type'=>$projtype->type,
                         'RequestorId'=>$originrequestor,
@@ -1622,85 +1535,6 @@ class DeliveryController extends Controller
                     }
             }
 
-                //Separate by item
-                //A = Return Note (RN)
-                //B = Delivery Order (DO)
-                // $purposes = $val['purpose'];
-                // $items = ['A' => [], 'B' => []];
-                // foreach($purposes as $k => $v) {
-                //     if ($v == 1544) //value of collection in options table
-                //     {
-                //         $items['A'][] = [
-                //             'item' => $val['item'][$k],
-                //             'quantity' => $val['quantity'][$k],
-                //             'purpose' => $val['purpose'][$k]
-                //         ];
-                //     } else {
-                //         $items['B'][] = [
-                //             'item' => $val['item'][$k],
-                //             'quantity' => $val['quantity'][$k],
-                //             'purpose' => $val['purpose'][$k]
-                //         ];
-                //     }
-                // }
-
-                // if (count($items['A'])) {
-                //     $id = DB::table('deliveryform')->insertGetId([
-                //         'delivery_date'=>$request->get('Date'),
-                //         'roadtaxId'=>$request->get('lorry'),
-                //         'ProjectId'=>$val['project'],
-                //         'LocationId'=>$val['destination'],
-                //         'departmentId'=>$val['department'],
-                //         'RequestorId'=>$me->UserId,
-                //         'VisitStatus'=> 0,
-                //         'Purpose' =>"Return Note",
-                //         // 'clientId'=>$val['client'],
-                //         'PIC_Name'=>$val['PICname'],
-                //         'PIC_Contact'=>$val['PICcontact'],
-                //         'Remarks'=>$val['Remarks']
-                //     ]);
-                //     $formItems = $items['A'];
-                //     foreach($formItems as $fi) {
-                //          DB::table('deliveryitem')->insertGetId([
-                //             'inventoryId'=>$fi['item'],
-                //             'Qty_request'=>$fi['quantity'],
-                //             'Purpose'=>$fi['purpose'],
-                //             'formId'=>$id
-                //         ]);
-                //     }
-                //     array_push($idcount['R'], $id);
-
-                // }
-
-                // if (count($items['B'])) {
-                //     $id2 = DB::table('deliveryform')->insertGetId([
-                //         'delivery_date'=>$request->get('Date'),
-                //         'roadtaxId'=>$request->get('lorry'),
-                //         'ProjectId'=>$val['project'],
-                //         'LocationId'=>$val['destination'],
-                //         'departmentId'=>$val['department'],
-                //         'RequestorId'=>$me->UserId,
-                //         'VisitStatus'=> 0,
-                //         'Purpose'=>"Delivery Order",
-                //         // 'clientId'=>$val['client'],
-                //         'PIC_Name'=>$val['PICname'],
-                //         'PIC_Contact'=>$val['PICcontact'],
-                //         'Remarks'=>$val['Remarks']
-                //     ]);
-
-                //     $formItems = $items['B'];
-                //     foreach($formItems as $fi) {
-                //          DB::table('deliveryitem')->insertGetId([
-                //             'inventoryId'=>$fi['item'],
-                //             'Qty_request'=>$fi['quantity'],
-                //             'Purpose'=>$fi['purpose'],
-                //             'formId'=>$id2
-                //         ]);
-                //     }
-                //     array_push($idcount['D'], $id2);
-
-                // }
-        //        if(count($items['A'])){
             if(isset($val['mr']))
             {
                 $statusdetails = "-";
@@ -1815,9 +1649,8 @@ class DeliveryController extends Controller
         ->leftJoin('options','options.Id','=','deliveryitem.Purpose')
         ->leftJoin('radius','radius.Id','=','deliveryform.Location')
         ->leftJoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-        ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
         // ->leftJoin('deliveryitem','','=','deliveryform.Id')
-        ->select('requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','roadtax.Vehicle_No as Lorry','roadtax.Lorry_Size','radius.Location_Name as Site','projects.Project_Name','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date')
+        ->select('requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','roadtax.Vehicle_No as Lorry','roadtax.Lorry_Size','radius.Location_Name as Site','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date')
         ->orderBy('deliverystatuses.Id','desc')
         ->where('deliveryform.Id', '=',$cs)
         ->first();
@@ -1828,12 +1661,12 @@ class DeliveryController extends Controller
             ->where('deliveryitem.formId','=',$cs)
             ->get();
 
-         Mail::send('emails.deliveryapplication', ['deliverydetail' => $deliverydetail, 'deliveryitemlist'=>$deliveryitemlist], function($message) use ($emails,$me,$NotificationSubject)
-        {
-            array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-            $emails = array_filter($emails);
-            $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
-        });
+        //  Mail::send('emails.deliveryapplication', ['deliverydetail' => $deliverydetail, 'deliveryitemlist'=>$deliveryitemlist], function($message) use ($emails,$me,$NotificationSubject)
+        // {
+        //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+        //     $emails = array_filter($emails);
+        //     $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+        // });
     }
     foreach ($idcount['R'] as $d=> $ds) {
         # code...
@@ -1848,9 +1681,8 @@ class DeliveryController extends Controller
         ->leftJoin('options','options.Id','=','deliveryitem.Purpose')
         ->leftJoin('radius','radius.Id','=','deliveryform.Location')
         ->leftJoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-        ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
         // ->leftJoin('deliveryitem','','=','deliveryform.Id')
-        ->select('requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','roadtax.Vehicle_No as Lorry','roadtax.Lorry_Size','radius.Location_Name as Site','projects.Project_Name','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date')
+        ->select('requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','roadtax.Vehicle_No as Lorry','roadtax.Lorry_Size','radius.Location_Name as Site','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date')
         ->orderBy('deliverystatuses.Id','desc')
         ->where('deliveryform.Id', '=',$ds)
         ->first();
@@ -1861,12 +1693,12 @@ class DeliveryController extends Controller
             ->where('deliveryitem.formId','=',$ds)
             ->get();
 
-         Mail::send('emails.deliveryreturn', ['deliverydetail2' => $deliverydetail2, 'deliveryitemlist' => $deliveryitemlist], function($message) use ($emails,$me,$NotificationSubject)
-        {
-            array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-            $emails = array_filter($emails);
-            $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
-        });
+        //  Mail::send('emails.deliveryreturn', ['deliverydetail2' => $deliverydetail2, 'deliveryitemlist' => $deliveryitemlist], function($message) use ($emails,$me,$NotificationSubject)
+        // {
+        //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+        //     $emails = array_filter($emails);
+        //     $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+        // });
 
     }
 
@@ -1893,9 +1725,8 @@ class DeliveryController extends Controller
             ->leftJoin('options','options.Id','=','deliveryitem.Purpose')
             // ->leftJoin('radius','radius.Id','=','deliveryform.LocationId')
             ->leftJoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-            ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
             // ->leftJoin('deliveryitem','','=','deliveryform.Id')
-            ->select('requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','deliverystatuses.delivery_status as Status','roadtax.Vehicle_No as Lorry','deliveryform.roadtaxId','roadtax.Lorry_Size','driver.Name as Driver','deliveryform.Location as Site','projects.Project_Name','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','inventories.Item_Code','deliveryitem.Qty_request','options.Option as Purpose','deliveryform.Purpose as deliverypurpose')
+            ->select('requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','deliverystatuses.delivery_status as Status','roadtax.Vehicle_No as Lorry','deliveryform.roadtaxId','roadtax.Lorry_Size','driver.Name as Driver','deliveryform.Location as Site','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','inventories.Item_Code','deliveryitem.Qty_request','options.Option as Purpose','deliveryform.Purpose as deliverypurpose')
             ->orderBy('deliverystatuses.Id','desc')
             ->where('deliveryform.Id', '=',$formIds)
             ->first();
@@ -1959,9 +1790,8 @@ class DeliveryController extends Controller
             ->leftJoin('options','options.Id','=','deliveryitem.Purpose')
             ->leftJoin('radius','radius.Id','=','deliveryform.Location')
             ->leftJoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-            ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
             // ->leftJoin('deliveryitem','','=','deliveryform.Id')
-            ->select('requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','deliverystatuses.delivery_status as Status','roadtax.Vehicle_No as Lorry','roadtax.Lorry_Size','driver.Name as Driver','deliveryform.Location as Site','projects.Project_Name','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','options.Option as Purpose')
+            ->select('requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','deliverystatuses.delivery_status as Status','roadtax.Vehicle_No as Lorry','roadtax.Lorry_Size','driver.Name as Driver','deliveryform.Location as Site','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','options.Option as Purpose')
             ->orderBy('deliverystatuses.Id','desc')
             ->where('deliveryform.Id', '=',$input["Id"])
             ->first();
@@ -1977,10 +1807,8 @@ class DeliveryController extends Controller
             // ->leftJoin('visitstatus','visitstatus.Id','=','deliveryform.VisitStatus')
             ->leftJoin('deliveryitem','deliveryitem.formId','=','deliveryform.Id')
             // ->leftJoin('radius','radius.Id','=','deliveryform.LocationId')
-            ->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
             ->leftJoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-            ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
-            ->select('requestor.Name as requestorName','deliveryform.delivery_date','roadtax.Vehicle_No','roadtax.Lorry_Size','projects.Project_Name','options.Option','driver.Name','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','inventories.Item_Code','deliveryitem.Qty_request','deliveryitem.Qty_send','deliveryitem.Qty_received','options.Option','approver.Name as approverName','deliverystatuses.delivery_status','requestor.Company_Email as requestorCompanyEmail','approver.Company_Email as approverEmail','deliverystatuses.remarks','deliverystatuses.delivery_status_details','tracker.Site_Name','deliveryform.DO_No','driver.Id as driverId')
+            ->select('requestor.Name as requestorName','deliveryform.delivery_date','roadtax.Vehicle_No','roadtax.Lorry_Size','options.Option','driver.Name','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','inventories.Item_Code','deliveryitem.Qty_request','deliveryitem.Qty_send','deliveryitem.Qty_received','options.Option','approver.Name as approverName','deliverystatuses.delivery_status','requestor.Company_Email as requestorCompanyEmail','approver.Company_Email as approverEmail','deliverystatuses.remarks','deliverystatuses.delivery_status_details','tracker.Site_Name','deliveryform.DO_No','driver.Id as driverId')
             ->where('deliveryform.Id', '=', $input["Id"])
             ->first();
 
@@ -2019,12 +1847,12 @@ class DeliveryController extends Controller
                 }
             }
 
-            Mail::send('emails.deliverystatus', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$me,$NotificationSubject)
-            {
-                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                $emails = array_filter($emails);
-                $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
-            });
+            // Mail::send('emails.deliverystatus', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$me,$NotificationSubject)
+            // {
+            //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+            //     $emails = array_filter($emails);
+            //     $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+            // });
 
             array_push($notifylist,$driver->driverId);
 
@@ -2119,23 +1947,12 @@ class DeliveryController extends Controller
         ->leftJoin('deliveryitem','deliveryitem.formId','=','deliveryform.Id')
         // ->leftJoin('radius','radius.Id','=','deliveryform.LocationId')
         ->leftJoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-        ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
         ->leftJoin('deliveryitem','','=','deliveryform.Id')
-        ->select('deliveryform.Id as FormId','deliverystatuses.Id','deliveryform.RequestorId as RequestorId','requestor.Name','deliveryform.Date','roadtax.Vehicle_No','roadtax.Lorry_Size','deliveryform.Location as Site','projects.Project_Name as Project','driver.Name as Driver','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','deliveryform.updated_at as Review_Date','inventories.Item_Code','deliveryitem.Qty_request','options.Option as Purpose','deliverystatuses.delivery_status as Status','approver.Id as ApproverId','approver.Name')
+        ->select('deliveryform.Id as FormId','deliverystatuses.Id','deliveryform.RequestorId as RequestorId','requestor.Name','deliveryform.Date','roadtax.Vehicle_No','roadtax.Lorry_Size','deliveryform.Location as Site','driver.Name as Driver','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','deliveryform.updated_at as Review_Date','inventories.Item_Code','deliveryitem.Qty_request','options.Option as Purpose','deliverystatuses.delivery_status as Status','approver.Id as ApproverId','approver.Name')
         ->orderBy('deliveryform.Id','asc')
         ->whereIn('deliveryform.Id',$deliveryIds)
         ->get();
 
-        // $approver = DB::table('approvalsettings')
-        // ->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-        // ->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-        // ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
-        // ->where('approvalsettings.Type', '=', 'Leave')
-        // ->where('approvalsettings.ProjectId', '<>', '0')
-        // ->orderBy('approvalsettings.Country','asc')
-        // ->orderBy('projects.Project_Name','asc')
-        // ->orderByRaw("FIELD(approvalsettings.Level , '1st Approval','2nd Approval','3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
-        // ->get();
         $final=false;
 
         foreach ($delivery as $deliveries) {
@@ -2157,7 +1974,7 @@ class DeliveryController extends Controller
 
                 foreach ($approver as $user) {
 
-                        if (!empty($user->Id) && $user->Project_Name==$deliveries->Project_Name && $deliveries->ApproverId != $user->Id)
+                        if (!empty($user->Id) && $deliveries->ApproverId != $user->Id)
                         {
 
                             DB::table('deliverystatuses')->insert(
@@ -2172,14 +1989,14 @@ class DeliveryController extends Controller
 
                             break;
                         }
-                        elseif (!empty($user->Id) && $user->Project_Name==$deliveries->Project_Name && $deliveries->ApproverId == $user->Id)
+                        elseif (!empty($user->Id) && $deliveries->ApproverId == $user->Id)
                         {
                             # code...
                                 $submitted=true;
                                 array_push($emaillist,$user->Id);
                                 array_push($emaillist,$deliveries->RequestorId);
                         }
-                        elseif (!empty($user->Id) && $user->Project_Name==$deliveries->Project_Name && $deliveries->ApproverId != $user->Id && $user->Level=="Final Approval")
+                        elseif (!empty($user->Id) && $deliveries->ApproverId != $user->Id && $user->Level=="Final Approval")
                         {
 
                             DB::table('deliverystatuses')->insert(
@@ -2273,20 +2090,18 @@ class DeliveryController extends Controller
             ->leftJoin('options','options.Id','=','deliveryitem.Purpose')
             // ->leftJoin('radius','radius.Id','=','deliveryform.LocationId')
             ->leftJoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-            ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
-            // ->leftJoin('deliveryitem','','=','deliveryform.Id')
-            ->select('deliveryform.Id as formId','requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','deliverystatuses.delivery_status as Status','roadtax.Vehicle_No as Lorry','roadtax.Lorry_Size','deliveryform.Location as Site','projects.Project_Name','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','inventories.Item_Code','deliveryitem.Qty_request','options.Option as Purpose')
+            ->select('deliveryform.Id as formId','requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','deliverystatuses.delivery_status as Status','roadtax.Vehicle_No as Lorry','roadtax.Lorry_Size','deliveryform.Location as Site','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','inventories.Item_Code','deliveryitem.Qty_request','options.Option as Purpose')
             ->orderBy('deliverystatuses.Id','desc')
             ->where('deliveryform.Id', '=',$delivery->FormId)
             ->get();
 
-                Mail::send('emails.deliverystatus', ['me' => $me,'deliverydetail' => $deliverydetail], function($message) use ($emails,$deliverydetail,$NotificationSubject)
-                {
-                        array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                        $emails = array_filter($emails);
-                        $message->to($emails)->subject($NotificationSubject.' ['.$deliverydetail[0]->Name.']');
+                // Mail::send('emails.deliverystatus', ['me' => $me,'deliverydetail' => $deliverydetail], function($message) use ($emails,$deliverydetail,$NotificationSubject)
+                // {
+                //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                //         $emails = array_filter($emails);
+                //         $message->to($emails)->subject($NotificationSubject.' ['.$deliverydetail[0]->Name.']');
 
-                });
+                // });
 
                 return 1;
             }
@@ -2327,7 +2142,7 @@ class DeliveryController extends Controller
 
             $option=DB::table('options')
             ->leftjoin('deliveryform','options.Id','=','deliveryform.Purpose')
-            ->select('options.Option','deliveryform.DO_No','deliveryform.ProjectId')
+            ->select('options.Option','deliveryform.DO_No')
             ->where('deliveryform.Id','=',$request->id)
             ->first();
 
@@ -2462,55 +2277,10 @@ class DeliveryController extends Controller
                     $this->deliveryNotification($request->id,"Accepted by Admin");
                 }else
                 {
-                    if($option->ProjectId == 142)
-                    {
-                        $this->deliveryNotification($request->id,"status updated");
-                    }
-                    elseif($option->ProjectId == 143)
-                    {
-                        $this->deliveryNotification($request->id,"status updated");
-                    }
-                    elseif($option->ProjectId == 144)
-                    {
-                        $this->deliveryNotification($request->id,"status updated");
-                    }
-                    else
-                    {
-                        // $this->deliveryNotification($request->id,"status updated");
-                        $this->deliveryNotification($request->id,"Accepted by Admin");
-                    }
-
+                    $this->deliveryNotification($request->id,"Accepted by Admin");
                 }
 
             }
-
-            // DB::table('deliverystatuses')
-            // ->insert([
-            //     "deliveryform_Id"=>$request->id,
-            //     "delivery_status"=>"Processing",
-            //     "delivery_status_details"=>"Accepted by Admin",
-            //     "user_Id"=>$me->UserId,
-            //     "created_at"=>Carbon::now(),
-            //     "updated_at"=>Carbon::now()
-            // ]);
-
-            // if($generateDO != "")
-            // {
-            //     DB::table('deliveryform')
-            //     ->where('Id','=',$request->id)
-            //     ->update([
-            //         "DO_No"=>$generateDO
-            //     ]);
-            // }
-
-            // if($option->Option != "Collection" || $option->Option != "Exchange-in")
-            // {
-            //     $this->deliveryNotification($request->id,"Accepted by Admin");
-            // }
-            // else
-            // {
-            //     $this->deliveryNotification($request->id,"status updated");
-            // }
 
 			return 1;
         }
@@ -2617,10 +2387,8 @@ class DeliveryController extends Controller
         //->leftJoin('visitstatus','visitstatus.Id','=','deliveryform.VisitStatus')
         ->leftJoin('deliveryitem','deliveryitem.formId','=','deliveryform.Id')
         ->leftJoin('radius','radius.Id','=','deliveryform.Location')
-        //->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
         ->leftJoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-        ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
-        ->select('requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','roadtax.Vehicle_No','roadtax.Lorry_Size','projects.Project_Name','options.Option','driver.Name','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.PIC_Contact','deliveryform.Remarks',
+        ->select('requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','roadtax.Vehicle_No','roadtax.Lorry_Size','options.Option','driver.Name','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.PIC_Contact','deliveryform.Remarks',
             'deliveryform.created_at as Application_Date','options.Option','approver.Name as Approver','deliverystatuses.delivery_status as Status',
             'requestor.Company_Email as Requestor_Company_Email','approver.Company_Email as Approver_Email','deliverystatuses.remarks as Remarks','deliverystatuses.delivery_status_details as Details','radius.Location_Name as Site_Name','deliveryform.DO_No','radius.Location_Name',
             'deliveryform.delivery_time as Delivery_Time','deliveryform.pick_up_time as Pickup_Time')
@@ -2638,10 +2406,8 @@ class DeliveryController extends Controller
         //->leftJoin('visitstatus','visitstatus.Id','=','deliveryform.VisitStatus')
         ->leftJoin('deliveryitem','deliveryitem.formId','=','deliveryform.Id')
         ->leftJoin('radius','radius.Id','=','deliveryform.Location')
-        //->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
         ->leftJoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-        ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
-        ->select('requestor.Name as Requestor','deliveryform.delivery_date','roadtax.Vehicle_No','roadtax.Lorry_Size','projects.Project_Name','options.Option','driver.Name','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','inventories.Item_Code','deliveryitem.Qty_request','deliveryitem.Qty_send','deliveryitem.Qty_received','options.Option','approver.Name as approverName','deliverystatuses.delivery_status',
+        ->select('requestor.Name as Requestor','deliveryform.delivery_date','roadtax.Vehicle_No','roadtax.Lorry_Size','options.Option','driver.Name','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.PIC_Contact','deliveryform.Remarks','deliveryform.created_at as Application_Date','inventories.Item_Code','deliveryitem.Qty_request','deliveryitem.Qty_send','deliveryitem.Qty_received','options.Option','approver.Name as approverName','deliverystatuses.delivery_status',
             'requestor.Company_Email as requestorCompanyEmail','approver.Company_Email as approverEmail','deliverystatuses.remarks','deliverystatuses.delivery_status_details','radius.Location_Name as Site_Name','deliveryform.DO_No','driver.Id as driverId')
         ->where('deliveryform.Id', '=',$id)
         ->first();
@@ -2696,12 +2462,12 @@ class DeliveryController extends Controller
             ->where('notificationtype.Id','=',69)
             ->get();
 
-            Mail::send('emails.deliverystatus', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
-            {
-                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                $emails = array_filter($emails);
-                $message->to($emails)->subject($NotificationSubject);
-            });
+            // Mail::send('emails.deliverystatus', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
+            // {
+            //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+            //     $emails = array_filter($emails);
+            //     $message->to($emails)->subject($NotificationSubject);
+            // });
 
             $emails=array();
             foreach ($subscribers as $subscriber)
@@ -2717,12 +2483,12 @@ class DeliveryController extends Controller
                 }
             }
             $NotificationSubject == "" ? $NotificationSubject="New delivery order":$NotificationSubject;
-            Mail::send('emails.warehouse', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
-            {
-                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                $emails = array_filter($emails);
-                $message->to($emails)->subject($NotificationSubject);
-            });
+            // Mail::send('emails.warehouse', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
+            // {
+            //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+            //     $emails = array_filter($emails);
+            //     $message->to($emails)->subject($NotificationSubject);
+            // });
             return 1;
         }
         else if($type == "status updated")
@@ -2737,12 +2503,12 @@ class DeliveryController extends Controller
              array_push($notifylist, $driverlist->UserId2);
              array_push($notifylist, $driverlist->UserId3);
             $NotificationSubject == "" ?  $NotificationSubject="Delivery status updated ":$NotificationSubject;
-            Mail::send('emails.deliverystatusupdate', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject)
-            {
-                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                $emails = array_filter($emails);
-                $message->to($emails)->subject($NotificationSubject);
-            });
+            // Mail::send('emails.deliverystatusupdate', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject)
+            // {
+            //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+            //     $emails = array_filter($emails);
+            //     $message->to($emails)->subject($NotificationSubject);
+            // });
 
             $notify = DB::table('users')
             ->whereIn('Id',$notifylist)
@@ -2772,12 +2538,12 @@ class DeliveryController extends Controller
              array_push($notifylist, $driverlist->UserId3);
 
             $NotificationSubject == "" ?  $NotificationSubject="Delivery status updated ":$NotificationSubject;
-            Mail::send('emails.deliverystatusupdate', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject)
-            {
-                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                $emails = array_filter($emails);
-                $message->to($emails)->subject($NotificationSubject);
-            });
+            // Mail::send('emails.deliverystatusupdate', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject)
+            // {
+            //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+            //     $emails = array_filter($emails);
+            //     $message->to($emails)->subject($NotificationSubject);
+            // });
 
             // $notify = DB::table('users')
             // ->whereIn('Id',$notifylist)
@@ -2807,12 +2573,12 @@ class DeliveryController extends Controller
              array_push($notifylist, $driverlist->UserId3);
 
             $NotificationSubject == "" ?  $NotificationSubject="Delivery status updated ":$NotificationSubject;
-            Mail::send('emails.deliverystatusupdate', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject)
-            {
-                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                $emails = array_filter($emails);
-                $message->to($emails)->subject($NotificationSubject);
-            });
+            // Mail::send('emails.deliverystatusupdate', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject)
+            // {
+            //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+            //     $emails = array_filter($emails);
+            //     $message->to($emails)->subject($NotificationSubject);
+            // });
 
             // $notify = DB::table('users')
             // ->whereIn('Id',$notifylist)
@@ -2858,12 +2624,12 @@ class DeliveryController extends Controller
             }
 
             $NotificationSubject == "" ?  $NotificationSubject="Delivery status updated ":$NotificationSubject;
-            Mail::send('emails.deliverystatusupdate', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$me,$NotificationSubject)
-            {
-                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                $emails = array_filter($emails);
-                $message->to($emails)->subject($NotificationSubject);
-            });
+            // Mail::send('emails.deliverystatusupdate', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$me,$NotificationSubject)
+            // {
+            //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+            //     $emails = array_filter($emails);
+            //     $message->to($emails)->subject($NotificationSubject);
+            // });
 
             return 1;
         }
@@ -2896,12 +2662,12 @@ class DeliveryController extends Controller
             }
 
             $NotificationSubject == "" ? $NotificationSubject="Delivery status updated":$NotificationSubject;
-            Mail::send('emails.deliverystatusupdate', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject)
-            {
-                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                $emails = array_filter($emails);
-                $message->to($emails)->subject($NotificationSubject);
-            });
+            // Mail::send('emails.deliverystatusupdate', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject)
+            // {
+            //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+            //     $emails = array_filter($emails);
+            //     $message->to($emails)->subject($NotificationSubject);
+            // });
 
             $notify = DB::table('users')
             ->whereIn('Id',$notifylist)
@@ -2945,12 +2711,12 @@ class DeliveryController extends Controller
             }
 
             $NotificationSubject == "" ?  $NotificationSubject="Rejected Delivery ":$NotificationSubject;
-            Mail::send('emails.deliveryreject', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject)
-            {
-                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                $emails = array_filter($emails);
-                $message->to($emails)->subject($NotificationSubject);
-            });
+            // Mail::send('emails.deliveryreject', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject)
+            // {
+            //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+            //     $emails = array_filter($emails);
+            //     $message->to($emails)->subject($NotificationSubject);
+            // });
             return 1;
         }
         else if($type == "insufficient")
@@ -2983,12 +2749,12 @@ class DeliveryController extends Controller
                 }
             }
             $NotificationSubject == "" ? $NotificationSubject="Insufficient Stock":$NotificationSubject=$NotificationSubject;
-            Mail::send('emails.insufficient', ['deliverydetail' => $deliverydetail,'items'=>$items], function($message) use ($emails,$NotificationSubject)
-            {
-                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                $emails = array_filter($emails);
-                $message->to($emails)->subject($NotificationSubject);
-            });
+            // Mail::send('emails.insufficient', ['deliverydetail' => $deliverydetail,'items'=>$items], function($message) use ($emails,$NotificationSubject)
+            // {
+            //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+            //     $emails = array_filter($emails);
+            //     $message->to($emails)->subject($NotificationSubject);
+            // });
             return 1;
         }
         return 1;
@@ -3099,16 +2865,14 @@ class DeliveryController extends Controller
         ->leftJoin('deliverystatuses', 'deliverystatuses.Id', '=', DB::raw('max.`maxid`'))
         ->leftjoin('users','deliveryform.DriverId','=','users.Id')
         ->leftjoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
-        ->leftjoin('projects','deliveryform.ProjectId','=','projects.Id')
         ->leftjoin('users as requestor','deliveryform.RequestorId','=','requestor.Id')
         ->leftjoin('companies','deliveryform.company_id','=','companies.Id')
         ->leftjoin('companies as client','deliveryform.client','=','client.Id')
-        //->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
         ->leftjoin('radius','deliveryform.Location','=','radius.Id')
         ->leftjoin('options','deliveryform.Purpose','=','options.Id')
         ->select("deliveryform.Id",'deliveryform.trip',"roadtax.Vehicle_No","deliveryform.DO_No","deliveryform.delivery_date","deliveryform.delivery_time",
             "users.Name","deliveryform.DriverId","deliveryform.PIC_Name","deliveryform.PIC_Contact","deliveryform.Remarks","requestor.Name as requestorName"
-            ,"projects.Project_Name","radius.Latitude","radius.Longitude",'deliverystatuses.delivery_status','deliverystatuses.delivery_status_details',
+            ,"radius.Latitude","radius.Longitude",'deliverystatuses.delivery_status','deliverystatuses.delivery_status_details',
             'options.Option','companies.Company_Name','companies.Id as companyId','companies.Company_Code','roadtax.Id as roadtaxId','radius.Location_Name','deliveryform.pick_up_time','deliveryform.pickup_date',
             'roadtax.Id as roadtax','client.Company_Name as client','deliveryform.incentive'
         )
@@ -3122,12 +2886,6 @@ class DeliveryController extends Controller
             'deliveryitem.Id','deliveryitem.available'
         )
         ->where("deliveryitem.formId",'=',$id)
-        ->get();
-
-        $project=DB::table('projects')
-        ->leftjoin('deliveryform','deliveryform.ProjectId','=','projects.Id')
-        ->select('projects.Id')
-        ->where("deliveryform.Id",'=',$id)
         ->get();
 
         $log=DB::table('deliverystatuses')
@@ -3198,7 +2956,7 @@ class DeliveryController extends Controller
         ->get();
         return view("deliverydetails",['me'=>$me,'detail'=>$detail,'items'=>$items,'log'=>$log,'view'=>$view,'options'=>$options,'lorry'=>$lorry,
                 'company'=>$company,'driver'=>$driver,'condOption'=>$condOption,'deliverycond'=>$deliverycond,'noteOption'=>$noteOption,
-                'note'=>$note,'project'=>$project
+                'note'=>$note
                 ]);
     }
     public function savePendingDelivery(Request $request)
@@ -3407,33 +3165,14 @@ class DeliveryController extends Controller
         ->orderBy('holidays.Start_Date','asc')
         ->get();
 
-  //       $pending=db::table('deliveryform')
-  //       ->leftJoin( DB::raw('(select Max(Id) as maxid,deliveryform_Id from deliverystatuses Group By deliveryform_Id) as max'), 'max.deliveryform_Id', '=', 'deliveryform.Id')
-  //       ->leftJoin('options','options.Id','=','deliveryform.Purpose')
-  //       ->leftjoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
-		// ->leftJoin('deliverystatuses', 'deliverystatuses.Id', '=', DB::raw('max.`maxid`'))
-  //       ->leftjoin("users as driver","deliveryform.DriverId","=","driver.Id")
-  //       ->leftjoin("users as requestor","deliveryform.requestorId","=","requestor.Id")
-  //       //->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
-  //       ->leftjoin('radius','deliveryform.Location','=','radius.Id')
-  //       ->select('deliveryform.Id','deliveryform.DO_No','roadtax.Vehicle_No','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.pickup_date','deliveryform.pick_up_time','radius.Location_Name','radius.Latitude','radius.Longitude','options.Option as Purpose','requestor.Name as requestorname','deliveryform.created_at')
-  //       ->where("deliverystatuses.delivery_status","=","Pending")
-  //       ->whereRaw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(deliveryform.delivery_date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")')
-  //       ->get();
-
 		$processing=DB::table('deliveryform')
         ->leftjoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
         ->leftjoin("users as driver","deliveryform.DriverId","=","driver.Id")
         ->leftjoin("users as requestor","deliveryform.requestorId","=","requestor.Id")
             ->leftJoin('options','options.Id','=','deliveryform.Purpose')
-        //->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,deliveryform_Id from deliverystatuses Group By deliveryform_Id) as max'), 'max.deliveryform_Id', '=', 'deliveryform.Id')
         ->leftJoin('deliverystatuses', 'deliverystatuses.Id', '=', DB::raw('max.`maxid`'))
         ->leftjoin('radius','deliveryform.Location','=','radius.Id')
-        ->leftJoin('tracker',function($join)
-        {
-            $join->on(DB::raw('CONCAT("(",tracker.Project_Code,")")'),'LIKE','radius.Location_Name');
-        })
         ->select('deliveryform.Id','deliveryform.DO_No','roadtax.Vehicle_No','driver.Name as Name','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.pickup_date','deliveryform.pick_up_time','radius.Location_Name','radius.Latitude','radius.Longitude','tracker.State','options.Option as Purpose','requestor.Name as requestorname','deliveryform.created_at','deliverystatuses.delivery_status_details','deliveryform.trip')
         ->whereRaw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(deliveryform.delivery_date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")')
 		->where("deliverystatuses.delivery_status","=","Processing")
@@ -3445,16 +3184,10 @@ class DeliveryController extends Controller
         ->leftjoin("users as requestor","deliveryform.requestorId","=","requestor.Id")
             ->leftJoin('options','options.Id','=','deliveryform.Purpose')
         ->leftjoin("users as driver","deliveryform.DriverId","=","driver.Id")
-        //->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,deliveryform_Id from deliverystatuses Group By deliveryform_Id) as max'), 'max.deliveryform_Id', '=', 'deliveryform.Id')
 		->leftJoin('deliverystatuses', 'deliverystatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftjoin('radius','deliveryform.Location','=','radius.Id')
-        ->leftJoin('tracker',function($join)
-        {
-            $join->on(DB::raw('CONCAT("(",tracker.Project_Code,")")'),'LIKE','radius.Location_Name');
-        })
         ->select('deliveryform.Id','deliveryform.DO_No','roadtax.Vehicle_No','driver.Name as Name','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.pickup_date','deliveryform.pick_up_time','radius.Location_Name','radius.Latitude','radius.Longitude','tracker.State','options.Option as Purpose','requestor.Name as requestorname','deliveryform.created_at','deliverystatuses.delivery_status_details','deliveryform.trip')
-        // ->select('deliveryform.Id',"deliveryform.DO_No","roadtax.Vehicle_No",'driver.Name as Name',"deliveryform.delivery_date","deliveryform.delivery_time",'deliveryform.pick_up_time','radius.Location_Name',"radius.Latitude","radius.Longitude",'requestor.Name as requestorname','deliverystatuses.delivery_status_details','options.Option as Purpose','deliverystatuses.created_at')
         ->whereRaw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(deliveryform.delivery_date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")')
 		->where("deliverystatuses.delivery_status","=","Accepted")
         ->groupby('deliveryform.DO_No')
@@ -3464,17 +3197,12 @@ class DeliveryController extends Controller
 		$recalled=DB::table('deliveryform')
             ->leftJoin('options','options.Id','=','deliveryform.Purpose')
         ->leftjoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
-		// ->leftjoin("roadtax","deliveryform.DriverId","=","roadtax.UserId")
-        // ->leftjoin("users","deliveryform.DriverId","=","users.Id")
         ->leftjoin("users as driver","deliveryform.requestorId","=","driver.Id")
         ->leftjoin("users as requestor","deliveryform.DriverId","=","requestor.Id")
-        // ->leftjoin("users as driver","deliveryform.DriverId","=","driver.Id")
-        //->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,deliveryform_Id from deliverystatuses Group By deliveryform_Id) as max'), 'max.deliveryform_Id', '=', 'deliveryform.Id')
 		->leftJoin('deliverystatuses', 'deliverystatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftjoin('radius','deliveryform.Location','=','radius.Id')
         ->select('deliveryform.Id','deliveryform.DO_No','roadtax.Vehicle_No','driver.Name as Name','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.pickup_date','deliveryform.pick_up_time','radius.Location_Name','radius.Latitude','radius.Longitude','options.Option as Purpose','requestor.Name as requestorname','deliveryform.created_at','deliverystatuses.delivery_status_details')
-        // ->select('deliveryform.Id',"deliveryform.DO_No","roadtax.Vehicle_No",'driver.Name as Name',"deliveryform.delivery_date","deliveryform.delivery_time",'deliveryform.pick_up_time','radius.Location_Name',"radius.Latitude","radius.Longitude",'requestor.Name as requestorname','deliverystatuses.delivery_status_details','deliverystatuses.created_at','options.Option as Purpose
         ->whereRaw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(deliveryform.delivery_date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")')
         ->where("deliverystatuses.delivery_status","=","Recalled")
 		->get();
@@ -3482,18 +3210,11 @@ class DeliveryController extends Controller
 		$completed=DB::table('deliveryform')
             ->leftJoin('options','options.Id','=','deliveryform.Purpose')
         ->leftjoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
-		// ->leftjoin("roadtax","deliveryform.DriverId","=","roadtax.UserId")
-        // ->leftjoin("users","deliveryform.DriverId","=","users.Id")
         ->leftjoin("users as requestor","deliveryform.requestorId","=","requestor.Id")
         ->leftjoin("users as driver","deliveryform.DriverId","=","driver.Id")
-        //->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,deliveryform_Id from deliverystatuses Group By deliveryform_Id) as max'), 'max.deliveryform_Id', '=', 'deliveryform.Id')
 		->leftJoin('deliverystatuses', 'deliverystatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftjoin('radius','deliveryform.Location','=','radius.Id')
-        ->leftJoin('tracker',function($join)
-        {
-            $join->on(DB::raw('CONCAT("(",tracker.Project_Code,")")'),'LIKE','radius.Location_Name');
-        })
         ->select('deliveryform.Id','deliveryform.DO_No','roadtax.Vehicle_No','driver.Name as Name','deliveryform.delivery_date',DB::raw('(SELECT `created_at` FROM deliverystatuses WHERE (deliveryform_Id = max.deliveryform_Id AND delivery_status_details = "Task Completed by Driver") ORDER BY Id DESC limit 1) as driverdate'),'deliveryform.delivery_time','deliveryform.pickup_date','deliveryform.pick_up_time','radius.Location_Name','radius.Latitude','radius.Longitude','tracker.State','options.Option as Purpose','requestor.Name as requestorname','deliverystatuses.created_at','deliverystatuses.delivery_status_details','deliveryform.trip')
         ->whereRaw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(deliveryform.delivery_date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")')
         ->where("deliverystatuses.delivery_status","=","Completed")
@@ -3506,12 +3227,10 @@ class DeliveryController extends Controller
         ->leftjoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
         ->leftjoin("users as requestor","deliveryform.requestorId","=","requestor.Id")
         ->leftjoin("users as driver","deliveryform.DriverId","=","driver.Id")
-        //->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
         ->leftJoin( DB::raw('(select Max(Id) as maxid,deliveryform_Id from deliverystatuses Group By deliveryform_Id) as max'), 'max.deliveryform_Id', '=', 'deliveryform.Id')
         ->leftJoin('deliverystatuses', 'deliverystatuses.Id', '=', DB::raw('max.`maxid`'))
         ->leftjoin('radius','deliveryform.Location','=','radius.Id')
         ->select('deliveryform.Id','deliveryform.DO_No','roadtax.Vehicle_No','driver.Name as Name','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.pickup_date','deliveryform.pick_up_time','radius.Location_Name','deliverystatuses.remarks','radius.Latitude','radius.Longitude','options.Option as Purpose','requestor.Name as requestorname','deliveryform.created_at','deliverystatuses.delivery_status_details')
-        // ->select('deliveryform.Id',"deliveryform.DO_No","roadtax.Vehicle_No",'driver.Name as Name',"deliveryform.delivery_date","deliveryform.delivery_time",'deliveryform.pick_up_time','radius.Location_Name',"radius.Latitude","radius.Longitude",'requestor.Name as requestorname','deliverystatuses.delivery_status_details','deliverystatuses.created_at','options.Option as Purpose')
         ->whereRaw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(deliveryform.delivery_date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")')
         ->where("deliverystatuses.delivery_status","=","Incomplete")
         ->get();
@@ -3520,11 +3239,10 @@ class DeliveryController extends Controller
         ->leftJoin('deliverystatuses', 'deliverystatuses.deliveryform_Id', '=', 'deliveryform.Id')
         ->leftJoin('users as requestor', 'deliveryform.RequestorId', '=', 'requestor.Id')
         ->leftJoin('users as driver','deliveryform.DriverId','=','driver.Id')
-        ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
         ->leftJoin('radius','radius.Id','=','deliveryform.Location')
         ->leftJoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
         ->leftJoin('options','options.Id','=','deliveryform.Purpose')
-        ->select('deliveryform.Id','requestor.Name as requestor','driver.Name as driver','deliveryform.DO_No','deliveryform.delivery_date','deliveryform.delivery_time','roadtax.Vehicle_No','radius.Location_Name','projects.Project_Name','options.Option','deliveryform.created_at','deliverystatuses.remarks',"radius.Latitude","radius.Longitude")
+        ->select('deliveryform.Id','requestor.Name as requestor','driver.Name as driver','deliveryform.DO_No','deliveryform.delivery_date','deliveryform.delivery_time','roadtax.Vehicle_No','radius.Location_Name','options.Option','deliveryform.created_at','deliverystatuses.remarks',"radius.Latitude","radius.Longitude")
         ->whereRaw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(deliveryform.delivery_date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")')
         ->whereRaw("deliverystatuses.delivery_status_details = 'Driver Transfer Trip' OR deliverystatuses.delivery_status_details = 'Driver Release Trip'")
         ->groupby('deliveryform.DO_No')
@@ -3537,13 +3255,10 @@ class DeliveryController extends Controller
 		// ->leftjoin("roadtax","deliveryform.DriverId","=","roadtax.UserId")
         ->leftjoin("users as requestor","deliveryform.requestorId","=","requestor.Id")
         ->leftjoin("users as driver","deliveryform.DriverId","=","driver.Id")
-        // ->leftjoin("users","deliveryform.DriverId","=","users.Id")
-       // ->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,deliveryform_Id from deliverystatuses Group By deliveryform_Id) as max'), 'max.deliveryform_Id', '=', 'deliveryform.Id')
 		->leftJoin('deliverystatuses', 'deliverystatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftjoin('radius','deliveryform.Location','=','radius.Id')
         ->select('deliveryform.Id','deliveryform.DO_No','roadtax.Vehicle_No','driver.Name as Name','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.pickup_date','deliveryform.pick_up_time','radius.Location_Name','radius.Latitude','radius.Longitude','options.Option as Purpose','requestor.Name as requestorname','deliveryform.created_at','deliverystatuses.delivery_status_details')
-        // ->select('deliveryform.Id',"deliveryform.DO_No","roadtax.Vehicle_No",'driver.Name as Name',"deliveryform.delivery_date","deliveryform.delivery_time",'deliveryform.pick_up_time','radius.Location_Name',"radius.Latitude","radius.Longitude",'requestor.Name as requestorname','deliverystatuses.delivery_status_details','options.Option as Purpose')
         ->whereRaw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(deliveryform.delivery_date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")')
 		->where("deliverystatuses.delivery_status","=","Insufficient Stocks")
         ->get();
@@ -3553,14 +3268,10 @@ class DeliveryController extends Controller
         ->leftjoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
         ->leftjoin("users as requestor","deliveryform.requestorId","=","requestor.Id")
         ->leftjoin("users as driver","deliveryform.DriverId","=","driver.Id")
-		// ->leftjoin("roadtax","deliveryform.DriverId","=","roadtax.UserId")
-        // ->leftjoin("users","deliveryform.DriverId","=","users.Id")
-       // ->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
        ->leftJoin( DB::raw('(select Max(Id) as maxid,deliveryform_Id from deliverystatuses Group By deliveryform_Id) as max'), 'max.deliveryform_Id', '=', 'deliveryform.Id')
        ->leftJoin('deliverystatuses', 'deliverystatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftjoin('radius','deliveryform.Location','=','radius.Id')
         ->select('deliveryform.Id','deliveryform.DO_No','roadtax.Vehicle_No','driver.Name as Name','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.pickup_date','deliveryform.pick_up_time','radius.Location_Name','radius.Latitude','radius.Longitude','options.Option as Purpose','requestor.Name as requestorname','deliverystatuses.remarks','deliverystatuses.delivery_status_details')
-        // ->select('deliveryform.Id',"deliveryform.DO_No","roadtax.Vehicle_No",'driver.Name as Name',"deliveryform.delivery_date","deliveryform.delivery_time",'deliveryform.pick_up_time','radius.Location_Name',"radius.Latitude","radius.Longitude",'requestor.Name as requestorname','deliverystatuses.delivery_status_details','deliverystatuses.created_at','deliverystatuses.remarks','options.Option as Purpose')
         ->whereRaw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(deliveryform.delivery_date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")')
 		->where("deliverystatuses.delivery_status","=","Rejected")
         ->get();
@@ -3570,14 +3281,10 @@ class DeliveryController extends Controller
         ->leftjoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
         ->leftjoin("users as requestor","deliveryform.requestorId","=","requestor.Id")
         ->leftjoin("users as driver","deliveryform.DriverId","=","driver.Id")
-        // ->leftjoin("roadtax","deliveryform.DriverId","=","roadtax.UserId")
-        // ->leftjoin("users","deliveryform.DriverId","=","users.Id")
-       // ->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
        ->leftJoin( DB::raw('(select Max(Id) as maxid,deliveryform_Id from deliverystatuses Group By deliveryform_Id) as max'), 'max.deliveryform_Id', '=', 'deliveryform.Id')
        ->leftJoin('deliverystatuses', 'deliverystatuses.Id', '=', DB::raw('max.`maxid`'))
         ->leftjoin('radius','deliveryform.Location','=','radius.Id')
         ->select('deliveryform.Id','deliveryform.DO_No','roadtax.Vehicle_No','driver.Name as Name','deliveryform.delivery_date','deliveryform.delivery_time','radius.Location_Name','options.Option as Purpose','requestor.Name as requestorname','deliverystatuses.remarks','deliverystatuses.created_at','deliveryform.approve')
-        // ->select('deliveryform.Id',"deliveryform.DO_No","roadtax.Vehicle_No",'driver.Name as Name',"deliveryform.delivery_date","deliveryform.delivery_time",'deliveryform.pick_up_time','radius.Location_Name',"radius.Latitude","radius.Longitude",'requestor.Name as requestorname','deliverystatuses.delivery_status_details','deliverystatuses.created_at','deliverystatuses.remarks','options.Option as Purpose')
         ->whereRaw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(deliveryform.delivery_date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")')
         ->where("deliverystatuses.delivery_status","=","Cancelled")
         ->get();
@@ -3635,10 +3342,6 @@ class DeliveryController extends Controller
         ->select('radius.Id','radius.Location_Name','radius.Code', DB::raw('COUNT(deliveryform.delivery_date) as Visits'))
         // ->leftJoin('radius','deliveryform.LocationId','=','radius.Id')
         ->whereRaw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(deliveryform.delivery_date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")')
-        // ->where('deliveryform.LocationId', '!=','')
-        // ->where('timesheets.Time_In', '!=','')
-        // ->whereRaw('timesheets.UserId IN (select Id from users where Department="'.$dept.'")')
-        // ->whereRaw($condition)
         ->orderBy('deliveryform.Location','asc')
         ->groupBy('radius.Location_Name')
         ->get();
@@ -3658,8 +3361,7 @@ class DeliveryController extends Controller
         ->leftJoin('companies', 'deliveryform.company_id', '=', 'companies.Id')
         ->leftJoin('radius', 'radius.Id', '=', 'deliveryform.Location')
         ->leftJoin('options','options.Id','=','deliveryform.Purpose')
-        ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
-        ->select('deliveryform.Id','deliveryform.DO_No','projects.Project_Name','deliveryform.delivery_date','options.Option','companies.Company_Name','deliverystatuses.delivery_status','deliverystatuses.delivery_status_details')
+        ->select('deliveryform.Id','deliveryform.DO_No','deliveryform.delivery_date','options.Option','companies.Company_Name','deliverystatuses.delivery_status','deliverystatuses.delivery_status_details')
         ->whereRaw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(deliveryform.delivery_date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")')
         ->where('radius.Location_Name', '=', $sitename)
         ->orderBy('deliveryform.delivery_date')
@@ -3678,14 +3380,13 @@ class DeliveryController extends Controller
         ->leftJoin('deliverystatuses', 'deliverystatuses.Id', '=', DB::raw('max.`maxid`'))
         // ->leftjoin('users','deliveryform.DriverId','=','users.Id')
         ->leftjoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
-        ->leftjoin('projects','deliveryform.ProjectId','=','projects.Id')
         ->leftjoin('users as requestor','deliveryform.RequestorId','=','requestor.Id')
         ->leftjoin('users as driver','deliveryform.DriverId','=','driver.Id')
         ->leftjoin('companies','deliveryform.company_id','=','companies.Id')
         //->leftJoin('tracker','tracker.Site_Name','=','deliveryform.Location')
         //->leftJoin('radius','radius.Location_Name','=','tracker.Site_Name')
         ->leftjoin('radius','deliveryform.Location','=','radius.Id')
-        ->select('deliveryform.Id','deliveryform.DO_No','radius.Location_Name','radius.Longitude','radius.Latitude','deliveryform.delivery_date','deliveryform.delivery_time','driver.Name as Driver_Name','driver.Id as driverId','requestor.Id as RequestorId','requestor.Name as requestorName','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','projects.Project_Name','deliverystatuses.delivery_status','deliverystatuses.delivery_status_details','roadtax.Vehicle_No','roadtax.Lorry_Size')
+        ->select('deliveryform.Id','deliveryform.DO_No','radius.Location_Name','radius.Longitude','radius.Latitude','deliveryform.delivery_date','deliveryform.delivery_time','driver.Name as Driver_Name','driver.Id as driverId','requestor.Id as RequestorId','requestor.Name as requestorName','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.Remarks','deliverystatuses.delivery_status','deliverystatuses.delivery_status_details','roadtax.Vehicle_No','roadtax.Lorry_Size')
         ->where("deliveryform.Id","=",$id)
         ->first();
 
@@ -3737,7 +3438,6 @@ class DeliveryController extends Controller
         ->leftjoin('radius','deliveryform.Location','=','radius.Id')
         ->leftjoin('companies','deliveryform.company_id','=','companies.Id')
         ->leftjoin('companies as client','deliveryform.client','=','client.Id')
-        //->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
         ->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Company Logo" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'companies.Id')
         ->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid`'))
         ->leftjoin('roadtax','roadtax.Id','=','deliveryform.roadtaxId')
@@ -3803,7 +3503,6 @@ class DeliveryController extends Controller
         ->leftjoin('radius','deliveryform.Location','=','radius.Id')
         ->leftjoin('companies','deliveryform.company_id','=','companies.Id')
         ->leftjoin('companies as client','deliveryform.client','=','client.Id')
-        //->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
         ->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Company Logo" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'companies.Id')
         ->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid`'))
         ->leftjoin('roadtax','roadtax.Id','=','deliveryform.roadtaxId')
@@ -3880,7 +3579,6 @@ class DeliveryController extends Controller
         ->leftjoin('companies','deliveryform.company_id','=','companies.Id')
         ->leftjoin('radius','deliveryform.Location','=','radius.Id')
         ->leftjoin('companies as client','deliveryform.client','=','client.Id')
-        //->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
         ->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Company Logo" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'companies.Id')
 		->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid`'))
         ->select('files.Web_Path','companies.Company_Name','deliveryform.DO_No','deliveryform.delivery_date','companies.address','radius.Latitude','radius.Longitude','companies.Contact_No','companies.Fax_No','client.Contact_No as clientNum','radius.Location_Name','client.Fax_No as clientFax','client.Company_Name as clientName','client.Address as clientAddress','deliveryform.PIC_Name','deliveryform.PIC_Contact','deliveryform.term','deliveryform.po','deliveryform.Remarks')
@@ -3920,7 +3618,6 @@ class DeliveryController extends Controller
             ->leftJoin('companies', 'deliveryform.company_id', '=', 'companies.Id')
             ->leftJoin('radius','deliveryform.Location','=','radius.Id')
             ->leftJoin( DB::raw('(select Max(Id) as maxid,deliveryform_Id from deliverystatuses Group By deliveryform_Id) as max'), 'max.deliveryform_Id', '=', 'deliveryform.Id')
-            ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
             ->leftJoin('deliverystatuses', 'deliverystatuses.Id', '=', 'max.maxid')
             ->where('deliveryform.DO_No', 'LIKE', '%'.$do_no.'%')
             ->orderBy('deliveryform.delivery_date', 'ASC')
@@ -4035,18 +3732,6 @@ class DeliveryController extends Controller
             $end=date('d-M-Y',strtotime($end));
         }
 
-        $genset = DB::table('projects')
-        ->select('Id','Project_Name')
-        ->where('Project_Name','LIKE',"%Genset%")
-        ->get();
-
-        $gensetid = json_decode(json_encode($genset),true);
-        $excludeid = [142,143,144];
-        for($i=0; $i<Count($gensetid); $i++)
-        {
-            array_push($excludeid,$gensetid[$i]['Id']);
-        }
-
         $data=DB::table('deliveryform')
         ->leftjoin('users as requestor','deliveryform.RequestorId','=','requestor.Id')
         ->leftJoin( DB::raw('(select Max(Id) as maxid,deliveryform_Id from deliverystatuses Group By deliveryform_Id) as max'), 'max.deliveryform_Id', '=', 'deliveryform.Id')
@@ -4055,16 +3740,10 @@ class DeliveryController extends Controller
         ->leftjoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
         ->leftjoin('options','deliveryform.Purpose','=','options.Id')
         ->leftJoin('radius','radius.Id','=','deliveryform.Location')
-        ->select('deliveryform.Id as formid','requestor.Name as requestorName','deliveryform.Remarks','roadtax.Vehicle_No','radius.Location_Name','deliveryform.DO_No','users.Name','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.pickup_date','deliveryform.pick_up_time','options.Option','deliveryform.ProjectId')
+        ->select('deliveryform.Id as formid','requestor.Name as requestorName','deliveryform.Remarks','roadtax.Vehicle_No','radius.Location_Name','deliveryform.DO_No','users.Name','deliveryform.delivery_date','deliveryform.delivery_time','deliveryform.pickup_date','deliveryform.pick_up_time','options.Option')
         // ->where(DB::raw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")'),">=",DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
         // ->where(DB::raw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
         ->whereRaw('((deliverystatuses.delivery_status = "Processing" AND deliverystatuses.delivery_status_details = "Accepted by Admin" AND options.Option = "Delivery"))')
-        ->whereNotIn('deliveryform.ProjectId',$excludeid)
-        // ->where('deliverystatuses.delivery_status','=','Processing')
-        // ->where('deliverystatuses.delivery_status_details','=','Accepted by Admin')
-        // ->where('options.Option', '=', 'Delivery')
-        // ->where('deliveryform.ProjectId', '!=', 142)
-        // ->where('deliveryform.ProjectId', '!=', 143)
         ->orderBy('deliveryform.delivery_date')
         ->get();
 
@@ -4081,7 +3760,6 @@ class DeliveryController extends Controller
         ->where(DB::raw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")'),">=",DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
         ->where(DB::raw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")'),"<=",DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
         ->whereRaw('((deliverystatuses.delivery_status = "Processing" AND deliverystatuses.delivery_status_details = "Accepted by Warehouse" AND options.Option = "Delivery"))')
-        ->whereNotIn('deliveryform.ProjectId',$excludeid)
         // ->where('deliverystatuses.delivery_status_details','=','Accepted by Warehouse')
         ->groupBy('deliveryform.Id')
         ->orderBy('deliveryform.delivery_date')
@@ -4094,8 +3772,7 @@ class DeliveryController extends Controller
         // ->leftJoin('inventories','deliveryitem.inventoryId','=','inventories.Id')
         ->leftJoin('options','options.Id','=','deliveryform.Purpose')
         ->leftJoin('radius','radius.Id','=','deliveryform.Location')
-        ->leftJoin('projects','projects.Id','=','deliveryform.ProjectId')
-        ->select('deliveryform.Id','deliveryform.DO_No','deliveryform.created_at as request','deliveryform.delivery_date','deliverystatuses.updated_at','radius.Location_Name','projects.Project_Name','options.Option')
+        ->select('deliveryform.Id','deliveryform.DO_No','deliveryform.created_at as request','deliveryform.delivery_date','deliverystatuses.updated_at','radius.Location_Name','options.Option')
         // ->where('deliverystatuses.delivery_status','LIKE','Insufficient stock')
         ->whereRaw('((deliverystatuses.delivery_status = "Processing" AND deliverystatuses.delivery_status_details = "Insufficient Stocks"))')
         ->where(DB::raw('str_to_date(deliveryform.delivery_date,"%d-%M-%Y")'),">=",DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
@@ -4106,12 +3783,11 @@ class DeliveryController extends Controller
 
 
         $mr=DB::Table('materialrequest')
-        ->select('material.Id','material.MR_No','users.Name','projects.Project_Name','tracker.Project_Code',DB::raw('tracker.`Site Name` as sitename'),'materialstatus.Status'
+        ->select('material.Id','material.MR_No','users.Name',DB::raw('tracker.`Site Name` as sitename'),'materialstatus.Status'
         ,'material.created_at','material.Total','mrviewlog.created_at as viewon','view.Name as viewName')
         ->leftjoin('material','material.Id','=','materialrequest.MaterialId')
         ->leftjoin('tracker','tracker.Id','=','material.TrackerId')
         ->leftjoin('users','users.Id','=','material.UserId')
-        ->leftjoin('projects','projects.Id','=','material.ProjectId')
         ->leftjoin(DB::raw('(select Max(Id) as maxid,MaterialId from materialstatus group by MaterialId) as max'),'max.MaterialId','=','material.id')
         ->leftjoin('materialstatus','materialstatus.Id','=','max.maxid')
         ->leftjoin(DB::raw('(Select Max(Id) as maxid,MaterialId from mrviewlog group by MaterialId) as max1'),'max1.MaterialId','=','material.Id')
@@ -4123,12 +3799,11 @@ class DeliveryController extends Controller
         ->where('inventories.Type','MPSB')
         ->get();
         $special=DB::Table('materialrequest')
-        ->select('material.Id','material.MR_No','users.Name','projects.Project_Name','tracker.Project_Code',DB::raw('tracker.`Site Name` as sitename'),'materialstatus.Status'
+        ->select('material.Id','material.MR_No','users.Name',DB::raw('tracker.`Site Name` as sitename'),'materialstatus.Status'
         ,'material.created_at','material.Total','mrviewlog.created_at as viewon','view.Name as viewName','materialrequest.DeliveryId','deliveryform.DO_No')
         ->leftjoin('material','material.Id','=','materialrequest.MaterialId')
         ->leftjoin('tracker','tracker.Id','=','material.TrackerId')
         ->leftjoin('users','users.Id','=','material.UserId')
-        ->leftjoin('projects','projects.Id','=','material.ProjectId')
         ->leftjoin(DB::raw('(select Max(Id) as maxid,MaterialId from materialstatus group by MaterialId) as max'),'max.MaterialId','=','material.id')
         ->leftjoin('materialstatus','materialstatus.Id','=','max.maxid')
         ->leftjoin(DB::raw('(Select Max(Id) as maxid,MaterialId from mrviewlog group by MaterialId) as max1'),'max1.MaterialId','=','material.Id')
@@ -4216,9 +3891,8 @@ class DeliveryController extends Controller
             ->leftJoin('options','options.Id','=','deliveryitem.Purpose')
             ->leftJoin('radius','radius.Id','=','deliveryform.Location')
             ->leftJoin('inventories','inventories.Id','=','deliveryitem.inventoryId')
-            ->leftJoin('projects', 'deliveryform.ProjectId', '=', 'projects.Id')
             // ->leftJoin('deliveryitem','','=','deliveryform.Id')
-            ->select('approver.Name as Approver','requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','deliverystatuses.delivery_status as Status','radius.Location_Name as Site','projects.Project_Name','deliveryform.Remarks','deliveryform.created_at as Application_Date','options.Option as Purpose')
+            ->select('approver.Name as Approver','requestor.Name as Requestor','deliveryform.delivery_date as Delivery_Date','deliverystatuses.delivery_status as Status','radius.Location_Name as Site','deliveryform.Remarks','deliveryform.created_at as Application_Date','options.Option as Purpose')
             ->orderBy('deliverystatuses.Id','desc')
             ->where('deliveryform.Id', '=',$formId)
             ->first();
@@ -4275,12 +3949,12 @@ class DeliveryController extends Controller
                 ->where('deliveryitem.formId', $formId)
                 ->get();
 
-                Mail::send('emails.deliverystockin', ['deliverydetail' => $deliverydetail,'deliveryitemlist' =>$deliveryitemlist], function($message) use ($emails,$me,$NotificationSubject)
-                {
-                        array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                        $emails = array_filter($emails);
-                        $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
-                });
+                // Mail::send('emails.deliverystockin', ['deliverydetail' => $deliverydetail,'deliveryitemlist' =>$deliveryitemlist], function($message) use ($emails,$me,$NotificationSubject)
+                // {
+                //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                //         $emails = array_filter($emails);
+                //         $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+                // });
 
 
                 return 1;
@@ -4511,7 +4185,6 @@ class DeliveryController extends Controller
         ->leftjoin('users as driver','deliveryform.DriverId','=','driver.Id')
         ->leftjoin('users as requestor','deliveryform.RequestorId','=','requestor.Id')
         ->leftjoin('roadtax','deliveryform.roadtaxId','=','roadtax.Id')
-        //->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
         ->leftjoin('radius','deliveryform.Location','=','radius.Id')
         ->leftJoin(DB::raw('(select Max(Id) as maxid,deliveryform_Id from deliverystatuses Group By deliveryform_Id) as max'),'max.deliveryform_Id','=','deliveryform.Id')
 		->leftJoin('deliverystatuses','deliverystatuses.Id','=',DB::raw('max.`maxid`'))
@@ -4704,7 +4377,6 @@ class DeliveryController extends Controller
 		->leftjoin("roadtax","deliveryform.roadtaxId","=","roadtax.Id")
         ->leftjoin("users","deliveryform.DriverId","=","users.Id")
         ->leftjoin('radius','deliveryform.Location','=','radius.Id')
-        //->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,deliveryform_Id from deliverystatuses Group By deliveryform_Id) as max'), 'max.deliveryform_Id', '=', 'deliveryform.Id')
         ->leftJoin('deliverystatuses', 'deliverystatuses.Id', '=', DB::raw('max.`maxid`'))
         ->select("deliveryform.DO_No","roadtax.Vehicle_No","roadtax.Lorry_Size","users.Name","deliveryform.delivery_date","deliveryform.Id","deliverystatuses.delivery_status"
@@ -5018,10 +4690,6 @@ class DeliveryController extends Controller
         ->get();
     }
     function MR(Request $request){
-        // return DB::select('SELECT  material.UserId,request.Type,material.MR_No,projects.Project_Name,material.created_at from material left join projects on projects.Id = material.ProjectId
-        // left join (SELECT inventories.Type,MaterialId from materialrequest left join inventories on inventories.Id = materialrequest.InventoryId
-        // where inventories.Type="MPSB"  group by materialrequest.MaterialId) as request on request.MaterialId = material.Id
-        // where material.UserId = '.$id.'');
         $me=(new CommonController)->get_current_user();
         $arr="";
         if($request->arr){
@@ -5029,7 +4697,7 @@ class DeliveryController extends Controller
         }
         $site = trim($request->site, '()');
         return DB::select('SELECT (Count(CASE WHEN materialrequest.DeliveryId = 0 OR deliverystatuses.delivery_status = "Cancelled" OR 
-            deliverystatuses.delivery_status= "Incomplete" OR deliveryform.Id is null or deliveryitem.Id is null  THEN 1 ELSE 0 END)) as total,material.Id,material.MR_No,inventories.Type,projects.Project_Name,materialstatus.Status
+            deliverystatuses.delivery_status= "Incomplete" OR deliveryform.Id is null or deliveryitem.Id is null  THEN 1 ELSE 0 END)) as total,material.Id,material.MR_No,inventories.Type,materialstatus.Status
         from
             materialrequest
         left join
@@ -5038,9 +4706,6 @@ class DeliveryController extends Controller
         left join
             inventories
                 on inventories.Id = materialrequest.InventoryId
-        left join
-            projects
-                on projects.Id = material.ProjectId
         left join
             (SELECT Max(Id) as maxid,MaterialId from materialstatus group by MaterialId) as status
                 on status.MaterialId = materialrequest.MaterialId
@@ -5063,7 +4728,7 @@ class DeliveryController extends Controller
             deliveryitem
                 on deliveryitem.Id = materialrequest.DeliveryItemId
         where   
-            inventories.Type = "MPSB" '.$arr.'  AND materialstatus.Status <> "Recalled" AND tracker.Project_Code = "'.$site.'" AND
+            inventories.Type = "MPSB" '.$arr.'  AND materialstatus.Status <> "Recalled"  AND
             (deliveryform.Id IS NULL OR deliveryitem.Id is null OR  materialrequest.DeliveryId = 0 OR deliverystatuses.delivery_status = "Cancelled" OR deliverystatuses.delivery_status= "Incomplete")
         GROUP BY
             materialrequest.MaterialId');
@@ -5119,7 +4784,6 @@ class DeliveryController extends Controller
         ->leftjoin('radius','deliveryform.Location','=','radius.Id')
         ->leftjoin('companies','deliveryform.company_id','=','companies.Id')
         ->leftjoin('companies as client','deliveryform.client','=','client.Id')
-        //->leftjoin('tracker','deliveryform.ProjectId','=','tracker.ProjectID')
         ->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Company Logo" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'companies.Id')
         ->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid`'))
         ->leftjoin('roadtax','roadtax.Id','=','deliveryform.roadtaxId')

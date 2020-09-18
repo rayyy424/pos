@@ -95,7 +95,7 @@ class PayrollController extends Controller
         }
 
         $users = DB::table('users')
-        ->select('Id','Password_Last_Notified','Payslip_Password','StaffId','Name','NRIC','Joining_Date','Confirmation_Date','Position','Grade','Company','Department','Category')
+        ->select('Id','Password_Last_Notified','Payslip_Password','StaffId','Name','NRIC','Joining_Date','Confirmation_Date','Position','Grade','Company')
         ->whereRaw($cond)
         ->get();
 

@@ -597,7 +597,6 @@ $('#drag-and-drop-zone').dmUploader({
         'selectedtrackerid':$('#selectedtrackerid').val(),
         'DocumentType':$('#DocumentType').val(),
         'submitdate':$('#submitdate').val(),
-        'projectid':$('#projectid').val(),
 
     },
     onDragEnter: function(){
@@ -720,9 +719,7 @@ $('#drag-and-drop-zone').dmUploader({
           </h1>
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li>
-              <li><a href="{{ url('/projectfolder') }}">Project Folder</a></li>
-              <li><a href="{{ url('/projectfolder/sitefolder') }}/{{$ProjectId}}">Site Folder</a></li>
-              <li><a href="{{ URL::to("/")}}/tracker/filecategory2/{{$ProjectId}}/{{$site->Id}}">{{$site->{'Site ID'} }} ({{$site->{'Site Name'} }})</a></li>
+              <li><a href="{{ URL::to("/")}}/tracker/filecategory2/{{$site->Id}}">{{$site->{'Site ID'} }} ({{$site->{'Site Name'} }})</a></li>
               <li><a href="#">{{$type}}</a></li>
           </ol>
         </section>
@@ -796,7 +793,6 @@ $('#drag-and-drop-zone').dmUploader({
                     <input type="hidden" class="form-control" id="UserId" name="UserId" value="{{$me->UserId}}"> <!--Done-->
                     <input type="hidden" class="form-control" id="selectedtrackerid" name="selectedtrackerid" value="{{$file->TargetId}}">
                     <input type="hidden" class="form-control" id="DocumentType" name="DocumentType" value="{{$file->Option}}"> <!--Done-->
-                    <input type="hidden" class="form-control" id="projectid" name="projectid" value="{{$file->projectid}}">
                     <!-- <input type="hidden" class="form-control" id="SiteId" name="SiteId" value="'+SiteId+'"> -->
                     <input type="hidden" class="form-control" id="submitdate" name="submitdate">
                   @endforeach
@@ -840,7 +836,6 @@ $('#drag-and-drop-zone').dmUploader({
               <input type="hidden" class="form-control" id="UserId" name="UserId" value="{{$me->UserId}}"> <!--Done-->
               <input type="hidden" class="form-control" id="selectedtrackerid" name="selectedtrackerid" value="{{$file->TargetId}}">
               <input type="hidden" class="form-control" id="DocumentType" name="DocumentType" value="{{$file->Option}}"> <!--Done-->
-              <input type="hidden" class="form-control" id="projectid" name="projectid" value="{{$file->projectid}}">
               <!-- <input type="hidden" class="form-control" id="SiteId" name="SiteId" value="'+SiteId+'"> -->
               <input type="hidden" class="form-control" id="submitdate" name="submitdate">
 
@@ -854,7 +849,7 @@ $('#drag-and-drop-zone').dmUploader({
 
                   @if(strpos($file->Web_Path,'.png') !== false || strpos($file->Web_Path,'.jpg') !== false || strpos($file->Web_Path,'.jpeg') !== false ||strpos($file->Web_Path,'.PNG') !== false || strpos($file->Web_Path,'.JPG') !== false || strpos($file->Web_Path,'.JPEG') !== false)
 
-                      <a class="example-image-link" href="{{ url($file->Web_Path) }}" data-lightbox="example-set" download="{{ $file->File_Name }}" title="Download"><img src="{{ url($file->Web_Path) }}" id="image" alt="Photo" width="100px" height="100%" />{{ $file->File_Name}}@if($file->projectid == 146)_<a href="/salesordertemplate/{{$file->salesorderid}}" target="_blank">{{$file->SO_Number}}</a>@endif
+                      <a class="example-image-link" href="{{ url($file->Web_Path) }}" data-lightbox="example-set" download="{{ $file->File_Name }}" title="Download"><img src="{{ url($file->Web_Path) }}" id="image" alt="Photo" width="100px" height="100%" />{{ $file->File_Name}}<a href="/salesordertemplate/{{$file->salesorderid}}" target="_blank">{{$file->SO_Number}}</a>
                         <br>
                         <a download="{{ $file->File_Name }}" href="{{ url($file->Web_Path) }}" name="downloadlink" title="Download">Download</a>
 
@@ -874,7 +869,7 @@ $('#drag-and-drop-zone').dmUploader({
 
 
                     @if(strpos($file->Web_Path,'.pdf') !== false || strpos($file->Web_Path,'.PDF') !== false)
-                      <a href="{{ url($file->Web_Path) }}" target="_blank"><img src="{{ url('/img/file icon.png') }}" id="image" alt="Photo" width="100px" height="100%" />{{ $file->File_Name}}@if($file->projectid == 146)_<a href="/salesordertemplate/{{$file->salesorderid}}" target="_blank">{{$file->SO_Number}}</a>@endif
+                      <a href="{{ url($file->Web_Path) }}" target="_blank"><img src="{{ url('/img/file icon.png') }}" id="image" alt="Photo" width="100px" height="100%" />{{ $file->File_Name}}<a href="/salesordertemplate/{{$file->salesorderid}}" target="_blank">{{$file->SO_Number}}</a>
                     @else
                       <a class="example-image-link" href="{{ url($file->Web_Path) }}" data-lightbox="example-set" download="{{ $file->File_Name }}" title="Download"><img src="{{ url('/img/file icon.png') }}" id="image" alt="Photo" width="100px" height="100%" />{{ $file->File_Name}}
                     @endif
@@ -909,7 +904,6 @@ $('#drag-and-drop-zone').dmUploader({
               <input type="hidden" class="form-control" id="UserId" name="UserId" value="{{$me->UserId}}"> <!--Done-->
               <input type="hidden" class="form-control" id="selectedtrackerid" name="selectedtrackerid" value="{{$file->TargetId}}">
               <input type="hidden" class="form-control" id="DocumentType" name="DocumentType" value="{{$file->Option}}">
-              <input type="hidden" class="form-control" id="projectid" name="projectid" value="{{$file->projectid}}">
               <input type="hidden" class="form-control" id="submitdate" name="submitdate">
 
               @endif

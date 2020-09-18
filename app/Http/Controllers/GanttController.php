@@ -16,17 +16,9 @@ use DateTime;
 
 class GanttController extends Controller {
 
-  public function gantt($projectid=null,$trackerid=null,$siteid=null)
+  public function gantt($trackerid=null,$siteid=null)
   {
     $me = (new CommonController)->get_current_user();
-
-
-    $projectids = explode("|",$me->ProjectIds);
-
-    if ($projectid==null)
-    {
-        $projectid=12;
-    }
 
     if ($trackerid==null)
     {
@@ -39,9 +31,7 @@ class GanttController extends Controller {
     }
 
     $trackerlist = DB::table('trackertemplate')
-    ->leftJoin('projects', 'projects.Id', '=', 'trackertemplate.ProjectId')
-    ->select('projects.Project_Name', 'trackertemplate.Tracker_Name','trackertemplate.Id')
-    ->where('trackertemplate.ProjectId','=',$projectid)
+    ->select('trackertemplate.Tracker_Name','trackertemplate.Id')
     ->orderBy('trackertemplate.Id','ASC')
     ->get();
 
@@ -86,7 +76,6 @@ class GanttController extends Controller {
 
         $trackerview = DB::table('tracker')
         ->select(DB::raw($columns))
-        ->where('tracker.ProjectID', '=', $projectid)
         ->where('tracker.Id', '=', $siteid)
         ->get();
 

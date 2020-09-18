@@ -83,11 +83,9 @@ class TimesheetController extends Controller {
 
 		$mytimesheet = DB::table('timesheets')
 		->select('timesheets.Id','timesheets.UserId','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'holidays.Holiday','timesheets.Site_Name','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
-		'timesheets.Time_In','timesheets.Time_Out','timesheets.Leader_Member','timesheets.Next_Person','projectcodes.Project_Code','projects.Project_Name','timesheets.State','timesheets.Work_Description','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Status','leaves.Leave_Type','timesheetstatuses.Comment','timesheetstatuses.updated_at as Updated_At','files.Web_Path')
+		'timesheets.Time_In','timesheets.Time_Out','timesheets.Leader_Member','timesheets.Next_Person','timesheets.State','timesheets.Work_Description','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Status','leaves.Leave_Type','timesheetstatuses.Comment','timesheetstatuses.updated_at as Updated_At','files.Web_Path')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Timesheet" Group By TargetId) as maxfile'), 'maxfile.TargetId', '=', 'timesheets.Id')
 		->leftJoin('files', 'files.Id', '=', DB::raw('maxfile.`maxid` and files.`Type`="Timesheet"'))
-		->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
 		->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'timesheetstatuses.UserId', '=', 'approver.Id')
@@ -102,7 +100,7 @@ class TimesheetController extends Controller {
 		->orderBy('timesheets.Id','desc')
 		->get();
 
-		$user = DB::table('users')->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Department','Position','Emergency_Contact_Person',
+		$user = DB::table('users')->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Position','Emergency_Contact_Person',
 		'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','files.Web_Path')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
@@ -142,14 +140,6 @@ class TimesheetController extends Controller {
 
 		DB::table('timesheets')->insert($arrInsert);
 
-		$projects = DB::table('projects')
-		->select('projects.Id','projects.Project_Name','users.Name')
-		->leftJoin('users','users.Id','=','projects.Project_Manager')
-		->get();
-
-		$projectcodes = DB::table('projectcodes')
-		->get();
-
 		$options= DB::table('options')
 		->whereIn('Table', ["users","timesheets"])
 		->orderBy('Table','asc')
@@ -177,7 +167,7 @@ class TimesheetController extends Controller {
 			// ->where('Timesheet_Final_Approval', '=', 1)
 			// ->get();
 
-			return view('mytimesheet', ['me' => $me, 'user' =>$user, 'mytimesheet' => $mytimesheet,'start' =>$start,'end'=>$end, 'projects' =>$projects,'projectcodes' =>$projectcodes,'options' =>$options]);
+			return view('mytimesheet', ['me' => $me, 'user' =>$user, 'mytimesheet' => $mytimesheet,'start' =>$start,'end'=>$end,'options' =>$options]);
 
 			//return view('mytimesheet', ['me' => $me,'showleave' =>$showleave, 'mytimesheet' => $mytimesheet, 'hierarchy' => $hierarchy, 'final' => $final]);
 
@@ -200,11 +190,9 @@ class TimesheetController extends Controller {
 
 			$mytimesheet = DB::table('timesheets')
 			->select('timesheets.Id','timesheets.UserId','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Check_In_Type',
-			'timesheets.Time_In','timesheets.Time_Out','timesheets.Leader_Member','timesheets.Next_Person','projectcodes.Project_Code','projects.Project_Name','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Updated_At','files.Web_Path')
+			'timesheets.Time_In','timesheets.Time_Out','timesheets.Leader_Member','timesheets.Next_Person','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Updated_At','files.Web_Path')
 			->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Timesheet" Group By TargetId) as maxfile'), 'maxfile.TargetId', '=', 'timesheets.Id')
 			->leftJoin('files', 'files.Id', '=', DB::raw('maxfile.`maxid` and files.`Type`="Timesheet"'))
-			->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-			->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 			->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
 			->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
 			->leftJoin('users as approver', 'timesheetstatuses.UserId', '=', 'approver.Id')
@@ -265,7 +253,6 @@ class TimesheetController extends Controller {
 		$Time_Out=$input["Time_Out"];
 		$State=$input["State"];
 		$Check_In_Type=$input["Check_In_Type"];
-		$ProjectId=$input["ProjectId"];
 		$Home_Base=$input["State"];
 
 		$holiday=DB::table('holidays')
@@ -476,10 +463,8 @@ class TimesheetController extends Controller {
 		$timesheetIds = explode(",", $input["TimesheetIds"]);
 
 		$timesheets = DB::table('timesheets')
-		->select('timesheets.Id','timesheets.UserId As SubmitterId','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date','timesheets.Leader_Member','timesheets.Next_Person','projectcodes.Project_Code','projects.Project_Name','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Check_In_Type',
+		->select('timesheets.Id','timesheets.UserId As SubmitterId','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date','timesheets.Leader_Member','timesheets.Next_Person','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Check_In_Type',
 		'timesheets.Time_In','timesheets.Time_Out','timesheets.Remarks','approver.Name','timesheetstatuses.UserId','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Updated_At')
-		->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
 		->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'timesheetstatuses.UserId', '=', 'approver.Id')
@@ -489,49 +474,21 @@ class TimesheetController extends Controller {
 
 		$mylevel = DB::table('approvalsettings')
 		->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 		->where('approvalsettings.Type', '=', 'Timesheet')
 		->where('approvalsettings.UserId', '=', $me->UserId)
 		->orderBy('approvalsettings.Country','asc')
-		->orderBy('projects.Project_Name','asc')
 		// ->orderBy('approvalsettings.Level','Final Approval","5th Approval","4th Approval","3rd Approval","2nd Approval","1st Approval")
 		->orderByRaw("FIELD(approvalsettings.Level , 'Final Approval', '5th Approval', '4th Approval','3rd Approval','2nd Approval','1st Approval') ASC")
 		->get();
 
 		$approver = DB::table('approvalsettings')
 		->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 		->where('approvalsettings.Type', '=', 'Timesheet')
-		// ->where(function ($query) {
-    //             $query->where('approvalsettings.Level', '=', '1st Approval')
-    //                   ->orWhere('approvalsettings.Level', '=', 'Final Approval');
-    //         })
-		// // ->where('approvalsettings.Level', '=', '1st Approval')
-		// // ->orWhere('approvalsettings.Level', '=', 'Final Approval')
-		->where('approvalsettings.ProjectId', '<>', '0')
 		->orderBy('approvalsettings.Country','asc')
-		->orderBy('projects.Project_Name','asc')
 		->orderByRaw("FIELD(approvalsettings.Level , '1st Approval', '2nd Approval', '3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
 		->get();
-
-		// $countryapprover = DB::table('approvalsettings')
-		// ->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		// ->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		// ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
-		// ->where('approvalsettings.Type', '=', 'Timesheet')
-		// // ->orWhere(function ($query) {
-    // //             $query->where('approvalsettings.Level', '=', '1st Approval')
-    // //                   ->orWhere('approvalsettings.Level', '=', 'Final Approval');
-    // //         })
-		// // // ->where('approvalsettings.Level', '=', '1st Approval')
-		// // // ->orWhere('approvalsettings.Level', '=', 'Final Approval')
-		// ->where('approvalsettings.ProjectId', '=', '0')
-		// ->orderBy('approvalsettings.Country','asc')
-		// ->orderBy('projects.Project_Name','asc')
-		// ->orderByRaw("FIELD(approvalsettings.Level , '1st Approval', '2nd Approval', '3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
-		// ->get();
 
 		$subscribers = DB::table('notificationtype')
 		->leftJoin('notificationsubscriber','notificationtype.Id','=','notificationsubscriber.NotificationTypeId')
@@ -560,23 +517,18 @@ class TimesheetController extends Controller {
 
 			foreach ($mylevel as $level) {
 
-				if ($level->Project_Name==$timesheet->Project_Name)
-				{
-
 					if($level->Level=="Final Approval")
 					{
 						$level->Level="6 Final Approval";
 					}
 
 					break;
-				}
-
 			}
 
 			if(!$mylevel)
 			{
 
-				$level = (object) ['Id'=>0,'Name'=>"",'Level'=>0,'Country'=>'','Project_Name'=>''];
+				$level = (object) ['Id'=>0,'Name'=>"",'Level'=>0,'Country'=>''];
 			}
 
 			$submitted=false;
@@ -588,7 +540,7 @@ class TimesheetController extends Controller {
 					$user->Level="6 Final Approval";
 				}
 
-					if (!empty($user->Id) && $user->Project_Name==$timesheet->Project_Name && $timesheet->UserId != $user->Id && filter_var($level->Level, FILTER_SANITIZE_NUMBER_INT)<filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT))
+					if (!empty($user->Id) && $timesheet->UserId != $user->Id && filter_var($level->Level, FILTER_SANITIZE_NUMBER_INT)<filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT))
 					{
 
 						DB::table('timesheetstatuses')->insert(
@@ -609,7 +561,7 @@ class TimesheetController extends Controller {
 
 						break;
 					}
-					elseif (!empty($user->Id) && $user->Project_Name==$timesheet->Project_Name && $timesheet->SubmitterId == $user->Id && $level->Id == $user->Id && $level->Level=="6 Final Approval")
+					elseif (!empty($user->Id) && $timesheet->SubmitterId == $user->Id && $level->Id == $user->Id && $level->Level=="6 Final Approval")
 					{
 
 						DB::table('timesheetstatuses')->insert(
@@ -630,7 +582,7 @@ class TimesheetController extends Controller {
 
 						break;
 					}
-					elseif (!empty($user->Id) && $user->Project_Name==$timesheet->Project_Name && $timesheet->UserId == $user->Id) {
+					elseif (!empty($user->Id) && $timesheet->UserId == $user->Id) {
 						# code...
 						if(str_contains($timesheet->Status, 'Rejected') || str_contains($timesheet->Status, 'Recalled'))
 						{
@@ -710,10 +662,8 @@ class TimesheetController extends Controller {
 			}
 
 			$timesheets = DB::table('timesheets')
-			->select('timesheets.Id','timesheets.UserId','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date','timesheets.Leader_Member','timesheets.Next_Person','projectcodes.Project_Code','projects.Project_Name','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Check_In_Type',
+			->select('timesheets.Id','timesheets.UserId','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date','timesheets.Leader_Member','timesheets.Next_Person','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Check_In_Type',
 			'timesheets.Time_In','timesheets.Time_Out','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.UserId','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Updated_At')
-			->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-			->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 			->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
 			->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
 			->leftJoin('users as approver', 'timesheetstatuses.UserId', '=', 'approver.Id')
@@ -722,12 +672,12 @@ class TimesheetController extends Controller {
 			->get();
 
 
-			Mail::send('emails.timesheetapproval', ['me' => $me,'timesheets' => $timesheets], function($message) use ($emails,$me,$NotificationSubject)
-			{
-					$emails = array_filter($emails);
-					array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-					$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
-			});
+			// Mail::send('emails.timesheetapproval', ['me' => $me,'timesheets' => $timesheets], function($message) use ($emails,$me,$NotificationSubject)
+			// {
+			// 		$emails = array_filter($emails);
+			// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+			// 		$message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+			// });
 
 			return 1;
 		}
@@ -774,25 +724,15 @@ class TimesheetController extends Controller {
 		->orderBy('timesheets.Id','Desc')
 		->get();
 
-		$projects = DB::table('projects')
-		->get();
-
-		$projectcodes = DB::table('projectcodes')
-		->get();
-
 			$mytimesheetdetail = DB::table('timesheetitems')
-			->leftJoin('projects', 'timesheetitems.ProjectId', '=', 'projects.Id')
-			->leftJoin('projectcodes', 'timesheetitems.Project_Code_Id', '=', 'projectcodes.Id')
-			->leftJoin('users as pm', 'projects.Project_Manager', '=', 'pm.Id')
 			->leftJoin('timesheetitemstatuses', 'timesheetitems.Id', '=', 'timesheetitemstatuses.TimesheetItemId')
 			->leftJoin('users as approver', 'timesheetitemstatuses.UserId', '=', 'approver.Id')
-			->select('timesheetitems.Id','timesheetitems.Date','timesheetitems.Leader_Member','projectcodes.Project_Code','projects.Project_Name','timesheetitems.Site_Name','timesheetitems.State','timesheets.Work_Description','pm.Name as Project_Manager','timesheetitems.Check_In_Type','timesheetitems.Time_In','timesheetitems.Time_Out','timesheetitems.Reason','timesheetitems.Remarks','approver.Name AS Approver','timesheetitemstatuses.Status','timesheetitemstatuses.Comment')
-			//->select('timesheetitems.Id','timesheetitems.Date_Time','timesheetitems.Leader_Member','timesheetitems.Project_Code','timesheetitems.Project','timesheetitems.Site_Name','timesheetitems.State','timesheetitems.Check_In_Type','timesheetitems.Time_In','timesheetitems.Time_Out','timesheetitems.Allowance','timesheetitems.Reason','timesheetitems.Remarks','timesheetitems.Checked_Date')
+			->select('timesheetitems.Id','timesheetitems.Date','timesheetitems.Leader_Member','timesheetitems.Site_Name','timesheetitems.State','timesheets.Work_Description','timesheetitems.Check_In_Type','timesheetitems.Time_In','timesheetitems.Time_Out','timesheetitems.Reason','timesheetitems.Remarks','approver.Name AS Approver','timesheetitemstatuses.Status','timesheetitemstatuses.Comment')
 			->where('timesheetitems.TimesheetId', '=', $id)
 			->orderBy('timesheetitems.Date','Asc')
 			->get();
 
-			return view('mytimesheetdetail', ['me' => $me, 'mytimesheet' => $mytimesheet, 'mytimesheetdetail' => $mytimesheetdetail, 'projects' =>$projects,'projectcodes' =>$projectcodes, 'hierarchy' => $hierarchy, 'final' => $final]);
+			return view('mytimesheetdetail', ['me' => $me, 'mytimesheet' => $mytimesheet, 'mytimesheetdetail' => $mytimesheetdetail, 'hierarchy' => $hierarchy, 'final' => $final]);
 			//return view('mytimesheet', ['me' => $me,'showleave' =>$showleave, 'mytimesheet' => $mytimesheet, 'hierarchy' => $hierarchy, 'final' => $final]);
 
 	}
@@ -802,20 +742,14 @@ class TimesheetController extends Controller {
 
 		$me = (new CommonController)->get_current_user();
 
-		$user = DB::table('users')->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Department','Position','Emergency_Contact_Person',
+		$user = DB::table('users')->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Position','Emergency_Contact_Person',
 		'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','Joining_Date','allowanceschemes.Scheme_Name','files.Web_Path')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
-    ->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="User"'))
+    	->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="User"'))
 		->leftJoin('allowanceschemes', 'users.AllowanceSchemeId', '=', 'allowanceschemes.Id')
 		->where('users.Id', '=', $id)
 		->first();
-
-		$projects = DB::table('projects')
-		->get();
-
-		$projectcodes = DB::table('projectcodes')
-		->get();
 
 		$options= DB::table('options')
 		->whereIn('Table', ["users","timesheets"])
@@ -828,37 +762,17 @@ class TimesheetController extends Controller {
 			$viewall=false;
 		}
 
-		// $timesheetdetail = DB::table('timesheets')
-		// ->select('timesheetstatuses.Id','timesheets.Id as TimesheetId','timesheets.Latitude','timesheets.Longitude','timesheets.Date',DB::raw('"" as Day'),'timesheets.Check_In_Type',
-		// 'timesheets.Time_In','timesheets.Time_Out','timesheets.Allowance','timesheets.Leader_Member','timesheets.Next_Person','projectcodes.Project_Code','projects.Project_Name','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Reason','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Review_Date','files.Web_Path')
-		//
-		// ->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-		// ->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Timesheet" Group By TargetId) as maxfile'), 'maxfile.TargetId', '=', 'timesheets.Id')
-		// ->leftJoin('files', 'files.Id', '=', DB::raw('maxfile.`maxid` and files.`Type`="Timesheet"'))
-		// ->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
-		// ->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
-		// ->leftJoin('users as approver', 'timesheetstatuses.UserId', '=', 'approver.Id')
-		// ->where('timesheets.UserId', '=', $id)
-		// // ->where('timesheetstatuses.UserId', '=', $me->UserId)
-		// ->where('timesheets.Date', '>=', $start)
-		// ->where('timesheets.Date', '<=', $end)
-		// ->orderBy('timesheets.Id','desc')
-		// ->get();
-
 		if ($start==null || $end==null)
 		{
 			$timesheetdetail = DB::table('timesheets')
 			->select('timesheetstatuses.Id','timesheets.Id as TimesheetId','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheetstatuses.Status','timesheets.Date',DB::raw('"" as Day'),'timesheets.Check_In_Type',
-			 'timesheets.Time_In','timesheets.Time_Out','timesheets.State',DB::raw('"" AS Position'),DB::raw('"" AS Home_Base'),'timesheets.Allowance','timesheets.Monetary_Comp','timesheets.OT1','timesheets.OT2','timesheets.OT3','timesheets.Leader_Member','timesheets.Next_Person','projectcodes.Project_Code','projects.Project_Name','timesheets.Site_Name','timesheets.Work_Description','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Comment','timesheetstatuses.updated_at as Review_Date','timesheetchecked.Timesheet_Status','timesheetchecked.Payment_Status','checker.Name as Checked_By','timesheetchecked.Updated_At','files.Web_Path')
+			 'timesheets.Time_In','timesheets.Time_Out','timesheets.State',DB::raw('"" AS Position'),DB::raw('"" AS Home_Base'),'timesheets.Allowance','timesheets.Monetary_Comp','timesheets.OT1','timesheets.OT2','timesheets.OT3','timesheets.Leader_Member','timesheets.Next_Person','timesheets.Site_Name','timesheets.Work_Description','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Comment','timesheetstatuses.updated_at as Review_Date','timesheetchecked.Timesheet_Status','timesheetchecked.Payment_Status','checker.Name as Checked_By','timesheetchecked.Updated_At','files.Web_Path')
 
 			 ->leftJoin( DB::raw('(select Max(Id) as maxid2,TimesheetId from timesheetchecked Group By TimesheetId) as max2'), 'max2.TimesheetId', '=', 'timesheets.Id')
 			 ->leftJoin('timesheetchecked', 'timesheetchecked.Id', '=', DB::raw('max2.`maxid2`'))
 
 			 ->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Timesheet" Group By TargetId) as maxfile'), 'maxfile.TargetId', '=', 'timesheets.Id')
 			->leftJoin('files', 'files.Id', '=', DB::raw('maxfile.`maxid` and files.`Type`="Timesheet"'))
-			->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-			->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 			->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
 			->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
 			->leftJoin('users as approver', 'timesheetstatuses.UserId', '=', 'approver.Id')
@@ -871,15 +785,13 @@ class TimesheetController extends Controller {
 			# code...
 			$timesheetdetail = DB::table('timesheets')
 			->select('timesheetstatuses.Id','timesheets.Id as TimesheetId','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheetstatuses.Status','timesheets.Date',DB::raw('"" as Day'),'timesheets.Check_In_Type',
-			 'timesheets.Time_In','timesheets.Time_Out','timesheets.State',DB::raw('"" AS Position'),DB::raw('"" AS Home_Base'),'timesheets.Allowance','timesheets.Monetary_Comp','timesheets.OT1','timesheets.OT2','timesheets.OT3','timesheets.Allowance','timesheets.Leader_Member','timesheets.Next_Person','projectcodes.Project_Code','projects.Project_Name','timesheets.Site_Name','timesheets.Work_Description','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Comment','timesheetstatuses.updated_at as Review_Date','timesheetchecked.Timesheet_Status','timesheetchecked.Payment_Status','checker.Name as Checked_By','timesheetchecked.Updated_At','files.Web_Path')
+			 'timesheets.Time_In','timesheets.Time_Out','timesheets.State',DB::raw('"" AS Position'),DB::raw('"" AS Home_Base'),'timesheets.Allowance','timesheets.Monetary_Comp','timesheets.OT1','timesheets.OT2','timesheets.OT3','timesheets.Allowance','timesheets.Leader_Member','timesheets.Next_Person','timesheets.Site_Name','timesheets.Work_Description','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Comment','timesheetstatuses.updated_at as Review_Date','timesheetchecked.Timesheet_Status','timesheetchecked.Payment_Status','checker.Name as Checked_By','timesheetchecked.Updated_At','files.Web_Path')
 
 			 ->leftJoin( DB::raw('(select Max(Id) as maxid2,TimesheetId from timesheetchecked Group By TimesheetId) as max2'), 'max2.TimesheetId', '=', 'timesheets.Id')
 			 ->leftJoin('timesheetchecked', 'timesheetchecked.Id', '=', DB::raw('max2.`maxid2`'))
 
 			 ->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Timesheet" Group By TargetId) as maxfile'), 'maxfile.TargetId', '=', 'timesheets.Id')
 			->leftJoin('files', 'files.Id', '=', DB::raw('maxfile.`maxid` and files.`Type`="Timesheet"'))
-			->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-			->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 
 			->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
 			->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
@@ -902,12 +814,10 @@ class TimesheetController extends Controller {
 
 		$mylevel = DB::table('approvalsettings')
 		->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 		->where('approvalsettings.Type', '=', 'Timesheet')
 		->where('approvalsettings.UserId', '=', $me->UserId)
 		->orderBy('approvalsettings.Country','asc')
-		->orderBy('projects.Project_Name','asc')
 		// ->orderBy('approvalsettings.Level','Final Approval","5th Approval","4th Approval","3rd Approval","2nd Approval","1st Approval")
 		->orderByRaw("FIELD(approvalsettings.Level , 'Final Approval', '5th Approval', '4th Approval','3rd Approval','2nd Approval','1st Approval') ASC")
 		->first();
@@ -930,7 +840,7 @@ class TimesheetController extends Controller {
 
 		} while ($startTime <= $endTime);
 
-		return view('timesheetdetail', ['me' => $me, 'viewall'=>$viewall,'UserId' =>$id, 'user' =>$user,'start'=>$start,'end'=>$end,'timesheetdetail' => $timesheetdetail,'projects' =>$projects,'projectcodes' =>$projectcodes, 'options' =>$options,'mylevel' => $mylevel,
+		return view('timesheetdetail', ['me' => $me, 'viewall'=>$viewall,'UserId' =>$id, 'user' =>$user,'start'=>$start,'end'=>$end,'timesheetdetail' => $timesheetdetail,'options' =>$options,'mylevel' => $mylevel,
 		'approver' =>$approver,'months'=>$months]);
 			//return view('mytimesheet', ['me' => $me,'showleave' =>$showleave, 'mytimesheet' => $mytimesheet, 'hierarchy' => $hierarchy, 'final' => $final]);
 
@@ -953,35 +863,20 @@ class TimesheetController extends Controller {
 
 		}
 
-		$hod = DB::table('projects')
-		->select('Project_Name')
-		->where('projects.Project_Manager', '=', $me->UserId)
-		->get();
-		$arrdepartment=array();
-
-		if($hod && !$me->Admin)
+		if(!$me->Admin)
 		{
 
-
-			foreach ($hod as $department) {
-				# code...
-				array_push($arrdepartment,$department->Project_Name);
-			}
-
 			$timesheetdetail = DB::table('timesheets')
-			->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Department','users.Category','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available', DB::raw('(TimeDIFF(STR_TO_DATE(Time_Out,"%h:%i %p"),STR_TO_DATE(Time_In,"%h:%i %p"))) as timediff'),'timesheets.total_distance','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
+			->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available', DB::raw('(TimeDIFF(STR_TO_DATE(Time_Out,"%h:%i %p"),STR_TO_DATE(Time_In,"%h:%i %p"))) as timediff'),'timesheets.total_distance','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
 			 'timesheets.Time_In','timesheets.Time_Out','timesheets.Remarks','timesheets.Deduction','files.Web_Path')
 			->leftJoin('users', 'timesheets.UserId', '=', DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(timesheets.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")'))
-			->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 			->leftJoin('leaves','leaves.UserId','=',DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y") Between str_to_date(leaves.Start_Date,"%d-%M-%Y") and str_to_date(leaves.End_Date,"%d-%M-%Y")'))
 			->leftJoin( DB::raw('(select Max(Id) as maxid,LeaveId from leavestatuses Group By LeaveId) as maxleave'), 'maxleave.LeaveId', '=', 'leaves.Id')
 			->leftJoin('leavestatuses', 'leavestatuses.Id', '=', DB::raw('maxleave.`maxid`'))
 			->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as maxuser'), 'maxuser.TargetId', '=', 'users.Id')
 			->leftJoin('files', 'files.Id', '=', DB::raw('maxuser.`maxid` and files.`Type`="User"'))
 			->where('users.Name','<>','')
-			// ->whereRaw('str_to_date(users.Resignation_Date,"%d-%M-%Y") > str_to_date("'.$end.'","%d-%M-%Y")')
-			->whereIn('users.Department',$arrdepartment)
-			->whereNotIn('users.Id',array(855, 883,902))
+			// ->whereNotIn('users.Id',array(855, 883,902))
 			->orderBy('users.Name','asc');
 
 			if (! ($includeResigned == 'true')) {
@@ -994,17 +889,15 @@ class TimesheetController extends Controller {
 		else {
 			# code...
 			$timesheetdetail = DB::table('timesheets')
-			->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Department','users.Category','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available',DB::raw('(TimeDIFF(STR_TO_DATE(Time_Out,"%h:%i %p"),STR_TO_DATE(Time_In,"%h:%i %p"))) as timediff'),'timesheets.total_distance','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
+			->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available',DB::raw('(TimeDIFF(STR_TO_DATE(Time_Out,"%h:%i %p"),STR_TO_DATE(Time_In,"%h:%i %p"))) as timediff'),'timesheets.total_distance','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
 			 'timesheets.Time_In','timesheets.Time_Out','timesheets.Remarks','timesheets.Deduction','files.Web_Path')
 			->leftJoin('users', 'timesheets.UserId', '=', DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(timesheets.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")'))
-			->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 			->leftJoin('leaves','leaves.UserId','=',DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y") Between str_to_date(leaves.Start_Date,"%d-%M-%Y") and str_to_date(leaves.End_Date,"%d-%M-%Y")'))
 			->leftJoin( DB::raw('(select Max(Id) as maxid,LeaveId from leavestatuses Group By LeaveId) as maxleave'), 'maxleave.LeaveId', '=', 'leaves.Id')
 			->leftJoin('leavestatuses', 'leavestatuses.Id', '=', DB::raw('maxleave.`maxid`'))
 			->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as maxuser'), 'maxuser.TargetId', '=', 'users.Id')
 			->leftJoin('files', 'files.Id', '=', DB::raw('maxuser.`maxid` and files.`Type`="User"'))
 			->where('users.Name','<>','')
-			// ->whereRaw('str_to_date(users.Resignation_Date,"%d-%M-%Y") > str_to_date("'.$end.'","%d-%M-%Y")')
 			->whereNotIn('users.Id',array(855, 883,902))
 			->orderBy('users.Name','asc');
 
@@ -1020,77 +913,7 @@ class TimesheetController extends Controller {
 		->orderBy('scopeofwork.Code')
 		->get();
 
-		return view('engineerlocation', ['me' => $me, 'start'=>$start,'end'=>$end,'timesheetdetail' => $timesheetdetail,'codes'=>$codes, 'includeResigned' => $includeResigned, 'arrdepartment' => $arrdepartment]);
-	}
-
-	public function sitevisitsummary($start = null, $end = null,$dept='false',$client='false')
-	{
-		$me = (new CommonController)->get_current_user();
-
-		if ($start==null)
-		{
-
-			$start=date('d-M-Y', strtotime('first day of january this year'));
-		}
-
-		if ($end==null)
-		{
-			$end=date('d-M-Y', strtotime('today'));
-
-		}
-		$condition = '1';
-
-		if($client != 'false')
-		{
-			$condition="radius.Client='".$client."'";
-		}
-
-			# code...
-			if($dept != 'false')
-			{
-				$summary = DB::table('timesheets')
-				->select('timesheets.Site_Name','timesheets.Code',DB::raw('SEC_TO_TIME(SUM(Time_Diff)) as time'),DB::raw('COUNT(DISTINCT concat(timesheets.Date,timesheets.UserId)) as Visits'))
-				->leftJoin('radius','timesheets.Site_Name','=',DB::raw("radius.Location_Name AND timesheets.Code like CONCAT('%', radius.Code ,'%')"))
-				->whereRaw('str_to_date(timesheets.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(timesheets.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")')
-				->where('timesheets.Site_Name', '!=','')
-				->where('timesheets.Time_In', '!=','')
-				->whereRaw('timesheets.UserId IN (select Id from users where Department="'.$dept.'")')
-				->whereRaw($condition)
-				->orderBy('timesheets.Site_Name','asc')
-				->groupBy(DB::raw('TRIM(REPLACE(timesheets.Site_Name, "\n",""))'))
-				->groupBy('timesheets.Code')
-				->groupBy('radius.Code')
-				->get();
-			}
-			else {
-				// code...
-				$summary = DB::table('timesheets')
-				->select('timesheets.Site_Name','timesheets.Code',DB::raw('SEC_TO_TIME(SUM(Time_Diff)) as time'),DB::raw('COUNT(DISTINCT concat(timesheets.Date,timesheets.UserId)) as Visits'))
-				->leftJoin('radius','timesheets.Site_Name','=',DB::raw("radius.Location_Name AND timesheets.Code like CONCAT('%', radius.Code ,'%')"))
-				->whereRaw('str_to_date(timesheets.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(timesheets.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")')
-				->where('timesheets.Site_Name', '!=','')
-				->where('timesheets.Time_In', '!=','')
-				->whereRaw($condition)
-				->orderBy('timesheets.Site_Name','asc')
-				->groupBy(DB::raw('TRIM(REPLACE(timesheets.Site_Name, "\n",""))'))
-				->groupBy('timesheets.Code')
-				->get();
-			}
-
-			$clients= DB::table('radius')
-			->distinct('Client')
-			->select('Client')
-			->orderBy('Client','asc')
-			->get();
-
-
-			$department = DB::table('users')
-			->Distinct('users.Department')
-			->select('users.Department')
-			->where('users.Department','like','%Department%')
-			->get();
-
-		return view('sitevisitsummary', ['me' => $me, 'start'=>$start,'end'=>$end,'summary' => $summary,'department'=>$department,'dept'=>$dept, 'clients' => $clients, 'client' => $client]);
+		return view('engineerlocation', ['me' => $me, 'start'=>$start,'end'=>$end,'timesheetdetail' => $timesheetdetail,'codes'=>$codes, 'includeResigned' => $includeResigned]);
 	}
 
 	public function sitevisitdetail($sitename,$code,$start, $end)
@@ -1260,13 +1083,11 @@ class TimesheetController extends Controller {
 
 			$rules = array(
 				'Date'     => 'Required',
-				'Check_In_Type'       => 'Required',
-				'Project_Manager'       => 'Required'
+				'Check_In_Type'       => 'Required'
 				);
 
 				$messages = array(
 					'Date.required'     => 'The Date Time field is required',
-					'Project_Manager.required'       => 'The Project Manager field is required',
 					'Check_In_Type.required'       => 'The Check In Type field is required'
 					);
 
@@ -1280,11 +1101,8 @@ class TimesheetController extends Controller {
 						 'Time_In' => $input["Time_In"],
 						 'Time_Out' => $input["Time_Out"],
 						 'Leader_Member' => $input["Leader_Member"],
-						 'Project_Code_Id' => $input["Project_Code_Id"],
-						 'Project' => $input["Project"],
 						 'Site_Name' => $input["Site_Name"],
 						 'State' => $input["State"],
-						 'Project_Manager' => $input["Project_Manager"],
 						 'Check_In_Type' => $input["Check_In_Type"],
 						 'Reason' => $input["Reason"],
 						 'Remarks' => $input["Remarks"]
@@ -1314,10 +1132,8 @@ class TimesheetController extends Controller {
 		$Ids = explode(",", $input["StatusIds"]);
 
 		$timesheets = DB::table('timesheets')
-		->select('timesheets.Id','timesheets.UserId as SubmitterId','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date','timesheets.Leader_Member','timesheets.Next_Person','projectcodes.Project_Code','projects.Project_Name','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Check_In_Type',
+		->select('timesheets.Id','timesheets.UserId as SubmitterId','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date','timesheets.Leader_Member','timesheets.Next_Person','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Check_In_Type',
 		'timesheets.Time_In','timesheets.Time_Out','timesheets.Remarks','approver.Name','timesheetstatuses.UserId','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Updated_At')
-		->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
 		->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'timesheetstatuses.UserId', '=', 'approver.Id')
@@ -1327,25 +1143,11 @@ class TimesheetController extends Controller {
 
 		$approver = DB::table('approvalsettings')
 		->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 		->where('approvalsettings.Type', '=', 'Timesheet')
-		->where('approvalsettings.ProjectId', '<>', '0')
 		->orderBy('approvalsettings.Country','asc')
-		->orderBy('projects.Project_Name','asc')
 		->orderByRaw("FIELD(approvalsettings.Level , '1st Approval','2nd Approval','3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
 		->get();
-
-		// $countryapprover = DB::table('approvalsettings')
-		// ->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		// ->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		// ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
-		// ->where('approvalsettings.Type', '=', 'Timesheet')
-		// ->where('approvalsettings.ProjectId', '=', '0')
-		// ->orderBy('approvalsettings.Country','asc')
-		// ->orderBy('projects.Project_Name','asc')
-		// ->orderByRaw("FIELD(approvalsettings.Level , '1st Approval','2nd Approval','3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
-		// ->get();
 
 		$final=false;
 
@@ -1360,7 +1162,7 @@ class TimesheetController extends Controller {
 
 				foreach ($approver as $user) {
 
-						if (!empty($user->Id) && $user->Project_Name==$timesheet->Project_Name && $timesheet->UserId != $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($timesheet->Status, FILTER_SANITIZE_NUMBER_INT))
+						if (!empty($user->Id) && $timesheet->UserId != $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($timesheet->Status, FILTER_SANITIZE_NUMBER_INT))
 						{
 
 							DB::table('timesheetstatuses')->insert(
@@ -1374,13 +1176,13 @@ class TimesheetController extends Controller {
 
 							break;
 						}
-						elseif (!empty($user->Id) && $user->Project_Name==$timesheet->Project_Name && $timesheet->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($timesheet->Status, FILTER_SANITIZE_NUMBER_INT))
+						elseif (!empty($user->Id) && $timesheet->UserId == $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($timesheet->Status, FILTER_SANITIZE_NUMBER_INT))
 						{
 							# code...
 								$submitted=true;
 								array_push($emaillist,$user->Id);
 						}
-						elseif (!empty($user->Id) && $user->Project_Name==$timesheet->Project_Name && $timesheet->UserId != $user->Id && $user->Level=="Final Approval")
+						elseif (!empty($user->Id) && $timesheet->UserId != $user->Id && $user->Level=="Final Approval")
 						{
 
 							DB::table('timesheetstatuses')->insert(
@@ -1506,10 +1308,8 @@ class TimesheetController extends Controller {
 			}
 
 			$timesheets = DB::table('timesheets')
-			->select('timesheets.Id','timesheets.UserId','submitter.Name as Submitter','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date','timesheets.Leader_Member','timesheets.Next_Person','projectcodes.Project_Code','projects.Project_Name','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Check_In_Type',
+			->select('timesheets.Id','timesheets.UserId','submitter.Name as Submitter','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date','timesheets.Leader_Member','timesheets.Next_Person','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Check_In_Type',
 			'timesheets.Time_In','timesheets.Time_Out','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.UserId','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Updated_At')
-			->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-			->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 			->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
 			->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
 			->leftJoin('users as approver', 'timesheetstatuses.UserId', '=', 'approver.Id')
@@ -1518,13 +1318,13 @@ class TimesheetController extends Controller {
 			->orderBy('timesheets.Date','asc')
 			->get();
 
-			Mail::send('emails.timesheetapproval2', ['me' => $me,'timesheets' => $timesheets], function($message) use ($emails,$timesheets,$NotificationSubject)
-			{
-					$emails = array_filter($emails);
-					array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-					$message->to($emails)->subject($NotificationSubject.' ['.$timesheets[0]->Submitter.']');
+			// Mail::send('emails.timesheetapproval2', ['me' => $me,'timesheets' => $timesheets], function($message) use ($emails,$timesheets,$NotificationSubject)
+			// {
+			// 		$emails = array_filter($emails);
+			// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+			// 		$message->to($emails)->subject($NotificationSubject.' ['.$timesheets[0]->Submitter.']');
 
-			});
+			// });
 
 			return 1;
 		}
@@ -1698,10 +1498,8 @@ class TimesheetController extends Controller {
 		$Ids = explode(",", $input["StatusIds"]);
 
 		$timesheets = DB::table('timesheets')
-		->select('timesheets.Id','timesheets.UserId','submitter.Name as Submitter','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date','timesheets.Leader_Member','timesheets.Next_Person','projectcodes.Project_Code','projects.Project_Name','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Check_In_Type',
+		->select('timesheets.Id','timesheets.UserId','submitter.Name as Submitter','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date','timesheets.Leader_Member','timesheets.Next_Person','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Check_In_Type',
 		'timesheets.Time_In','timesheets.Time_Out','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.UserId','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Updated_At')
-		->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
 		->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'timesheetstatuses.UserId', '=', 'approver.Id')
@@ -1749,10 +1547,8 @@ class TimesheetController extends Controller {
 		{
 
 			$timesheets = DB::table('timesheets')
-			->select('timesheets.Id','timesheets.UserId','submitter.Name as Submitter','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date','timesheets.Leader_Member','timesheets.Next_Person','projectcodes.Project_Code','projects.Project_Name','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Check_In_Type',
+			->select('timesheets.Id','timesheets.UserId','submitter.Name as Submitter','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date','timesheets.Leader_Member','timesheets.Next_Person','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Check_In_Type',
 			'timesheets.Time_In','timesheets.Time_Out','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.UserId','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Updated_At')
-			->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-			->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 			->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
 			->leftJoin('timesheetstatuses', 'timesheetstatuses.Id', '=', DB::raw('max.`maxid`'))
 			->leftJoin('users as approver', 'timesheetstatuses.UserId', '=', 'approver.Id')
@@ -1779,12 +1575,12 @@ class TimesheetController extends Controller {
 
 			}
 
-			Mail::send('emails.timesheetredirected', ['me'=>$me,'timesheets' => $timesheets], function($message) use ($emails,$me,$NotificationSubject)
-			{
-					$emails = array_filter($emails);
-					array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-					$message->to($emails)->subject($NotificationSubject);
-			});
+			// Mail::send('emails.timesheetredirected', ['me'=>$me,'timesheets' => $timesheets], function($message) use ($emails,$me,$NotificationSubject)
+			// {
+			// 		$emails = array_filter($emails);
+			// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+			// 		$message->to($emails)->subject($NotificationSubject);
+			// });
 
 			return 1;
 		}
@@ -1798,19 +1594,13 @@ class TimesheetController extends Controller {
 	{
 		$me = (new CommonController)->get_current_user();
 
-		$user = DB::table('users')->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Department','Position','Emergency_Contact_Person',
+		$user = DB::table('users')->select('users.Id','StaffId','Name','Password','User_Type','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Position','Emergency_Contact_Person',
 		'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','files.Web_Path')
 		// ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
     	->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="User"'))
 		->where('users.Id', '=', $id)
 		->first();
-
-		$projects = DB::table('projects')
-		->get();
-
-		$projectcodes = DB::table('projectcodes')
-		->get();
 
 		$options= DB::table('options')
 		->whereIn('Table', ["users","timesheets"])
@@ -1833,10 +1623,7 @@ class TimesheetController extends Controller {
 
 		$timesheetdetail = DB::table('timesheets')
 		->select('timesheets.Date',DB::raw('"" as Day'),'timesheets.Check_In_Type',
-		'timesheets.Time_In','timesheets.Time_Out','timesheets.Allowance','timesheets.Monetary_Comp','timesheets.OT1','timesheets.OT2','timesheets.OT3','timesheets.Leader_Member','timesheets.Next_Person','projectcodes.Project_Code','projects.Project_Name','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Review_Date')
-
-		->leftJoin('projectcodes', 'timesheets.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
+		'timesheets.Time_In','timesheets.Time_Out','timesheets.Allowance','timesheets.Monetary_Comp','timesheets.OT1','timesheets.OT2','timesheets.OT3','timesheets.Leader_Member','timesheets.Next_Person','timesheets.Site_Name','timesheets.State','timesheets.Work_Description','timesheets.Remarks','approver.Name as Approver','timesheetstatuses.Status','timesheetstatuses.Comment','timesheetstatuses.updated_at as Review_Date')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Timesheet" Group By TargetId) as maxfile'), 'maxfile.TargetId', '=', 'timesheets.Id')
 		->leftJoin('files', 'files.Id', '=', DB::raw('maxfile.`maxid` and files.`Type`="Timesheet"'))
 		->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
@@ -1851,12 +1638,10 @@ class TimesheetController extends Controller {
 
 		$mylevel = DB::table('approvalsettings')
 		->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-		->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+		->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
 		->where('approvalsettings.Type', '=', 'Timesheet')
 		->where('approvalsettings.UserId', '=', $me->UserId)
 		->orderBy('approvalsettings.Country','asc')
-		->orderBy('projects.Project_Name','asc')
 		// ->orderBy('approvalsettings.Level','Final Approval","5th Approval","4th Approval","3rd Approval","2nd Approval","1st Approval")
 		->orderByRaw("FIELD(approvalsettings.Level , 'Final Approval', '5th Approval', '4th Approval','3rd Approval','2nd Approval','1st Approval') ASC")
 		->first();
@@ -1870,7 +1655,7 @@ class TimesheetController extends Controller {
 		->where(DB::raw('str_to_date(timesheets.Date,"%d-%M-%Y")'), '<=', DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
 		->get();
 
-		$html = view('exporttimesheet', ['me' => $me, 'UserId' =>$id, 'user' =>$user,'start'=>$start,'end'=>$end,'timesheetdetail' => $timesheetdetail,'projects' =>$projects,'projectcodes' =>$projectcodes, 'options' =>$options,'mylevel' => $mylevel,'total' => $total]);
+		$html = view('exporttimesheet', ['me' => $me, 'UserId' =>$id, 'user' =>$user,'start'=>$start,'end'=>$end,'timesheetdetail' => $timesheetdetail, 'options' =>$options,'mylevel' => $mylevel,'total' => $total]);
 		(new ExportPDFController)->ExportLandscape($html);
 	}
 
@@ -2170,13 +1955,13 @@ class TimesheetController extends Controller {
 
 				}
 
-					Mail::send('emails.claimtimesheetnotify', ['me' => $me,'month'=>$month,'year'=>$year,'start'=>$start,'end'=>$end,'entry'=>$entry], function($message) use ($emails,$month,$year,$start,$end,$NotificationSubject)
-					{
-							$emails = array_filter($emails);
-							array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-							$message->to($emails)->subject($NotificationSubject. ' '.$month.' '.$year.'[From '.$start.' To '.$end.']');
+					// Mail::send('emails.claimtimesheetnotify', ['me' => $me,'month'=>$month,'year'=>$year,'start'=>$start,'end'=>$end,'entry'=>$entry], function($message) use ($emails,$month,$year,$start,$end,$NotificationSubject)
+					// {
+					// 		$emails = array_filter($emails);
+					// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+					// 		$message->to($emails)->subject($NotificationSubject. ' '.$month.' '.$year.'[From '.$start.' To '.$end.']');
 
-					});
+					// });
 
 		}
 
@@ -2319,10 +2104,8 @@ class TimesheetController extends Controller {
 		$input = $request->all();
 
 		$viewclaim = DB::table('claimsheets')
-    ->select('projects.Project_Name','claims.Site_Name','claims.State','claims.Work_Description','claims.Next_Person','claims.Car_No','claims.Mileage','claims.Expenses_Type','claims.Total_Expenses','claims.Petrol_SmartPay','claims.Advance','claims.Total_Amount','claims.GST_Amount','claims.Total_Without_GST','claims.Receipt_No','claims.Company_Name','claims.GST_No','claims.Remarks','approver.Name as Approver','claimstatuses.Status as Status','claimstatuses.Comment as Comment','claimstatuses.updated_at as updated_at')
+    ->select('claims.Site_Name','claims.State','claims.Work_Description','claims.Next_Person','claims.Car_No','claims.Mileage','claims.Expenses_Type','claims.Total_Expenses','claims.Petrol_SmartPay','claims.Advance','claims.Total_Amount','claims.GST_Amount','claims.Total_Without_GST','claims.Receipt_No','claims.Company_Name','claims.GST_No','claims.Remarks','approver.Name as Approver','claimstatuses.Status as Status','claimstatuses.Comment as Comment','claimstatuses.updated_at as updated_at')
 		->leftJoin('claims', 'claimsheets.Id', '=', 'claims.ClaimsheetId')
-		->leftJoin('projectcodes', 'claims.Project_Code_Id', '=', 'projectcodes.Id')
-		->leftJoin('projects', 'claims.ProjectId', '=', 'projects.Id')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,ClaimId from claimstatuses Group By ClaimId) as max'), 'max.ClaimId', '=', 'claims.Id')
     ->leftJoin('claimstatuses', 'claimstatuses.Id', '=', DB::raw('max.`maxid`'))
 		->leftJoin('users as approver', 'claimstatuses.UserId', '=', 'approver.Id')
@@ -2401,13 +2184,13 @@ class TimesheetController extends Controller {
 
 		}
 
-			Mail::send('emails.pendingtimesheet', ['me' => $me, 'start'=>$start, 'end'=>$end, 'namelist'=>$namelist], function($message) use ($emails,$start,$end,$NotificationSubject)
-			{
-					$emails = array_filter($emails);
-					array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-					$message->to($emails)->subject($NotificationSubject. ' From '.$start.' To '.$end.'');
+			// Mail::send('emails.pendingtimesheet', ['me' => $me, 'start'=>$start, 'end'=>$end, 'namelist'=>$namelist], function($message) use ($emails,$start,$end,$NotificationSubject)
+			// {
+			// 		$emails = array_filter($emails);
+			// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+			// 		$message->to($emails)->subject($NotificationSubject. ' From '.$start.' To '.$end.'');
 
-			});
+			// });
 
 			return 1;
 		}
@@ -2488,13 +2271,13 @@ class TimesheetController extends Controller {
 
 		}
 
-			Mail::send('emails.pendingtimesheet2', ['me' => $me, 'start'=>$start, 'end'=>$end, 'summary'=>$summary], function($message) use ($emails,$start,$end,$NotificationSubject)
-			{
-					$emails = array_filter($emails);
-					array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-					$message->to($emails)->subject($NotificationSubject.' From '.$start.' To '.$end.'');
+			// Mail::send('emails.pendingtimesheet2', ['me' => $me, 'start'=>$start, 'end'=>$end, 'summary'=>$summary], function($message) use ($emails,$start,$end,$NotificationSubject)
+			// {
+			// 		$emails = array_filter($emails);
+			// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+			// 		$message->to($emails)->subject($NotificationSubject.' From '.$start.' To '.$end.'');
 
-			});
+			// });
 
 			return 1;
 		}
@@ -2571,13 +2354,13 @@ class TimesheetController extends Controller {
 			}
 		}
 
-		Mail::send('emails.incompletetimesheet2', ['me' => $me, 'start'=>$start, 'end'=>$end, 'summary'=>$summary,'diff'=>$diff], function($message) use ($emails,$start,$end,$NotificationSubject)
-		{
-				$emails = array_filter($emails);
-				array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-				$message->to($emails)->subject($NotificationSubject. ' From '.$start.' To '.$end.'');
+		// Mail::send('emails.incompletetimesheet2', ['me' => $me, 'start'=>$start, 'end'=>$end, 'summary'=>$summary,'diff'=>$diff], function($message) use ($emails,$start,$end,$NotificationSubject)
+		// {
+		// 		$emails = array_filter($emails);
+		// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+		// 		$message->to($emails)->subject($NotificationSubject. ' From '.$start.' To '.$end.'');
 
-		});
+		// });
 
 			return 1;
 		}
@@ -2656,13 +2439,13 @@ class TimesheetController extends Controller {
 
 		}
 
-			Mail::send('emails.incompletetimesheet', ['me' => $me, 'start'=>$start, 'end'=>$end, 'namelist'=>$namelist], function($message) use ($emails,$start,$end,$NotificationSubject)
-			{
-					$emails = array_filter($emails);
-					array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-					$message->to($emails)->subject($NotificationSubject.' From'.$start.' To '.$end.'');
+			// Mail::send('emails.incompletetimesheet', ['me' => $me, 'start'=>$start, 'end'=>$end, 'namelist'=>$namelist], function($message) use ($emails,$start,$end,$NotificationSubject)
+			// {
+			// 		$emails = array_filter($emails);
+			// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+			// 		$message->to($emails)->subject($NotificationSubject.' From'.$start.' To '.$end.'');
 
-			});
+			// });
 
 			return 1;
 		}
@@ -2683,7 +2466,6 @@ class TimesheetController extends Controller {
 		$id=DB::table('timesheets')->insertGetId(
 			['UserId' => $input["UserId"],
 			 'Date' => $input["Date"],
-			 'ProjectId' => $input["ProjectId"],
 			 'Check_In_Type' => "On Duty"
 		 ]
 
@@ -2747,20 +2529,13 @@ class TimesheetController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$radius = DB::table('radius')
-		->leftJoin('projects','projects.Id','=','radius.ProjectId')
-		->select('radius.Id','radius.Client','projects.Project_Name','radius.Code','radius.Area','radius.Location_Name','radius.Latitude','radius.Longitude','radius.Start_Date','radius.Completion_Date')
+		->select('radius.Id','radius.Client','radius.Code','radius.Area','radius.Location_Name','radius.Latitude','radius.Longitude','radius.Start_Date','radius.Completion_Date')
 		->get();
 
 		$codes = DB::table('scopeofwork')
 		->orderBy('scopeofwork.Code')
 		->get();
 
-		// $clients= DB::table('options')
-		// ->whereIn('Table', ["projects"])
-		// ->where('Field','=','Client')
-		// ->orderBy('Table','asc')
-		// ->orderBy('Option','asc')
-		// ->get();
 		$clients = DB::table('companies')
         ->select('companies.Id','companies.Company_Name','companies.Company_Code')
         ->where('companies.Client','=','Yes')
@@ -2773,11 +2548,7 @@ class TimesheetController extends Controller {
 		->orderBy('Option', 'asc')
 		->get();
 
-		$projects = DB::table('projects')
-		->select('Id','Project_Name')
-		->get();
-
-		return view('radiusmanagement',['me'=>$me, 'radius'=>$radius,'codes'=>$codes,'clients'=>$clients,'area'=>$area,'projects'=>$projects]);
+		return view('radiusmanagement',['me'=>$me, 'radius'=>$radius,'codes'=>$codes,'clients'=>$clients,'area'=>$area]);
 	}
 
 	public function deliverylocation()
@@ -2841,7 +2612,7 @@ class TimesheetController extends Controller {
 		}
 
 		$summary = DB::table('users')
-		->select('users.Id','users.StaffID','users.Name','users.Category','radius.Location_Name as Site_Name','radius.Code','scopeofwork.KPI',DB::raw('"" as Incentive_Entitled'),
+		->select('users.Id','users.StaffID','users.Name','radius.Location_Name as Site_Name','radius.Code','scopeofwork.KPI',DB::raw('"" as Incentive_Entitled'),
 		DB::raw('(SELECT COUNT(distinct a.Date) FROM timesheets a WHERE a.Site_Name=timesheets.Site_Name AND replace(a.Code," ","")=replace(timesheets.Code," ","") AND str_to_date(a.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y")) as "Total Visit"'),
 		DB::raw('(SELECT COUNT(distinct a.Date) FROM timesheets a WHERE a.Site_Name=timesheets.Site_Name and a.UserId=timesheets.UserId AND replace(a.Code," ","")=replace(timesheets.Code," ","") and str_to_date(a.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y")) as "Number of Own Visit"'),
 		DB::raw('(SELECT COUNT(distinct concat(a.UserId,"|",a.Date)) FROM timesheets a WHERE a.Site_Name=timesheets.Site_Name AND replace(a.Code," ","")=replace(timesheets.Code," ","") AND str_to_date(a.Date,"%d-%M-%Y") Between str_to_date(radius.Start_Date,"%d-%M-%Y") and str_to_date(radius.Completion_Date,"%d-%M-%Y")) as "Visit Count"'),
@@ -3005,36 +2776,19 @@ class TimesheetController extends Controller {
 
 		}
 
-		$hod = DB::table('projects')
-		->select('Project_Name')
-		->where('projects.Project_Manager', '=', $me->UserId)
-		->get();
-
-		if($hod && !$me->Admin)
+		if(!$me->Admin)
 		{
 
-			$arrdepartment=array();
-
-			foreach ($hod as $department) {
-				# code...
-				array_push($arrdepartment,$department->Project_Name);
-			}
-
-
-
 			$timesheetdetail = DB::table('timesheets')
-			->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Department','users.Category','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
+			->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
 			 'timesheets.Time_In','timesheets.Time_Out','timesheets.OT1','timesheets.OT2','timesheets.OT3','timesheets.OT_HOD_Verified','timesheets.OT_Verified','timesheets.Remarks','timesheets.Deduction','files.Web_Path')
 			->leftJoin('users', 'timesheets.UserId', '=', DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(timesheets.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")'))
-			->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 			->leftJoin('leaves','leaves.UserId','=',DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y") Between str_to_date(leaves.Start_Date,"%d-%M-%Y") and str_to_date(leaves.End_Date,"%d-%M-%Y")'))
 			->leftJoin( DB::raw('(select Max(Id) as maxid,LeaveId from leavestatuses Group By LeaveId) as maxleave'), 'maxleave.LeaveId', '=', 'leaves.Id')
 			->leftJoin('leavestatuses', 'leavestatuses.Id', '=', DB::raw('maxleave.`maxid`'))
 			->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as maxuser'), 'maxuser.TargetId', '=', 'users.Id')
 			->leftJoin('files', 'files.Id', '=', DB::raw('maxuser.`maxid` and files.`Type`="User"'))
 			->where('users.Name','<>','')
-			// ->whereRaw('str_to_date(users.Resignation_Date,"%d-%M-%Y") > str_to_date("'.$end.'","%d-%M-%Y")')
-			->whereIn('users.Department',$arrdepartment)
 			->whereNotIn('users.Id',array(855, 883,902))
 			->orderBy('users.Name','asc');
 
@@ -3048,19 +2802,16 @@ class TimesheetController extends Controller {
 		else {
 			# code...
 			$timesheetdetail = DB::table('timesheets')
-			->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Department','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
+			->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
 			 'timesheets.Time_In','timesheets.Time_Out','timesheets.OT1','timesheets.OT2','timesheets.OT3','timesheets.OT_HOD_Verified','timesheets.OT_Verified','timesheets.Remarks','timesheets.Deduction','files.Web_Path')
 			->leftJoin('users', 'timesheets.UserId', '=', DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(timesheets.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")'))
-			->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 			->leftJoin('leaves','leaves.UserId','=',DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y") Between str_to_date(leaves.Start_Date,"%d-%M-%Y") and str_to_date(leaves.End_Date,"%d-%M-%Y")'))
 			->leftJoin( DB::raw('(select Max(Id) as maxid,LeaveId from leavestatuses Group By LeaveId) as maxleave'), 'maxleave.LeaveId', '=', 'leaves.Id')
 			->leftJoin('leavestatuses', 'leavestatuses.Id', '=', DB::raw('maxleave.`maxid`'))
 			->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as maxuser'), 'maxuser.TargetId', '=', 'users.Id')
 			->leftJoin('files', 'files.Id', '=', DB::raw('maxuser.`maxid` and files.`Type`="User"'))
 			->where('users.Name','<>','')
-			// ->whereRaw('str_to_date(users.Resignation_Date,"%d-%M-%Y") > str_to_date("'.$end.'","%d-%M-%Y")')
 			->whereNotIn('users.Id',array(855, 883,902))
-			->whereIn('users.Department', ['MY_Department_FAB','MY_Department_MDO'])
 			->orderBy('users.Name','asc');
 
 			if (! ($includeResigned == 'true')) {
@@ -3076,98 +2827,6 @@ class TimesheetController extends Controller {
 		->get();
 
 		return view('otmanagementhr', ['me' => $me, 'start'=>$start,'end'=>$end,'timesheetdetail' => $timesheetdetail,'codes'=>$codes, 'includeResigned' => $includeResigned]);
-	}
-
-	public function otmanagementhod($start = null, $end = null, $includeResigned = 'false')
-	{
-		$me = (new CommonController)->get_current_user();
-		$today = date('d-M-Y', strtotime('today'));
-
-		if ($start==null)
-		{
-
-			$start=date('d-M-Y', strtotime('today'));
-		}
-
-		if ($end==null)
-		{
-			$end=date('d-M-Y', strtotime('today'));
-
-		}
-
-		$hod = DB::table('projects')
-		->select('Project_Name')
-		->where('projects.Project_Manager', '=', $me->UserId)
-		->get();
-
-		$arrdepartment=array();
-
-		if($hod)
-		{
-
-
-
-			foreach ($hod as $department) {
-				# code...
-				array_push($arrdepartment,$department->Project_Name);
-			}
-
-
-
-			$timesheetdetail = DB::table('timesheets')
-			->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Department','users.Category','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
-			 'timesheets.Time_In','timesheets.Time_Out','timesheets.OT1','timesheets.OT2','timesheets.OT3','timesheets.OT_Verified','timesheets.OT_HOD_Verified','timesheets.Remarks','timesheets.Deduction','files.Web_Path')
-			->leftJoin('users', 'timesheets.UserId', '=', DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(timesheets.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")'))
-			->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
-			->leftJoin('leaves','leaves.UserId','=',DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y") Between str_to_date(leaves.Start_Date,"%d-%M-%Y") and str_to_date(leaves.End_Date,"%d-%M-%Y")'))
-			->leftJoin( DB::raw('(select Max(Id) as maxid,LeaveId from leavestatuses Group By LeaveId) as maxleave'), 'maxleave.LeaveId', '=', 'leaves.Id')
-			->leftJoin('leavestatuses', 'leavestatuses.Id', '=', DB::raw('maxleave.`maxid`'))
-			->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as maxuser'), 'maxuser.TargetId', '=', 'users.Id')
-			->leftJoin('files', 'files.Id', '=', DB::raw('maxuser.`maxid` and files.`Type`="User"'))
-			->where('users.Name','<>','')
-			// ->whereRaw('str_to_date(users.Resignation_Date,"%d-%M-%Y") > str_to_date("'.$end.'","%d-%M-%Y")')
-			->whereIn('users.Department',$arrdepartment)
-			->whereNotIn('users.Id',array(855, 883,902))
-			->orderBy('users.Name','asc');
-
-			if (! ($includeResigned == 'true')) {
-				$timesheetdetail->whereRaw('(users.Resignation_Date = "" OR str_to_date(users.Resignation_Date,"%d-%M-%Y") >= str_to_date("'.$today.'","%d-%M-%Y"))');
-			}
-
-			$timesheetdetail = $timesheetdetail->get();
-
-		}
-		else {
-			# code...
-			$timesheetdetail = DB::table('timesheets')
-			->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Department','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
-			 'timesheets.Time_In','timesheets.Time_Out','timesheets.OT1','timesheets.OT2','timesheets.OT3','timesheets.OT_Verified','timesheets.OT_HOD_Verified','timesheets.Remarks','timesheets.Deduction','files.Web_Path')
-			->leftJoin('users', 'timesheets.UserId', '=', DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(timesheets.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")'))
-			->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
-			->leftJoin('leaves','leaves.UserId','=',DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y") Between str_to_date(leaves.Start_Date,"%d-%M-%Y") and str_to_date(leaves.End_Date,"%d-%M-%Y")'))
-			->leftJoin( DB::raw('(select Max(Id) as maxid,LeaveId from leavestatuses Group By LeaveId) as maxleave'), 'maxleave.LeaveId', '=', 'leaves.Id')
-			->leftJoin('leavestatuses', 'leavestatuses.Id', '=', DB::raw('maxleave.`maxid`'))
-			->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as maxuser'), 'maxuser.TargetId', '=', 'users.Id')
-			->leftJoin('files', 'files.Id', '=', DB::raw('maxuser.`maxid` and files.`Type`="User"'))
-			->where('users.Name','<>','')
-			// ->whereRaw('str_to_date(users.Resignation_Date,"%d-%M-%Y") > str_to_date("'.$end.'","%d-%M-%Y")')
-			->whereNotIn('users.Id',array(855, 883,902))
-			->whereIn('users.Department', ['MY_Department_FAB','MY_Department_MDO'])
-			->orderBy('users.Name','asc');
-
-			if (! ($includeResigned == 'true')) {
-				$timesheetdetail->whereRaw('(users.Resignation_Date = "" OR str_to_date(users.Resignation_Date,"%d-%M-%Y") >= str_to_date("'.$today.'","%d-%M-%Y"))');
-			}
-
-			$timesheetdetail = $timesheetdetail->get();
-		}
-
-
-		$codes = DB::table('scopeofwork')
-		->orderBy('scopeofwork.Code')
-		->get();
-
-		return view('otmanagementhod', ['me' => $me, 'start'=>$start,'end'=>$end,'timesheetdetail' => $timesheetdetail,'codes'=>$codes, 'includeResigned' => $includeResigned, 'arrdepartment' => $arrdepartment]);
 	}
 
 	public function MIAlist()
@@ -3252,27 +2911,6 @@ class TimesheetController extends Controller {
 			->where('Active','=',1)
 			->get();
 		}
-		elseif($me->Project_Manager)
-        {
-        	$projects = DB::Table('projects')
-        	->where('projects.Project_Manager','=',$me->UserId)
-        	->select('Id','projects.Project_Name')
-        	->get();
-
-        	$projectlist = array();
-
-        	foreach ($projects as $key => $value) {
-        		array_push($projectlist,$value->Project_Name);
-        	}
-
-			$user = DB::table('users')
-			->select('Name','Id')
-			->where('Active','=',1)
-			->whereIn('Department',$projectlist)
-			->groupby('Id')
-			->get();
-
-		}
 		else
 		{
 			$user = DB::table('users')
@@ -3345,13 +2983,13 @@ class TimesheetController extends Controller {
 					WHERE Status = "Assigned" AND tasks.type != "Todo" and taskstatuses.Id IN (select max(taskstatuses.Id) from taskstatuses left join tasks on tasks.Id=taskstatuses.TaskId group by tasks.Id)) as assigned'),
 			DB::raw('(SELECT COUNT(distinct taskstatuses.Id) FROM `taskstatuses`
 					LEFT JOIN tasks ON taskstatuses.TaskId = tasks.Id
-					WHERE Status = "In Progress" AND tasks.type != "Todo" and taskstatuses.Id IN (select max(taskstatuses.Id) from taskstatuses left join tasks on tasks.Id=taskstatuses.TaskId group by concat(tasks.Project_Code,Current_Task))) as inprogress'),
+					WHERE Status = "In Progress" AND tasks.type != "Todo" and taskstatuses.Id IN (select max(taskstatuses.Id) from taskstatuses left join tasks on tasks.Id=taskstatuses.TaskId group by tasks.Current_Task)) as inprogress'),
 			DB::raw('(SELECT COUNT(taskstatuses.Id) FROM `taskstatuses`
 					LEFT JOIN tasks ON taskstatuses.TaskId = tasks.Id
 					WHERE Status = "Rejected" AND tasks.type != "Todo") as rejected'),
 			DB::raw('(SELECT COUNT(taskstatuses.Id) FROM `taskstatuses`
 					LEFT JOIN tasks ON taskstatuses.TaskId = tasks.Id
-					WHERE Status = "Completed" AND tasks.type != "Todo" and taskstatuses.Id IN (select max(taskstatuses.Id) from taskstatuses left join tasks on tasks.Id=taskstatuses.TaskId group by concat(tasks.Project_Code,Current_task))) as completed'))
+					WHERE Status = "Completed" AND tasks.type != "Todo" and taskstatuses.Id IN (select max(taskstatuses.Id) from taskstatuses left join tasks on tasks.Id=taskstatuses.TaskId group by tasks.Current_task)) as completed'))
 		->first();
 
 		$overduecompleted = DB::table('tasks')
@@ -3372,13 +3010,13 @@ class TimesheetController extends Controller {
 					WHERE Status = "Assigned" AND tasks.type != "Todo" AND tasks.UserId = "'.$userid.'" and taskstatuses.Id IN (select max(taskstatuses.Id) from taskstatuses left join tasks on tasks.Id=taskstatuses.TaskId group by tasks.Id)) as assigned'),
 			DB::raw('(SELECT COUNT(distinct taskstatuses.Id) FROM `taskstatuses`
 					LEFT JOIN tasks ON taskstatuses.TaskId = tasks.Id
-					WHERE Status = "In Progress" AND tasks.type != "Todo" AND tasks.UserId = "'.$userid.'" and taskstatuses.Id IN (select max(taskstatuses.Id) from taskstatuses left join tasks on tasks.Id=taskstatuses.TaskId group by concat(tasks.Project_Code,Current_Task))) as inprogress'),
+					WHERE Status = "In Progress" AND tasks.type != "Todo" AND tasks.UserId = "'.$userid.'" and taskstatuses.Id IN (select max(taskstatuses.Id) from taskstatuses left join tasks on tasks.Id=taskstatuses.TaskId group by tasks.Current_Task)) as inprogress'),
 			DB::raw('(SELECT COUNT(taskstatuses.Id) FROM `taskstatuses`
 					LEFT JOIN tasks ON taskstatuses.TaskId = tasks.Id
 					WHERE Status = "Rejected" AND tasks.type != "Todo" AND tasks.UserId = "'.$userid.'") as rejected'),
 			DB::raw('(SELECT COUNT(taskstatuses.Id) FROM `taskstatuses`
 					LEFT JOIN tasks ON taskstatuses.TaskId = tasks.Id
-					WHERE Status = "Completed" AND tasks.type != "Todo" AND tasks.UserId = "'.$userid.'" and taskstatuses.Id IN (select max(taskstatuses.Id) from taskstatuses left join tasks on tasks.Id=taskstatuses.TaskId group by concat(tasks.Project_Code,Current_task))) as completed'))
+					WHERE Status = "Completed" AND tasks.type != "Todo" AND tasks.UserId = "'.$userid.'" and taskstatuses.Id IN (select max(taskstatuses.Id) from taskstatuses left join tasks on tasks.Id=taskstatuses.TaskId group by tasks.Current_task)) as completed'))
 		->first();
 
 		$overduecompleted = DB::table('tasks')
@@ -3479,26 +3117,6 @@ class TimesheetController extends Controller {
 			$user = DB::table('users')
 			->select('Name','Id')
 			->where('Active','=',1)
-			->get();
-		}
-        elseif($me->Project_Manager)
-        {
-        	$projects = DB::Table('projects')
-        	->where('projects.Project_Manager','=',$me->UserId)
-        	->select('Id','projects.Project_Name')
-        	->get();
-
-        	$projectlist = array();
-
-        	foreach ($projects as $key => $value) {
-        		array_push($projectlist,$value->Project_Name);
-        	}
-
-			$user = DB::table('users')
-			->select('Name','Id')
-			->where('Active','=',1)
-			->whereIn('Department',$projectlist)
-			->groupby('Id')
 			->get();
 		}
 		else
@@ -3721,7 +3339,7 @@ class TimesheetController extends Controller {
 			->leftJoin('users as pic','pic.Id','=','tasks.UserId')
 			->leftJoin(DB::raw('(SELECT Max(Id) as maxid, TaskId From taskstatuses GROUP BY TaskId) as max'),'max.TaskId','=','tasks.Id')
 			->leftJoin('taskstatuses','taskstatuses.Id','=',DB::raw('max.maxid'))
-			->select('tasks.Id','tasks.Current_Task','tasks.Previous_Task','tasks.Previous_Task_Date','tasks.Project_Code','tasks.Site_Name','tasks.Threshold','pic.Name as pic','tasks.assign_date','tasks.target_date','tasks.complete_date','users.Name','taskstatuses.Status','taskstatuses.Comment')
+			->select('tasks.Id','tasks.Current_Task','tasks.Previous_Task','tasks.Previous_Task_Date','tasks.Site_Name','tasks.Threshold','pic.Name as pic','tasks.assign_date','tasks.target_date','tasks.complete_date','users.Name','taskstatuses.Status','taskstatuses.Comment')
 			->whereRaw('str_to_date(tasks.created_at,"%Y-%m-%d") Between str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date("'.$end.'","%d-%M-%Y")')
 			->where('type','<>','Todo')
 			->where('taskstatuses.Status','=','Rejected')
@@ -3772,7 +3390,7 @@ class TimesheetController extends Controller {
 			->leftJoin('users as pic','pic.Id','=','tasks.UserId')
 			->leftJoin(DB::raw('(SELECT Max(Id) as maxid, TaskId From taskstatuses GROUP BY TaskId) as max'),'max.TaskId','=','tasks.Id')
 			->leftJoin('taskstatuses','taskstatuses.Id','=',DB::raw('max.maxid'))
-			->select('tasks.Id','tasks.Current_Task','tasks.Previous_Task','tasks.Previous_Task_Date','tasks.Project_Code','tasks.Site_Name','tasks.Threshold','pic.Name as pic','tasks.assign_date',DB::raw('concat(tasks.target_date," ",tasks.target_time) as target_date'),DB::raw('concat(tasks.complete_date," ",tasks.complete_time) as complete_date'),'users.Name','taskstatuses.Status')
+			->select('tasks.Id','tasks.Current_Task','tasks.Previous_Task','tasks.Previous_Task_Date','tasks.Site_Name','tasks.Threshold','pic.Name as pic','tasks.assign_date',DB::raw('concat(tasks.target_date," ",tasks.target_time) as target_date'),DB::raw('concat(tasks.complete_date," ",tasks.complete_time) as complete_date'),'users.Name','taskstatuses.Status')
 			->whereRaw('str_to_date(tasks.created_at,"%Y-%m-%d") Between str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date("'.$end.'","%d-%M-%Y")')
 			->whereRaw('taskstatuses.Id In (select max(taskstatuses.Id) from taskstatuses left join tasks on tasks.Id=taskstatuses.TaskId group by tasks.Id)')
 			->where('type','<>','Todo');
@@ -3784,7 +3402,7 @@ class TimesheetController extends Controller {
 			->leftJoin('users as pic','pic.Id','=','tasks.UserId')
 			->leftJoin(DB::raw('(SELECT Max(Id) as maxid, TaskId From taskstatuses GROUP BY TaskId) as max'),'max.TaskId','=','tasks.Id')
 			->leftJoin('taskstatuses','taskstatuses.Id','=',DB::raw('max.maxid'))
-			->select('tasks.Id','tasks.Current_Task','tasks.Previous_Task','tasks.Previous_Task_Date','tasks.Project_Code','tasks.Site_Name','tasks.Threshold','pic.Name as pic','tasks.assign_date',DB::raw('concat(tasks.target_date," ",tasks.target_time) as target_date'),DB::raw('concat(tasks.complete_date," ",tasks.complete_time) as complete_date'),'users.Name','taskstatuses.Status')
+			->select('tasks.Id','tasks.Current_Task','tasks.Previous_Task','tasks.Previous_Task_Date','tasks.Site_Name','tasks.Threshold','pic.Name as pic','tasks.assign_date',DB::raw('concat(tasks.target_date," ",tasks.target_time) as target_date'),DB::raw('concat(tasks.complete_date," ",tasks.complete_time) as complete_date'),'users.Name','taskstatuses.Status')
 			->whereRaw('str_to_date(tasks.created_at,"%Y-%m-%d") Between str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date("'.$end.'","%d-%M-%Y")')
 			// ->whereRaw('taskstatuses.Id In (select max(taskstatuses.Id) from taskstatuses left join tasks on tasks.Id=taskstatuses.TaskId group by tasks.Id)')
 			->where('type','<>','Todo');
@@ -3796,7 +3414,7 @@ class TimesheetController extends Controller {
 			->leftJoin('users as pic','pic.Id','=','tasks.UserId')
 			->leftJoin(DB::raw('(SELECT Max(Id) as maxid, TaskId From taskstatuses GROUP BY TaskId) as max'),'max.TaskId','=','tasks.Id')
 			->leftJoin('taskstatuses','taskstatuses.Id','=',DB::raw('max.maxid'))
-			->select('tasks.Id','tasks.Current_Task','tasks.Previous_Task','tasks.Previous_Task_Date','tasks.Project_Code','tasks.Site_Name','tasks.Threshold','pic.Name as pic','tasks.assign_date',DB::raw('concat(tasks.target_date," ",tasks.target_time) as target_date'),DB::raw('concat(tasks.complete_date," ",tasks.complete_time) as complete_date'),'users.Name','taskstatuses.Status')
+			->select('tasks.Id','tasks.Current_Task','tasks.Previous_Task','tasks.Previous_Task_Date','tasks.Site_Name','tasks.Threshold','pic.Name as pic','tasks.assign_date',DB::raw('concat(tasks.target_date," ",tasks.target_time) as target_date'),DB::raw('concat(tasks.complete_date," ",tasks.complete_time) as complete_date'),'users.Name','taskstatuses.Status')
 			->whereRaw('str_to_date(tasks.created_at,"%Y-%m-%d") Between str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date("'.$end.'","%d-%M-%Y")')
 			// ->whereRaw('taskstatuses.Id In (select max(taskstatuses.Id) from taskstatuses left join tasks on tasks.Id=taskstatuses.TaskId group by tasks.Id)')
 			->where('type','<>','Todo');
@@ -3808,8 +3426,8 @@ class TimesheetController extends Controller {
 			->leftJoin('users as pic','pic.Id','=','tasks.UserId')
 			->leftJoin(DB::raw('(SELECT Max(Id) as maxid, TaskId From taskstatuses GROUP BY TaskId) as max'),'max.TaskId','=','tasks.Id')
 			->leftJoin('taskstatuses','taskstatuses.Id','=',DB::raw('max.maxid'))
-			->select('tasks.Id','tasks.Current_Task','tasks.Previous_Task','tasks.Previous_Task_Date','tasks.Project_Code','tasks.Site_Name','tasks.Threshold','pic.Name as pic','tasks.assign_date',DB::raw('concat(tasks.target_date," ",tasks.target_time) as target_date'),DB::raw('concat(tasks.complete_date," ",tasks.complete_time) as complete_date'),'users.Name','taskstatuses.Status')
-			->whereRaw('taskstatuses.Id In (select max(taskstatuses.Id) from taskstatuses left join tasks on tasks.Id=taskstatuses.TaskId group by concat(Project_Code,Current_Task))')
+			->select('tasks.Id','tasks.Current_Task','tasks.Previous_Task','tasks.Previous_Task_Date','tasks.Site_Name','tasks.Threshold','pic.Name as pic','tasks.assign_date',DB::raw('concat(tasks.target_date," ",tasks.target_time) as target_date'),DB::raw('concat(tasks.complete_date," ",tasks.complete_time) as complete_date'),'users.Name','taskstatuses.Status')
+			->whereRaw('taskstatuses.Id In (select max(taskstatuses.Id) from taskstatuses left join tasks on tasks.Id=taskstatuses.TaskId group by Current_Task)')
 			->where('type','<>','Todo');
 		}
 		if($userid != NULL && $userid != "All")
@@ -3944,34 +3562,19 @@ class TimesheetController extends Controller {
 		
 		if($userid == null){
 
-			$hod = DB::table('projects')
-			->select('Project_Name')
-			->where('projects.Project_Manager', '=', $me->UserId)
-			->get();
-			$arrdepartment=array();
-
-			if($hod && !$me->Admin)
+			if(!$me->Admin)
 			{
 
-
-				foreach ($hod as $department) {
-					# code...
-					array_push($arrdepartment,$department->Project_Name);
-				}
-
 				$timesheetdetail = DB::table('timesheets')
-				->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Department','users.Category','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available', DB::raw('(TimeDIFF(STR_TO_DATE(Time_Out,"%h:%i %p"),STR_TO_DATE(Time_In,"%h:%i %p"))) as timediff'),'timesheets.total_distance','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
+				->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available', DB::raw('(TimeDIFF(STR_TO_DATE(Time_Out,"%h:%i %p"),STR_TO_DATE(Time_In,"%h:%i %p"))) as timediff'),'timesheets.total_distance','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
 				 'timesheets.Time_In','timesheets.Time_Out','timesheets.Remarks','timesheets.Deduction','files.Web_Path')
 				->leftJoin('users', 'timesheets.UserId', '=', DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(timesheets.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")'))
-				->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 				->leftJoin('leaves','leaves.UserId','=',DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y") Between str_to_date(leaves.Start_Date,"%d-%M-%Y") and str_to_date(leaves.End_Date,"%d-%M-%Y")'))
 				->leftJoin( DB::raw('(select Max(Id) as maxid,LeaveId from leavestatuses Group By LeaveId) as maxleave'), 'maxleave.LeaveId', '=', 'leaves.Id')
 				->leftJoin('leavestatuses', 'leavestatuses.Id', '=', DB::raw('maxleave.`maxid`'))
 				->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as maxuser'), 'maxuser.TargetId', '=', 'users.Id')
 				->leftJoin('files', 'files.Id', '=', DB::raw('maxuser.`maxid` and files.`Type`="User"'))
 				->where('users.Name','<>','')
-				// ->whereRaw('str_to_date(users.Resignation_Date,"%d-%M-%Y") > str_to_date("'.$end.'","%d-%M-%Y")')
-				->whereIn('users.Department',$arrdepartment)
 				->whereNotIn('users.Id',array(855, 883,902))
 				->orderBy('users.Name','asc');
 
@@ -3985,17 +3588,15 @@ class TimesheetController extends Controller {
 			else {
 				# code...
 				$timesheetdetail = DB::table('timesheets')
-				->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Department','users.Category','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available',DB::raw('(TimeDIFF(STR_TO_DATE(Time_Out,"%h:%i %p"),STR_TO_DATE(Time_In,"%h:%i %p"))) as timediff'),'timesheets.total_distance','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
+				->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available',DB::raw('(TimeDIFF(STR_TO_DATE(Time_Out,"%h:%i %p"),STR_TO_DATE(Time_In,"%h:%i %p"))) as timediff'),'timesheets.total_distance','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
 				 'timesheets.Time_In','timesheets.Time_Out','timesheets.Remarks','timesheets.Deduction','files.Web_Path')
 				->leftJoin('users', 'timesheets.UserId', '=', DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(timesheets.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")'))
-				->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 				->leftJoin('leaves','leaves.UserId','=',DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y") Between str_to_date(leaves.Start_Date,"%d-%M-%Y") and str_to_date(leaves.End_Date,"%d-%M-%Y")'))
 				->leftJoin( DB::raw('(select Max(Id) as maxid,LeaveId from leavestatuses Group By LeaveId) as maxleave'), 'maxleave.LeaveId', '=', 'leaves.Id')
 				->leftJoin('leavestatuses', 'leavestatuses.Id', '=', DB::raw('maxleave.`maxid`'))
 				->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as maxuser'), 'maxuser.TargetId', '=', 'users.Id')
 				->leftJoin('files', 'files.Id', '=', DB::raw('maxuser.`maxid` and files.`Type`="User"'))
 				->where('users.Name','<>','')
-				// ->whereRaw('str_to_date(users.Resignation_Date,"%d-%M-%Y") > str_to_date("'.$end.'","%d-%M-%Y")')
 				->whereNotIn('users.Id',array(855, 883,902))
 				->orderBy('users.Name','asc');
 
@@ -4012,26 +3613,13 @@ class TimesheetController extends Controller {
 			->get();
 		}
 		else{
-			$hod = DB::table('projects')
-			->select('Project_Name')
-			->where('projects.Project_Manager', '=', $me->UserId)
-			->get();
-			$arrdepartment=array();
 
-			if($hod && !$me->Admin)
+			if(!$me->Admin)
 			{
-
-
-				foreach ($hod as $department) {
-					# code...
-					array_push($arrdepartment,$department->Project_Name);
-				}
-
 				$timesheetdetail = DB::table('timesheets')
-				->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Department','users.Category','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available', DB::raw('(TimeDIFF(STR_TO_DATE(Time_Out,"%h:%i %p"),STR_TO_DATE(Time_In,"%h:%i %p"))) as timediff'),'timesheets.total_distance','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
+				->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available', DB::raw('(TimeDIFF(STR_TO_DATE(Time_Out,"%h:%i %p"),STR_TO_DATE(Time_In,"%h:%i %p"))) as timediff'),'timesheets.total_distance','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
 				 'timesheets.Time_In','timesheets.Time_Out','timesheets.Remarks','timesheets.Deduction','files.Web_Path')
 				->leftJoin('users', 'timesheets.UserId', '=', DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(timesheets.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")'))
-				->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 				->leftJoin('leaves','leaves.UserId','=',DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y") Between str_to_date(leaves.Start_Date,"%d-%M-%Y") and str_to_date(leaves.End_Date,"%d-%M-%Y")'))
 				->leftJoin( DB::raw('(select Max(Id) as maxid,LeaveId from leavestatuses Group By LeaveId) as maxleave'), 'maxleave.LeaveId', '=', 'leaves.Id')
 				->leftJoin('leavestatuses', 'leavestatuses.Id', '=', DB::raw('maxleave.`maxid`'))
@@ -4039,8 +3627,6 @@ class TimesheetController extends Controller {
 				->leftJoin('files', 'files.Id', '=', DB::raw('maxuser.`maxid` and files.`Type`="User"'))
 				->where('users.Name','<>','')
 				->whereRaw('timesheets.UserId = "'.$userid.'"')
-				// ->whereRaw('str_to_date(users.Resignation_Date,"%d-%M-%Y") > str_to_date("'.$end.'","%d-%M-%Y")')
-				->whereIn('users.Department',$arrdepartment)
 				->whereNotIn('users.Id',array(855, 883,902))
 				->orderBy('users.Name','asc');
 
@@ -4054,10 +3640,9 @@ class TimesheetController extends Controller {
 			else {
 				# code...
 				$timesheetdetail = DB::table('timesheets')
-				->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Department','users.Category','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available',DB::raw('(TimeDIFF(STR_TO_DATE(Time_Out,"%h:%i %p"),STR_TO_DATE(Time_In,"%h:%i %p"))) as timediff'),'timesheets.total_distance','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
+				->select('timesheets.Id','timesheets.Id as TimesheetId','users.StaffId','users.Name','users.Resignation_Date','users.Company','users.Position','timesheets.Latitude_In','timesheets.Longitude_In','timesheets.Latitude_Out','timesheets.Longitude_Out','timesheets.Date',DB::raw('"" as Day'),'timesheets.Site_Name','timesheets.Code','users.Available',DB::raw('(TimeDIFF(STR_TO_DATE(Time_Out,"%h:%i %p"),STR_TO_DATE(Time_In,"%h:%i %p"))) as timediff'),'timesheets.total_distance','timesheets.Check_In_Type','leaves.Leave_Type','leavestatuses.Leave_Status',
 				 'timesheets.Time_In','timesheets.Time_Out','timesheets.Remarks','timesheets.Deduction','files.Web_Path')
 				->leftJoin('users', 'timesheets.UserId', '=', DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(timesheets.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")'))
-				->leftJoin('projects', 'timesheets.ProjectId', '=', 'projects.Id')
 				->leftJoin('leaves','leaves.UserId','=',DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y") Between str_to_date(leaves.Start_Date,"%d-%M-%Y") and str_to_date(leaves.End_Date,"%d-%M-%Y")'))
 				->leftJoin( DB::raw('(select Max(Id) as maxid,LeaveId from leavestatuses Group By LeaveId) as maxleave'), 'maxleave.LeaveId', '=', 'leaves.Id')
 				->leftJoin('leavestatuses', 'leavestatuses.Id', '=', DB::raw('maxleave.`maxid`'))
@@ -4065,7 +3650,6 @@ class TimesheetController extends Controller {
 				->leftJoin('files', 'files.Id', '=', DB::raw('maxuser.`maxid` and files.`Type`="User"'))
 				->where('users.Name','<>','')
 				->whereRaw('timesheets.UserId = "'.$userid.'"')
-				// ->whereRaw('str_to_date(users.Resignation_Date,"%d-%M-%Y") > str_to_date("'.$end.'","%d-%M-%Y")')
 				->whereNotIn('users.Id',array(855, 883,902))
 				->orderBy('users.Name','asc');
 
@@ -4085,6 +3669,6 @@ class TimesheetController extends Controller {
 		->select('Id','Name')
 		->get();
 
-		return view('staffnotimein', ['me' => $me, 'start'=>$start,'end'=>$end, 'userid'=>$userid , 'user'=>$user ,'timesheetdetail' => $timesheetdetail,'codes'=>$codes, 'includeResigned' => $includeResigned, 'arrdepartment' => $arrdepartment]);
+		return view('staffnotimein', ['me' => $me, 'start'=>$start,'end'=>$end, 'userid'=>$userid , 'user'=>$user ,'timesheetdetail' => $timesheetdetail,'codes'=>$codes, 'includeResigned' => $includeResigned]);
 	}
 }

@@ -199,7 +199,6 @@
                                 <h4>Trip Details</h4>
                                 <div class="form-group">
                                     <label class="control-label">DO No: </label> {{$detail->DO_No}}<br>
-                                    <label class="control-label">Project: </label> {{$detail->Project_Name}}<br>
                                     <label class="control-label">Location: </label> {{$detail->Location_Name}} ({{$detail->Latitude}} , {{$detail->Longitude}})<br>
                                     <label class="control-label">Delivery Date: </label> {{$detail->delivery_date}} , {{$detail->delivery_time}}<br>
                                     <label class="control-label">Requestor Name: </label> {{$detail->requestorName}}<br>
@@ -333,7 +332,7 @@
 
 <footer class="main-footer">
 	<div class="pull-right hidden-xs">
-		<b>Version</b> 2.0.1
+		<b>Version</b> 1.0.0
 	</div>
 	<strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
 </footer>

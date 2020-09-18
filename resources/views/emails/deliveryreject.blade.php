@@ -52,12 +52,6 @@
                                                             <td style="width:10%;text-align:center;">:</td>
                                                             <td style="width:45%;text-align:left;">{{$deliverydetail->Site_Name}}</td>
                                                         </tr>
-
-                                                        <tr valign="top">
-                                                            <td style="width:45%;text-align:right;;">Project Name</td>
-                                                            <td style="width:10%;text-align:center;">:</td>
-                                                            <td style="width:45%;text-align:left;">{{$deliverydetail->Project_Name}}</td>
-                                                        </tr>
                                                         <tr valign="top">
                                                             <td style="width:45%;text-align:right;;">Reason</td>
                                                             <td style="width:10%;text-align:center;">:</td>

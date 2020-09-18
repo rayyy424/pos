@@ -119,9 +119,9 @@
                       </h4>
                     </section>
                 @if($date)
-                <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}">
+                <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}">
                 @else
-                <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}">
+                <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}">
                 @endif
                   <div class="col-md-2 col-sm-6 col-xs-12">
                     <div class="info-box">
@@ -138,9 +138,9 @@
                 </a>
 
                 @if($date)
-                <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}">
+                <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}">
                 @else
-                <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}">
+                <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}">
                 @endif                  <div class="col-md-2 col-sm-6 col-xs-12">
                     <div class="info-box">
                       <span class="info-box-icon bg-green"><i class="fa fa-usd"></i></span>
@@ -155,9 +155,9 @@
                   </div>
                 </a>
                 @if($date)
-                <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}">
+                <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}">
                 @else
-                <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}">
+                <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}">
                 @endif
                   <div class="col-md-2 col-sm-6 col-xs-12">
                     <div class="info-box">
@@ -186,9 +186,9 @@
                </h4>
              </section>
              @if($date)
-             <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}">
+             <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}">
              @else
-             <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}">
+             <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}">
              @endif
              <div class="col-md-2 col-sm-6 col-xs-12">
                <div class="info-box">
@@ -204,9 +204,9 @@
              </div>
             </a>
             @if($date)
-            <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}">
+            <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}">
             @else
-            <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}">
+            <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}">
             @endif
              <div class="col-md-2 col-sm-6 col-xs-12">
                <div class="info-box">
@@ -222,9 +222,9 @@
              </div>
             </a>
             @if($date)
-            <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}">
+            <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}">
             @else
-            <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}">
+            <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}">
             @endif
              <div class="col-md-2 col-sm-6 col-xs-12">
                <div class="info-box">
@@ -240,9 +240,9 @@
              </div>
             </a>
             @if($date)
-            <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}">
+            <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}">
             @else
-            <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}">
+            <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}">
             @endif
              <div class="col-md-2 col-sm-6 col-xs-12">
                <div class="info-box">
@@ -258,9 +258,9 @@
              </div>
             </a>
             @if($date)
-            <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}">
+            <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}">
             @else
-            <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}">
+            <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}">
             @endif
              <div class="col-md-2 col-sm-6 col-xs-12">
                <div class="info-box">
@@ -276,9 +276,9 @@
              </div>
             </a>
             @if($date)
-            <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}">
+            <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}">
             @else
-            <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}">
+            <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}">
             @endif
              <div class="col-md-2 col-sm-6 col-xs-12">
                <div class="info-box">
@@ -307,9 +307,9 @@
           </h4>
         </section>
         @if($date)
-        <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}">
+        <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}">
         @else
-        <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}">
+        <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}">
         @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -325,9 +325,9 @@
         </div>
       </a>
       @if($date)
-      <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}&status=Completed">
+      <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}&status=Completed">
       @else
-      <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&status=Completed">
+      <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&status=Completed">
       @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -343,9 +343,9 @@
         </div>
       </a>
       @if($date)
-      <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}&status=WIP">
+      <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}&status=WIP">
       @else
-      <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&status=WIP">
+      <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&status=WIP">
       @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -361,9 +361,9 @@
         </div>
       </a>
       @if($date)
-      <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}&status=Not Yet Start">
+      <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}&status=Not Yet Start">
       @else
-      <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&status=Not Yet Start">
+      <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&status=Not Yet Start">
       @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -379,9 +379,9 @@
         </div>
       </a>
       @if($date)
-      <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}&status=KIV">
+      <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}&status=KIV">
       @else
-      <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&status=KIV">
+      <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&status=KIV">
       @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -397,9 +397,9 @@
         </div>
       </a>
       @if($date)
-      <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}&status=Cancelled">
+      <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}&status=Cancelled">
       @else
-      <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&status=Cancelled">
+      <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&status=Cancelled">
       @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -428,9 +428,9 @@
           </h4>
         </section>
         @if($date)
-        <a target="_blank"  href="{{url('tracker/piechart')}}?region={{$t->Region}}&start={{$start}}&end={{$end}}&project={{$projectid}}">
+        <a target="_blank"  href="{{url('tracker/piechart')}}?region={{$t->Region}}&start={{$start}}&end={{$end}}">
         @else
-        <a target="_blank" href="{{url('tracker/piechart')}}?region={{$t->Region}}&project={{$projectid}}">
+        <a target="_blank" href="{{url('tracker/piechart')}}?region={{$t->Region}}">
         @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -447,9 +447,9 @@
         </div>
       </a>
       @if($date)
-      <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}">
+      <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}">
       @else
-      <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}">
+      <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}">
       @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -465,9 +465,9 @@
         </div>
       </a>
       @if($date)
-      <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}">
+      <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}">
       @else
-      <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}">
+      <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}">
       @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -483,9 +483,9 @@
         </div>
       </a>
       @if($date)
-      <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}">
+      <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}">
       @else
-      <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}">
+      <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}">
       @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -501,7 +501,7 @@
         </div>
       </a>
         <?php $profit=$t->Total_Invoiced_Amount-$t->Total_PO-$t->Total_Manday-$t->Total_Incentive-$t->Total_EWallet; ?>
-      <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}">
+      <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}">
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
             <span class="info-box-icon bg-green"><i class="fa fa-usd"></i></span>
@@ -517,9 +517,9 @@
       </a>
         <?php $margin=$t->Total_Invoiced_Amount == 0 ? 0:$profit/$t->Total_Invoiced_Amount*100 ?>
         @if($date)
-        <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}&start={{$start}}&end={{$end}}">
+        <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}&start={{$start}}&end={{$end}}">
         @else
-        <a target="_blank" href="{{url('handsontable')}}/{{$projectid}}?region={{$t->Region}}">
+        <a target="_blank" href="{{url('handsontable')}}/?region={{$t->Region}}">
         @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -536,9 +536,9 @@
       </a>
         <div class="col-md-2 col-sm-6 col-xs-12">
             {{-- @if($date)
-            <a target="_blank" style="width:unset;color:aqua;" class="btn btn-sm btn-danger"  href="{{url('tracker/piechart')}}?region={{$t->Region}}&start={{$start}}&end={{$end}}&project={{$projectid}}">Region</a>
+            <a target="_blank" style="width:unset;color:aqua;" class="btn btn-sm btn-danger"  href="{{url('tracker/piechart')}}?region={{$t->Region}}&start={{$start}}&end={{$end}}">Region</a>
             @else
-            <a target="_blank" style="width:unset;color:aqua;" class="btn btn-sm btn-danger"  href="{{url('tracker/piechart')}}?region={{$t->Region}}&project={{$projectid}}">Region</a>
+            <a target="_blank" style="width:unset;color:aqua;" class="btn btn-sm btn-danger"  href="{{url('tracker/piechart')}}?region={{$t->Region}}">Region</a>
             @endif --}}
           {{-- <button style="width:unset;" class="btn btn-sm btn-primary">Project</button> --}}
           {{-- <a style="width:unset;color:aqua;" class="btn btn-sm btn-danger" href="{{url('tracker/piechart')}}?region={{$t->Region}}" target="_blank">Region</a> --}}
@@ -559,7 +559,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.
@@ -577,11 +577,7 @@
 function refresh()
 {
 
-  var project=$('#Project').val();
-
-
-
-  window.location.href ="{{ url("/dashboard") }}"+"/"+project;
+  window.location.href ="{{ url("/dashboard") }}";
 
 }
 

@@ -58,28 +58,12 @@ class AuthController extends Controller {
 
         $auth = JWTAuth::parseToken()->authenticate();
 
-        // $me = DB::table('users')
-        // ->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
-        // ->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="User"'))
-        // ->leftJoin('accesscontroltemplates', 'accesscontroltemplates.Id', '=', 'users.AccessControlTemplateId')
-        // ->select('users.Id as UserId','users.AccessControlTemplateId','users.StaffId','users.Name','users.Personal_Email','users.Contact_No_1','users.Contact_No_2','users.Permanent_Address','users.Current_Address','users.Home_Base','users.Password','users.User_Type','users.Nationality','users.DOB','users.NRIC','users.Passport_No','users.Gender','users.Marital_Status','users.SuperiorId','users.Company','users.Department','users.Position','users.Joining_Date','users.Resignation_Date','users.Emergency_Contact_Person','users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Address','users.Note','users.Active','users.Admin','users.Approved',
-        // 'users.First_Change','files.Web_Path',
-        // 'Admin','Create_User','Template_Name','Admin','Create_User','Read_User','Update_User','Delete_User','Engineer_Monitoring','Create_CV','Read_CV','Update_CV','Delete_CV','Create_Contractor_Vendor','Read_Contractor_Vendor','Update_Contractor_Vendor','Delete_Contractor_Vendor','Read_Org_Chart','Update_Org_Chart','Read_Leave','Show_Leave_To_Public','Read_Timesheet','Read_Claim','Project_Manager','Create_Project','Create_Project_Code',
-        // 'Access_Control','Approval_Control','Allowance_Control','Asset_Tracking','Option_Control','Holiday_Management','Notice_Board_Management')
-        // ->where('users.Id', '=',$auth -> Id)
-        // ->first();
-        //
-        // if ($me -> Web_Path=="")
-        // {
-        //    $me -> Web_Path = URL::to('/') ."/img/default-user.png" ;
-        // }
-
         $me = DB::table('users')
         ->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
         ->leftJoin('files', 'files.Id', '=', DB::raw('max.`maxid` and files.`Type`="User"'))
         ->leftJoin('accesscontroltemplates', 'accesscontroltemplates.Id', '=', 'users.AccessControlTemplateId')
         ->leftJoin('allowanceschemes', 'allowanceschemes.Id', '=', 'users.AllowanceSchemeId')
-        ->select('users.Id as UserId','users.AccessControlTemplateId','users.StaffId as Staff_ID','users.Name','users.Nick_Name','users.Company_Email','users.Personal_Email','users.Contact_No_1','users.Contact_No_2','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.Password','users.User_Type','users.Nationality','users.DOB','users.NRIC','users.Passport_No','users.Gender','users.Marital_Status','users.SuperiorId','users.Company','users.Department','users.Position','users.Joining_Date','users.Resignation_Date','users.Emergency_Contact_Person','users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Address','users.Note','users.Active','users.Admin','users.Approved','users.team_leader',
+        ->select('users.Id as UserId','users.AccessControlTemplateId','users.StaffId as Staff_ID','users.Name','users.Nick_Name','users.Company_Email','users.Personal_Email','users.Contact_No_1','users.Contact_No_2','users.Permanent_Address','users.Current_Address','users.Country_Base','users.Home_Base','users.Password','users.User_Type','users.Nationality','users.DOB','users.NRIC','users.Passport_No','users.Gender','users.Marital_Status','users.SuperiorId','users.Company','users.Department','users.Position','users.Joining_Date','users.Resignation_Date','users.Emergency_Contact_Person','users.Emergency_Contact_No','users.Emergency_Contact_Relationship','users.Emergency_Contact_Address','users.Note','users.Active','users.Admin','users.Approved',
         'users.First_Change','files.Web_Path','allowanceschemes.Scheme_Name',
         'Template_Name',
         'View_User_Profile',

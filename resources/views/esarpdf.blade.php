@@ -176,8 +176,6 @@ h4.pagetitle{
 
       <table class="main">
           <tr>
-              <td>Project Name :</td>
-              <td>{{$input["ProjectName"]}}</td>
               <td>Engineering Code :</td>
               <td>{{$input["EngineeringCode"]}}</td>
           </tr>
@@ -315,10 +313,10 @@ h4.pagetitle{
             <td>Supplier</td>
         </tr>
         <tr>
-            <td>Name: ABD ZAKI MAT ISA</td>
+            <td>Name: MUHAMMNAD ZAHIN BIN KAMAL</td>
         </tr>
         <tr>
-            <td>Title: Project Manager</td>
+            <td>Title: Director</td>
         </tr>
 
     </table>
@@ -335,7 +333,7 @@ h4.pagetitle{
               <td>________________________</td>
           </tr>
           <tr>
-              <td>HUAWEI TECHNOLOGIES (MALAYSIA) SDN BHD</td>
+              <td>Customer</td>
           </tr>
           <tr>
               <td>Name: </td>

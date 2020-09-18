@@ -362,28 +362,6 @@ margin-top : -16px;
 
         <div class="box box-primary">
 
-          <div class="col-md-3">
-
-             <div class="box-body">
-               <div class="form-group">
-
-                 <div class="form-group">
-                   <label>Project Name : </label>
-                  <select class="form-control select2" id="ProjectId" name="ProjectId" style="width: 30%;">
-                    <option value="0">-</option>
-                    <option value="All" <?php if($projectid=="All") echo "selected";?>>All</option>
-
-                    @foreach ($projects as $project)
-                       <option value="{{$project->Id}}" <?php if($project->Id==$projectid) echo "selected";?>>{{$project->Project_Name}}</option>
-                    @endforeach
-                  </select>
-                </div>
-
-               </div>
-
-           </div>
-       </div>
-
        <div class="col-md-2">
 
           <div class="box-body">
@@ -497,22 +475,6 @@ margin-top : -16px;
 
                      <div class="row">
 
-                       <div class="col-md-4">
-                           <label>Project Code : </label>
-
-                         <div class="form-group">
-                           <select class="form-control select2" id="Search_Project_Code" name="Search_Project_Code">
-                             <option></option>
-
-                             @foreach($projectcodes as $code)
-                                 <option value="{{$code->Project_Code}}">{{$code->Project_Code}} - {{$code->{'Site ID'} }} - {{$code->{'Site LRD'} }}</option>
-                             @endforeach
-
-                         </select>
-                         </div>
-
-                       </div>
-
                        <div class="col-md-3">
                        <label>PO No : </label>
 
@@ -599,7 +561,7 @@ margin-top : -16px;
   </div>
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -648,19 +610,6 @@ margin-top : -16px;
        var availableTags = [];
        var sitename = [];
        var siteid = [];
-
-
-       @foreach ($invoicelisting as $item)
-
-         @if(array_key_exists("Project_Code",$item))
-
-           siteid.push("{{$item["Project_Code"]}}");
-
-         @endif
-
-       @endforeach
-
-
 
        $( ".fieldname" ).autocomplete({
          source: availableTags,
@@ -832,14 +781,6 @@ $('body').on('mousedown', '.changeType', function() {
       },
       {
         data: 'TrackerId'
-      },
-      {
-        data: 'Project_Code',
-        readOnly: true,
-      },
-      {
-        data: 'Project',
-        readOnly: true,
       },
       {
         data: 'Customer',
@@ -1255,12 +1196,12 @@ $('body').on('mousedown', '.changeType', function() {
       if(data[0]>0)
       {
         // document.write(Id);
-        value="<a href='{{ URL::to('/tracker/filecategory2')}}/{{$projectid}}"+"/"+ data[Id] +"' target='_blank'>" + data[0] + " File(s)</a>"; //FINAL
+        value="<a href='{{ URL::to('/tracker/filecategory2')}}/"+ data[Id] +"' target='_blank'>" + data[0] + " File(s)</a>"; //FINAL
         value+=" | <a href='#' onclick='openupdatemodal("+JSON.stringify(data)+","+JSON.stringify(header)+");'>";
 
       }
       else {
-        value="<a href='{{ URL::to('/tracker/filecategory2')}}/{{$projectid}}"+"/"+ data[Id] +"' target='_blank'>0 File(s)</a>"; //FINAL
+        value="<a href='{{ URL::to('/tracker/filecategory2')}}/"+ data[Id] +"' target='_blank'>0 File(s)</a>"; //FINAL
         value+=" | <a href='#' onclick='openupdatemodal("+JSON.stringify(data)+","+JSON.stringify(header)+");'>";
       }
 
@@ -1285,59 +1226,16 @@ $('body').on('mousedown', '.changeType', function() {
   function refresh()
   {
     var year=$('#Year').val();
-    var project=$('#ProjectId').val();
 
-    window.location.href ="{{ url("/invoicelisting") }}/"+year+"/"+project;
-
-  }
-
-  function newrecord()
-  {
-
-    newprojectcode=$("#newprojectcode").val();
-
-      $.ajaxSetup({
-         headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') }
-      });
-
-      $.ajax({
-                  url: "{{ url('/invoicelisting/newrecord') }}",
-                  method: "POST",
-                  data: {
-                    TrackerId:newprojectcode
-                  },
-                  success: function(response){
-
-                    if(response>0)
-                    {
-
-                      window.location.reload();
-
-                    }
-                    else {
-
-                      var message ="Failed to add new record!";
-
-                      $("#warning-alert ul").html(message);
-                      $("#warning-alert").modal("show");
-
-                    }
-
-                  }
-      });
-
+    window.location.href ="{{ url("/invoicelisting") }}/"+year;
 
   }
 
   function searchrecord() {
 
-    var projectcode = document.getElementById("Search_Project_Code").value;
     var po = document.getElementById("Search_PO_No").value;
     var site = document.getElementById("Search_Site").value;
     // var updatetype=document.getElementById("Update_Type2").value;
-
-    if("{{$projectid}}" && "{{$projectid}}"!="All")
-    {
 
       $.ajaxSetup({
          headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') }
@@ -1349,9 +1247,7 @@ $('body').on('mousedown', '.changeType', function() {
             url: "{{ url('/tracker/searchrecord') }}",
             method: "POST",
             data: {PO:po,
-            Project_Code:projectcode,
             Site:site,
-            ProjectId:"{{$projectid}}",
             Type:"Invoice" },
 
             success: function(response){
@@ -1428,15 +1324,6 @@ $('body').on('mousedown', '.changeType', function() {
 
           }
       });
-
-    }
-    else {
-
-      var errormessage="No Project selected!";
-      $("#error-alert ul").html(errormessage);
-      $("#error-alert").modal('show');
-
-    }
 
   }
 

@@ -79,7 +79,6 @@
 
               <h4 class="box-title"><b>Chart View Name : {{$chartview->Chart_View_Name}}<b></h4>
               <h5 class="box-title"><b>Chart View Type : {{$chartview->Chart_View_Type}}<b></h5>
-              <h5 class="box-title"><b>Project Name : {{$chartview->Project_Name}}<b></h5>
 
             </div>
 
@@ -96,7 +95,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

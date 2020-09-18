@@ -2162,9 +2162,9 @@
                   <div class="">
 
                       <div class="">
-                        <!-- <button type="button" class="btn btn-default btn-small" data-toggle="modal" data-target="#UpdateProfile">Update Profile</button>
-                        <button type="button" class="btn btn-default btn-small" data-toggle="modal" data-target="#UpdateProfilePicture">Update Profile Picture</button> -->
-                        {{-- <button type="button" class="btn btn-success btn-small" data-toggle="modal" data-target="#ChangePassword">Change Password</button> --}}
+                        <!-- <button type="button" class="btn btn-default btn-small" data-toggle="modal" data-target="#UpdateProfile">Update Profile</button> -->
+                        <!-- <button type="button" class="btn btn-default btn-small" data-toggle="modal" data-target="#UpdateProfilePicture">Update Profile Picture</button> -->
+                        <button type="button" class="btn btn-success btn-small" data-toggle="modal" data-target="#ChangePassword">Change Password</button>
                         <!-- <a href="{{ url('/export1') }}/{{$UserId}}" target="_blank"><button type="button" class="btn btn-success btn-lg" >Export CV</button></a> -->
 
                         <!-- <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#ExportPDF">Export CV</button> -->
@@ -2447,48 +2447,6 @@
                                           <option <?php if($user->Company == $option->Option) echo ' selected="selected" '; ?>>{{$option->Option}}</option>
 
                                         @endif
-                                      @endforeach
-                                    </select>
-
-                                  </div>
-
-                                  <div class="col-lg-6">
-                                    <label>Department : </label>
-                                  </div>
-
-                                  <div class="col-lg-6">
-                                    @if(str_contains($changes, 'Department'))
-                                      <select class="changed form-control select" id="Department" name="Department" style="width: 100%;" disabled>
-                                    @else
-                                      <select class="form-control select2" id="Department" name="Department" style="width: 100%;" disabled>
-                                    @endif
-
-                                      <option></option>
-                                      @foreach ($projects as $project)
-
-                                          <option <?php if($user->Department == $project->Project_Name) echo ' selected="selected" '; ?>>{{$project->Project_Name}}</option>
-
-                                      @endforeach
-                                    </select>
-
-                                  </div>
-
-                                  <div class="col-lg-6">
-                                    <label>Category : </label>
-                                  </div>
-
-                                  <div class="col-lg-6">
-                                    @if(str_contains($changes, 'Category'))
-                                      <select class="changed form-control select" id="Category" name="Category" style="width: 100%;" disabled>
-                                    @else
-                                      <select class="form-control select2" id="Category" name="Category" style="width: 100%;" disabled>
-                                    @endif
-
-                                      <option></option>
-                                      @foreach ($options as $opt)
-                                          @if ($opt->Field=="Category")
-                                            <option <?php if($user->Category == $opt->Option) echo ' selected="selected" '; ?>>{{$opt->Option}}</option>
-                                          @endif
                                       @endforeach
                                     </select>
 
@@ -3332,23 +3290,6 @@
                                       @endif
                                     @endforeach
                                   </select>
-                                </div>
-
-                                <div class="col-lg-6">
-                                  <label>Department : </label>
-                                </div>
-
-                                <div class="col-lg-6">
-                                  <select class="form-control select2" id="Department1" name="Department1" style="width: 100%;">
-
-                                    <option></option>
-                                    @foreach ($projects as $project)
-
-                                        <option <?php if($user->Department == $project->Project_Name) echo ' selected="selected" '; ?>>{{$project->Project_Name}}</option>
-
-                                    @endforeach
-                                  </select>
-
                                 </div>
 
                                 <div class="col-lg-6">
@@ -4363,7 +4304,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -4462,11 +4403,11 @@
                         var message="Password Changed!";
                         $('#ChangePassword').modal('hide')
                         $("#update-alert ul").html(message);
-                        $("#update-alert").show();
+                        $("#update-alert").modal('show');
 
-                        setTimeout(function() {
-                          $("#update-alert").fadeOut();
-                        }, 6000);
+                        // setTimeout(function() {
+                        //   $("#update-alert").fadeOut();
+                        // }, 6000);
                       }
                       else {
                         $("#exist-alert").show();
@@ -4530,8 +4471,6 @@
       nric=$('[name="NRIC"]').val();
       passportno=$('[name="Passport_No"]').val();
       unionno=$('[name="Union_No"]').val();
-      department=$('[name="Department"]').val();
-      category=$('[name="Category"]').val();
       company=$('[name="Company"]').val();
       position=$('[name="Position"]').val();
       // grade=$('[name="Grade"]').val();
@@ -4572,8 +4511,6 @@
                     NRIC:nric,
                     Passport_No:passportno,
                     Union_No:unionno,
-                    Department:department,
-                    Category:category,
                     Company:company,
                     Position:position,
                     Emergency_Contact_Person:emergencycontactperson,

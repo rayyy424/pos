@@ -142,17 +142,6 @@
               <br>
               <div class="row">
 
-                  <div class="col-md-3">
-                    <label>Project Name : </label>
-                   <select class="form-control select2" id="ProjectId" name="ProjectId" style="width: 100%;">
-                     <option></option>
-
-                     @foreach ($projects as $project)
-                        <option value="{{$project->Id}}" <?php if($project->Id==$projectid) echo "selected";?>>{{$project->Project_Name}}</option>
-                     @endforeach
-                   </select>
-                 </div>
-
                  <div class="col-md-3">
                        <label>Template Name : </label>
                       <select class="form-control select2" id="TemplateId" name="TemplateId" style="width: 100%;">
@@ -245,7 +234,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -266,21 +255,11 @@
 
   });
 
-  $('#ProjectId').on('change', function() {
-
-    var d=$('#ProjectId').val();
-    var t=$('#TemplateId').val();
-
-    window.location.href ="{{ url("/documenttypeaccesscontrol") }}/"+t+"/"+d;
-
-  });
-
   $('#TemplateId').on('change', function() {
 
-    var d=$('#ProjectId').val();
     var t=$('#TemplateId').val();
 
-    window.location.href ="{{ url("/documenttypeaccesscontrol") }}/"+t+"/"+d;
+    window.location.href ="{{ url("/documenttypeaccesscontrol") }}/"+t;
 
   });
 

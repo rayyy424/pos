@@ -81,11 +81,11 @@
 			columns: [
 				{ data: null,"render":"", title:"No"
         },
-				{ data:"gensetinventory.Id",title:'Id'
+				{ data:"speedfreakinventory.Id",title:'Id'
         },
-				{ data:"gensetinventory.name",title:'Item Name'},
+				{ data:"speedfreakinventory.name",title:'Item Name'},
 				{ data:"history.qty",title:'Prepared Qty'},
-				{ data:"history.gensetinventoryId",title:"history.gensetinventoryId"}
+				{ data:"history.speedfreakInventoryId",title:"history.speedfreakInventoryId"}
 			],
 			autoFill: {
 				editor:  editor,
@@ -98,7 +98,7 @@
 
 		$('#inventorytable').on( 'click', 'tr', function () {
 		
-			// userid = oTable.api().row( this ).data().gensetinventory.Id;
+			// userid = oTable.api().row( this ).data().speedfreakinventory.Id;
 		});
 
 		oTable.api().on( 'order.dt search.dt', function () {
@@ -142,7 +142,7 @@
 		<h1>Requisition Form</h1>
 		<ol class="breadcrumb">
 	        <li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li>
-	        <li>GENSET Management</li>
+	        <li>SPEED FREAK Management</li>
 	        <li class="active">Requisition Form</li>
 	    </ol>
     </section>
@@ -303,7 +303,7 @@
 </div>
 <footer class="main-footer">
 	<div class="pull-right hidden-xs">
-		<b>Version</b> 2.0.1
+		<b>Version</b> 1.0.0
 	</div>
 	<strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
 </footer>

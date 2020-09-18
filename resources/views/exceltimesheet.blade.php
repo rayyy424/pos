@@ -6,7 +6,6 @@
     <table border="0" style="width:100%; font-size:12px;padding:10px;padding-left:30px;">
         <tr><td><b>Staff ID</b></td><td>{{$user->StaffId}}</td></tr>
         <tr><td><b>Name</b></td><td>{{$user->Name}}</td></tr>
-        <tr><td><b>Department</b></td><td>{{$user->Department}}</td></tr>
         <tr><td><b>Position</b></td><td>{{$user->Position}}</td></tr>
         <tr><td><b>Nationality</b></td><td>{{$user->Nationality}}</td></tr>
         <tr><td><b>Home Base</b></td><td>{{$user->Home_Base}}</td></tr>

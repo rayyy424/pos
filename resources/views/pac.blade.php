@@ -207,17 +207,6 @@
             </tr>
 
             <tr>
-                <td>Project Code:</td>
-                <td>
-                  <input type="text" name="ProjectCode" class="form-control" value="{{$podetail->ProjectCode}}" id="">
-                </td>
-                <td>Project Name :</td>
-                <td>
-                  <input type="text" name="ProjectName"  class="form-control" value="{{$podetail->Project}}" id="">
-                </td>
-            </tr>
-
-            <tr>
                 <td>Payment Terms:</td>
                 <td>
                   <input type="text" name="PaymentTerms" class="form-control" value="" id="" width="100">
@@ -358,7 +347,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

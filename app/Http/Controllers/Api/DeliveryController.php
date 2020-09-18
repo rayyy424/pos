@@ -616,12 +616,12 @@ class DeliveryController extends Controller {
 
                         $NotificationSubject == "" ? $NotificationSubject="New Driver Accepted Delivery Trip":$NotificationSubject;
 
-                        Mail::send('emails.deliveryemailapp', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
-                        {
-                                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                                $emails = array_filter($emails);
-                                $message->to($emails)->subject($NotificationSubject);
-                        });
+                        // Mail::send('emails.deliveryemailapp', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
+                        // {
+                        //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                        //         $emails = array_filter($emails);
+                        //         $message->to($emails)->subject($NotificationSubject);
+                        // });
                 }
                 return json_encode($deliverydetail);
         }
@@ -794,12 +794,12 @@ class DeliveryController extends Controller {
 
                         $NotificationSubject == "" ? $NotificationSubject="Driver Transfer Delivery Trip":$NotificationSubject;
 
-                        Mail::send('emails.deliveryemailapp', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
-                        {
-                                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                                $emails = array_filter($emails);
-                                $message->to($emails)->subject($NotificationSubject);
-                        });
+                        // Mail::send('emails.deliveryemailapp', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
+                        // {
+                        //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                        //         $emails = array_filter($emails);
+                        //         $message->to($emails)->subject($NotificationSubject);
+                        // });
 
                         $emails=array();
                         foreach ($subscribers as $subscriber)
@@ -818,13 +818,13 @@ class DeliveryController extends Controller {
 
                         $NotificationSubject == "" ? $NotificationSubject="Driver Transfer Delivery Trip":$NotificationSubject;
 
-                        Mail::send('emails.warehouse2', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
-                        {
-                                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                                $emails = array_filter($emails);
-                                $message->to($emails)
-                                ->subject($NotificationSubject);
-                        });
+                        // Mail::send('emails.warehouse2', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
+                        // {
+                        //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                        //         $emails = array_filter($emails);
+                        //         $message->to($emails)
+                        //         ->subject($NotificationSubject);
+                        // });
 
                         foreach ($driver as $d)
                         {
@@ -950,12 +950,12 @@ class DeliveryController extends Controller {
 
                         $NotificationSubject == "" ? $NotificationSubject="Driver Accepted Delivery Trip":$NotificationSubject;
 
-                        Mail::send('emails.deliveryemailapp', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
-                        {
-                                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                                $emails = array_filter($emails);
-                                $message->to($emails)->subject($NotificationSubject);
-                        });
+                        // Mail::send('emails.deliveryemailapp', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
+                        // {
+                        //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                        //         $emails = array_filter($emails);
+                        //         $message->to($emails)->subject($NotificationSubject);
+                        // });
 
                         $emails=array();
                         foreach ($subscribers as $subscriber)
@@ -976,13 +976,13 @@ class DeliveryController extends Controller {
 
                         $NotificationSubject == "" ? $NotificationSubject="Driver Accepted Delivery Trip":$NotificationSubject;
 
-                        Mail::send('emails.warehouse2', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
-                        {
-                                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                                $emails = array_filter($emails);
-                                $message->to($emails)
-                                ->subject($NotificationSubject);
-                        });
+                        // Mail::send('emails.warehouse2', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
+                        // {
+                        //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                        //         $emails = array_filter($emails);
+                        //         $message->to($emails)
+                        //         ->subject($NotificationSubject);
+                        // });
 
                         return 1;
                 }
@@ -1673,7 +1673,7 @@ class DeliveryController extends Controller {
 
                                 ]);
                                 $today=date("d-M-Y");
-                                DB::table('gensetservice')
+                                DB::table('speedfreakservice')
                                 ->insert([
                                         'ServiceId'=>$serId,
                                         'last_service'=>$today,
@@ -1700,12 +1700,12 @@ class DeliveryController extends Controller {
 
                         $NotificationSubject == "" ? $NotificationSubject="Task Completed by Driver":$NotificationSubject;
 
-                        Mail::send('emails.deliveryemailapp', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
-                        {
-                                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                                $emails = array_filter($emails);
-                                $message->to($emails)->subject($NotificationSubject);
-                        });
+                        // Mail::send('emails.deliveryemailapp', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
+                        // {
+                        //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                        //         $emails = array_filter($emails);
+                        //         $message->to($emails)->subject($NotificationSubject);
+                        // });
 
                         $emails=array();
                         foreach ($subscribers as $subscriber)
@@ -1726,13 +1726,13 @@ class DeliveryController extends Controller {
                         $NotificationSubject == "" ? $NotificationSubject="Task Completed by Driver":$NotificationSubject;
                         $this->sendpushnotifcation($notifyplayerid, $NotificationSubject);
 
-                        Mail::send('emails.warehouse2', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
-                        {
-                                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                                $emails = array_filter($emails);
-                                $message->to($emails)
-                                ->subject($NotificationSubject);
-                        });
+                        // Mail::send('emails.warehouse2', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
+                        // {
+                        //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                        //         $emails = array_filter($emails);
+                        //         $message->to($emails)
+                        //         ->subject($NotificationSubject);
+                        // });
 
                         return 1;
                 }
@@ -2076,7 +2076,7 @@ class DeliveryController extends Controller {
 
                                 ]);
                                 $today=date("d-M-Y");
-                                DB::table('gensetservice')
+                                DB::table('speedfreakservice')
                                 ->insert([
                                         'ServiceId'=>$serId,
                                         'last_service'=>$today,
@@ -2103,12 +2103,12 @@ class DeliveryController extends Controller {
 
                         $NotificationSubject == "" ? $NotificationSubject="Task Completed by Driver":$NotificationSubject;
 
-                        Mail::send('emails.deliveryemailapp', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
-                        {
-                                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                                $emails = array_filter($emails);
-                                $message->to($emails)->subject($NotificationSubject);
-                        });
+                        // Mail::send('emails.deliveryemailapp', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
+                        // {
+                        //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                        //         $emails = array_filter($emails);
+                        //         $message->to($emails)->subject($NotificationSubject);
+                        // });
 
                         $emails=array();
                         foreach ($subscribers as $subscriber)
@@ -2129,13 +2129,13 @@ class DeliveryController extends Controller {
                         $NotificationSubject == "" ? $NotificationSubject="Task Completed by Driver":$NotificationSubject;
                         $this->sendpushnotifcation($notifyplayerid, $NotificationSubject);
 
-                        Mail::send('emails.warehouse2', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
-                        {
-                                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                                $emails = array_filter($emails);
-                                $message->to($emails)
-                                ->subject($NotificationSubject);
-                        });
+                        // Mail::send('emails.warehouse2', ['deliverydetail' => $deliverydetail], function($message) use ($emails,$NotificationSubject,$deliverydetail)
+                        // {
+                        //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                        //         $emails = array_filter($emails);
+                        //         $message->to($emails)
+                        //         ->subject($NotificationSubject);
+                        // });
 
                         $response = 1;
 
@@ -3275,12 +3275,12 @@ class DeliveryController extends Controller {
 
                                         $NotificationSubject == "" ? $NotificationSubject="New Delivery Request":$NotificationSubject;
 
-                                        Mail::send('emails.deliveryapplication', ['deliverydetail' => $deliverydetail,'deliveryitemlist'=>$deliveryitemlist], function($message) use ($emails,$NotificationSubject,$deliverydetail)
-                                        {
-                                                array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                                                $emails = array_filter($emails);
-                                                $message->to($emails)->subject($NotificationSubject);
-                                        });
+                                        // Mail::send('emails.deliveryapplication', ['deliverydetail' => $deliverydetail,'deliveryitemlist'=>$deliveryitemlist], function($message) use ($emails,$NotificationSubject,$deliverydetail)
+                                        // {
+                                        //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                                        //         $emails = array_filter($emails);
+                                        //         $message->to($emails)->subject($NotificationSubject);
+                                        // });
 
                                 }
                         }

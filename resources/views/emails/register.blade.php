@@ -73,18 +73,6 @@
                                                               <td style="width:10%;text-align:center;">:</td>
                                                               <td style="width:45%;text-align:left;">{{$detail["Internship_End_Date"]}}</td>
                                                           </tr>
-                                                        @elseif ($detail["User_Type"]=="Contractor")
-                                                          <tr valign="top">
-                                                              <td style="width:45%;text-align:right;;">Project</td>
-                                                              <td style="width:10%;text-align:center;">:</td>
-                                                              <td style="width:45%;text-align:left;">{{$project->Project_Name}}</td>
-                                                          </tr>
-
-                                                          <tr valign="top">
-                                                              <td style="width:45%;text-align:right;;">Project Manager</td>
-                                                              <td style="width:10%;text-align:center;">:</td>
-                                                              <td style="width:45%;text-align:left;">{{$project->Name}}</td>
-                                                          </tr>
                                                         @endif
 
                                                         <tr valign="top">

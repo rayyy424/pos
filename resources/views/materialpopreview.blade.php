@@ -242,14 +242,6 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-6">
-						<p>Project Code:</p>
-					</div>
-					<div class="col-xs-6">
-						<p>&nbsp&nbsp {{$detail->Project_Code}}</p>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-6">
 						<p>Delivery Date:</p>
 					</div>
 					<div class="col-xs-6">

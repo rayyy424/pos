@@ -286,7 +286,7 @@
                         name: "assets.Registered_Fees"
 
                  },{
-                        label: "Agreenment Start_Date:",
+                        label: "Agreement Start_Date:",
                         name: "assets.Agreenment_Start_Date",
                         type:   'datetime',
                         def:    function () { return ""; },
@@ -296,7 +296,7 @@
                         }
 
                  },{
-                        label: "Agreenment End_Date:",
+                        label: "Agreement End_Date:",
                         name: "assets.Agreenment_End_Date",
                         type:   'datetime',
                         def:    function () { return ""; },
@@ -306,7 +306,7 @@
                         }
 
                  },{
-                        label: "Termination of Agreenment:",
+                        label: "Termination of Agreement:",
                         name: "assets.Termination_of_Agreenment"
 
                  },{
@@ -1055,19 +1055,19 @@
                        }
                      },
                     @if ($type=="CME ASSETS")
-                       columnDefs: [{ "visible": false, "targets": [2,3,4,5,6,7,8,9,10,11,12,13,14,15,22,23,27,28,29,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47] },{"className": "dt-center", "targets": "_all"}],
+                       columnDefs: [{ "visible": false, "targets": [2,3,4,5,6,7,8,9,10,11,12,13,14,15,22,23,26,27,28,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46] },{"className": "dt-center", "targets": "_all"}],
                     @elseif ($type=="GENSET ASSETS")
-                      columnDefs: [{ "visible": false, "targets": [2,3,4,5,6,7,8,9,10,11,12,13,14,15,22,23,27,28,29,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47] },{"className": "dt-center", "targets": "_all"}],
+                      columnDefs: [{ "visible": false, "targets": [2,3,4,5,6,7,8,9,10,11,12,13,14,15,22,23,26,27,28,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46] },{"className": "dt-center", "targets": "_all"}],
                     @elseif ($type=="LOGISTIC ASSETS")
-                      columnDefs: [{ "visible": false, "targets": [2,3,4,5,6,7,8,9,10,11,12,13,14,15,22,23,27,28,29,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47] },{"className": "dt-center", "targets": "_all"}],
+                      columnDefs: [{ "visible": false, "targets": [2,3,4,5,6,7,8,9,10,11,12,13,14,15,22,23,26,27,28,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46] },{"className": "dt-center", "targets": "_all"}],
                     @elseif ($type=="IT APPLIANCES")
-                      columnDefs: [{ "visible": false, "targets": [2,3,4,5,6,7,8,10,11,12,13,14,15,16,27,28,29,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47] },{"className": "dt-center", "targets": "_all"}],
+                      columnDefs: [{ "visible": false, "targets": [2,3,4,5,6,7,8,10,11,12,13,14,15,16,26,27,28,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46] },{"className": "dt-center", "targets": "_all"}],
                     @elseif ($type=="OFFICE FURNITURES")
-                      columnDefs: [{ "visible": false, "targets": [2,4,5,6,7,8,9,10,11,12,13,14,15,16,18,21,23,27,40,41,42,43,44,45,46,47] },{"className": "dt-center", "targets": "_all"}],
+                      columnDefs: [{ "visible": false, "targets": [2,4,5,6,7,8,9,10,11,12,13,14,15,16,18,21,23,26,39,40,41,42,43,44,45,46] },{"className": "dt-center", "targets": "_all"}],
                     @elseif ($type=="TOOLS AND EQUIPMENTS")
-                        columnDefs: [{ "visible": false, "targets": [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,22,23,27,28,29,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47] },{"className": "dt-center", "targets": "_all"}],
+                        columnDefs: [{ "visible": false, "targets": [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,22,23,26,27,28,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46] },{"className": "dt-center", "targets": "_all"}],
                     @else
-                      columnDefs: [{ "visible": false, "targets": [2,3,4,5,6,7,8,9,10,11,12,13,14,15,22,23,27,28,29,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47] },{"className": "dt-center", "targets": "_all"}],
+                      columnDefs: [{ "visible": false, "targets": [2,3,4,5,6,7,8,9,10,11,12,13,14,15,22,23,26,27,28,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46] },{"className": "dt-center", "targets": "_all"}],
                     @endif
 
                     responsive: false,
@@ -1104,7 +1104,7 @@
                                     return "<div class='action'><a href='#' onclick='history("+full.assets.Id+");'>History</a></div>";
                                   }
                                   else {
-                                    return "<div class='action'><a href='#' onclick='assign("+full.assets.Id+");'>Assign</a> | <a href='#' onclick='returned("+full.assets.Id+","+full.assettrackings.Id+","+full.assettrackings.UserId+","+full.assettrackings.ProjectId+");'>Return</a> | <a href='#' onclick='history("+full.assets.Id+");'>History</a></div>";
+                                    return "<div class='action'><a href='#' onclick='assign("+full.assets.Id+");'>Assign</a> | <a href='#' onclick='returned("+full.assets.Id+","+full.assettrackings.Id+","+full.assettrackings.UserId+");'>Return</a> | <a href='#' onclick='history("+full.assets.Id+");'>History</a></div>";
                                   }
 
                                },title: "Action"
@@ -1140,7 +1140,6 @@
                             { data: "assets.Label",title: "User" },
                             { data: "assets.Serial_No",title: "Serial No" },
                             { data: "holder.Name",title: "Custodian"},
-                            { data: "projects.Project_Name",editField: "assets.ProjectId",title: "Department" },
                             //25
 
                             { data: "assets.Kitchen_Appliances",title: "Taken" },
@@ -1184,7 +1183,7 @@
                     ],
                     autoFill: {
                        editor:  editor,
-                       columns: [ 2, 3,4, 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27]
+                       columns: [ 2, 3,4, 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]
                    },
                   //  keys: {
                   //      columns: ':not(:first-child)',
@@ -1343,24 +1342,10 @@
                        <!-- /.input group -->
                      </div>
 
-                     <div class="form-group">
-                         <label>Assign to [Department]</label>
-
-                           <input type="hidden" id="assignassetid" name="assignassetid" value=0>
-                           <select class="form-control select2" id="ProjectId" name="ProjectId" style="width: 100%;">
-                             <option value="0">No Department</option>
-
-                             @foreach ($projects as $project)
-                                <option value="{{$project->Id}}">{{$project->Project_Name}}</option>
-                             @endforeach
-                           </select>
-
-
-                       </div>
                        <div class="form-group">
                          <label>Assign to [Staff]</label>
 
-
+                           <input type="hidden" id="assignassetid" name="assignassetid" value=0>
                            <select class="form-control select2" id="UserId" name="UserId" style="width: 100%;">
                               <option value="0"></option>
                              @foreach ($users as $user)
@@ -1391,7 +1376,6 @@
                         <input type="hidden" id="returnassetid" name="returnassetid" value=0>
                         <input type="hidden" id="returntrackingid" name="returntrackingid" value=0>
                         <input type="hidden" id="returnuserid" name="returnuserid" value=0>
-                        <input type="hidden" id="returnprojectid" name="returnprojectid" value=0>
                        Are you sure the asset already returned?
                    </div>
                    <div class="modal-footer">
@@ -1615,7 +1599,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -1642,12 +1626,11 @@
 
     }
 
-    function returned(AssetId,TrackingId,UserId,ProjectId)
+    function returned(AssetId,TrackingId,UserId)
     {
       $('#returnassetid').val(AssetId);
       $('#returntrackingid').val(TrackingId);
       $('#returnuserid').val(UserId);
-      $('#returnprojectid').val(ProjectId);
       $('#ReturnedModal').modal('show');
 
     }
@@ -1689,55 +1672,28 @@
                           @if ($type=="Car")
 
                           var display='<table border="1" align="center" class="historytable" cellspacing="0" width="100%" padding="30px" style="font-size: 13px;">';
-                          display+='<tr class="historyheader"><td>Date</td><td>Project Name</td><td>Holder</td><td>Car_No</td><td>Status</td></tr>';
+                          display+='<tr class="historyheader"><td>Date</td><td>Holder</td><td>Car_No</td><td>Status</td></tr>';
 
                           $.each(myObject, function(i,item){
 
-                                  if (item.Project_Name===null)
-                                  {
-                                    item.Project_Name=" - ";
-                                  }
-
                                   display+="<tr>";
-                                  display+='<td>'+item.Date+'</td><td>'+item.Project_Name+'</td><td>'+item.Name+'</td><td>'+item.Car_No+'</td><td>'+item.Status+'</td>';
+                                  display+='<td>'+item.Date+'</td><td>'+item.Name+'</td><td>'+item.Car_No+'</td><td>'+item.Status+'</td>';
                                   display+="</tr>";
                           });
 
                       @else
 
                           var display='<table border="1" align="center" class="historytable" cellspacing="0" width="100%" padding="30px" style="font-size: 13px;">';
-                          display+='<tr class="historyheader"><td>Date</td><td>Project Name</td><td>Holder</td><td>Status</td></tr>';
+                          display+='<tr class="historyheader"><td>Date</td><td>Holder</td><td>Status</td></tr>';
 
                           $.each(myObject, function(i,item){
 
-                                  if (item.Project_Name===null)
-                                  {
-                                    item.Project_Name=" - ";
-                                  }
-
                                   display+="<tr>";
-                                  display+='<td>'+item.Date+'</td><td>'+item.Project_Name+'</td><td>'+item.Name+'</td><td>'+item.Status+'</td>';
+                                  display+='<td>'+item.Date+'</td><td>'+item.Name+'</td><td>'+item.Status+'</td>';
                                   display+="</tr>";
                           });
 
                       @endif
-
-                      // $.each(myObject, function(i, item) {
-                      //       // display+="<tr>";
-                      //       // display+='<td>'+item.Date+'</td><td>'+item.Project_Name+'</td><td>'+item.Name+'</td><td>'+item.Status+'</td>';
-                      //       // display+="</tr>";
-                      // });​
-
-                      // for (i in myObject)
-                      // {
-                      //   alert(myObject[i]["Date"]);
-                      //   display+="<tr>";
-                      //     display+="<td>";
-                      //       display='<tr><th>'+myObject[i]["Date"]+'</th><th>'+myObject[i]["Project_Name"]+'</th><th>'+myObject[i]["Name"]+'</th><th>'+myObject[i]["Status"]+'</th></tr>';
-                      //     display+="</td>";
-                      //   display+="</tr>";
-                      //
-                      // }
 
                       display+="</table>";
 
@@ -1757,7 +1713,6 @@
       });
 
       assignassetid=$('[name="assignassetid"]').val();
-      projectid=$('[name="ProjectId"]').val();
       userid=$('[name="UserId"]').val();
       date=$('[name="Date"]').val();
 
@@ -1777,7 +1732,6 @@
                     data: {
                       UserId:userid,
                       Date:date,
-                      ProjectId:projectid,
                       AssetId:assignassetid
                     },
                     success: function(response){
@@ -1805,12 +1759,10 @@
                         }, 6000);
 
                         $("#UserId").val("").change();
-                        $("#ProjectId").val("").change();
-                        //$("#Template").val(response).change();
                         $("#exist-alert").hide();
                         $('#AssignModal').modal('hide')
 
-                        oTable.ajax.reload();
+                        $('#assettrackingtable').dataTable().api().ajax.reload()
 
                         $("#ajaxloader").hide();
                       }
@@ -1829,7 +1781,6 @@
       returnassetid=$('[name="returnassetid"]').val();
       returntrackingid=$('[name="returntrackingid"]').val();
       returnuserid=$('[name="returnuserid"]').val();
-      returnprojectid=$('[name="returnprojectid"]').val();
 
       $("#ajaxloader2").show();
 
@@ -1839,8 +1790,7 @@
                   data: {
                     AssetId:returnassetid,
                     TrackingId:returntrackingid,
-                    UserId:returnuserid,
-                    ProjectId:returnprojectid
+                    UserId:returnuserid
                   },
                   success: function(response){
                     if (response==0)
@@ -1869,7 +1819,7 @@
                       $("#exist-alert").hide();
                       $('#ReturnedModal').modal('hide')
 
-                      oTable.ajax.reload();
+                      $('#assettrackingtable').dataTable().api().ajax.reload()
 
                       $("#ajaxloader2").hide();
                     }
@@ -1915,11 +1865,6 @@
                             display+='<tr class="historyheader"><td>Asset Type</td><td>Car_No</td><td>Asset Label</td><td>Brand</td><td>Model_No</td><td>Serial_No</td><td>IMEI</td></tr>';
 
                             $.each(myObject, function(i,item){
-
-                                    if (item.Project_Name===null)
-                                    {
-                                      item.Project_Name=" - ";
-                                    }
 
                                     display+="<tr>";
                                     display+='<td>'+item.Type+'</td><td>'+item.Car_No+'</td><td>'+item.Label+'</td><td>'+item.Brand+'</td><td>'+item.Model_No+'</td><td>'+item.Serial_No+'</td><td>'+item.IMEI+'</td>';

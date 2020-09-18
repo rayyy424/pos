@@ -298,11 +298,11 @@
     <section class="content-header">
       <h1>
         Contractor / Vendor Profile
-        <small>Project Management</small>
+        <small>Human Resource</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="{{ url('/home') }}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Project Management</a></li>
+        <li><a href="#">Human Resource</a></li>
         <li class="active">Contractor / Vendor Profile</li>
       </ol>
     </section>
@@ -477,7 +477,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

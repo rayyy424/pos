@@ -79,7 +79,6 @@
 					{ data: null, render:"", title:"No"},
                     { data:'tracker.Id', title:'Id'},
                     { data:'deliveryform.Location', title:'Location Name'},
-                    { data:'tracker.Project_Code', title:'Code'},
                     { title : "Visits", 
 	                    "render": function ( data, type, full, meta ) {
 	                    	return '<a href="{{ URL::to('/sitedeliverydetails')}}/{{$start}}/{{$end}}/'+full.deliveryform.Location+'" target="_blank">'+data+'</a>';
@@ -223,7 +222,7 @@
 	<!-- /.content-wrapper -->
 	<footer class="main-footer">
 	  	<div class="pull-right hidden-xs">
-	      <b>Version</b> 2.0.1
+	      <b>Version</b> 1.0.0
 	    </div>
 	    <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
 	</footer>

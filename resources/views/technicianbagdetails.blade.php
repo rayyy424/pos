@@ -86,12 +86,12 @@
 				{ data: null,"render":"", title:"No"},
 				{ data:null, title:"Action", sortable: false,
 					render: function ( data, type, row, meta ) {
-							return "<a class='btn btn-default btn-sm' target='_blank' href='{{url('genset/inventory/details')}}/"+ data.gensetinventory_history.Id + "'>View</a>";
+							return "<a class='btn btn-default btn-sm' target='_blank' href='{{url('speedfreak/inventory/details')}}/"+ data.speedfreakinventory_history.Id + "'>View</a>";
 						}
 				},
-				{ data: "gensetinventory_history.Id", title:'Id'},
+				{ data: "speedfreakinventory_history.Id", title:'Id'},
 				{ data: "options.Option", title:'Branch Name'},
-				{ data: "gensetinventory_history.qty", title:'Branch Quantity'}
+				{ data: "speedfreakinventory_history.qty", title:'Branch Quantity'}
 			],
 			autoFill: {
 				editor:  editor,
@@ -106,7 +106,7 @@
 			// Get the rows id value
 			//  var row=$(this).closest("tr");
 			//  var oTable = row.closest('table').dataTable();
-			userid = oTable.api().row( this ).data().gensetinventory.Id;
+			userid = oTable.api().row( this ).data().speedfreakinventory.Id;
 		});
 
 		oTable.api().on( 'order.dt search.dt', function () {
@@ -149,10 +149,10 @@
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1>Technician Inventory Bag<small>GENSET</small></h1>
+		<h1>Technician Inventory Bag<small>SPEED FREAK</small></h1>
 		<ol class="breadcrumb">
 			<li><a href="{{ url('/home') }}"><i class="fa fa-dashboard"></i>Home</a></li>
-			<li><a href="#">GENSET</a></li>
+			<li><a href="#">SPEED FREAK</a></li>
             <li>Technician Inventory Bag</li>
             <li class="active">Inventory Bag Details</li>
 		</ol>
@@ -247,7 +247,7 @@
 </div>
 <footer class="main-footer">
 	<div class="pull-right hidden-xs">
-		<b>Version</b> 2.0.1
+		<b>Version</b> 1.0.0
 	</div>
 	<strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
 </footer>

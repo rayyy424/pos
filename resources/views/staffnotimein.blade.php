@@ -99,9 +99,7 @@
                                          "Start": "{{ $start }}",
                                          "End": "{{ $end }}",
                                          "IncludeResigned": "{{$includeResigned}}",
-                                         "Departments": "{{implode(',',$arrdepartment)}}",
-                                         "Admin":"{{$me->Admin}}",
-                                         "PM":"{{$me->Project_Manager}}"
+                                         "Admin":"{{$me->Admin}}"
                                      }
                                    },
                                   table: "#engineertable",
@@ -165,13 +163,11 @@
                                           "Start": "{{ $start }}",
                                           "End": "{{ $end }}",
                                           "IncludeResigned": "{{$includeResigned}}",
-                                          "Departments": "{{implode(',',$arrdepartment)}}",
                                           "Admin":"{{$me->Admin}}",
-                                          "PM":"{{$me->Project_Manager}}",
                                           "User":"{{ $userid }}"
                                       }
                                     },
-                                   columnDefs: [{ "visible": false, "targets": [0,1,4,9,10,11,12,17,19,22,27] },{"className": "dt-center", "targets": "_all"}],
+                                   columnDefs: [{ "visible": false, "targets": [0,1,4,7,8,9,10,15,17,20,25] },{"className": "dt-center", "targets": "_all"}],
                                    // columnDefs: [{ "visible": false, "targets": [0,1,4,9,10,11,12,17,20,29] },{"className": "dt-center", "targets": "_all"}],
                                    "createdRow": function( row, data, dataIndex ) {
                                        if ( data.timesheets.OT_Verified == 1 ) {
@@ -198,8 +194,6 @@
                                            },
                                            { data: "users.Resignation_Date",title:"Resignation_Date"},
                                            { data: "users.Company",title:"Company"},
-                                           { data: "users.Department",title:"Department"},
-                                           { data: "users.Category",title:"Category"},
                                            { data: "users.Position",title:"Position"},
                                            { data: "timesheets.Latitude_In",title:"Latitude_In"},
                                            { data: "timesheets.Longitude_In",title:"Longitude_In"},
@@ -669,7 +663,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

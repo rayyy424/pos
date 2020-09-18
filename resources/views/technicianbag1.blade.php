@@ -81,17 +81,17 @@
 				{ data: null,"render":"", title:"No"},
 				{ data:null, title:"Action", sortable: false,
 					render: function ( data, type, row, meta ) {
-							return "<a class='btn btn-default btn-sm' target='_blank' href='{{url('genset/technician/inventory/details')}}'>View</a>";
+							return "<a class='btn btn-default btn-sm' target='_blank' href='{{url('speedfreak/technician/inventory/details')}}'>View</a>";
 						}
 				},
 				{ data: "techbag.Id", title:'Id'},
-				{ data: "gensetinventory.name", title:'Name'},
-				{ data: "gensetinventory.type", title:'Type'},
-				{ data: "gensetinventory.barcode", title:'Barcode'},
-				{ data: "gensetinventory.model",title:"Model"},
-				{ data: "gensetinventory.price", title:'Cost Price (RM)'},			
-				{ data: "gensetinventory.price_yuan",title:"Cost Price (&yen)"},
-				{ data: "gensetinventory.qty_balance", title:'Quantity Balance'},
+				{ data: "speedfreakinventory.name", title:'Name'},
+				{ data: "speedfreakinventory.type", title:'Type'},
+				{ data: "speedfreakinventory.barcode", title:'Barcode'},
+				{ data: "speedfreakinventory.model",title:"Model"},
+				{ data: "speedfreakinventory.price", title:'Cost Price (RM)'},			
+				{ data: "speedfreakinventory.price_yuan",title:"Cost Price (&yen)"},
+				{ data: "speedfreakinventory.qty_balance", title:'Quantity Balance'},
 			],
 			autoFill: {
 				editor:  editor,
@@ -118,7 +118,7 @@
 			// Get the rows id value
 			//  var row=$(this).closest("tr");
 			//  var oTable = row.closest('table').dataTable();
-			userid = oTable.api().row( this ).data().gensetinventory.Id;
+			userid = oTable.api().row( this ).data().speedfreakinventory.Id;
 		});
 
 		oTable.api().on( 'order.dt search.dt', function () {
@@ -163,7 +163,7 @@
 		<h1>Technician Inventory Bag</h1>
 		<ol class="breadcrumb">
 	        <li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li>
-	        <li>GENSET Management</li>
+	        <li>SPEED FREAK Management</li>
 	        <li class="active">Technician Inventory Bag</li>
 	    </ol>
     </section>
@@ -232,7 +232,7 @@
 </div>
 <footer class="main-footer">
 	<div class="pull-right hidden-xs">
-		<b>Version</b> 2.0.1
+		<b>Version</b> 1.0.0
 	</div>
 	<strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
 </footer>

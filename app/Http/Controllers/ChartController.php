@@ -34,12 +34,8 @@ class ChartController extends Controller {
     $me = (new CommonController)->get_current_user();
 
     $chartview = DB::table('chartviews')
-		->select('chartviews.Id','projects.Project_Name', 'chartviews.Chart_View_Name','chartviews.Chart_View_Type','users.Name')
+		->select('chartviews.Id', 'chartviews.Chart_View_Name','chartviews.Chart_View_Type','users.Name')
 		->leftJoin('users', 'users.Id', '=', 'chartviews.Created_By')
-		->leftJoin('projects', 'projects.Id', '=', 'chartviews.ProjectId')
-		->get();
-
-		$projects = DB::table('projects')
 		->get();
 
     $options= DB::table('options')
@@ -48,20 +44,19 @@ class ChartController extends Controller {
 		->orderBy('Option','asc')
 		->get();
 
-    return view('chartmanagement',['me'=>$me, 'chartview'=>$chartview, 'projects'=>$projects, 'projects'=>$projects, 'options'=>$options]);
+    return view('chartmanagement',['me'=>$me, 'chartview'=>$chartview, 'options'=>$options]);
 
   }
 
-  public function chartcolumn($chartviewid,$projectid)
+  public function chartcolumn($chartviewid)
   {
     $me = (new CommonController)->get_current_user();
 
 
 
 		$chartview = DB::table('chartviews')
-		->select('chartviews.Id','chartviews.ProjectId','projects.Project_Name','chartviews.Chart_View_Name','chartviews.Chart_View_Type','users.Name','chartviews.created_at')
+		->select('chartviews.Id','chartviews.Chart_View_Name','chartviews.Chart_View_Type','users.Name','chartviews.created_at')
 		->leftJoin('users', 'users.Id', '=', 'chartviews.Created_By')
-		->leftJoin('projects', 'projects.Id', '=', 'chartviews.ProjectId')
 		->where('chartviews.Id', '=',$chartviewid)
 		->first();
 
@@ -75,19 +70,15 @@ class ChartController extends Controller {
 
 		$columns = DB::table('trackercolumn')
 		->select(DB::raw('Distinct Column_Name'))
-		->whereIn('TrackerTemplateId', function($query) use($projectid)
+		->whereIn('TrackerTemplateId', function($query)
 	    {
 	        $query->select('Id')
 	              ->from('trackertemplate')
-	              ->where('ProjectId','=',$projectid);
 	    })
 		->orderBy('trackercolumn.Column_Name','ASC')
 		->get();
 
-		$projects = DB::table('projects')
-		->get();
-
-    return view('chartcolumn',['me'=>$me, 'chartview' =>$chartview,'chartcolumn'=>$chartcolumn, 'projects'=>$projects, 'chartviewid'=>$chartviewid,'columns'=>$columns]);
+    return view('chartcolumn',['me'=>$me, 'chartview' =>$chartview,'chartcolumn'=>$chartcolumn, 'chartviewid'=>$chartviewid,'columns'=>$columns]);
 
   }
 
@@ -115,14 +106,13 @@ class ChartController extends Controller {
 			return $blsuccess;
 }
 
-	public function chartpreview($chartviewid,$projectid)
+	public function chartpreview($chartviewid)
   {
     $me = (new CommonController)->get_current_user();
 
 		$chartview = DB::table('chartviews')
-		->select('chartviews.Id','chartviews.Chart_View_Name','chartviews.Chart_View_Type','users.Name','projects.Project_Name','chartviews.created_at')
+		->select('chartviews.Id','chartviews.Chart_View_Name','chartviews.Chart_View_Type','users.Name','chartviews.created_at')
 		->leftJoin('users', 'users.Id', '=', 'chartviews.Created_By')
-		->leftJoin('projects', 'projects.Id', '=', 'chartviews.ProjectId')
 		->where('chartviews.Id', '=',$chartviewid)
 		->first();
 
@@ -547,38 +537,28 @@ class ChartController extends Controller {
     //dd($chartarr);
 
 		$agingrules = DB::table('agings')
-		->select('agings.Id','agings.ProjectId', 'agings.Active','projects.Project_Name','agings.Title','agings.Type','agings.Start_Date','agings.End_Date','agings.Threshold','agings.Recurring_Frequency','agings.Frequency_Unit','creator.Name as Creator','users.Name as Subscriber')
+		->select('agings.Id', 'agings.Active','agings.Title','agings.Type','agings.Start_Date','agings.End_Date','agings.Threshold','agings.Recurring_Frequency','agings.Frequency_Unit','creator.Name as Creator','users.Name as Subscriber')
 		->leftjoin('agingsubscribers','agingsubscribers.AgingId','=','agings.Id')
-		->leftJoin('projects', 'projects.Id', '=', 'agings.ProjectId')
 		->leftJoin('users as creator', 'creator.Id', '=', 'agings.UserId')
 		->leftjoin('users','users.Id','=','agingsubscribers.UserId')
-		->where('ProjectId', '=',$projectid)
 		->get();
 
 		//dd($agingrules);
-    return view('customizereport',['me'=>$me,'project'=>$project,'projectid'=>$projectid,'chartview'=>$chartview,'chartarr'=>$chartarr, 'chartcolumn'=>$chartcolumn, 'agingrules'=>$agingrules,'regions'=>$regions,'region'=>$region]);
+    return view('customizereport',['me'=>$me,'chartview'=>$chartview,'chartarr'=>$chartarr, 'chartcolumn'=>$chartcolumn, 'agingrules'=>$agingrules,'regions'=>$regions,'region'=>$region]);
 
   }
 
-	public function dashboard($projectid,$region=null,$year=null,$month=null)
+	public function dashboard($region=null,$year=null,$month=null)
   {
 		$me = (new CommonController)->get_current_user();
 
-		$project= DB::table('projects')
-		->where('Id', '=',$projectid)
-		->first();
+
 
 		$regions=DB::table('tracker')
 		->select(DB::raw('DISTINCT Region'))
-		->where('ProjectId', '=',$projectid)
 		->where('Region', '<>','')
 		->get();
 
-		// $scopes=DB::table('tracker')
-		// ->select(DB::raw('DISTINCT Region'))
-		// ->where('ProjectId', '=',$projectid)
-		// ->where('Region', '<>','')
-		// ->get();
 
 		$filter='1';
 		$filter2=' AND 1';
@@ -591,25 +571,21 @@ class ChartController extends Controller {
 
 		$total=DB::table('tracker')
 		->select(DB::raw('SUM(PO_Amount) as Total_PO_Amount'),DB::raw('SUM(IF(PO_Status not like "%Pending%", PO_Amount, 0)) AS PO_Received'),DB::raw('SUM(IF(PO_Status like "%Pending%", PO_Amount, 0)) AS Pending_PO'))
-		->where('tracker.ProjectId', '=',$projectid)
 		->whereRaw($filter)
 		->first();
 
 		$totalinvoiced=DB::table('tracker')
 		->select(DB::raw('SUM(Invoiced_Amount) as Total_Invoiced_Amount'),DB::raw('SUM(IF(Invoiced_Amount="", PO_Amount, 0)) AS Pending_Invoice'),DB::raw('SUM(IF(Task_End_Date!="" AND Invoiced_Amount="", PO_Amount, 0)) AS JDNI'),DB::raw('SUM(IF((Task_Start_Date!="" AND Task_End_Date=""), PO_Amount, 0)) AS WIP'),DB::raw('SUM(IF(Task_Start_Date="", PO_Amount, 0)) AS Not_Yet_Start'))
-		->where('tracker.ProjectId', '=',$projectid)
 		->whereRaw($filter)
 		->first();
 
 		$totalcost=DB::table('tracker')
 		->select(DB::raw('SUM(PO1_Amount+PO2_Amount+PO3_Amount+PO4_Amount+PO5_Amount+PO6_Amount+PO7_Amount+PO8_Amount) as Total_Cost'))
-		->where('tracker.ProjectId', '=',$projectid)
 		->whereRaw($filter)
 		->first();
 
 		$totalsites=DB::table('tracker')
 		->select(DB::raw('COUNT(*) AS Total'),DB::raw('SUM(IF(Task_End_Date != "", 1, 0)) AS Completed'),DB::raw('SUM(IF(Task_Start_Date != "" AND Task_End_Date = "", 1, 0)) AS On_going'),DB::raw('SUM(IF(Task_Start_Date = "", 1, 0)) AS Not_Yet_Start'),DB::raw('SUM(IF(Work_Status = "Cancel", 1, 0)) AS Cancelled'))
-		->where('tracker.ProjectId', '=',$projectid)
 		->whereRaw($filter)
 		->first();
 
@@ -651,15 +627,8 @@ class ChartController extends Controller {
 
 		$invoice = DB::select($query2);
 
-		// $work=DB::table('tracker')
-		// ->select(DB::raw('Week(str_to_date(`Task_Start_Date`, "%d-%M-%Y"),3) AS Week_Number'),DB::raw('SUM(IF(Task_Start_Date!="", 1, 0)) AS Start'),DB::raw('SUM(IF(Task_End_Date != "", 1, 0)) AS Closed'))
-		// ->where('tracker.ProjectId', '=',$projectid)
-		// ->groupBy(DB::raw('Week(str_to_date(`Task_Start_Date`, "%d-%M-%Y"),1)'))
-		// ->get();
-
 		$forecast=DB::table('tracker')
 		->select(DB::raw('right(`Invoice_Forecast_Date`,8) as Month'),DB::raw('SUM(PO_Amount) AS Total'))
-		->where('tracker.ProjectId', '=',$projectid)
 		->where('tracker.Invoice_Forecast_Date', '!=','')
 		->where('tracker.Invoice_Forecast_Date', '!=','-')
 		->whereRaw($filter)
@@ -670,7 +639,6 @@ class ChartController extends Controller {
 
 		$invoiced=DB::table('tracker')
 		->select(DB::raw('right(`Invoice_Date`,8) as Month'),DB::raw('SUM(Invoiced_Amount) AS Total_Invoiced'))
-		->where('tracker.ProjectId', '=',$projectid)
 		->where('tracker.Invoice_Date', '!=','')
 		->where('tracker.Invoice_Date', '!=','-')
 		->whereRaw($filter)
@@ -679,37 +647,22 @@ class ChartController extends Controller {
 		->limit(12)
 		->get();
 
-		// $sales=DB::table('tracker')
-		// ->select(DB::raw('right(`Invoice_Date`,8) as Month'),DB::raw('SUM(Invoiced_Amount) AS Total'))
-		// ->where('tracker.ProjectId', '=',$projectid)
-		// ->where('tracker.Invoice_Date', '!=','')
-		// ->groupBy(DB::raw('right(`Invoice_Date`,8)'))
-		// ->orderBy(DB::raw('str_to_date(`Invoice_Date`, "%d-%M-%Y")'),'DESC')
-		// ->limit(12)
-		// ->get();
 
-		return view('dashboard',['me'=>$me,'total'=>$total,'totalinvoiced'=>$totalinvoiced,'totalcost'=>$totalcost,'totalsites'=>$totalsites,'work'=>$work,'invoice'=>$invoice,'invoiced'=>$invoiced,'project'=>$project,'projectid'=>$projectid,'regions'=>$regions,'region'=>$region,'year'=>$year,'month'=>$month,'forecast'=>$forecast]);
+		return view('dashboard',['me'=>$me,'total'=>$total,'totalinvoiced'=>$totalinvoiced,'totalcost'=>$totalcost,'totalsites'=>$totalsites,'work'=>$work,'invoice'=>$invoice,'invoiced'=>$invoiced,'regions'=>$regions,'region'=>$region,'year'=>$year,'month'=>$month,'forecast'=>$forecast]);
 
 	}
 
-	public function projectdashboard($projectid,$region=null)
+	public function projectdashboard($region=null)
   {
     $me = (new CommonController)->get_current_user();
 
 		$chartview = DB::table('chartviews')
-		->select('chartviews.Id','chartviews.Chart_View_Name','chartviews.Chart_View_Type','users.Name','projects.Project_Name','chartviews.created_at')
+		->select('chartviews.Id','chartviews.Chart_View_Name','chartviews.Chart_View_Type','users.Name','chartviews.created_at')
 		->leftJoin('users', 'users.Id', '=', 'chartviews.Created_By')
-		->leftJoin('projects', 'projects.Id', '=', 'chartviews.ProjectId')
-		->where('chartviews.ProjectId', '=',$projectid)
 		->get();
-
-		$project= DB::table('projects')
-		->where('Id', '=',$projectid)
-		->first();
 
 		$regions=DB::table('tracker')
 		->select(DB::raw('DISTINCT Region'))
-		->where('ProjectId', '=',$projectid)
 		->where('Region', '<>','')
 		->get();
 
@@ -919,16 +872,14 @@ class ChartController extends Controller {
     //dd($chartarr);
 
 		$agingrules = DB::table('agings')
-		->select('agings.Id','agings.ProjectId', 'agings.Active','projects.Project_Name','agings.Title','agings.Type','agings.Start_Date','agings.End_Date','agings.Threshold','agings.Recurring_Frequency','agings.Frequency_Unit','creator.Name as Creator','users.Name as Subscriber')
+		->select('agings.Id', 'agings.Active','agings.Title','agings.Type','agings.Start_Date','agings.End_Date','agings.Threshold','agings.Recurring_Frequency','agings.Frequency_Unit','creator.Name as Creator','users.Name as Subscriber')
 		->leftjoin('agingsubscribers','agingsubscribers.AgingId','=','agings.Id')
-		->leftJoin('projects', 'projects.Id', '=', 'agings.ProjectId')
 		->leftJoin('users as creator', 'creator.Id', '=', 'agings.UserId')
 		->leftjoin('users','users.Id','=','agingsubscribers.UserId')
-		->where('ProjectId', '=',$projectid)
 		->get();
 
 		//dd($agingrules);
-    return view('projectdashboard',['me'=>$me,'project'=>$project,'projectid'=>$projectid,'chartview'=>$chartview,'chartarr'=>$chartarr, 'chartcolumn'=>$chartcolumn, 'agingrules'=>$agingrules,'regions'=>$regions,'region'=>$region]);
+    return view('projectdashboard',['me'=>$me,'chartview'=>$chartview,'chartarr'=>$chartarr, 'chartcolumn'=>$chartcolumn, 'agingrules'=>$agingrules,'regions'=>$regions,'region'=>$region]);
 
   }
 

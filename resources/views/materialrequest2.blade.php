@@ -160,8 +160,6 @@
                     else return data;
                 }},
                 { data:"users.Name" , title:"Requestor Name"},
-				{ data: "projects.Project_Name", title:'Project'},
-                { data: "tracker.Project_Code", title: "Project Code"},
                 { data: "tracker.`Site Name`", title: "Site Name"},
                 { data: "materialstatus.Status", title: "Status"},
                 { data:"material.created_at",title:"Created At"},
@@ -240,8 +238,8 @@
 			},
 			columnDefs: [
 				{ "visible": false, "targets": [1] },
-                {"className": "dt-center", "targets": [0,2,3,4,5,6,7,8,10]},
-                {"className": "dt-right", "targets": [9]}
+                {"className": "dt-center", "targets": [0,2,3,4,5,6,8]},
+                {"className": "dt-right", "targets": [7]}
 			],
 			responsive: false,
 			colReorder: false,
@@ -259,22 +257,7 @@
 			columns: [
 				{ data: null,"render":"", title:"No"},
                 { data: "material.Id"},
-                // {
-                //     data:null,
-                //     title:"PO",
-                //     render:function(data){
-                //         // var f="";
-                //         if(data.material.generatePO == "PO")
-                //             return "<a class='btn btn-primary btn-sm' onclick='generatePO("+data.material.Id+")'>Generate PO</a>";
-                //         else if (data.material.generatePO == "generated")
-                //             return "<a class='btn btn-primary btn-sm' href='{{url('material/PO')}}/"+data.material.Id+"'>View PO</a>";
-                //         else
-                //             return "-";
-                //         //     f="<a class='btn btn-primary btn-sm'>Generate PO</a>";
-                //         // return "<a style='width:25%;' target='_blank' class='btn btn-info btn-sm' href='{{url('material/print')}}/"+data.material.Id+"'>Print</a> "+f;
-                        
-                //     }
-                // },
+
                 { data: null, title: "MR NO",
                   render:function(data){
                     if( data.material.MR_No == "")
@@ -284,8 +267,6 @@
                 }},
                 { data:'tracker.`Unique Id`',title:"Unique Id"},
                 { data:"users.Name" , title:"Requestor Name"},
-				{ data: "projects.Project_Name", title:'Project'},
-                { data: "tracker.Project_Code", title: "Project Code"},
                 { data: "tracker.`Site Name`", title: "Site Name"},
                 { data: "materialstatus.Status", title: "Status"},
                 { data:"material.created_at",title:"Created At"},
@@ -399,8 +380,6 @@
                     else return data;
                 }},
                 { data:"users.Name" , title:"Requestor Name"},
-				{ data: "projects.Project_Name", title:'Project'},
-                { data: "tracker.Project_Code", title: "Project Code"},
                 { data: "tracker.`Site Name`", title: "Site Name"},
                 { data: "materialstatus.Status", title: "Status"},
                 { data:"material.created_at",title:"Created At"},
@@ -499,8 +478,6 @@
                 }},
                 { data:'tracker.`Unique Id`',title:"Unique Id"},
                 { data:"users.Name" , title:"Requestor Name"},
-				{ data: "projects.Project_Name", title:'Project'},
-                { data: "tracker.Project_Code", title: "Project Code"},
                 
                 { data: "tracker.`Site Name`", title: "Site Name"},
                 { data: "materialstatus.Status", title: "Status"},
@@ -1452,7 +1429,7 @@
 </div>
 <footer class="main-footer">
 	<div class="pull-right hidden-xs">
-		<b>Version</b> 2.0.1
+		<b>Version</b> 1.0.0
 	</div>
 	<strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
 </footer>
@@ -1496,8 +1473,7 @@ var ajaxManager = (function() {
      };
 }());
  $(function () {
-    ajaxManager.run(); 
-    $('#project').select2();
+    ajaxManager.run();
     $('#site').select2();
     $("#item_code").select2();
     $("#item_desc").select2();
@@ -1510,34 +1486,7 @@ var ajaxManager = (function() {
     $(".site").select2({width:'100%'});
     $("#edit_new_type").select2({width:'100%'});
     $("#edit_new_code").select2({width:'100%'});
-    $("#edit_new_desc").select2({width:'100%'}); 
-    $("#refresh_projectCode").select2({
-        width:'100%'
-    }); 
-    $("#refresh_project").select2({
-        width:'100%'
-    }); 
-    $("#refresh_project").on('change',function(){
-       $("#refresh_projectCode").empty();
-       $.ajax({
-           type: "get",
-           url: "{{url('material/getProjectCode')}}",
-           data:{
-               id:$("#refresh_project").val()
-           },
-           success: function (response) {
-                $('#refresh_projectCode').append($("<option></option>")
-                .attr('value','0')
-                .text("None"));
-                $.each(response, function(key, value) {   
-                    $('#refresh_projectCode').append($("<option></option>")
-                    .attr("value",value.Project_Code)
-                    .text(value.Project_Code)
-                    ); 
-                });
-           }
-       }); 
-    });
+    $("#edit_new_desc").select2({width:'100%'});
     $("#edit_new_type").on('change',function(){
        $("#edit_new_code").empty();
        $("#edit_new_desc").empty();
@@ -1763,34 +1712,7 @@ var ajaxManager = (function() {
             $("#edit_price").val($("#edit_item_code option:selected").data("price"));
         }
              
-    });
-    $('#project').on('change',function(){
-        $("#site").empty();
-        var check=false;
-        $.ajax({
-            type: "get",
-            url: "{{url('material/getSite')}}",
-            data: {
-              id:$('#project option:selected').val()  
-            },
-            success: function (response) {
-                for(var x=0,l=response.length;x<l;x++){
-                    $('#site').append($("<option></option>")
-                    .attr("value",response[x].Id)
-                    .text(response[x].site)
-                    );
-                    check=true;
-                }
-                if(check){
-                   @if($trackerid != "")
-                       $("#site").val({{$trackerid}}).change();
-                        check=false;
-                    @endif
-                }       
-            }
-        });
-    }).change();
-    
+    }); 
 });
 var x=1;
 var itemArr=[];
@@ -1876,7 +1798,7 @@ async function removeRow(id){
 async function insertData()
 {
     $("#submit_btn").attr('disabled', true);
-    if(itemArr.length != 0 && $("#site option:selected").val() != "" && $("#project option:selected").val() != "")
+    if(itemArr.length != 0 && $("#site option:selected").val() != "")
     {   
         $.ajaxSetup({
             headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') }
@@ -1886,7 +1808,6 @@ async function insertData()
             url: "{{url('material/newRequest')}}",
             data: {
                 item:itemArr,
-                project:$('#project option:selected').val() ,
                 site:$("#site option:selected").val(),
                 savemr:$("#saveMr").val()
                 // updateVendor:updateVendor
@@ -1900,7 +1821,6 @@ async function insertData()
                     $('#qty').val("");
                     $("#price").empty();
                     $("#total").empty();
-                    $("#project").val('').change();
                     $("#site").val('').change();
                     itemArr=[];
                     updateVendor=[];
@@ -2532,25 +2452,6 @@ function approval(id,type){
         }
     });
 }
-function refresh()
-{
-    var project=$("#refresh_project").val();
-    var code=$("#refresh_projectCode").val();
-    // oTable.ajax.reload(function(){
-    //     $('#pendingtab').html("Pending Approval" + "[" + oTable.rows().count() +"]");
-    // });
-    oTable1.api().ajax.url("{{ asset('/Include/materialrequest.php') }}?projectid="+project+"&code="+code).load(function(){
-        $('#approvedtab').html("Approved" + "[" + oTable1.api().rows().count() +"]");
-    });
-    
-    // oTable2.ajax.reload(function(){
-    //     $('#rejectedtab').html("Rejected" + "[" + oTable2.rows().count() +"]");
-    // });
-    oTable3.api().ajax.url("{{ asset('/Include/materialrequest.php') }}?projectid="+project+"&code="+code).load(function(){
-        $('#recalledtab').html("Recalled" + "[" + oTable3.api().rows().count() +"]");
-    });
-   
-}
 function saveMR(){
     if(confirm("Are you sure you want to save this MR?")){
         $.ajaxSetup({
@@ -2561,7 +2462,6 @@ function saveMR(){
             url: "{{url('material/saveMR')}}",
             data: {
                 arr:itemArr,
-                project:$('#project option:selected').val() ,
                 site:$("#site option:selected").val(),
                 savemr:$("#saveMr").val()
             },

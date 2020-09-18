@@ -276,12 +276,12 @@ class AssetController extends Controller {
 			}
 		}
 
-		Mail::send('emails.assetissuereport', ['me'=>$me,'report'=>$report], function($message) use ($emails,$NotificationSubject)
-		{
-			$emails = array_filter($emails);
-			array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-			$message->to($emails)->subject($NotificationSubject);
-		});
+		// Mail::send('emails.assetissuereport', ['me'=>$me,'report'=>$report], function($message) use ($emails,$NotificationSubject)
+		// {
+		// 	$emails = array_filter($emails);
+		// 	array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+		// 	$message->to($emails)->subject($NotificationSubject);
+		// });
 
 		return 1;
 	}
@@ -420,10 +420,10 @@ class AssetController extends Controller {
 			}
 		}
 
-		Mail::send('emails.assetacknowledgement', ['me'=>$me,'assettrackings'=>$assettrackings], function($message) use ($emails)
-		{
-				$message->to($emails)->subject('Asset Acknowledged');
-		});
+		// Mail::send('emails.assetacknowledgement', ['me'=>$me,'assettrackings'=>$assettrackings], function($message) use ($emails)
+		// {
+		// 		$message->to($emails)->subject('Asset Acknowledged');
+		// });
 
 		return 1;
 	}
@@ -581,13 +581,13 @@ class AssetController extends Controller {
 				}
 			}
 
-				Mail::send('emails.rentalNotification', ['endNotify'=>$endNotify], function($message) use ($emails, $rentalEndDate,$notifyType,$NotificationSubject)
-				{
-						$emails = array_filter($emails);
-						array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-						$message->to($emails)->subject($NotificationSubject.' '.$rentalEndDate. '! ['.$notifyType.']');
+				// Mail::send('emails.rentalNotification', ['endNotify'=>$endNotify], function($message) use ($emails, $rentalEndDate,$notifyType,$NotificationSubject)
+				// {
+				// 		$emails = array_filter($emails);
+				// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+				// 		$message->to($emails)->subject($NotificationSubject.' '.$rentalEndDate. '! ['.$notifyType.']');
 
-				});
+				// });
 				return 1;
 		}
 		else {

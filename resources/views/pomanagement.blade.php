@@ -95,7 +95,6 @@
                     ajax: {
                        "url": "{{ asset('/Include/po.php') }}",
                        "data": {
-                           "ProjectId": "{{$projectid}}"
                        }
                      },
                      formOptions: {
@@ -194,18 +193,6 @@
                                      { label :"5", value: "5" },
                                  ],
                          },{
-                             label: "Project Name:",
-                             name: "po.ProjectId",
-                             type:  'select',
-                             options: [
-                                { label :"", value: "0" },
-                                @foreach($projects as $project)
-                                    { label :"{{$project->Project_Name}}", value: "{{$project->Id}}" },
-                                @endforeach
-
-                            ],
-
-                        },{
                                label: "Remarks:",
                                name: "po.Remarks",
                                type: "textarea"
@@ -225,22 +212,6 @@
                                label: "Scope of Work:",
                                name: "po.Scope_of_Work",
                                type: "textarea"
-                        },{
-                               label: "Project Code:",
-                               name: "po.Project_Code",
-                               type:  'autoComplete',
-                               "opts": {
-                                 "source": [
-                                   // array of genres...
-                                   @if($projectcodes)
-                                     @foreach($projectcodes as $code)
-
-                                     { label :"{{$code->Project_Code}} - {{$code->Site_ID}}", value: "{{$code->Project_Code}}" },
-
-                                     @endforeach
-                                   @endif
-                                 ]
-                               },
                         },{
                                label: "Work Order ID:",
                                name: "po.Work_Order_ID"
@@ -544,12 +515,6 @@
                                label: "Engineering_No:",
                                name: "po.Engineering_No"
                         },{
-                               label: "Project:",
-                               name: "po.Project"
-                        },{
-                               label: "ProjectCode:",
-                               name: "po.ProjectCode"
-                        },{
                                label: "Quantity_Request:",
                                name: "po.Quantity_Request",
                                attr: {
@@ -667,33 +632,6 @@
                                                   "Type":"All"
                                                 @else
 
-                                                  @if($projectcode!="")
-                                                    "ProjectCode": "{{$projectcode}}"
-                                                  @elseif($type=="Accepted PO")
-                                                  "ProjectId": "{{$projectid}}",
-                                                    "Type":"Accepted"
-                                                  @elseif($type=="Pending PM Acceptance")
-                                                  "ProjectId": "{{$projectid}}",
-                                                    "Type":"Pending PM"
-                                                  @elseif($type=="Pending Finance Acceptance")
-                                                  "ProjectId": "{{$projectid}}",
-                                                    "Type":"Pending Finance"
-                                                  @elseif($type=="Rejected PO")
-                                                  "ProjectId": "{{$projectid}}",
-                                                    "Type":"Rejected"
-                                                  @elseif($type=="All PO")
-                                                  "ProjectId": "{{$projectid}}",
-                                                    "Type":"All"
-                                                  @elseif($type=="No Project PO")
-                                                      "Type":"No Project PO"
-                                                  @elseif($type=="Ready for ESAR")
-                                                  "ProjectId": "{{$projectid}}",
-                                                    "Type":"ESAR"
-                                                  @elseif($type=="Ready for PAC")
-                                                  "ProjectId": "{{$projectid}}",
-                                                    "Type":"PAC"
-                                                  @endif
-
                                                 @endif
 
 
@@ -706,18 +644,18 @@
                                       //  },
                                       @if($template=="Digi")
 
-                                        columnDefs: [{ "visible": false, "targets": [3,4,10,16,17,32,33,34,35,36,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,82,83,84,85,86,87,88,89,90,91,92,93,94,95] },{"className": "dt-center", "targets": "_all"}],
+                                        columnDefs: [{ "visible": false, "targets": [3,4,7,12,13,28,29,30,31,32,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,78,79,80,81,82,83,84,85,86,87,88,89,90,91] },{"className": "dt-center", "targets": "_all"}],
 
                                       @elseif($template=="Alcatel")
 
-                                        columnDefs: [{ "visible": false, "targets": [3,4,10,16,17,25,32,33,34,35,36,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,82,83,84,85,86,87,88,89,90,91,92,93,94,95] },{"className": "dt-center", "targets": "_all"}],
+                                        columnDefs: [{ "visible": false, "targets": [3,4,7,12,13,21,28,29,30,31,32,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,78,79,80,81,82,83,84,85,86,87,88,89,90,91] },{"className": "dt-center", "targets": "_all"}],
 
                                       @elseif($template=="Huawei")
 
-                                        columnDefs: [{ "visible": false, "targets": [3,4,10,25,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94] },{"className": "dt-center", "targets": "_all"}],
+                                        columnDefs: [{ "visible": false, "targets": [3,4,7,21,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90] },{"className": "dt-center", "targets": "_all"}],
 
                                       @else
-                                        columnDefs: [{ "visible": false, "targets": [3,4,10,16,17,25,32,33,34,35,36,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,59,60,82,83,84,85,86,87,88,89,90,91,92,93,94,95] },{"className": "dt-center", "targets": "_all"}],
+                                        columnDefs: [{ "visible": false, "targets": [3,4,7,12,13,21,28,29,30,31,32,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,78,79,80,81,82,83,84,85,86,87,88,89,90,91] },{"className": "dt-center", "targets": "_all"}],
 
                                       @endif
                                       fnInitComplete: function(oSettings, json) {
@@ -770,19 +708,15 @@
                                               {  data: null,"render":"", title:"No"},
                                                { data: "po.Id",title:"Id"},
                                                { data: "po.Huawei_ID",title:"Huawei_ID"},
-                                               { data: "projects.Project_Name", editField: "po.ProjectId",title:"Project_Name" },
-                                               { data: "po.Project",title:"Project" },
-                                                { data: "po.Project_Code", title:"Project_Code" },
                                                { data: "po.PO_Status",title:"PO_Status" },
                                                { data: "po.Status",title:"Status" },
                                                { data: "po.ROR_Status",title:"ROR_Status" },
-                                               { data: "po.ProjectCode",title:"ProjectCode" },
 
                                                { data: "po.PO_No",title:"PO_No" },
                                                { data: "po.PR_No",title:"PR_No" },
                                                { data: "po.Cut",title:"Cut" },
                                                { data: "po.PO_Line_No",title:"PO_Line_No" },
-                                               { data: "po.Shipment_Num",title:"Shipment_Num" },
+                                               { data: "po.Shipment_Num",title:"Shipment_Num" },//16
                                                { data: "po.Item_Code",title:"Item_Code" },
                                                { data: "po.Credit_Note",title:"Credit_Note" },
 
@@ -894,7 +828,6 @@
                                                       // clearing all select/input options
                                                       editor
                                                          .create( false )
-                                                         .set( 'po.ProjectId', '{{$projectid}}')
                                                          .submit();
                                                   },
                                                 },
@@ -1033,7 +966,6 @@
               <div class="modal-body">
                 <div class="form-group">
                   <form enctype="multipart/form-data" id="upload_form" role="form" method="POST" action="" >
-                    <input type="hidden" id="projectid" name="projectid" value={{$projectid}}>
                     <input type="file" id="import" name="import">
                   </form>
                 </div>
@@ -1105,36 +1037,6 @@
 
           <div class="box-body">
 
-          <div class="col-md-1">
-              <label>Project : </label>
-
-          </div>
-
-          <div class="col-md-2">
-
-            <div class="form-group">
-              <select class="form-control select2" id="mySelect" onchange="searchbyproject()">
-                <option></option>
-
-              @foreach($projects as $project)
-
-                @if($projectid==$project->Id)
-
-                   <option value="{{$project->Id}}" selected>{{$project->Project_Name}}</option>
-
-                @else
-
-                   <option value="{{$project->Id}}">{{$project->Project_Name}}</option>
-
-                @endif
-
-              @endforeach
-
-            </select>
-          </div>
-
-        </div>
-
       <div class="col-md-1">
         <label>Filter : </label>
 
@@ -1145,7 +1047,6 @@
         <div class="form-group">
           <select class="form-control select2" id="filter">
             <option <?php if($type=="All PO") echo ' selected="selected" '; ?>>All PO</option>
-            <option <?php if($type=="No Project PO") echo ' selected="selected" '; ?>>No Project PO</option>
             <option <?php if($type=="Accepted PO") echo ' selected="selected" '; ?>>Accepted PO</option>
             <option <?php if($type=="Pending PM Acceptance") echo ' selected="selected" '; ?>>Pending PM Acceptance</option>
             <option <?php if($type=="Pending Finance Acceptance") echo ' selected="selected" '; ?>>Pending Finance Acceptance</option>
@@ -1208,8 +1109,6 @@
                 <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" onclick="updateaccept('Finance Accept')">Finance Accept</button>
 
               @elseif($type=="All PO")
-
-              @elseif($type=="No Project PO")
 
               @elseif($type=="Ready for ESAR")
 
@@ -1366,7 +1265,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

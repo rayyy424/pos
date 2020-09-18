@@ -66,29 +66,26 @@
 	$(document).ready(function() {
 		editor = new $.fn.dataTable.Editor( {
 			ajax: {
-				"url": "{{ asset('/Include/gensetinventory.php') }}"
+				"url": "{{ asset('/Include/speedfreakinventory.php') }}"
 			},
-			idSrc: "gensetinventory.Id",
+			idSrc: "speedfreakinventory.Id",
 			table: "#inventorytable",
 			fields: [
 			{
 				label:"Type",
-				name:"gensetinventory.type",
+				name:"speedfreakinventory.type",
 				type: 'select2',
 				options: [ 
-				{ label :"GENSET", value: "GENSET" },
-				{ label :"TANK", value: "TANK" },
-				{ label :"ATS", value: "ATS" }, 
-				{ label :"VEHICLE", value: "VEHICLE" },
+				{ label :"SPEEDFREAK", value: "SPEEDFREAK" },
 				],
 			},
 			{
 				label: "Machinery No:",
-				name: "gensetinventory.machinery_no",
+				name: "speedfreakinventory.machinery_no",
 			},
             {
                 label: "Status:",
-	            name: "gensetinventory.status",
+	            name: "speedfreakinventory.status",
 	            type: 'select2',
 	            options: [ 
 	            { label :"Idle", value: "Idle" },
@@ -101,11 +98,11 @@
         });
 
         editor.on( 'preSubmit', function (e, data, action) {
-        	var machinery_no = this.field( 'gensetinventory.machinery_no' );
-        	var model = this.field( 'gensetinventory.model' );
-        	var type = this.field( 'gensetinventory.type' );
-        	var supplier = this.field( 'gensetinventory.supplier' );
-        	var status = this.field( 'gensetinventory.status' );
+        	var machinery_no = this.field( 'speedfreakinventory.machinery_no' );
+        	var model = this.field( 'speedfreakinventory.model' );
+        	var type = this.field( 'speedfreakinventory.type' );
+        	var supplier = this.field( 'speedfreakinventory.supplier' );
+        	var status = this.field( 'speedfreakinventory.status' );
         	 if ( action !== 'remove' )
         	 {
 
@@ -147,13 +144,13 @@
             },
 			columns: [
 				{ data: null,"render":"", title:"No"},
-				{ data: "gensetinventory.Id", title:'Id'},
-				{ data: "gensetinventory.machinery_no", title:'Machinery No',
+				{ data: "speedfreakinventory.Id", title:'Id'},
+				{ data: "speedfreakinventory.machinery_no", title:'Machinery No',
 					render: function ( data, type, full, meta ) {
 						return "<b>"+data+"</b>";
 					}
 				},
-				{ data: "gensetinventory.type", title:'Type'},
+				{ data: "speedfreakinventory.type", title:'Type'},
 				{ data: "company.Company_Name", title:'Client',
 					render: function ( data, type, full, meta ) {
 						if(data == "" || data == null)
@@ -190,18 +187,6 @@
 						}
 					}
 				},			
-				{ data: "deliveryform.project_type",title:"Client Category",
-					render: function ( data, type, full, meta ) {
-							if(data == "" || data == null)
-							{
-								return "-";
-							}
-							else
-							{
-								return data;
-							}
-						}
-				},
 				{ data: "tracker.hiredate", title:'Hire Date',
 					render: function ( data, type, full, meta ) {
 						if(data == "" || data == null)
@@ -226,25 +211,25 @@
 						}
 					}
 				},
-				{ data: "gensetinventory.status", title:'Status',
+				{ data: "speedfreakinventory.status", title:'Status',
 						render: function ( data, type, full, meta ) {
-						if(full.gensetinventory.status == "Idle")
+						if(full.speedfreakinventory.status == "Idle")
 						{
 							return '<span class="label label-primary">'+data+'</span>';
 						}
-						else if (full.gensetinventory.status == "Occupied")
+						else if (full.speedfreakinventory.status == "Occupied")
 						{
 							return '<span class="label label-info">'+data+"-"+full.deliveryform.DO_No+'</span>';
 						}
-						else if (full.gensetinventory.status == "Repair")
+						else if (full.speedfreakinventory.status == "Repair")
 						{
 							return '<span class="label label-danger">'+data+'</span>';
 						}
-						else if (full.gensetinventory.status == "Returned")
+						else if (full.speedfreakinventory.status == "Returned")
 						{
 							return '<span class="label label-warning">'+data+'</span>';
 						}
-						else if (full.gensetinventory.status == "Verified")
+						else if (full.speedfreakinventory.status == "Verified")
 						{
 							return '<span class="label label-success">'+data+'</span>';
 						}
@@ -269,8 +254,8 @@
 				},
 				{ data:null, title:"Action",
 					render: function ( data, type, row, meta ) {
-							return "<a class='btn btn-default btn-sm' target='_blank' href='{{url('asset/inventorydetails')}}/"+ data.gensetinventory.Id + "'>View</a>" + 
-								"<a class='btn btn-default btn-sm' href='/assetdetails/"+data.gensetinventory.Id+"' target='_blank'>Edit</a>";
+							return "<a class='btn btn-default btn-sm' target='_blank' href='{{url('asset/inventorydetails')}}/"+ data.speedfreakinventory.Id + "'>View</a>" + 
+								"<a class='btn btn-default btn-sm' href='/assetdetails/"+data.speedfreakinventory.Id+"' target='_blank'>Edit</a>";
 						}
 				}
 			],
@@ -309,7 +294,7 @@
 			// Get the rows id value
 			//  var row=$(this).closest("tr");
 			//  var oTable = row.closest('table').dataTable();
-			userid = oTable.api().row( this ).data().gensetinventory.Id;
+			userid = oTable.api().row( this ).data().speedfreakinventory.Id;
 		});
 
 		oTable.api().on( 'order.dt search.dt', function () {
@@ -352,11 +337,11 @@
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1>Asset Management<small>GENSET</small></h1>
+		<h1>Asset Management<small>SPEEDFREAK</small></h1>
 
 		<ol class="breadcrumb">
 			<li><a href="{{ url('/home') }}"><i class="fa fa-dashboard"></i>Home</a></li>
-			<li><a href="#">GENSET</a></li>
+			<li><a href="#">SPEEDFREAK</a></li>
 			<li class="active">Asset Management</li>
 		</ol>
 	</section>
@@ -531,7 +516,7 @@
 	            	<table id="inventorytable" class="inventorytable" cellspacing="0" width="100%" padding="30px" style="font-size: 13px; white-space: pre-line;">
 		              	<thead>
 		              		<tr class="search">
-		              			@foreach($gensetinventory as $key=>$value)
+		              			@foreach($speedfreakinventory as $key=>$value)
 
 			              			@if ($key==0)
 				              			<?php $i = 0; ?>
@@ -550,7 +535,7 @@
 								@endforeach
 		                    </tr>
 		                    <tr>
-		                    	@foreach($gensetinventory as $key=>$value)
+		                    	@foreach($speedfreakinventory as $key=>$value)
 		                            @if ($key==0)
 			                            <td></td>
 			                            @foreach($value as $field=>$value)
@@ -563,7 +548,7 @@
 		                </thead>
 		                <tbody>
 		                	<?php $i = 0; ?>
-			                	@foreach($gensetinventory as $inventory)
+			                	@foreach($speedfreakinventory as $inventory)
 				                	<tr id="row_{{ $i }}">
 				                		<td></td>
 			                            @foreach($inventory as $key=>$value)
@@ -583,7 +568,7 @@
 
 <footer class="main-footer">
 	<div class="pull-right hidden-xs">
-		<b>Version</b> 2.0.1
+		<b>Version</b> 1.0.0
 	</div>
 	<strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
 </footer>
@@ -621,8 +606,7 @@
 		}
 		else if($('#Process').val()=="Stock Out")
 		{
-			// if($("#StockId").val())
-			// {
+
 				$("#branch").show();
 			    $("#qty_in").hide();
 			    $("#technician").show();
@@ -632,17 +616,7 @@
 			    $("#branch_in").hide();
 			    $("#branch_out").hide();
 			    $("#qty_branch_out").hide();
-			// }
-			// else 
-			// {
-				// $("#ProjectSection").show();
-				// $("#RegionSection").show();
-				// $("#OwnershipSection").show();
-				// $("#QuantitySection").show();
-				// $("#ActionSection").show();
-				// $("#BaySection").show();
-				// $("#SiteSection").hide();
-			// }
+
 		}
 		else if($('#Process').val()=="Stock Return")
 		{
@@ -660,7 +634,6 @@
 			// }
 			// else 
 			// {
-				// $("#ProjectSection").hide();
 				// $("#RegionSection").hide();
 				// $("#OwnershipSection").hide();
 				// $("#QuantitySection").hide();
@@ -845,7 +818,7 @@
                       $("#exist-alert").fadeOut();
                       var myObject = response;
                           var display='<table class="table table-bordered" width="100%" padding="30px" style="font-size: 13px;">';
-                          display+='<tr class="roomsheader"><th>Bay</th><th>Project</th><th>Region</th><th>Ownership</th><th>Site</th><th>Action</th><th>Quantity</th><th>Date</th></tr>';
+                          display+='<tr class="roomsheader"><th>Bay</th><th>Region</th><th>Ownership</th><th>Site</th><th>Action</th><th>Quantity</th><th>Date</th></tr>';
 
                           $.each(myObject, function(i,item){
 
@@ -855,7 +828,7 @@
                                   }
 
                                   display+="<tr>";
-                                  display+='<td>'+item.WarehouseCode+' '+item.RoomCode+'</td><td>'+item.Project_Name+'</td><td>'+item.Region+'</td><td>'+item.Ownership+'</td><td>'+item.Site+'-'+item.Site_Name+'</td><td>'+item.Action+'</td><td>'+item.Quantity+'</td><td>'+item.Created_At+'</td>';
+                                  display+='<td>'+item.WarehouseCode+' '+item.RoomCode+'</td><td>'+item.Region+'</td><td>'+item.Ownership+'</td><td>'+item.Site+'-'+item.Site_Name+'</td><td>'+item.Action+'</td><td>'+item.Quantity+'</td><td>'+item.Created_At+'</td>';
                                   display+="</tr>";
                           });
 

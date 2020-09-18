@@ -630,7 +630,7 @@
 
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -695,11 +695,6 @@
                             display+='<tr class="historyheader"><td>Name</td></tr>';
 
                             $.each(myObject, function(i,item){
-
-                                    if (item.Project_Name===null)
-                                    {
-                                      item.Project_Name=" - ";
-                                    }
 
                                     display+="<tr>";
                                     display+='<td>'+item.Name+'</td>';

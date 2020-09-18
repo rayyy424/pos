@@ -111,20 +111,20 @@ class InventoryController extends Controller
 	public function lowtresholdlist()
 	{
 		$me = (new CommonController)->get_current_user();
-		$item = DB::table('gensetinventory')
-		->leftJoin(DB::Raw('(SELECT Max(Id) as maxid, inventoryId from inventorypricehistory group by inventoryId) as max'),'max.inventoryId','=','gensetinventory.Id')
+		$item = DB::table('speedfreakinventory')
+		->leftJoin(DB::Raw('(SELECT Max(Id) as maxid, inventoryId from inventorypricehistory group by inventoryId) as max'),'max.inventoryId','=','speedfreakinventory.Id')
 		->leftJoin('inventorypricehistory','inventorypricehistory.Id','=',DB::raw('max.maxid'))
-		->select('gensetinventory.Id','gensetinventory.name','gensetinventory.type','gensetinventory.barcode','gensetinventory.model','inventorypricehistory.price','gensetinventory.balance_treshold','gensetinventory.qty_balance')
+		->select('speedfreakinventory.Id','speedfreakinventory.name','speedfreakinventory.type','speedfreakinventory.barcode','speedfreakinventory.model','inventorypricehistory.price','speedfreakinventory.balance_treshold','speedfreakinventory.qty_balance')
 		->whereRaw('qty_balance <= balance_treshold AND type NOT IN ("GENSET","TANK","ATS","VEHICLE") AND balance_treshold > 0')
 		->get();
 		return view ('lowtresholdlist', ['me' => $me, 'item' => $item]);
 	}
 	public function getpricehistory($id)
 	{
-		$item = DB::table('gensetinventory')
-		->leftJoin('inventorypricehistory','inventorypricehistory.inventoryId','=','gensetinventory.Id')
-		->select('gensetinventory.name','inventorypricehistory.price','inventorypricehistory.created_at')
-		->where('gensetinventory.Id','=',$id)
+		$item = DB::table('speedfreakinventory')
+		->leftJoin('inventorypricehistory','inventorypricehistory.inventoryId','=','speedfreakinventory.Id')
+		->select('speedfreakinventory.name','inventorypricehistory.price','inventorypricehistory.created_at')
+		->where('speedfreakinventory.Id','=',$id)
 		->get();
 
 		return response()->json(['Item' => $item]);
@@ -164,45 +164,6 @@ class InventoryController extends Controller
 		->where('options.Table', '=','inventory')
 		->where('options.Field', '=','Type')
 		->get();
-		// dd($warehouses);
-
-		// $inventories = DB::table('inventories')
-		// ->select('inventories.Id', 'inventories.Item_Code', 'inventories.Part_Name', 'inventories.Unit','inventories.Remark','inventories.Material_Service','stocks.Quantity')
-		// ->select('inventories.Id','stocks.Id as StockId','projects.Project_Name','stocks.Region','stocks.Ownership','inventories.Item_Code','inventories.Part_Name','inventories.Bundled','inventories.Family','inventories.Model','inventories.Size','inventories.Color','inventories.Material','inventories.Brand','inventories.Unit','inventories.Remark','inventories.Material_Service',DB::raw('SUM(IF(`Action`="Purchase" OR `Action`="Created" or `Action`="Extra" or `Action`="Move In" or `Action`="Transfer In" or `Action`="Deposit" or `Action`="Receive", `Quantity`, -1 * `Quantity`)) AS Quantity'),'ssc.StockCheckQuantity')
-		// ->leftJoin('stocks', 'stocks.Inventory_Id', '=', 'inventories.Id')
-		// ->leftJoin('projects', 'stocks.ProjectId', '=', 'projects.Id')
-		// ->leftJoin(DB::raw('(SELECT SUM(StockCheckQuantity) as StockCheckQuantity, IID FROM (SELECT DISTINCT Quantity as StockCheckQuantity, stock_check_inventory.Room_Id, stock_check_inventory.Inventory_Id as IID, Date FROM stock_check_inventory INNER JOIN stock_check ON stock_check.Id = stock_check_inventory.Stock_Check_Id INNER JOIN (SELECT Room_Id, Inventory_Id, MAX(Date) as MaxDate FROM stock_check_inventory LEFT JOIN stock_check ON stock_check_inventory.Stock_Check_Id = stock_check.Id GROUP BY Room_Id, Inventory_Id) b ON stock_check.Date = b.MaxDate AND b.Room_Id = stock_check_inventory.Room_Id AND b.Inventory_Id = stock_check_inventory.Inventory_Id) as sc GROUP BY IID) as ssc'), 'ssc.IID', '=', 'inventories.Id')
-		// ->where('stocks.Ownership', '!=','Propel')
-		// ->where('inventories.Material_Service', '=','Stocks')
-		// ->groupBy('inventories.Id')
-		// ->groupBy('inventories.Id','stocks.ProjectId','stocks.Region','stocks.Ownership')
-		// ->get();
-
-		// $stockcheck = DB::table('stock_check')->orderBy('Date', 'DESC')->get();
-
-		// $projects = DB::table('projects')
-		// ->get();
-
-		// $regions= DB::table('options')
-		// ->whereIn('Table', ["tracker"])
-		// ->where('Field', '=','Region')
-		// ->orderBy('Table','asc')
-		// ->orderBy('Option','asc')
-		// ->get();
-
-		// $ownerships= DB::table('options')
-		// ->whereIn('Table', ["stocks"])
-		// ->where('Field', '=','Ownership')
-		// ->orderBy('Table','asc')
-		// ->orderBy('Option','asc')
-		// ->get();
-
-		// $locations = DB::table('rooms')
-		// ->select('rooms.Id as RoomId','warehouses.Code as WarehouseCode', 'warehouses.Name as WarehouseName', 'rooms.Name as RoomName', 'rooms.Code as RoomCode')
-		// ->join('warehouses', 'rooms.Warehouse_Id', '=', 'warehouses.Id')
-		// ->get();
-
-		// return view ('inventorymanagement', ['me' => $me, 'inventories' => $inventories, 'stockcheck' => $stockcheck, 'projects' => $projects, 'regions' => $regions,  'ownerships' => $ownerships, 'locations' => $locations]);
 
 		return view ('inventorymanagement', ['me' => $me, 'inventories' => $inventories, 'categories' => $categories, 'unit' => $unit, 'warehouses' => $warehouses,'type'=>$type]);
 	}
@@ -229,25 +190,25 @@ class InventoryController extends Controller
 	public function assetinventory($typefilter = null)
 	{
 		$me = (new CommonController)->get_current_user();
-		$cond = "gensetinventory.type in ('GENSET','TANK','ATS','VEHICLE')";
+		$cond = "speedfreakinventory.type in ('GENSET','TANK','ATS','VEHICLE')";
 		if($typefilter)
 		{
-			$cond = "gensetinventory.type = '".$typefilter."' ";
+			$cond = "speedfreakinventory.type = '".$typefilter."' ";
 		}
-		$gensetinventory=DB::table('gensetinventory')
-		->leftJoin('inventories','inventories.Item_Code','=','gensetinventory.machinery_no')
+		$speedfreakinventory=DB::table('speedfreakinventory')
+		->leftJoin('inventories','inventories.Item_Code','=','speedfreakinventory.machinery_no')
 		// ->leftJoin('deliveryitem','deliveryitem.inventoryId','=','inventories.Id')
 		// ->leftJoin('deliveryform','deliveryform.Id','=','deliveryitem.formId')
 		->leftJoin( DB::raw('(select Max(Id) as maxid,Max(formId) as maxformId,inventoryId from deliveryitem Group By inventoryId) as max'), 'max.inventoryId', '=', 'inventories.Id')
         ->leftJoin('deliveryform', 'deliveryform.Id', '=', DB::raw('max.`maxformId`'))
         ->leftjoin('radius','radius.Id','=','deliveryform.Location')
-		->leftJoin('users','users.Id','=','gensetinventory.technicianId')
+		->leftJoin('users','users.Id','=','speedfreakinventory.technicianId')
 		->leftJoin('companies','companies.Id','=','deliveryform.client')
 		->leftJoin('salesorder','salesorder.Id','=','deliveryform.salesorderid')
 		->leftjoin('tracker','tracker.Id','=','salesorder.trackerid')
-		->select('gensetinventory.Id','gensetinventory.machinery_no','gensetinventory.type','companies.Company_Name','radius.Location_Name','users.Name','deliveryform.project_type',DB::raw('tracker.`Hire Date` as hiredate'),'deliveryform.offhire_date','gensetinventory.status','deliveryform.DO_No')
+		->select('speedfreakinventory.Id','speedfreakinventory.machinery_no','speedfreakinventory.type','companies.Company_Name','radius.Location_Name','users.Name','deliveryform.project_type',DB::raw('tracker.`Hire Date` as hiredate'),'deliveryform.offhire_date','speedfreakinventory.status','deliveryform.DO_No')
 		->whereRaw($cond)
-		->orderBy('gensetinventory.machinery_no')
+		->orderBy('speedfreakinventory.machinery_no')
 		->get();
 
 		$supplier = DB::table('companies')
@@ -259,16 +220,16 @@ class InventoryController extends Controller
 
 		$type= ["GENSET","ATS","TANK","VEHICLE"];
 
-		return view ('assetinventory', ['me' => $me, 'gensetinventory' => $gensetinventory,'supplier' => $supplier,'type'=>$type, 'typefilter'=>$typefilter]);
+		return view ('assetinventory', ['me' => $me, 'speedfreakinventory' => $speedfreakinventory,'supplier' => $supplier,'type'=>$type, 'typefilter'=>$typefilter]);
 	}
 
 	public function assetinventorydetails($id)
 	{
 		$me = (new CommonController)->get_current_user();
 
-		$item = DB::table('gensetinventory')
-		->select('gensetinventory.*')
-		->where('gensetinventory.Id','=',$id)
+		$item = DB::table('speedfreakinventory')
+		->select('speedfreakinventory.*')
+		->where('speedfreakinventory.Id','=',$id)
 		->first();
 
 		$deliveryitems = DB::table('deliveryitem')
@@ -298,15 +259,15 @@ class InventoryController extends Controller
 	{
 		$me = (new CommonController)->get_current_user();
 
-		$type = DB::Table('gensetinventory')
-		->select('gensetinventory.type')
-		->where('gensetinventory.Id','=',$id)
+		$type = DB::Table('speedfreakinventory')
+		->select('speedfreakinventory.type')
+		->where('speedfreakinventory.Id','=',$id)
 		->first();
 
-		$item = DB::table('gensetinventory')
-		->leftJoin('companies','companies.Id','=','gensetinventory.supplier')
-		->select('gensetinventory.type','gensetinventory.machinery_no','gensetinventory.replace_capacity','gensetinventory.purchase_date','gensetinventory.rental_rate','gensetinventory.engine_model','gensetinventory.serial_no','gensetinventory.alternator_serial_no','gensetinventory.capacity','gensetinventory.min_litre','gensetinventory.consumption','gensetinventory.supplier','companies.Company_Name','gensetinventory.brand','gensetinventory.engine_no','gensetinventory.barcode','gensetinventory.width','gensetinventory.length','gensetinventory.height',DB::raw('"" as owner'))
-		->where('gensetinventory.Id','=',$id)
+		$item = DB::table('speedfreakinventory')
+		->leftJoin('companies','companies.Id','=','speedfreakinventory.supplier')
+		->select('speedfreakinventory.type','speedfreakinventory.machinery_no','speedfreakinventory.replace_capacity','speedfreakinventory.purchase_date','speedfreakinventory.rental_rate','speedfreakinventory.engine_model','speedfreakinventory.serial_no','speedfreakinventory.alternator_serial_no','speedfreakinventory.capacity','speedfreakinventory.min_litre','speedfreakinventory.consumption','speedfreakinventory.supplier','companies.Company_Name','speedfreakinventory.brand','speedfreakinventory.engine_no','speedfreakinventory.barcode','speedfreakinventory.width','speedfreakinventory.length','speedfreakinventory.height',DB::raw('"" as owner'))
+		->where('speedfreakinventory.Id','=',$id)
 		->first();
 
 		$companies = DB::table('companies')
@@ -317,7 +278,7 @@ class InventoryController extends Controller
 		$file = DB::table('files')
 		->select('Web_Path')
 		->where('TargetId','=',$id)
-		->where('Type','=','GensetInventoryQRCode')
+		->where('Type','=','SpeedFreakInventoryQRCode')
 		->orderBy('Id','desc')
 		->first();
 
@@ -333,7 +294,7 @@ class InventoryController extends Controller
 	{
 		$me = (new CommonController)->get_current_user();
 		$input = $request->all();
-		if($input['type'] == "Genset" || $input['type'] == "GENSET")
+		if($input['type'] == "SpeedFreak" || $input['type'] == "SPEEDFREAK")
 		{
 			if( !($input['machinery_no']  && $input['capacity'] && $input['purchase_date'] && $input['engine_no'] && $input['engine_model']) )
 			{
@@ -341,8 +302,8 @@ class InventoryController extends Controller
 			}
 		}
 
-		DB::table('gensetinventory')
-		->where('gensetinventory.Id','=',$input['id'])
+		DB::table('speedfreakinventory')
+		->where('speedfreakinventory.Id','=',$input['id'])
 		->update([
 			'machinery_no' => $input['machinery_no'],
 			'capacity' => ISSET($input['capacity']) ? $input['capacity'] : "",
@@ -364,7 +325,7 @@ class InventoryController extends Controller
 		]);
 
 		if (ISSET($input['qrcode'])) {
-          		$path = "/private/upload/GensetInventoryQRCode/";
+          		$path = "/private/upload/SpeedFreakInventoryQRCode/";
                 $file = $input['qrcode'];
                 $destinationPath=public_path().$path;
                 $extension = $file->getClientOriginalExtension();
@@ -373,7 +334,7 @@ class InventoryController extends Controller
                 $fileName=time()."_.".$extension;
                 $upload_success = $file->move($destinationPath, $fileName);
                 $insert=DB::table('files')->insertGetId(
-                    ['Type' => "GensetInventoryQRCode",
+                    ['Type' => "SpeedFreakInventoryQRCode",
                      'TargetId' => $input['id'],
                      'File_Name' => $originalName,
                      'File_Size' => $fileSize,
@@ -384,35 +345,40 @@ class InventoryController extends Controller
 
           return 1;
 	}
-	public function gensetinventory($branches = null)
+	public function speedfreakinventory($branches = null)
 	{
 		$me = (new CommonController)->get_current_user();
 
 		$categories = ['Genset','Tank','ATS','Vehicle'];
 			if($branches == null)
 			{
-			$gensetinventory=DB::table('gensetinventory')
-			// ->leftJoin('users','users.Id','=','gensetinventory.technicianId')
-			->leftJoin('companies','companies.Id','=','gensetinventory.supplier')
-			->leftJoin(DB::Raw('(SELECT Max(Id) as maxid, inventoryId from inventorypricehistory group by inventoryId) as max'),'max.inventoryId','=','gensetinventory.Id')
+			$speedfreakinventory=DB::table('speedfreakinventory')
+			// ->leftJoin('users','users.Id','=','speedfreakinventory.technicianId')
+			->leftJoin('companies','companies.Id','=','speedfreakinventory.supplier')
+			->leftJoin(DB::Raw('(SELECT Max(Id) as maxid, inventoryId from inventorypricehistory group by inventoryId) as max'),'max.inventoryId','=','speedfreakinventory.Id')
 			->leftJoin('inventorypricehistory','inventorypricehistory.Id','=',DB::raw('max.maxid'))
-			->select('gensetinventory.Id', 'gensetinventory.name', 'gensetinventory.type','gensetinventory.barcode','gensetinventory.model','inventorypricehistory.price','companies.Company_Name','gensetinventory.qty_balance','gensetinventory.status')
-			->whereNotIn('gensetinventory.type',$categories)
-			// ->whereRaw("gensetinventory_history.`created_at`>=str_to_date('".$start."','%d-%M-%Y') AND gensetinventory_history.`created_at`<=str_to_date('".$end."','%d-%M-%Y')")
+			->leftJoin(DB::Raw('(SELECT Max(Id) as maxid2, inventoryId from inventorysalesprice group by inventoryId) as max2'),'max2.inventoryId','=','speedfreakinventory.Id')
+			->leftJoin('inventorysalesprice','inventorysalesprice.Id','=',DB::raw('max2.maxid2'))
+			->select('speedfreakinventory.Id', 'speedfreakinventory.name', 'speedfreakinventory.type','speedfreakinventory.barcode','speedfreakinventory.model','inventorypricehistory.price','inventorysalesprice.price as saleprice','companies.Company_Name','speedfreakinventory.qty_balance','speedfreakinventory.status')
+			->whereNotIn('speedfreakinventory.type',$categories)
+			// ->whereRaw("speedfreakinventory_history.`created_at`>=str_to_date('".$start."','%d-%M-%Y') AND speedfreakinventory_history.`created_at`<=str_to_date('".$end."','%d-%M-%Y')")
 			->get();
 			}
 			else
 			{
-				 $gensetinventory=DB::table('gensetinventory')
-				// ->leftJoin('users','users.Id','=','gensetinventory.technicianId')
-				 ->leftjoin('gensetinventory_history','gensetinventory_history.gensetinventoryId','=','gensetinventory.Id')
-				->leftJoin('companies','companies.Id','=','gensetinventory.supplier')
-				->leftJoin(DB::Raw('(SELECT Max(Id) as maxid, inventoryId from inventorypricehistory group by inventoryId) as max'),'max.inventoryId','=','gensetinventory.Id')
+				 $speedfreakinventory=DB::table('speedfreakinventory')
+				// ->leftJoin('users','users.Id','=','speedfreakinventory.technicianId')
+				 ->leftjoin('speedfreakinventory_history','speedfreakinventory_history.speedfreakInventoryId','=','speedfreakinventory.Id')
+				->leftJoin('companies','companies.Id','=','speedfreakinventory.supplier')
+				->leftJoin(DB::Raw('(SELECT Max(Id) as maxid, inventoryId from inventorypricehistory group by inventoryId) as max'),'max.inventoryId','=','speedfreakinventory.Id')
 				->leftJoin('inventorypricehistory','inventorypricehistory.Id','=',DB::raw('max.maxid'))
-				->select('gensetinventory.Id', 'gensetinventory.name', 'gensetinventory.type','gensetinventory.barcode','gensetinventory.model','inventorypricehistory.price','companies.Company_Name',DB::raw("SUM(gensetinventory_history.qty) as qty_balance"),'gensetinventory.status')
-				->where('gensetinventory_history.branch','LIKE','%'.$branches.'%')
-				->whereNotIn('gensetinventory.type',$categories)
-				->groupBy('gensetinventory.Id')
+				->leftJoin(DB::Raw('(SELECT Max(Id) as maxid2, inventoryId from inventorysalesprice group by inventoryId) as max2'),'max2.inventoryId','=','speedfreakinventory.Id')
+				->leftJoin('inventorysalesprice','inventorysalesprice.Id','=',DB::raw('max2.maxid2'))
+				->select('speedfreakinventory.Id', 'speedfreakinventory.name', 'speedfreakinventory.type','speedfreakinventory.barcode','speedfreakinventory.model','inventorypricehistory.price','inventorysalesprice.price as saleprice','companies.Company_Name',DB::raw("SUM(speedfreakinventory_history.qty) as qty_balance"),'speedfreakinventory.status')
+				->where('speedfreakinventory_history.branch','LIKE','%'.$branches.'%')
+				->where('speedfreakinventory_history.type','LIKE','%Stock-in%')
+				->whereNotIn('speedfreakinventory.type',$categories)
+				->groupBy('speedfreakinventory.Id')
 				->get();
 			}
 			
@@ -449,20 +415,22 @@ class InventoryController extends Controller
 		->whereRaw('Position LIKE "%Technician%" OR Position LIKE "%Foreman%" OR Position LIKE "%General Worker%"')
 		->get();
 
-		$gensetinventorymodel = DB::table('options')
+		$speedfreakinventorymodel = DB::table('options')
 		->select('Id','Option')
-		->where('Table','Genset')
+		->where('Table','SpeedFreak')
 		->where('Field','Model')
+		->orderBy('Option','ASC')
 		->get();
 
-		$gensetinventorytype = DB::table('options')
+		$speedfreakinventorytype = DB::table('options')
 		->select('Id','Option')
-		->where('Table','Genset')
+		->where('Table','SpeedFreak')
 		->where('Field','Type')
+		->orderBy('Option','ASC')
 		->get();
 
 
-		return view ('gensetinventory', ['me' => $me, 'gensetinventory' => $gensetinventory, 'status' => $status, 'supplier' => $supplier,'type'=>$type, 'branch'=>$branch,'technician'=>$technician, 'gensetinventorytype'=>$gensetinventorytype, 'gensetinventorymodel'=>$gensetinventorymodel, 'currentbranch'=>$branches]);
+		return view ('speedfreakinventory', ['me' => $me, 'speedfreakinventory' => $speedfreakinventory, 'status' => $status, 'supplier' => $supplier,'type'=>$type, 'branch'=>$branch,'technician'=>$technician, 'speedfreakinventorytype'=>$speedfreakinventorytype, 'speedfreakinventorymodel'=>$speedfreakinventorymodel, 'currentbranch'=>$branches]);
 	}
 
 	public function branchtransfergetquantity(Request $request, $type = null)
@@ -471,33 +439,33 @@ class InventoryController extends Controller
 
 		if($type == null)
 		{
-			$balance = DB::table('gensetinventory_history')
+			$balance = DB::table('speedfreakinventory_history')
 			->select(DB::Raw('SUM(qty) as count'))
 			->where('branch','=',$input['branch'])
-			->where('gensetInventoryId','=',$input['id'])
+			->where('speedfreakInventoryId','=',$input['id'])
 			->get();
 		}
 		else if($type == "in")
 		{
-			$balance = DB::table('gensetinventory_history')
+			$balance = DB::table('speedfreakinventory_history')
 			->select(DB::Raw('SUM(qty) as count'))
 			->where('branch','=',$input['in'])
-			->where('gensetInventoryId','=',$input['id'])
+			->where('speedfreakInventoryId','=',$input['id'])
 			->get();
 		}
 		else
 		{
-			$balance = DB::table('gensetinventory_history')
+			$balance = DB::table('speedfreakinventory_history')
 			->select(DB::Raw('SUM(qty) as count'))
 			->where('branch','=',$input['out'])
-			->where('gensetInventoryId','=',$input['id'])
+			->where('speedfreakInventoryId','=',$input['id'])
 			->get();
 		}
 
 		return response()->json(['balance' => $balance]);
 	} 
 
-	public function gensetupdate(Request $request)
+	public function speedfreakupdate(Request $request)
 	{
 		$me = (new CommonController)->get_current_user();
 		$input = $request->all();
@@ -518,25 +486,25 @@ class InventoryController extends Controller
 
 		if($input['Process'] == "Stock In")
 		{
-			$bal = DB::table('gensetinventory')
+			$bal = DB::table('speedfreakinventory')
 			->where('Id','=',$input['StockId'])
 			->select('qty_balance')
 			->first();
 
 			$balance = $bal->qty_balance + $input['qty_in'];
 
-			DB::table('gensetinventory')
+			DB::table('speedfreakinventory')
 			->where('Id','=',$input['StockId'])
 			->update([
 					'qty_balance' => $balance
 			]);
-			DB::table('gensetinventory_history')
+			DB::table('speedfreakinventory_history')
 			->insertGetId([
 				'activity' => $input['Process'],
 				'branch' => $input['branch'],
 				'qty' => $input['qty_in'],
 				'type' => "Stock-in",
-				'gensetinventoryId' => $input['StockId'],
+				'speedfreakInventoryId' => $input['StockId'],
 				'userId' => $me->UserId,
 				'created_at' => Carbon::now(),
 				'technicianId' => $input['technician']
@@ -544,7 +512,7 @@ class InventoryController extends Controller
 		}
 		else if($input['Process'] == "Stock Out")
 		{
-			$bal = DB::table('gensetinventory')
+			$bal = DB::table('speedfreakinventory')
 			->where('Id','=',$input['StockId'])
 			->select('qty_balance')
 			->first();
@@ -559,18 +527,18 @@ class InventoryController extends Controller
 			->where('Id','=',$input['technician'])
 			->select('Name')
 			->first();
-			DB::table('gensetinventory')
+			DB::table('speedfreakinventory')
 			->where('Id','=',$input['StockId'])
 			->update([
 					'qty_balance' => $balance
 			]);
-			DB::table('gensetinventory_history')
+			DB::table('speedfreakinventory_history')
 			->insertGetId([
 				'activity' => $input['Process']." to ".$technician->Name,
 				'branch' => $input['branch'],
-				'qty' => "-".$input['qty_out'],
+				'qty' => $input['qty_out'],
 				'type' => "Stock-out",
-				'gensetinventoryId' => $input['StockId'],
+				'speedfreakInventoryId' => $input['StockId'],
 				'userId' => $me->UserId,
 				'created_at' => Carbon::now(),
 				'technicianId' => $input['technician']
@@ -578,7 +546,7 @@ class InventoryController extends Controller
 		}
 		else if($input['Process'] == "Stock Return")
 		{
-			$bal = DB::table('gensetinventory')
+			$bal = DB::table('speedfreakinventory')
 			->where('Id','=',$input['StockId'])
 			->select('qty_balance')
 			->first();
@@ -589,7 +557,7 @@ class InventoryController extends Controller
 			->where('Id','=',$input['technician'])
 			->select('Name')
 			->first();
-			DB::table('gensetinventory')
+			DB::table('speedfreakinventory')
 			->where('Id','=',$input['StockId'])
 			->update([
 					'qty_balance' => $balance
@@ -610,13 +578,13 @@ class InventoryController extends Controller
 				'Balance' => $tbalance
 			]);
 
-			DB::table('gensetinventory_history')
+			DB::table('speedfreakinventory_history')
 			->insertGetId([
 				'activity' => $input['Process']." from ".$technician->Name,
 				'branch' => $input['branch'],
 				'qty' => $input['qty_return'],
 				'type' => "Stock-return",
-				'gensetinventoryId' => $input['StockId'],
+				'speedfreakInventoryId' => $input['StockId'],
 				'userId' => $me->UserId,
 				'created_at' => Carbon::now(),
 				'technicianId' => $input['technician']
@@ -625,13 +593,13 @@ class InventoryController extends Controller
 		else if($input['Process'] == "Stock Out Branch")
 		{
 			// $balance = $input['qty_balance'] - $input['qty_branch_out'];
-			// DB::table('gensetinventory')
+			// DB::table('speedfreakinventory')
 			// ->where('Id','=',$input['StockId'])
 			// ->update([
 			// 		'qty_balance' => $balance
 			// ]);
-			$bal = DB::table('gensetinventory_history')
-			->where('gensetInventoryId','=',$input['StockId'])
+			$bal = DB::table('speedfreakinventory_history')
+			->where('speedfreakInventoryId','=',$input['StockId'])
 			->where('branch','=',$input['branch_out'])
 			->select(DB::raw('sum(qty) as qty_balance'))
 			->first();
@@ -646,23 +614,23 @@ class InventoryController extends Controller
 				return "not enough balance";
 			}
 
-			DB::table('gensetinventory_history')
+			DB::table('speedfreakinventory_history')
 			->insertGetId([
 				'activity' => $input['Process']." from ".$input['branch_out'],
 				'branch' => $input['branch_in'],
 				'qty' => $input['qty_branch_out'],
 				'type' => "Stock-in",
-				'gensetinventoryId' => $input['StockId'],
+				'speedfreakInventoryId' => $input['StockId'],
 				'userId' => $me->UserId,
 				'created_at' => Carbon::now(),
 			]);
-			DB::table('gensetinventory_history')
+			DB::table('speedfreakinventory_history')
 			->insertGetId([
 				'activity' => $input['Process']." to ".$input['branch_in'],
 				'branch' => $input['branch_out'],
 				'qty' => "-".$input['qty_branch_out'],
 				'type' => "Stock-out",
-				'gensetinventoryId' => $input['StockId'],
+				'speedfreakInventoryId' => $input['StockId'],
 				'userId' => $me->UserId,
 				'created_at' => Carbon::now(),
 			]);
@@ -671,39 +639,45 @@ class InventoryController extends Controller
 		return 1;
 	}
 
-	public function gensetdelete(Request $request)
+	public function speedfreakdelete(Request $request)
 	{
 		$input = $request->all();
-		DB::table('gensetinventory')
+		DB::table('speedfreakinventory')
 		->where('Id','=',$input['Id'])
+		->delete();
+
+		DB::table('speedfreakinventory_history')
+		->where('speedfreakInventoryId','=',$input['Id'])
 		->delete();
 		return 1;
 	}
-	public function gensetinventorydetails($id = null)
+	public function speedfreakinventorydetails($id = null)
 	{
 		$me = (new CommonController)->get_current_user();
 
-		$item = DB::table('gensetinventory')
-		->leftJoin('companies','companies.Id','=','gensetinventory.supplier')
-		->leftJoin(DB::Raw('(SELECT Max(Id) as maxid, inventoryId from inventorypricehistory group by inventoryId) as max'),'max.inventoryId','=','gensetinventory.Id')
+		$item = DB::table('speedfreakinventory')
+		->leftJoin('companies','companies.Id','=','speedfreakinventory.supplier')
+		->leftJoin(DB::Raw('(SELECT Max(Id) as maxid, inventoryId from inventorypricehistory group by inventoryId) as max'),'max.inventoryId','=','speedfreakinventory.Id')
 		->leftJoin('inventorypricehistory','inventorypricehistory.Id','=',DB::raw('max.maxid'))
-		->select('gensetinventory.*','companies.Company_Name','inventorypricehistory.price as latest_price')
-		->where('gensetinventory.Id','=',$id)
+		->leftJoin(DB::Raw('(SELECT Max(Id) as maxid2, inventoryId from inventorysalesprice group by inventoryId) as max2'),'max2.inventoryId','=','speedfreakinventory.Id')
+		->leftJoin('inventorysalesprice','inventorysalesprice.Id','=',DB::raw('max2.maxid2'))
+		->select('speedfreakinventory.*','companies.Company_Name','inventorypricehistory.price as latest_price','inventorysalesprice.price as latest_saleprice')
+		->where('speedfreakinventory.Id','=',$id)
 		->get();
 
-		$history =DB::table('gensetinventory_history')
-		->leftjoin('gensetinventory', 'gensetinventory.Id', '=', 'gensetinventory_history.gensetInventoryId')
-		// ->leftjoin('options', 'options.Id', '=', 'gensetinventory_history.branch')
-		->leftJoin('users','users.Id','=','gensetinventory_history.userId')
-		->select('gensetinventory_history.Id','gensetinventory_history.activity','gensetinventory_history.branch','gensetinventory_history.qty','users.Name','gensetinventory_history.created_at')
-		->where('gensetinventory_history.gensetInventoryId','=',$id)
+		$history =DB::table('speedfreakinventory_history')
+		->leftjoin('speedfreakinventory', 'speedfreakinventory.Id', '=', 'speedfreakinventory_history.speedfreakInventoryId')
+		// ->leftjoin('options', 'options.Id', '=', 'speedfreakinventory_history.branch')
+		->leftJoin('users','users.Id','=','speedfreakinventory_history.userId')
+		->select('speedfreakinventory_history.Id','speedfreakinventory_history.activity','speedfreakinventory_history.branch','speedfreakinventory_history.qty','users.Name','speedfreakinventory_history.created_at')
+		->where('speedfreakinventory_history.speedfreakInventoryId','=',$id)
 		->get();
 
-		$balance = DB::table('gensetinventory_history')
-		->leftjoin('gensetinventory', 'gensetinventory.Id', '=', 'gensetinventory_history.gensetInventoryId')
-		->select('gensetinventory_history.Id','gensetinventory_history.branch',DB::raw('SUM(gensetinventory_history.qty)as total'))
-		->where('gensetinventory_history.gensetInventoryId','=',$id)
-		->groupBy('gensetinventory_history.branch')
+		$balance = DB::table('speedfreakinventory_history')
+		->leftjoin('speedfreakinventory', 'speedfreakinventory.Id', '=', 'speedfreakinventory_history.speedfreakInventoryId')
+		->select('speedfreakinventory_history.Id','speedfreakinventory_history.branch',DB::raw('SUM(speedfreakinventory_history.qty)as total'))
+		->where('speedfreakinventory_history.speedfreakInventoryId','=',$id)
+		->groupBy('speedfreakinventory_history.branch')
 		->get();
 		// dd($balance);
 
@@ -715,56 +689,56 @@ class InventoryController extends Controller
 		$image = DB::table('files')
 		->select('Web_Path')
 		->where('TargetId','=',$id)
-		->where('Type','=','GensetInventory')
+		->where('Type','=','SpeedFreakInventory')
 		->orderBy('Id','desc')
 		->first();
 
 		$qrcode = DB::table('files')
 		->select('Web_Path')
 		->where('TargetId','=',$id)
-		->where('Type','=','GensetInventoryQRCode')
+		->where('Type','=','SpeedFreakInventoryQRCode')
 		->orderBy('Id','desc')
 		->first();
 
 		$store = DB::table('files')
 		->select('Web_Path')
 		->where('TargetId','=',$id)
-		->where('Type','=','GensetInventoryStore')
+		->where('Type','=','SpeedFreakInventoryStore')
 		->orderBy('Id','desc')
 		->first();
 
-		$gensetinventorymodel = DB::table('options')
+		$speedfreakinventorymodel = DB::table('options')
 		->select('Id','Option')
-		->where('Table','Genset')
+		->where('Table','SpeedFreak')
 		->where('Field','Model')
 		->get();
 
-		$gensetinventorytype = DB::table('options')
+		$speedfreakinventorytype = DB::table('options')
 		->select('Id','Option')
-		->where('Table','Genset')
+		->where('Table','SpeedFreak')
 		->where('Field','Type')
 		->get();
 
-		return view('gensetinventorydetails', ['me'=>$me,'item'=>$item,'history'=>$history,'balance'=>$balance,'id'=>$id,'supplier'=>$supplier,'image'=>$image,'qrcode'=>$qrcode,'store'=>$store,'gensetinventorytype'=>$gensetinventorytype,'gensetinventorymodel'=>$gensetinventorymodel]);
+		return view('speedfreakinventorydetails', ['me'=>$me,'item'=>$item,'history'=>$history,'balance'=>$balance,'id'=>$id,'supplier'=>$supplier,'image'=>$image,'qrcode'=>$qrcode,'store'=>$store,'speedfreakinventorytype'=>$speedfreakinventorytype,'speedfreakinventorymodel'=>$speedfreakinventorymodel]);
 	}
 
-	public function gensetinventoryhistory($branch,$id)
+	public function speedfreakinventoryhistory($branch,$id)
 	{
 		$me = (new CommonController)->get_current_user();
 
-		$history =DB::table('gensetinventory_history')
-		->leftjoin('gensetinventory', 'gensetinventory.Id', '=', 'gensetinventory_history.gensetInventoryId')
-		// ->leftjoin('options', 'options.Id', '=', 'gensetinventory_history.branch')
-		->leftJoin('users','users.Id','=','gensetinventory_history.userId')
-		->select('gensetinventory_history.Id','gensetinventory_history.activity','gensetinventory_history.branch','gensetinventory_history.qty','users.Name','gensetinventory_history.created_at')
-		->where('gensetinventory_history.gensetInventoryId','=',$id)
-		->where('gensetinventory_history.branch','LIKE',"%".$branch."%")
+		$history =DB::table('speedfreakinventory_history')
+		->leftjoin('speedfreakinventory', 'speedfreakinventory.Id', '=', 'speedfreakinventory_history.speedfreakInventoryId')
+		// ->leftjoin('options', 'options.Id', '=', 'speedfreakinventory_history.branch')
+		->leftJoin('users','users.Id','=','speedfreakinventory_history.userId')
+		->select('speedfreakinventory_history.Id','speedfreakinventory_history.activity','speedfreakinventory_history.branch','speedfreakinventory_history.qty','users.Name','speedfreakinventory_history.created_at')
+		->where('speedfreakinventory_history.speedfreakInventoryId','=',$id)
+		->where('speedfreakinventory_history.branch','LIKE',"%".$branch."%")
 		->get();
 
-		return view('gensetinventoryhistory', ['me'=>$me,'history'=>$history]);
+		return view('speedfreakinventoryhistory', ['me'=>$me,'history'=>$history]);
 	}
 
-	public function gensetinventoryedit(Request $request)
+	public function speedfreakinventoryedit(Request $request)
 	{
 		$input = $request->all();
 		$me = (new CommonController)->get_current_user();
@@ -772,7 +746,7 @@ class InventoryController extends Controller
 		{
 			return 0;
 		}
-		DB::table('gensetinventory')
+		DB::table('speedfreakinventory')
 		->where('Id','=',$input['id'])
 		->update([
 			'name' => $input['item_name'],
@@ -786,7 +760,6 @@ class InventoryController extends Controller
 			// 'price' => $input['price'],
 			'qty_balance' => $input['qty_balance'],
 			'balance_treshold' => $input['balance_treshold'],
-			'rack_no' => $input['rack_no'],
 			'status' => $input['status'],
 			'maxOrder' => $input['maxOrder'],
 			'maxTechhold' => $input['maxTechhold']
@@ -810,13 +783,30 @@ class InventoryController extends Controller
 			]);
 		}
 
+		$latestsalesprice = DB::Table('inventorysalesprice')
+		->select('price','supplier')
+		->orderby('Id','DESC')
+		->where('inventoryId',$input['id'])
+		->first();
+
+		if( !$latestsalesprice || $input['saleprice'] != $latestsalesprice->price || $input['supplier'] != $latestsalesprice->supplier )
+		{
+			DB::table('inventorysalesprice')
+			->insert([
+				'inventoryId' => $input['id'],
+				'price' => $input['saleprice'],
+				'supplier' => $input['supplier'],
+				'created_at' => Carbon::now(),
+				'userId' => $me->UserId
+			]);
+		}
 
 		$filenames="";
         $attachmentUrl = null;
 		 if(isset($input['image']))
         {
           if ($input['image'] != null || $input['image'] != "") {
-          		$path = "/private/upload/GensetInventory/";
+          		$path = "/private/upload/SpeedFreakInventory/";
                 $file = $input['image'];
                 $destinationPath=public_path().$path;
                 $extension = $file->getClientOriginalExtension();
@@ -825,7 +815,7 @@ class InventoryController extends Controller
                 $fileName=time()."_".$extension;
                 $upload_success = $file->move($destinationPath, $fileName);
                 $insert=DB::table('files')->insertGetId(
-                    ['Type' => "GensetInventory",
+                    ['Type' => "SpeedFreakInventory",
                      'TargetId' => $input['id'],
                      'File_Name' => $originalName,
                      'File_Size' => $fileSize,
@@ -840,7 +830,7 @@ class InventoryController extends Controller
 		if(isset($input['qrcode']))
         {
           if ($input['qrcode'] != null || $input['qrcode'] != "") {
-          		$path = "/private/upload/GensetInventoryQRCode/";
+          		$path = "/private/upload/SpeedFreakInventoryQRCode/";
                 $file = $input['qrcode'];
                 $destinationPath=public_path().$path;
                 $extension = $file->getClientOriginalExtension();
@@ -849,7 +839,7 @@ class InventoryController extends Controller
                 $fileName=time()."_.".$extension;
                 $upload_success = $file->move($destinationPath, $fileName);
                 $insert=DB::table('files')->insertGetId(
-                    ['Type' => "GensetInventoryQRCode",
+                    ['Type' => "SpeedFreakInventoryQRCode",
                      'TargetId' => $input['id'],
                      'File_Name' => $originalName,
                      'File_Size' => $fileSize,
@@ -864,7 +854,7 @@ class InventoryController extends Controller
         if(isset($input['store']))
         {
           if ($input['store'] != null || $input['store'] != "") {
-          		$path = "/private/upload/GensetInventoryStore/";
+          		$path = "/private/upload/SpeedFreakInventoryStore/";
                 $file = $input['store'];
                 $destinationPath=public_path().$path;
                 $extension = $file->getClientOriginalExtension();
@@ -873,7 +863,7 @@ class InventoryController extends Controller
                 $fileName=time()."_".$extension;
                 $upload_success = $file->move($destinationPath, $fileName);
                 $insert=DB::table('files')->insertGetId(
-                    ['Type' => "GensetInventoryStore",
+                    ['Type' => "SpeedFreakInventoryStore",
                      'TargetId' => $input['id'],
                      'File_Name' => $originalName,
                      'File_Size' => $fileSize,
@@ -888,10 +878,11 @@ class InventoryController extends Controller
 		return 1;
 	}
 
-	public function gensetinventorycreate(Request $request)
+	public function speedfreakinventorycreate(Request $request)
 	{
 		$me = (new CommonController)->get_current_user();
-		$id = DB::Table('gensetinventory')
+
+		$id = DB::Table('speedfreakinventory')
 		->insertGetId([
 			'name' => $request->name,
 			'type' => $request->type,
@@ -909,16 +900,27 @@ class InventoryController extends Controller
 			'price' => $request->price,
 			'created_at' => Carbon::now(),
 			'userId' => $me->UserId,
-			'stockin' => $request->balance
+			'stockin' => $request->balance,
+			'supplier' => $request->supplier
 		]);
 
-		DB::table('gensetinventory_history')
+		DB::table('inventorysalesprice')
+		->insert([
+			'inventoryId' => $id,
+			'price' => $request->saleprice,
+			'created_at' => Carbon::now(),
+			'userId' => $me->UserId,
+			'stockin' => $request->balance,
+			'supplier' => $request->supplier
+		]);
+
+		DB::table('speedfreakinventory_history')
 		->insert([
 			'activity' => 'Stock In',
-			'branch' => 'Store HQ',
+			'branch' => 'Store Jenjarom',
 			'qty' => $request->balance,
 			'type' => "Stock-in",
-			'gensetInventoryId' => $id,
+			'speedfreakInventoryId' => $id,
 			'userId' => $me->UserId,
 			'created_at' => Carbon::now()
 		]);
@@ -933,24 +935,123 @@ class InventoryController extends Controller
 		$cond = "1";
 		if($id)
 		{
-			$cond = "gensetinventory.Id = ".$id;
+			$cond = "speedfreakinventory.Id = ".$id;
 		}
 
 		$list = DB::table('inventorypricehistory')
-		->leftjoin('gensetinventory','gensetinventory.Id','=','inventorypricehistory.inventoryId')
+		->leftjoin('speedfreakinventory','speedfreakinventory.Id','=','inventorypricehistory.inventoryId')
 		->leftjoin('companies','companies.Id','=','inventorypricehistory.supplier')
 		->leftjoin('users','users.Id','=','inventorypricehistory.userId')
-		->select('inventorypricehistory.Id','gensetinventory.name','gensetinventory.barcode','companies.Company_Name','inventorypricehistory.price','inventorypricehistory.stockin','inventorypricehistory.stockout','users.Name as user','inventorypricehistory.created_at')
+		->select('inventorypricehistory.Id','speedfreakinventory.name','speedfreakinventory.barcode','companies.Company_Name','inventorypricehistory.price','inventorypricehistory.stockin','inventorypricehistory.stockout','users.Name as user','inventorypricehistory.created_at')
 		->orderby('inventorypricehistory.inventoryId','ASC')
 		->orderby('inventorypricehistory.Id','ASC')
 		->whereRaw($cond)
 		->get();
 
-		$inventory = DB::table('gensetinventory')
+		$inventory = DB::table('speedfreakinventory')
 		->select('Id','barcode')
 		->whereNotIN('type',['GENSET','ATS','VEHICLE','TANK'])
 		->get();
 
 		return view('pricehistory',['me'=>$me,'list'=>$list,'inventory'=>$inventory,'id'=>$id]);
+	}
+
+	public function speedfreaksales($start = null, $end = null,$branches = null)
+	{
+		$me = (new CommonController)->get_current_user();
+
+		$today = date('d-M-Y', strtotime('today'));
+
+		if($start == null)
+		{
+			$start = date('d-M-Y',strtotime('today'));
+
+		}
+		if($end == null)
+		{
+			$end = date('d-M-Y',strtotime('tomorrow'));
+		}
+
+		$categories = ['Genset','Tank','ATS','Vehicle'];
+			if($branches == null)
+			{
+			$speedfreaksales=DB::table('speedfreakinventory')
+			// ->leftJoin('users','users.Id','=','speedfreakinventory.technicianId')
+			->leftjoin('speedfreakinventory_history','speedfreakinventory_history.speedfreakInventoryId','=','speedfreakinventory.Id')
+			->leftJoin('companies','companies.Id','=','speedfreakinventory.supplier')
+			->leftJoin(DB::Raw('(SELECT Max(Id) as maxid, inventoryId from inventorysalesprice group by inventoryId) as max'),'max.inventoryId','=','speedfreakinventory.Id')
+			->leftJoin('inventorysalesprice','inventorysalesprice.Id','=',DB::raw('max.maxid'))
+			->select('speedfreakinventory.Id', 'speedfreakinventory.name', 'speedfreakinventory.type','speedfreakinventory.barcode','speedfreakinventory.model', 'inventorysalesprice.price' ,'companies.Company_Name','speedfreakinventory_history.qty','speedfreakinventory.status')
+			->whereNotIn('speedfreakinventory.type',$categories)
+			->where('speedfreakinventory_history.type','like','%Stock-Out%')
+			->whereRaw("speedfreakinventory_history.`created_at`>=str_to_date('".$start."','%d-%M-%Y') AND speedfreakinventory_history.`created_at`<=str_to_date('".$end."','%d-%M-%Y')")
+			->get();
+			}
+			else
+			{
+				 $speedfreaksales=DB::table('speedfreakinventory')
+				// ->leftJoin('users','users.Id','=','speedfreakinventory.technicianId')
+				->leftjoin('speedfreakinventory_history','speedfreakinventory_history.speedfreakInventoryId','=','speedfreakinventory.Id')
+				->leftJoin('companies','companies.Id','=','speedfreakinventory.supplier')
+				->leftJoin(DB::Raw('(SELECT Max(Id) as maxid, inventoryId from inventorysalesprice group by inventoryId) as max'),'max.inventoryId','=','speedfreakinventory.Id')
+				->leftJoin('inventorysalesprice','inventorysalesprice.Id','=',DB::raw('max.maxid'))
+				->select('speedfreakinventory.Id', 'speedfreakinventory.name', 'speedfreakinventory.type','speedfreakinventory.barcode','speedfreakinventory.model','inventorysalesprice.price','companies.Company_Name',DB::raw("SUM(speedfreakinventory_history.qty) as qty_balance"),'speedfreakinventory.status')
+				->where('speedfreakinventory_history.branch','LIKE','%'.$branches.'%')
+				->where('speedfreakinventory_history.type','like','%Stock-Out%')
+				->whereNotIn('speedfreakinventory.type',$categories)
+				->whereRaw("speedfreakinventory_history.`created_at`>=str_to_date('".$start."','%d-%M-%Y') AND speedfreakinventory_history.`created_at`<=str_to_date('".$end."','%d-%M-%Y')")
+				->groupBy('speedfreakinventory.Id')
+				->get();
+			}
+			// dd($speedfreaksales);
+		$status =DB::table('options')
+		->distinct('options.Option')
+		->select('options.Option')
+		->where('options.Table', '=','inventory')
+		->where('options.Field', '=','Status')
+		->get();
+
+		$supplier = DB::table('companies')
+		->distinct('companies.Company_Name')
+		->select('Id','companies.Company_Name')
+		->where('companies.Supplier', '=','Yes')
+		// ->where('options.Field', '=','Warehouse')
+		->get();
+
+		$type=DB::table('options')
+		->distinct('options.Option')
+		->select('options.Option')
+		->where('options.Table', '=','inventory')
+		->where('options.Field', '=','Type')
+		->get();
+
+		$branch=DB::table('options')
+		->distinct('options.Option')
+		->select('options.Option')
+		->where('options.Table', '=','inventory')
+		->where('options.Field', '=','Branch')
+		->get();
+		
+		$technician = DB::table('users')
+		->select('Id','Name')
+		->whereRaw('Position LIKE "%Mechanic%"')
+		->get();
+
+		$speedfreakinventorymodel = DB::table('options')
+		->select('Id','Option')
+		->where('Table','SpeedFreak')
+		->where('Field','Model')
+		->orderBy('Option','ASC')
+		->get();
+
+		$speedfreakinventorytype = DB::table('options')
+		->select('Id','Option')
+		->where('Table','SpeedFreak')
+		->where('Field','Type')
+		->orderBy('Option','ASC')
+		->get();
+
+
+		return view ('speedfreaksales', ['me' => $me,'start'=>$start , 'end'=>$end ,'today' => $today, 'speedfreaksales' => $speedfreaksales, 'status' => $status, 'supplier' => $supplier,'type'=>$type, 'branch'=>$branch,'technician'=>$technician, 'speedfreakinventorytype'=>$speedfreakinventorytype, 'speedfreakinventorymodel'=>$speedfreakinventorymodel, 'currentbranch'=>$branches]);
 	}
 }

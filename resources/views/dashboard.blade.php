@@ -118,24 +118,6 @@
                     <input type="text" class="form-control" id="range" name="range">
                   </div>
                </div>
-               
-                <div class="col-md-2">
-
-                  <div class="form-group">
-                   <label>Project : </label>
-                   <select class="form-control select2" id="Project" name="Project" style="width: 100%;">
-                     <option value=null>All</option>
-
-                     @foreach($projects as $p)
-
-                      @if(str_contains($p->Project_Name,"_DIGI") || str_contains($p->Project_Name,"SBC") ||str_contains($p->Project_Name,"UM"))
-                         <option value="{{$p->Id}}" <?php if($p->Id==$projectid) echo ' selected="selected" '; ?>>{{$p->Project_Name}}</option>
-                      @endif
-                     @endforeach
-
-                     </select>
-                   </div>
-                </div>
 
                 <div class="col-md-1">
 
@@ -149,13 +131,6 @@
 
               </div>
 
-              @if($project=="null" || !$project)
-                <h6><b>All Projects Dashboard<b></h6>
-              @else
-                <h6><b>{{$project->Project_Name}} Dashboard<b></h6>
-              @endif
-
-
                 <div class="row">
 
                   <div class="col-md-12">
@@ -166,9 +141,9 @@
                       </h4>
                     </section>
                 @if(!$date)
-                <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+                <a href="{{url('dashboard')}}/?region=true" target="_blank">
                 @else 
-                <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+                <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
                 @endif
                   <div class="col-md-2 col-sm-6 col-xs-12">
                     <div class="info-box">
@@ -184,9 +159,9 @@
                   </div>
                 </a>
                 @if(!$date)
-                <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+                <a href="{{url('dashboard')}}/?region=true" target="_blank">
                 @else 
-                <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+                <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
                 @endif
                   <div class="col-md-2 col-sm-6 col-xs-12">
                     <div class="info-box">
@@ -202,9 +177,9 @@
                   </div>
                 </a>
                 @if(!$date)
-                <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+                <a href="{{url('dashboard')}}/?region=true" target="_blank">
                 @else 
-                <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+                <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
                 @endif
                   <div class="col-md-2 col-sm-6 col-xs-12">
                     <div class="info-box">
@@ -233,9 +208,9 @@
                </h4>
              </section>
              @if(!$date)
-             <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+             <a href="{{url('dashboard')}}/?region=true" target="_blank">
              @else 
-             <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+             <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
              @endif
              <div class="col-md-2 col-sm-6 col-xs-12">
                <div class="info-box">
@@ -251,9 +226,9 @@
              </div>
              </a>
              @if(!$date)
-              <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+              <a href="{{url('dashboard')}}/?region=true" target="_blank">
               @else 
-              <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+              <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
               @endif
              <div class="col-md-2 col-sm-6 col-xs-12">
                <div class="info-box">
@@ -269,9 +244,9 @@
              </div>
             </a>
             @if(!$date)
-            <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+            <a href="{{url('dashboard')}}/?region=true" target="_blank">
             @else 
-            <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+            <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
             @endif
              <div class="col-md-2 col-sm-6 col-xs-12">
                <div class="info-box">
@@ -287,9 +262,9 @@
              </div>
             </a>
             @if(!$date)
-            <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+            <a href="{{url('dashboard')}}/?region=true" target="_blank">
             @else 
-            <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+            <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
             @endif
              <div class="col-md-2 col-sm-6 col-xs-12">
                <div class="info-box">
@@ -305,9 +280,9 @@
              </div>
             </a>
             @if(!$date)
-            <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+            <a href="{{url('dashboard')}}/?region=true" target="_blank">
             @else 
-            <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+            <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
             @endif
              <div class="col-md-2 col-sm-6 col-xs-12">
                <div class="info-box">
@@ -323,9 +298,9 @@
              </div>
             </a>
             @if(!$date)
-            <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+            <a href="{{url('dashboard')}}/?region=true" target="_blank">
             @else 
-            <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+            <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
             @endif
              <div class="col-md-2 col-sm-6 col-xs-12">
                <div class="info-box">
@@ -354,9 +329,9 @@
           </h4>
         </section>
         @if(!$date)
-        <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+        <a href="{{url('dashboard')}}/?region=true" target="_blank">
         @else 
-        <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+        <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
         @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -372,9 +347,9 @@
         </div>
       </a>
       @if(!$date)
-      <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+      <a href="{{url('dashboard')}}/?region=true" target="_blank">
       @else 
-      <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+      <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
       @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -391,9 +366,9 @@
       </a>
 
       @if(!$date)
-      <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+      <a href="{{url('dashboard')}}/?region=true" target="_blank">
       @else 
-      <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+      <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
       @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -409,9 +384,9 @@
         </div>
       </a>
       @if(!$date)
-      <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+      <a href="{{url('dashboard')}}/?region=true" target="_blank">
       @else 
-      <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+      <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
       @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -427,9 +402,9 @@
         </div>
       </a>
       @if(!$date)
-      <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+      <a href="{{url('dashboard')}}/?region=true" target="_blank">
       @else 
-      <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+      <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
       @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -445,9 +420,9 @@
         </div>
       </a>
       @if(!$date)
-      <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+      <a href="{{url('dashboard')}}/?region=true" target="_blank">
       @else 
-      <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+      <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
       @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -476,9 +451,9 @@
           </h4>
         </section>
         @if(!$date)
-        <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+        <a href="{{url('dashboard')}}/?region=true" target="_blank">
         @else 
-        <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+        <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
         @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -495,9 +470,9 @@
       </a>
 
       @if(!$date)
-      <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+      <a href="{{url('dashboard')}}/?region=true" target="_blank">
       @else 
-      <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+      <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
       @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -513,9 +488,9 @@
         </div>
       </a>
       @if(!$date)
-      <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+      <a href="{{url('dashboard')}}/?region=true" target="_blank">
       @else 
-      <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+      <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
       @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -531,9 +506,9 @@
         </div>
       </a>
       @if(!$date)
-      <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+      <a href="{{url('dashboard')}}/?region=true" target="_blank">
       @else 
-      <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+      <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
       @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -551,9 +526,9 @@
         <?php $profit=$totalinvoiced->Total_Invoiced_Amount-$totalcost->Total_Cost-$totalmanday[0]->Total-$totalincentive[0]->Total-$totalewallet[0]->Total; ?>
 
         @if(!$date)
-        <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+        <a href="{{url('dashboard')}}/?region=true" target="_blank">
         @else 
-        <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+        <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
         @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -574,9 +549,9 @@
         
         ?>
         @if(!$date)
-        <a href="{{url('dashboard')}}/{{$projectid}}?region=true" target="_blank">
+        <a href="{{url('dashboard')}}/?region=true" target="_blank">
         @else 
-        <a href="{{url('dashboard')}}/{{$projectid}}?region=true&start={{$start}}&end={{$end}}" target="_blank">
+        <a href="{{url('dashboard')}}/?region=true&start={{$start}}&end={{$end}}" target="_blank">
         @endif
         <div class="col-md-2 col-sm-6 col-xs-12">
           <div class="info-box">
@@ -593,14 +568,14 @@
       </a>
         <div class="col-md-2 col-sm-6 col-xs-12">
             @if($date)
-            <a target="_blank" href="{{url('tracker/piechart')}}?project={{$projectid}}&start={{$start}}&end={{$end}}"   style="width:unset;" class="btn btn-sm btn-primary">Project</a>
+            <a target="_blank" href="{{url('tracker/piechart')}}start={{$start}}&end={{$end}}"   style="width:unset;" class="btn btn-sm btn-primary">Chart</a>
             @else 
-            <a target="_blank" href="{{url('tracker/piechart')}}?project={{$projectid}}"   style="width:unset;" class="btn btn-sm btn-primary">Project</a>
+            <a target="_blank" href="{{url('tracker/piechart')}}"   style="width:unset;" class="btn btn-sm btn-primary">Chart</a>
             @endif
             @if($date)
-            <a target="_blank" style="width:unset;color:aqua;" class="btn btn-sm btn-danger"  href="{{url('tracker/piechart')}}?start={{$start}}&end={{$end}}&project={{$projectid}}&group=region">Region</a>
+            <a target="_blank" style="width:unset;color:aqua;" class="btn btn-sm btn-danger"  href="{{url('tracker/piechart')}}?start={{$start}}&end={{$end}}&group=region">Region</a>
             @else
-            <a target="_blank" style="width:unset;color:aqua;" class="btn btn-sm btn-danger"  href="{{url('tracker/piechart')}}?project={{$projectid}}&group=region">Region</a>
+            <a target="_blank" style="width:unset;color:aqua;" class="btn btn-sm btn-danger"  href="{{url('tracker/piechart')}}group=region">Region</a>
             @endif
         </div>
 
@@ -619,7 +594,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.
@@ -643,8 +618,6 @@
 
 function refresh()
 {
-
-  var project=$('#Project').val();
   var d=$('#range').val();
   var arr = d.split(" - ");
   var check=$("#dateRange").is(':checked');
@@ -652,7 +625,7 @@ function refresh()
     arr="&start="+arr[0]+"&end="+arr[1];
   else arr="";
 
-  window.location.href ="{{ url("/dashboard") }}"+"/"+project+"?check="+check+arr;
+  window.location.href ="{{ url("/dashboard") }}"+"/"+"?check="+check+arr;
 }
 
 </script>

@@ -37,25 +37,11 @@ class ApprovalController extends Controller {
     ->orderBy('options.Option', 'asc')
     ->get();
 
-    $projects = DB::table('projects')
-		->where('projects.Project_Name','like','%Department%')
-    ->get();
-
     $approvalsettings=DB::table('approvalsettings')
-    ->select('approvalsettings.Id','approvalsettings.Type','users.Name as Approver','approvalsettings.Level','projects.Project_Name')
-    ->leftJoin('projects', 'approvalsettings.ProjectId', '=', 'projects.Id')
+    ->select('approvalsettings.Id','approvalsettings.Type','users.Name as Approver','approvalsettings.Level')
     ->leftJoin('users', 'approvalsettings.UserId', '=', 'users.Id')
     ->where('approvalsettings.Type', '=',$type)
     ->get();
-
-		$missedproject=DB::table('projects')
-		->select(DB::raw('COUNT(*) AS COUNT'))
-		->whereNotIn('projects.Id', function($q) use ($type){
-          $q->select('approvalsettings.ProjectId')
-            ->from('approvalsettings')
-						->where('approvalsettings.Type', '=',$type);
-      })
-		->first();
 
 		if($type=="Claim")
 		{
@@ -132,22 +118,8 @@ class ApprovalController extends Controller {
 		// $category=['Claim','Leave','Deduction','Timesheet','Loan','Request','MR'];
 		$category=['Claim','Leave','Deduction','Timesheet','Loan','Request'];
 
-		return view('approval', ['me' => $me,'type'=>$type,'approvalsettings' => $approvalsettings,'approver' =>$approver,'category' =>$category,'countries' =>$countries,'projects' =>$projects,'missedproject'=>$missedproject]);
+		return view('approval', ['me' => $me,'type'=>$type,'approvalsettings' => $approvalsettings,'approver' =>$approver,'category' =>$category,'countries' =>$countries]);
 
-	}
-
-	public function missedproject($type)
-	{
-		$missedproject=DB::table('projects')
-		->select('projects.Project_Name')
-		->whereNotIn('projects.Id', function($q) use ($type){
-          $q->select('approvalsettings.ProjectId')
-            ->from('approvalsettings')
-						->where('approvalsettings.Type', '=',$type);
-      })
-		->get();
-
-		return json_encode($missedproject);
 	}
 
 }

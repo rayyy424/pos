@@ -75,64 +75,11 @@
 
       $(document).ready(function() {
 
-        // editor = new $.fn.dataTable.Editor( {
-        //       ajax: {
-        //          "url": "{{ asset('/Include/templateaccess.php') }}",
-        //          "data": {
-        //              "projectid": "{{ $projectid }}"
-        //          }
-        //        },
-        //         table: "#bystaff",
-        //         fields: [
-        //
-        //                 {
-        //                         label: "Read Access:",
-        //                         name: "trackertemplate[].Id",
-        //                         type:  'checkbox'
-        //
-        //                 },
-        //                 {
-        //                         label: "Write Access:",
-        //                         name: "trackertemplate2[].Id",
-        //                         type:  'checkbox'
-        //
-        //                 },
-        //                 {
-        //                         label: "Delete Access:",
-        //                         name: "trackertemplate3[].Id",
-        //                         type:  'checkbox'
-        //
-        //                 }
-        //
-        //
-        //         ]
-        // } );
-
-        // editor1 = new $.fn.dataTable.Editor( {
-        //       ajax: {
-        //          "url": "{{ asset('/Include/templateaccess1.php') }}"
-        //        },
-        //         table: "#bytracker",
-        //         fields: [
-        //
-        //                 {
-        //                         label: "User List:",
-        //                         name: "users[].Id",
-        //                         type:  'checkbox'
-        //
-        //                 }
-        //
-        //
-        //         ]
-        // } );
-
-
                  bystaff = $('#bystaff').dataTable( {
 
                      ajax: {
                         "url": "{{ asset('/Include/templateaccess.php') }}",
                         "data": {
-                            "projectid": "{{ $projectid }}"
                         }
                       },
                      dom: "Bfrtp",
@@ -177,8 +124,7 @@
                                    $.ajax({
                                                url: "{{ url('/tracker/gettemplateaccess') }}",
                                                method: "POST",
-                                               data: {UserId:userid,
-                                                 ProjectId:{{$projectid}}},
+                                               data: {UserId:userid},
 
                                                success: function(response){
 
@@ -444,36 +390,12 @@
       <div class="row">
         <div class="box box-primary">
 
-          <div class="row">
-            <div class="box-body">
-
-             <div class="box-body">
-               <div class="form-group">
-
-                 <div class="form-group">
-                   <label>Project Name : </label>
-                  <select class="form-control select2" id="ProjectId" name="ProjectId" style="width: 30%;">
-                    <option></option>
-
-                    @foreach ($projects as $project)
-                       <option value="{{$project->Id}}" <?php if($project->Id==$projectid) echo "selected";?>>{{$project->Project_Name}}</option>
-                    @endforeach
-                  </select>
-                </div>
-
-               </div>
-
-           </div>
-         </div>
-       </div>
-
           <div class="box-body">
             <div class="col-md-12">
 
               <div class="nav-tabs-custom">
                  <ul class="nav nav-tabs">
                    <li class="active"><a href="#staff" data-toggle="tab" id="stafftab">Staff</a></li>
-                   {{-- <li><a href="#tracker" data-toggle="tab" id="projecttab">Project</a></li> --}}
                  </ul>
                  <br>
 
@@ -528,7 +450,7 @@
   </div>
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -543,13 +465,6 @@ $(function () {
 
 });
 
-$('#ProjectId').on('change', function() {
-
-  var d=$('#ProjectId').val();
-
-  window.location.href ="{{ url("/templateaccess") }}/"+d;
-
-});
 
 function updatetemplateaccess()
  {
@@ -580,7 +495,6 @@ function updatetemplateaccess()
                 method: "POST",
                 data: {
                   UserId:userid,
-                  ProjectId:{{$projectid}},
                   Read:read,
                   Write:write,
                   Delete:del

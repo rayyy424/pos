@@ -69,18 +69,6 @@
                 idSrc: "userprojects.Id",
                 fields: [
                         {
-                                label: "Project:",
-                                name: "userprojects.ProjectId",
-                                type:  'select',
-                                options: [
-                                    { label :"", value: "" },
-                                    @foreach($projects as $project)
-                                        { label :"{{$project->Project_Name}}", value: "{{$project->Id}}" },
-                                    @endforeach
-                                ]
-
-                        },
-                        {
                                 label: "Assigned As:",
                                 name: "userprojects.Assigned_As",
                                 type:  'select',
@@ -166,7 +154,7 @@
                 rowId:"userprojects.Id",
                 aaSorting:false,
                 bPaginate:false,
-                columnDefs: [{ "visible": false, "targets": [1,5,6,7,8,9] },{"className": "dt-center", "targets": "_all"}],
+                columnDefs: [{ "visible": false, "targets": [1,5,6,7,8] },{"className": "dt-center", "targets": "_all"}],
                 bScrollCollapse: true,
                 scrollY: "100%",
                 scrollX: "100%",
@@ -184,7 +172,6 @@
                     defaultContent: '<a href="" class="editor_edit"><button type="button" class="btn btn-primary .btn-xs">Assign</button></a>'
                   },
                   {data: 'userability.Ability', title: 'Ability'},
-                  {data: 'projects.Project_Name', title: 'Project_Name'},
                   {data: 'userprojects.Assigned_As', title: 'Assigned_As'},
                   {data: 'userprojects.Start_Date', title: 'Start_Date'},
                   {data: 'userprojects.End_Date', title: 'End_Date'}
@@ -294,7 +281,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

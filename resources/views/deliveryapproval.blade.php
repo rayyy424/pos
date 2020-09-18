@@ -1334,7 +1334,6 @@ canceltable=$('#canceltable').dataTable( {
                           <td>Delivery Time</td>
                           <td>Location</td>
                           <td>Purpose</td>
-                          <td>Project</td>
                           <td>Transferred On</td>
                           <td>Reason</td>
                           <td>Action</td>
@@ -1357,7 +1356,6 @@ canceltable=$('#canceltable').dataTable( {
                                 <a onclick="myfunction({{$release->Latitude}},{{$release->Longitude}})">{{$release->Location_Name}}</a>
                               </td>
                               <td>{{$release->Option}}</td>
-                              <td>{{$release->Project_Name}}</td>
                               <td>{{$release->created_at}}</td>
                               <td>{{$release->remarks}}</td>
                               <td>
@@ -1773,7 +1771,7 @@ canceltable=$('#canceltable').dataTable( {
 
 <footer class="main-footer">
 	<div class="pull-right hidden-xs">
-		<b>Version</b> 2.0.1
+		<b>Version</b> 1.0.0
 	</div>
 	<strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
 </footer>

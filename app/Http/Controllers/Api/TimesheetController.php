@@ -751,12 +751,12 @@ class TimesheetController extends Controller {
 
 			        }
 
-			        Mail::send('emails.requestapplication', ['requestdetail' => $requestdetail], function($message) use ($emails,$me,$NotificationSubject)
-			        {
-			            array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-			            $emails = array_filter($emails);
-			            $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
-			        });
+			        // Mail::send('emails.requestapplication', ['requestdetail' => $requestdetail], function($message) use ($emails,$me,$NotificationSubject)
+			        // {
+			        //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+			        //     $emails = array_filter($emails);
+			        //     $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+			        // });
 		        }
 
 		        // dd($approver);
@@ -1700,12 +1700,12 @@ class TimesheetController extends Controller {
 	 				}
 
 	 				$dep=$depart->Project_Name;
-	 				Mail::send('emails.latenotification', ['late' => $late,'dep'=>$dep,'today'=>$today], function($message) use ($emails,$today,$dep)
-	 				{
- 						$emails = array_filter($emails);
- 						array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
- 						$message->to($emails)->subject("($dep) Late Check-In ".' ['.$today.']');
-	 				});
+	 				// Mail::send('emails.latenotification', ['late' => $late,'dep'=>$dep,'today'=>$today], function($message) use ($emails,$today,$dep)
+	 				// {
+ 					// 	$emails = array_filter($emails);
+ 					// 	array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+ 					// 	$message->to($emails)->subject("($dep) Late Check-In ".' ['.$today.']');
+	 				// });
 	 			}
 	 		}
 		}
@@ -2333,10 +2333,10 @@ class TimesheetController extends Controller {
             	    $periods = collect($allperiods)->where('Leave_Id',$leavedetail->Id)->all();
 
             	    unset($leavedetail->Id);
-			        Mail::send('emails.leaveapplicationwithperiod', ['leavedetail' => $leavedetail,'periods'=> $periods, 'attachmentUrl' => $attachmentUrl], function($message) use ($receiverEmails,$NotificationSubject)
-			        {
-			            $message->to($receiverEmails)->subject($NotificationSubject.' [System Auto Apply]');
-			        });
+			        // Mail::send('emails.leaveapplicationwithperiod', ['leavedetail' => $leavedetail,'periods'=> $periods, 'attachmentUrl' => $attachmentUrl], function($message) use ($receiverEmails,$NotificationSubject)
+			        // {
+			        //     $message->to($receiverEmails)->subject($NotificationSubject.' [System Auto Apply]');
+			        // });
 		        }
 
 				return 1;

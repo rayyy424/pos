@@ -123,11 +123,6 @@ table.total{
             <tr>
                 <td><b>Staff ID</b>  : {{$user->StaffId}}</td>
                 <td><b>Name</b> : {{$user->Name}}</td>
-                @if($user->Department != "")
-                  <td><b>Department</b> : {{$user->Department}}</td>
-                @else
-                  <td><b>Department</b> : - </td>
-                @endif
                 @if($user->Position != "")
                   <td><b>Position</b> :  {{$user->Position}}</td>
                 @else
@@ -242,11 +237,6 @@ table.total{
                                 <td>
                                   @if($key=="Day")
                                     {{ date('D', strtotime($claim->Date)) }}
-
-                                  @elseif($key=="Project_Name")
-
-                                    <?=str_replace('_', ' ', $value)?>
-
                                   @else
                                     {{ $value }}
                                   @endif

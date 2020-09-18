@@ -259,10 +259,6 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-3">
-                            <label>Project Name: </label>
-                            {{$data->Project_Name}}
-                        </div>
-                        <div class="col-sm-3">
                             <label>Site: </label>
                             {{$data->site}}
                         </div>
@@ -391,7 +387,7 @@
 </div>
 <footer class="main-footer">
 	<div class="pull-right hidden-xs">
-		<b>Version</b> 2.0.1
+		<b>Version</b> 1.0.0
 	</div>
 	<strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
 </footer>
@@ -423,7 +419,6 @@
                 data: {
                     id:{{$data->Id}},
                     status:status,
-                    project:{{$data->ProjectId}},
                     reason:$('#reason').val()
                 },
                 success: function (response) {

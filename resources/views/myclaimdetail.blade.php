@@ -124,28 +124,6 @@
                                       def:    function () { return new Date(); },
                                       format: 'DD-MMM-YYYY'
                                },{
-                                      label: "Project Code:",
-                                      name: "claims.Project_Code_Id",
-                                      type:  'select',
-                                      options: [
-                                          { label :"", value: "0" },
-                                          @foreach($projectcodes as $projectcode)
-                                              { label :"{{$projectcode->Project_Code}}", value: "{{$projectcode->Id}}" },
-                                          @endforeach
-
-                                      ],
-                               },{
-                                      label: "Project Name:",
-                                      name: "claims.ProjectId",
-                                      type:  'select',
-                                      options: [
-                                          { label :"", value: "0" },
-                                          @foreach($projects as $project)
-                                              { label :"{{$project->Project_Name}} - {{$project->Name}}", value: "{{$project->Id}}" },
-                                          @endforeach
-
-                                      ],
-                               },{
                                       label: "Depart_From:",
                                       name: "claims.Depart_From"
                                },{
@@ -325,7 +303,7 @@
                                      }
                                    },
                                    rowId: 'claims.Id',
-                                   columnDefs: [{ "visible": false, "targets": [1,2,5] },{"className": "dt-center", "targets": "_all"}],
+                                   columnDefs: [{ "visible": false, "targets": [1,2] },{"className": "dt-center", "targets": "_all"}],
                                    responsive: false,
                                    colReorder: true,
                                    bStateSave:false,
@@ -364,8 +342,6 @@
                                             return n;
                                         }
                                     },
-                                     { data: "projectcodes.Project_Code", editField: "claims.Project_Code_Id",title:"Project_Code" },
-                                     { data: "projects.Project_Name", editField: "claims.ProjectId",title:"Project_Name" },
                                      { data: "claims.Depart_From",title:"Depart_From" },
                                      { data: "claims.Destination",title:"Destination" },
                                      { data: "claims.Site_Name",title:"Site_Name" },
@@ -853,7 +829,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -887,38 +863,6 @@
     // document.getElementById("Time_Out").value = '';
 
   });
-
-  // function insertclaimstatus(data)
-  // {
-  //   $.ajaxSetup({
-  //      headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') }
-  //   });
-  //
-  //   claimitemid=data.claimitems.Id;
-  //   userid=data.projects.Project_Manager;
-  //   status="Pending Review";
-  //
-  //   if (userid)
-  //   {
-  //     $.ajax({
-  //                 url: "{{ url('/claim/newclaimitemstatus') }}",
-  //                 method: "POST",
-  //                 data: {ClaimItemId:claimitemid,UserId:userid,Status:status},
-  //
-  //                 success: function(response){
-  //
-  //                   if (response==1)
-  //                   {
-  //                       //success
-  //
-  //                   }
-  //
-  //         }
-  //     });
-  //
-  //   }
-  //
-  // }
 
   function Recall(id)
   {
@@ -991,15 +935,10 @@
 
       Id=id;
 
-      var emptyprojectid=false;
       var emptyexpensestype=false;
 
       claimtable.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
         var data = this.data();
-        if(data.claims.ProjectId==0)
-        {
-          emptyprojectid=true;
-        }
 
         if(data.claims.Expenses_Type=="")
         {
@@ -1008,7 +947,7 @@
         // ... do something with data(), or this.node(), etc
       } );
 
-      if (emptyprojectid==false || emptyexpensestype==false)
+      if (emptyexpensestype==false)
       {
         $.ajax({
                     url: "{{ url('/myclaim/submitforapproval') }}",
@@ -1058,7 +997,7 @@
 
       $('#Submit').modal('hide');
 
-      var errormessage="Project Name and Expenses Type cannot be empty!";
+      var errormessage="Expenses Type cannot be empty!";
       $("#error-alert ul").html(errormessage);
       $("#error-alert").modal('show');
 

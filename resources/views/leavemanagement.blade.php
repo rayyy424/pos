@@ -182,7 +182,7 @@
                                       "End": "{{ $end }}"
                                   }
                                 },
-                                 columnDefs: [{ "visible": false, "targets": [1,2,15] },{"className": "dt-center", "targets": "_all"}],
+                                 columnDefs: [{ "visible": false, "targets": [1,2,14] },{"className": "dt-center", "targets": "_all"}],
                                  responsive: false,
                                  colReorder: false,
                                  dom: "Bfrtp",
@@ -243,7 +243,6 @@
                                             }
                                          },
                                          { data: "leaves.created_at",title:"Application Date"},
-                                         { data: "projects.Project_Name",title:"Department"},
                                          { data: "approver.Name",title:"Approver"},
                                          { data: "leavestatuses.Comment",title:"Comment"},
                                          { data: "leavestatuses.updated_at",title:"Review Date"},
@@ -285,7 +284,7 @@
                                   "Status": "%Final Approved%"
                               }
                             },
-                            aaSorting: [[15,"desc"]],
+                            aaSorting: [[14,"desc"]],
                              columnDefs: [{ "visible": false, "targets": [1,2] },{"className": "dt-center", "targets": "_all"}],
                              responsive: false,
                              colReorder: false,
@@ -345,7 +344,6 @@
                                         }
                                      },
                                      { data: "leaves.created_at",title:"Application_Date"},
-                                     { data: "projects.Project_Name",title:"Project_Name"},
                                      { data: "approver.Name",title:"Approver"},
                                      { data: "leavestatuses.Comment",title:"Comment"},
                                      { data: "leavestatuses.updated_at",title:"Review_Date"},
@@ -394,7 +392,7 @@
                                        "Status": "%Pending%"
                                    }
                                  },
-                                 columnDefs: [{ "visible": false, "targets": [1,2,15] },{"className": "dt-center", "targets": "_all"}],
+                                 columnDefs: [{ "visible": false, "targets": [1,2,14] },{"className": "dt-center", "targets": "_all"}],
                                  responsive: false,
                                  colReorder: false,
                                  dom: "Bfrtp",
@@ -452,7 +450,6 @@
                                             }
                                          },
                                          { data: "leaves.created_at",title:"Application Date"},
-                                         { data: "projects.Project_Name",title:"Department"},
                                          { data: "approver.Name",title:"Approver"},
                                          { data: "leavestatuses.Comment",title:"Comment"},
                                          { data: "leavestatuses.updated_at",title:"Review Date"},
@@ -550,7 +547,6 @@
                                        }
                                     },
                                     { data: "leaves.created_at",title:"Application_Date"},
-                                    { data: "projects.Project_Name",title:"Project_Name"},
                                     { data: "approver.Name",title:"Approver"},
                                     { data: "leavestatuses.Comment",title:"Comment"},
                                     { data: "leavestatuses.updated_at",title:"Review_Date"},
@@ -649,7 +645,6 @@
                                      }
                                   },
                                   { data: "leaves.created_at",title:"Application_Date"},
-                                  { data: "projects.Project_Name",title:"Project_Name"},
                                   { data: "approver.Name",title:"Approver"},
                                   { data: "leavestatuses.Comment",title:"Comment"},
                                   { data: "leavestatuses.updated_at",title:"Review_Date"},
@@ -1010,7 +1005,7 @@
                         @if ($user->Country!="")
                           <option  value="{{$user->Id}}">{{$user->Name}} - {{$user->Country}} - {{$user->Level}}</option>
                         @else
-                          <option  value="{{$user->Id}}">{{$user->Name}} - {{$user->Project_Name}} - {{$user->Level}}</option>
+                          <option  value="{{$user->Id}}">{{$user->Name}} - {{$user->Level}}</option>
                         @endif
 
                       @endforeach
@@ -1494,7 +1489,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

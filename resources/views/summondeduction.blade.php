@@ -214,7 +214,7 @@
                         {data:'summons.Offense', title:"Offense"},
                         {data:'summons.Amount' , title:"Final Amount (RM)"},
                         {data:'users.Name', editField:"summons.UserId", title:"Driver"},
-                        {data:'users.Department', title:"Department"},
+                        {data:'users.Position', title:"Position"},
                         {data:'summons.Company_Deduction', tititlele:"Company Staff Deduct by Employee"},
                         {data:'summons.Total_Deduction', title:"Total to be deduct by Employee"},
                         {data:'summons.Employer_Bare', title:"Bare by Employer"},
@@ -448,7 +448,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

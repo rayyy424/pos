@@ -83,7 +83,7 @@
 	.skin-blue .main-header .navbar {
 			/*min-height: 70px;*/
 		font-size:13px;
-	    background-color: #0066FF;
+	    background-color: #000000;
 	}
 	.navbar-nav>li>a {
 	    padding-left: 10px;
@@ -305,7 +305,8 @@
     <nav class="navbar navbar-static-top">
       <div class="container">
         <div class="navbar-header">
-          <a href='{{ url("/") }}' class="navbar-brand" style="font-size:27px; /*padding-top: 25px; padding-left:38px;*/"><b>TOTG</b></a>
+          <a href='{{url("/")}}'><img src="{{ URL::to('/') ."/img/speedfreak.png"  }}" width="100" height="50" alt="Speed Freak Sdn Bhd"></a>
+          <!-- <a href='{{ url("/") }}' class="navbar-brand" style="font-size:27px; /*padding-top: 25px; padding-left:38px;*/"><b>TOTG</b></a> -->
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
             <i class="fa fa-bars"></i>
           </button>
@@ -325,12 +326,12 @@
 			              <ul class="dropdown-menu" role="menu">
 			                <li><a href="{{ url('/myprofile') }}" >My Profile</a></li>
 											<li><a href="{{ url('/myleave') }}">My Leave</a></li>
-											<li><a href="{{ url('/mypayslip') }}">My Payslip</a></li>
+											<!-- <li><a href="https://payroll.autocountsoft.com/" target="_blank">My Payslip</a></li> -->
 											<li><a href="{{ url('/mytimesheet') }}">My Timesheet</a></li>
-											<!-- <li><a href="{{ url('/myloan') }}">My Loan</a></li> -->
+											<li><a href="{{ url('/myloan') }}">My Loan</a></li>
 											<li><a href="{{ url('/myrequest') }}">My Request</a></li>
 											<li><a href="{{ url('/myadvancerequest') }}">My Advance Request</a></li>
-											<li><a href="{{ url('/mydeliveryrequest') }}">My Delivery Request</a></li>
+											<!-- <li><a href="{{ url('/mydeliveryrequest') }}">My Delivery Request</a></li> -->
 											@if($me->Todolist_Dashboard || $me->View_Todolist)
 											<li class="divider"></li>
 											<li class="sub-dropdown"><a href="#">To-Do List</a></li>
@@ -344,7 +345,7 @@
 			            </li>
 								 @endif
 
-								 @if($me->View_User_Profile || $me->View_All_Leave ||$me->Approve_Leave ||$me->Staff_Monitoring || $me->View_Department_Attendance_Summary || $me->View_Incentive_Summary || $me->View_Medical_Claim_Summary || $me->Leave_Entitlement || $me->Payslip_Management || $me->OT_Management_HR || $me->OT_Management_HOD || $me->Holiday_Management || $me->Driver_Incentive_Summary || $me->Deduction)
+								 @if($me->View_User_Profile || $me->View_All_Leave ||$me->Approve_Leave ||$me->Staff_Monitoring || $me->View_Incentive_Summary || $me->View_Medical_Claim_Summary || $me->Leave_Entitlement || $me->Payslip_Management || $me->OT_Management_HR || $me->OT_Management_HOD || $me->Holiday_Management || $me->Driver_Incentive_Summary || $me->Deduction)
 
 									<li class="dropdown">
 						              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Human Resource<span class="caret"></span></a>
@@ -352,22 +353,18 @@
 						              		@if($me->Staff_Monitoring)
 						              		<li><a href="{{ url('humanresource/dashboard') }}">Human Resource Dashboard</a></li>
 											<li><a href="{{ url('/engineerlocationtracking') }}">Attendance Tracker</a></li>
-											<li><a href="{{ url('/sitevisitsummary') }}">Site Visit Summary</a></li>
 											@endif
-						              		@if($me->View_Department_Attendance_Summary)
-											<li><a href="{{ url('/departmentleavesummary') }}">Department Attendance Summary</a></li>
-											@endif
-											@if($me->View_Incentive_Summary)
+											<!-- @if($me->View_Incentive_Summary)
 											<li><a href="{{ url('/incentivesummary') }}">Incentive Summary</a></li>
 											@endif
 											@if($me->Driver_Incentive_Summary)
 											<li><a href="{{ url('/driverincentivesummary') }}">Driver Incentive Summary</a></li>
-											@endif
+											@endif -->
 											@if($me->View_Medical_Claim_Summary)
 											<li><a href="{{ url('/medicalclaimsummary') }}">Medical Claim Summary</a></li>
-											@if($me->View_MIA)
+											<!-- @if($me->View_MIA)
 											<li><a href="{{ url('/mialist') }}" >MIA List</a></li>
-											@endif
+											@endif -->
 											@endif
 											<li class="divider"></li>
 											@if($me->View_All_Leave || $me->Approve_Leave || $me->Update_Medical_Claim || $me->Leave_Entitlement || $me->Holiday_Management)
@@ -381,7 +378,7 @@
 												@endif
 												@if($me->View_Leave_Summary)
 												<li><a href="{{ url('/leavesummary') }}">Leave Summary</a></li>
-												<li><a href="{{ url('/timeoffreport') }}">Time-off Report</a></li>
+												<!-- <li><a href="{{ url('/timeoffreport') }}">Time-off Report</a></li> -->
 												@endif
 												@if($me->Leave_Entitlement)
 												<li><a href="{{ url('/leaveentitlement') }}">Leave Entitlement</a></li>
@@ -393,7 +390,7 @@
 												@endif
 											<li class="divider"></li>
 											@endif
-											@if($me->Payroll || $me->Payslip_Management)
+											<!-- @if($me->Payroll || $me->Payslip_Management)
 											<li class="sub-dropdown"><a href="#">Payroll</a></li>
 											<li class="divider"></li>
 												@if($me->Payroll)
@@ -403,25 +400,12 @@
 													<li><a href="{{ url('/payslipmanagement') }}">Payslip Management</a></li>
 												@endif
 											<li class="divider"></li>
-											@endif
+											@endif -->
 
 											@if($me->View_All_Timesheet ||$me->Approve_Timesheet)
-											<!-- <li><a href="{{ url('/timesheetmanagement') }}">Timesheet Management</a></li> -->
-
+											<li><a href="{{ url('/timesheetmanagement') }}">Timesheet Management</a></li>
 											@endif
 
-											@if($me->OT_Management_HR)
-												<li><a href="{{ url('/otmanagementhr') }}">OT Management HR</a></li>
-											@endif
-
-											@if($me->OT_Management_HOD)
-												<li><a href="{{ url('/otmanagementhod') }}">OT Management HOD</a></li>
-											@endif
-
-											@if($me->Presaving)
-											<li><a href="{{ url('/presaving') }}">Presaving Scheme</a></li>
-											<!-- <li><a href="{{ url('/staffexpenses') }}">Staff Expenses</a></li> -->
-											@endif
 											@if($me->Deduction)
 											<li><a href="{{ url('/staff/dashboard') }}">Staff Dashboard</a></li>
 											<li><a href="{{ url('/staffdeductions') }}">Staff Deductions</a></li>
@@ -430,7 +414,7 @@
 											@if($me->Staff_Loan || $me->View_All_Staff_Loan || $me->Approve_Staff_Loan)
 											<li><a href="{{ url('/staffloanmanagement') }}">Staff Loan Management</a></li>
 											<li><a href="{{ url('/staffloan') }}">Staff Loan</a></li>
-											<li><a href="{{ url('/staffloan-old') }}">Staff Loan(Old)</a></li>
+											<!-- <li><a href="{{ url('/staffloan-old') }}">Staff Loan(Old)</a></li> -->
 											@endif
 
 											@if($me->Request_Management)
@@ -451,27 +435,27 @@
 												<a href="#" class="dropdown-toggle" data-toggle="dropdown">Administration<span class="caret"></span></a>
 												<ul class="dropdown-menu" role="menu">
 													@if($me->UserId == 562)
-													<li><a href="{{ url('/property2/RENTAL') }}">Asset Management</a></li>
+													<li><a href="{{ url('/property/RENTAL') }}">Asset Management</a></li>
 													@endif
 													@if($me->Agreement)
-													<li><a href="{{ url('/agreement') }}/EDOTCO">Agreement</a></li>
+													<li><a href="{{ url('/agreement') }}/IT">Agreement</a></li>
 													@endif
-													@if($me->Credit_Card)
+													<!-- @if($me->Credit_Card)
 													<li class="divider"></li>
 													<li class="sub-dropdown"><a href="#">Credit Card</a></li>
 													<li class="divider"></li>
 													<li><a href="{{ url('/creditcardtracker/ALVIN') }}">Credit Card</a></li>
 													<li><a href="{{ url('/creditcardsummary') }}">Credit Card Summary</a></li>
 													<li class="divider"></li>
-													@endif
+													@endif -->
 													@if($me->Filing_System)
-													<li><a href="{{ url('/filingsystem') }}/HRA">Filing System</a></li>
+													<li><a href="{{ url('/filingsystem') }}/Contract">Filing System</a></li>
 													@endif
 													@if($me->Asset_Tracking)
 														<li><a href="{{ url('/assettracking') }}/IT APPLIANCES">Fixed Asset</a></li>
 													@endif
 													@if($me->Insurance)
-														<li><a href="{{ url('/insurancetracker/PROJECT') }}">Insurance</a></li>
+														<li><a href="{{ url('/insurancetracker/PROPERTY') }}">Insurance</a></li>
 													@endif
 													@if($me->License)
 														<li><a href="{{ url('/licensetracker') }}/Company">License and Card</a></li>
@@ -484,19 +468,19 @@
 													<li class="sub-dropdown"><a href="#">Phone Bills</a></li>
 													<li class="divider"></li>
 														<li><a href="{{ url('/phonebilltracker/Celcom') }}">Phone Bills</a></li>
-														<li><a href="{{ url('/phonebillsummary') }}">Phone Bills Summary</a></li>
+														<!-- <li><a href="{{ url('/phonebillsummary') }}">Phone Bills Summary</a></li> -->
 													<li class="divider"></li>
 													@endif
-													@if($me->Property)
+													<!-- @if($me->Property)
 													<li><a href="{{ url('/property') }}/RENTAL">Property</a></li>
 
 													<li class="divider"></li>
-													@endif
+													@endif -->
 													@if($me->Utility_Bills)
 														<li class="sub-dropdown"><a href="#">Utility Bills</a></li>
 														<li class="divider"></li>
 														<li><a href="{{ url('/utilitytracker/Water') }}">Utility Bills</a></li>
-														<li><a href="{{ url('/utilitysummary') }}">Utility Bills Summary</a></li>
+														<!-- <li><a href="{{ url('/utilitysummary') }}">Utility Bills Summary</a></li> -->
 													@endif
 
 												</ul>
@@ -504,7 +488,7 @@
 
 										@endif
 
-										@if($me->Motor_Vehicle || $me->Shell_Cards || $me->Summon || $me->TouchNGo || $me->Transport_Charges)
+										<!-- @if($me->Motor_Vehicle || $me->Shell_Cards || $me->Summon || $me->TouchNGo || $me->Transport_Charges)
 											<li class="dropdown">
 												<a href="#" class="dropdown-toggle" data-toggle="dropdown">Logistic<span class="caret"></span></a>
 												<ul class="dropdown-menu" role="menu">
@@ -571,29 +555,29 @@
 												</ul>
 												@endif
 											</li>
-										@endif
+										@endif -->
 
-										@if($me->Genset || $me->Genset_Summary)
+										@if($me->Speedfreak || $me->Speedfreak_Summary)
 										<li class="dropdown">
-											<a href="#" class="dropdown-toggle" data-toggle="dropdown">GENSET Management<span class="caret"></span></a>
+											<a href="#" class="dropdown-toggle" data-toggle="dropdown">SpeedFreak Management<span class="caret"></span></a>
 											<ul class="dropdown-menu" role="menu">
 												{{-- <li class="divider"></li>
-												<li class="sub-dropdown"><a href="#">GENSET Management</a></li>
+												<li class="sub-dropdown"><a href="#">SpeedFreak Management</a></li>
 												<li class="divider"></li> --}}
-												<li class="sub-dropdown"><a href="#">GENSET Report</a></>
+												<li class="sub-dropdown"><a href="#">Company Report</a></>
 												<li class="divider"></li>
-												<li><a href="{{ url('genset/dashboard')}}">GENSET Dashboard</a></li>
-												@if($me->Genset_Summary)
-												<li><a href="{{ url('gensetsummarydashboard')}}">GENSET Summary Dashboard</a></li>
-												@endif
+												<li><a href="{{url('/speedfreak/dashboard')}}">SpeedFreak Dashboard</a></li>
+												<!-- @if($me->Speedfreak_Summary)
+												<li><a href="{{ url('speedfreaksummarydashboard')}}">SpeedFreak Summary Dashboard</a></li>
+												@endif -->
 												<li class="divider"></li>
-												<li class="sub-dropdown"><a href="#">Service Ticket Management</a></li>
+												<li class="sub-dropdown"><a href="#">Inventory Management</a></li>
 												<li class="divider"></li>
-												<li><a href="{{ url('svt/dashboard')}}">Service Ticket Dashboard</a></li>
+												<!-- <li><a href="{{ url('svt/dashboard')}}">Service Ticket Dashboard</a></li>
 												<li><a href="{{ url('/servicemanagement')}}">Service Management</a></li>
-												<li><a href="{{ url('/ticketflow')}}">Ticket Flow</a></li>
-												<li><a href="{{ url('/genset/inventory')}}">GENSET Inventory Management</a></li>
-												<li><a href="{{ url('/asset/inventory')}}">Asset Management</a></li>
+												<li><a href="{{ url('/ticketflow')}}">Ticket Flow</a></li> -->
+												<li><a href="{{ url('/speedfreak/inventory')}}">SpeedFreak Inventory Management</a></li>
+												<!-- <li><a href="{{ url('/asset/inventory')}}">Asset Management</a></li>
 												<li><a href="{{ url('technicianbag')}}">Technician Inventory Bag</a></li>
 												<li><a href="{{ url('/requisitionform')}}">Requisition Form</a></li>
 												<li><a href="{{ url('/requisitionmanagement')}}">Requisition Management</a></li>
@@ -609,131 +593,25 @@
 												<li><a href="{{ url('/salesorder') }}">Sales Order</a></li>
 												@if($me->Sales_Summary)
 												<li><a href="{{ url('/salessummary') }}">Sales Summary</a></li>
-												<li><a href="{{ url('/jdnisummary') }}">JDNI Summary</a></li>
+												<li><a href="{{ url('/jdnisummary') }}">Stock Cost Summary</a></li>
 												@endif
-												@endif
-												@if($me->invoice_listing)
-												<li><a href="{{url('/invoicelist')}}">Invoice Listing</a></li>
-												@endif
-												@if($me->Credit_Note_List)
-												<!-- <li><a href="{{ url('autocnpdf')}}">Auto Create CN pdf</a></li> -->
-												<li><a href="{{ url('/apcreditnote') }}">AR Credit Note Export</a></li>
-												<li><a href="{{ url('creditnotelist')}}">Credit Note List</a></li>
-												@endif
-											</ul>
-										</li>
-										@endif
-
-										{{-- @if($me->ProjectNames || $me->Create_Project || $me->Create_Project_Code || $me->View_Project_List || $me->Material_Request || $me->Material_Approval
-										|| $me->View_Resource_Calendar || $me->View_Resource_Summary || $me->View_Report_Store || $me->Import_Data) --}}
-										@if($me->ProjectNames || $me->Create_Project || $me->Create_Project_Code || $me->View_Project_List || $me->Material_Request
-										|| $me->View_Resource_Calendar || $me->View_Resource_Summary || $me->View_Report_Store || $me->Import_Data || $me->ewallet)
-										<li class="dropdown">
-				              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Project Management<span class="caret"></span></a>
-				              <ul class="dropdown-menu" role="menu">
-												<li><a href="{{ url('/handsontable') }}">Project Tracker</a></li>
-												@if($me->Task_List)
-												<li class="divider"></li>
-												<li class="sub-dropdown"><a href="#">Task</a></li>
-												<li class="divider"></li>
-												@if($me->CME_Dashboard)
-												<li><a href="{{url('/cmedashboard')}}">CME Dashboard</a></li>
-												@endif
-												<li><a href="{{url('/taskslist')}}/Assigned">Tasks List</a></li>
-												<li><a href="{{url('/rejectedtask')}}">Rejected Tasks</a></li>
-												@endif
-												<li class="divider"></li>
-												<li class="sub-dropdown"><a href="#">Costing</a></li>
-												<li class="divider"></li>
-												@if($me->Material_Request)
-												<li><a href="{{url('/material/MR')}}">Budget Costing</a></li>
-												@endif
-												{{-- @if($me->Material_Approval)
-												<li><a href="{{url('material/materialApproval')}}">Material Approval</a></li>
-												@endif --}}
-												@if($me->Costing)
-												<li><a href="{{url('/material/PO')}}">PO Listing</a></li>
-												<li><a href="{{ url('/costing') }}">Manday</a></li>
-												@endif
-												@if($me->ewallet)
-												<li><a href="{{ url('/ewallet') }}">e-Wallet</a></li>
-												<li><a href="{{ url('/fionrecord') }}">Fion Record</a></li>
-												<li><a href="{{ url('/ewalletfinanceupdate') }}">e-Wallet Finance Update</a></li>
-												<li><a href="{{ url('/apfinanceupdate') }}">AP Finance Update</a></li>
-												@endif
-
-												@if($me->View_Costing_Summary ||$me->View_OSU_Costing_Summary)
-													<li class="divider"></li>
-													<li class="sub-dropdown"><a href="#">Summary</a></li>
-													<li class="divider"></li>
-													<li><a href="{{ url('/trackersummary') }}">Project Costing Summary</a></li>
-												@endif
-												@if($me->Costing)
-												<li><a href="{{ url('/dashboard') }}">Project Dashboard</a></li>
-												@endif
-												<li><a href="{{ url('/dashboard2') }}">Project Dashboard</a></li>
-												<li><a href="{{ url('/dashboard3') }}">Commercial Dashboard</a></li>
-												@if($me->ewallet)
-												<li><a href="{{ url('/ewalletsummary') }}">eWallet Summary</a></li>
-												@endif
-												<!-- @if($me->View_Report_Store)
-												<li class="divider"></li>
-												<li class="sub-dropdown"><a href="#">Report Store</a></li>
-												<li class="divider"></li>
-												<li><a href="{{ url('/reportrepository') }}">Report Store</a></li>
 												@endif -->
+												
+												<!-- <li><a href="{{url('/invoice')}}">Invoice Management</a></li> -->
+												
 												<li class="divider"></li>
-												<li class="sub-dropdown"><a href="#">Rules Management</a></li>
+												<li class="sub-dropdown"><a href="#">Company Loan</a></li>
 												<li class="divider"></li>
-												@if($me->Aging_Rules_Management)
-													<li><a href="{{ url('/tracker/agingrules') }}">CME Notification Control</a></li>
-													@endif
-												<!-- @if($me->Aging_Rules_Management) -->
-
-												<!-- @endif -->
-												@if($me->Target_Rules_Management)
-												<!-- <li><a href="{{ url('/tracker/targetrules') }}">Target Rules Management</a></li> -->
-												@endif
-												@if($me->Dependency_Rules_Management)
-												<li><a href="{{ url('/tracker/dependencyrules') }}">Dependency Rules Management</a></li>
-												@endif
-
-												@if($me->Chart_Management)
-												<li><a href="{{ url('/chartmanagement') }}">Chart Maintenance</a></li>
-												@endif
-												@if($me->autocount)
+												<li><a href="{{ url('/companyloanmanagement') }}">SpeedFreak Loan Management</a></li>
+												<li><a href="{{ url('/companyloan') }}">SpeedFreak Loan</a></li>
 												<li class="divider"></li>
-												<li class="sub-dropdown"><a href="#">Autocount</a></li>
+												<li class="sub-dropdown"><a href="#">Salary</a></li>
 												<li class="divider"></li>
-												<li><a href="{{ url('/arinvoice') }}">AR Invoice Export</a></li>
-												<li><a href="{{ url('/apinvoice') }}">AP Invoice Export</a></li>
-												<!-- <li><a href="{{ url('/apcreditnote') }}">AP Credit Note Export</a></li> -->
-												<li><a href="{{ url('/cashbook') }}">CashBook Export</a></li>
-												@endif
-												@if($me->Project_Access)
+												<li><a href="{{ url('/salary') }}">SpeedFreak Staff Salary</a></li>
 												<li class="divider"></li>
-												<li class="sub-dropdown"><a href="#">Project Access</a></li>
+												<li class="sub-dropdown"><a href="#">Company Loan</a></li>
 												<li class="divider"></li>
-												@endif
-												@if($me->Create_Project)
-													 <li><a href="{{ url('/project') }}">Project List</a></li>
-												@endif
-
-												@if($me->Project_Access)
-													 <li><a href="{{ url('/projectaccess') }}">Project Access</a></li>
-
-												 @endif
-
-												 @if($me->Template_Access)
-													 <li><a href="{{ url('/templateaccess') }}">Template Access</a></li>
-
-												 @endif
-												 @if($me->Access_Control)
-												 	<li><a href="{{ url('/documenttypeaccesscontrol') }}">Document Type Access Control</a></li>
-												 @endif
-												 @if($me->Tracker_Management)
-												 <li><a href="{{ url('/trackerupdatetracker') }}">Tracker Update Tracker</a></li>
-												 @endif
+												<li><a href="{{ url('/speedfreak/sales')}}">SpeedFreak Sales</a></li>
 											</ul>
 										</li>
 										@endif
@@ -752,9 +630,9 @@
 												@if($me->View_Login_Tracking)
 												<li><a href="{{ url('/logintracker') }}">Login Tracker</a></li>
 												@endif
-												@if($me->IT_Services)
+												<!-- @if($me->IT_Services)
 												<li><a href="{{ url('/ITservice') }}">IT Services</a></li>
-												@endif
+												@endif -->
 												@if($me->Notification_Maintenance)
 												<li><a href="{{ url('/notificationmaintenance') }}">Notification Maintenance</a></li>
 												@endif
@@ -767,17 +645,17 @@
 												@if($me->Service_Contact)
 												<li><a href="{{ url('/servicecontact') }}">Service Contact</a></li>
 												@endif
-												@if($me->radius)
+												<!-- @if($me->radius)
 												<li><a href="{{ url('/radiusmanagement') }}">Radius Management</a></li>
 												@endif
 												<li><a href="{{ url('/deliverylocation') }}">Delivery Location Management</a></li>
-												<li><a href="{{ url('/scopeofwork') }}">Scope of Work Management</a></li>
+												<li><a href="{{ url('/scopeofwork') }}">Scope of Work Management</a></li> -->
 											</ul>
 										</li>
 
 										@endif
 
-										@if($me->UserId == 562 || $me->UserId == 659)
+<!-- 										@if($me->UserId == 562 || $me->UserId == 659)
 										<li class="dropdown">
 											<a href="#" class="dropdown-toggle" data-toggle="dropdown">Testing<span class="caret"></span></a>
 											<ul class="dropdown-menu" role="menu">
@@ -791,7 +669,7 @@
 												<li><a href="{{ url('deliveryorderpdf')}}/599">Auto Create DO pdf</a></li>
 											</ul>
 										</li>
-										@endif
+										@endif -->
 
 
 						@endif

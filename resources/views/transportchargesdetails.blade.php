@@ -84,7 +84,7 @@
                             "drawCallback":  function( settings ) {
                           
                             var api = this.api();
-                            var list = api.column(12).data().toArray();
+                            var list = api.column(10).data().toArray();
                             for(var i=0, len=list.length; i<len; i++){
                                 list[i] = parseInt(list[i], 10);
                             }
@@ -98,7 +98,7 @@
                                     if(d.deliveryform.trip.match("1 Way Trip") != null)
                                     {
                                        // d.deliverylocation.driverincentive = 
-                                       this.cell(this,12).data(maxnum);
+                                       this.cell(this,10).data(maxnum);
                                        console.log("here")
                                     }
                                     else if (d.deliveryform.trip.match("2 Way Trip") != null)
@@ -110,7 +110,7 @@
                                       if(d.deliverylocation.area.match("Outstation") != null)
                                       {
                                          console.log(real)
-                                         this.cell(this,12).data(maxnum);
+                                         this.cell(this,10).data(maxnum);
                                       }
                                     }
                                   }
@@ -123,8 +123,6 @@
                             { data: "users.Name", title:"Driver Name"},
                             { data: "deliveryform.DO_No", title:"DO Number"},
                             { data: "radius.Location_Name", title:"Site"},
-                            { data: "projects.Project_Name", title:"Project"},
-                            { data: "deliveryform.project_type", title:"Project Type"},
                             { data: "companies.Company_Name", title:"Company"},
                             { data: "deliveryform.trip", title:"Trip Type"},
                             { data: "deliverylocation.area", title:"Area"},
@@ -307,7 +305,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

@@ -63,11 +63,6 @@
                                                           <td style="width:10%;text-align:center;">:</td>
                                                           <td style="width:45%;text-align:left;">{{$leavedetail[0]->Application_Date}}</td>
                                                       </tr>
-                                                      <tr valign="top">
-                                                          <td style="width:45%;text-align:right;;">Project</td>
-                                                          <td style="width:10%;text-align:center;">:</td>
-                                                          <td style="width:45%;text-align:left;">{{$leavedetail[0]->Project_Name}}</td>
-                                                      </tr>
 
                                                     </tbody>
                                                 </table>

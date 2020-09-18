@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/autofill/2.1.2/css/autoFill.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/colreorder/1.3.2/css/colReorder.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="{{ asset('/plugin/css/editor.dataTables.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/css/select2.min.css">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedcolumns/3.2.2/css/fixedColumns.dataTables.min.css">
     {{-- <link rel="stylesheet" type="text/css" href="{{ asset('/plugin/examples/resources/syntax/shCore.css') }}">
@@ -46,6 +47,8 @@
 
       <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/fixedcolumns/3.2.2/js/dataTables.fixedColumns.min.js"></script>
       <script type="text/javascript" language="javascript" src="{{ asset('/plugin/js/dataTables.editor.min.js') }}"></script>
+      <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.min.js"></script>
+      <script type="text/javascript" language="javascript" src="{{asset('/plugin/datatables/extensions/Select2/editor.select2.js')}}"></script>
       {{-- <script type="text/javascript" language="javascript" src="{{ asset('/plugin/examples/resources/syntax/shCore.js') }}"></script>
       <script type="text/javascript" language="javascript" src="{{ asset('/plugin/examples/resources/demo.js') }}"></script>
       <script type="text/javascript" language="javascript" src="{{ asset('/plugin/examples/resources/editor-demo.js') }}"></script> --}}
@@ -59,30 +62,18 @@
 
           $(document).ready(function() {
 
-                         editor = new $.fn.dataTable.Editor( {
+                          editor = new $.fn.dataTable.Editor( {
                                   ajax: "{{ asset('/Include/invoice.php') }}",
-                                 table: "#invoicetable",
-                                 idSrc: "invoices.Id",
-                                 fields: [
-                                         {
+                                  table: "#invoicetable",
+                                  idSrc: "invoices.Id",
+                                  fields: [
+                                          {
                                                 label: "Invoice No:",
                                                 name: "invoices.Invoice_No"
-                                        },{
-                                                label: "Project Name:",
-                                                name: "invoices.ProjectId",
-                                                type:  'select',
-                                                options: [
-                                                   { label :"", value: "0" },
-                                                   @foreach($projects as $project)
-                                                       { label :"{{$project->Project_Name}}", value: "{{$project->Id}}" },
-                                                   @endforeach
-
-                                               ],
-
-                                       },{
-                                               label: "Company:",
-                                               name: "invoices.Company"
-                                       },{
+                                          },{
+                                                label: "Company/Customer:",
+                                                name: "invoices.Company"
+                                          },{
                                                 label: "Invoice Type:",
                                                 name: "invoices.Invoice_Type",
                                                 type: "select",
@@ -94,39 +85,55 @@
                                                       @endif
                                                     @endforeach
                                                 ],
-                                       },{
-                                                 label: "Invoice Date:",
-                                                 name: "invoices.Invoice_Date",
-                                                 type:   'datetime',
-                                                 def:    function () { return new Date(); },
-                                                 format: 'DD-MMM-YYYY'
-                                         },{
-                                                   label: "Invoice Amount:",
-                                                   name: "invoices.Invoice_Amount",
-                                                   attr: {
-                                                      type: "number"
-                                                    }
+                                          },{
+                                                label: "Invoice Date:",
+                                                name: "invoices.Invoice_Date",
+                                                type:   'datetime',
+                                                def:    function () { return new Date(); },
+                                                format: 'DD-MMM-YYYY'
+                                          },{       
+                                                label: "Item(s):",
+                                                name: "speedfreakinventory[].Id",
+                                                type:  "select2",
+                                                opts : {multiple: true},
+                                                options: [
+                                                    @foreach($item as $items)
+                                                      { label :"{{$items->name}}", value: "{{$items->Id}}" },
+                                                    @endforeach
+                                                ],
+                                          },{
+                                                label: "Invoice Labour Charge:",
+                                                name: "invoices.Invoice_Labour_Charge",
+                                                attr: {
+                                                    type: "number"
+                                                }
+                                          },{
+                                                label: "Invoice Amount:",
+                                                name: "invoices.Invoice_Amount",
+                                                attr: {
+                                                    type: "number"
+                                                }
 
-                                           },{
-                                                 label: "Invoice Description:",
-                                                 name: "invoices.Invoice_Description",
-                                                 type: "textarea"
-                                         },{
-                                                 label: "Invoice Status:",
-                                                 name: "invoices.Invoice_Status",
-                                                 type: "select",
-                                                 options: [
-                                                     { label :"", value: "" },
-                                                     @foreach($options as $option)
-                                                       @if ($option->Field=="Invoice_Status")
-                                                         { label :"{{$option->Option}}", value: "{{$option->Option}}" },
-                                                       @endif
-                                                     @endforeach
-                                                 ],
-                                         }
+                                          },{
+                                                label: "Invoice Status:",
+                                                name: "invoices.Invoice_Status",
+                                                type: "select",
+                                                options: [
+                                                    { label :"", value: "" },
+                                                    @foreach($options as $option)
+                                                      @if ($option->Field=="Invoice_Status")
+                                                        { label :"{{$option->Option}}", value: "{{$option->Option}}" },
+                                                      @endif
+                                                    @endforeach
+                                                ],
+                                          },{
+                                                label: "Remarks:",
+                                                name: "invoices.Invoice_Remarks",
+                                                type: "textarea"
+                                          }
 
-                                 ]
-                         } );
+                                  ]
+                          } );
 
 
                          //Activate an inline edit on click of a table cell
@@ -138,7 +145,7 @@
 
 
                                oTable=$('#invoicetable').dataTable( {
-                                       columnDefs: [{ "visible": false, "targets": [2] },{"className": "dt-center", "targets": "_all"}],
+                                       columnDefs: [{ "visible": false, "targets": [2,8] },{"className": "dt-center", "targets": "_all"}],
                                        responsive: false,
                                        colReorder: false,
                                        sScrollX: "100%",
@@ -157,17 +164,17 @@
                                                },
                                                { data: "invoices.Id"},
                                                { data: "invoices.Invoice_No" },
-                                               { data: "projects.Project_Name", editField: "invoices.ProjectId" },
                                                { data: "invoices.Company" },
                                                { data: "invoices.Invoice_Type" },
                                                { data: "invoices.Invoice_Date" },
-                                               { data: "invoices.Invoice_Description" },
                                                { data: "invoices.Invoice_Amount",
                                                "render": function ( data, type, full, meta ) {
 
                                                    return parseFloat(full.invoices.Invoice_Amount).toFixed(2);
                                                } },
-                                               { data: "invoices.Invoice_Status" }
+                                               { data: "invoices.Invoice_Labour_Charge" },
+                                               { data: "invoices.Invoice_Status" },
+                                               { data: "invoices.Invoice_Remarks" }
 
 
                                        ],
@@ -348,7 +355,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

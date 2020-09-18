@@ -345,8 +345,6 @@
                     <div class="form-group">
                       <form enctype="multipart/form-data" id="upload_form" role="form" method="POST" action="" >
                         <input type="hidden" value="0" name="fionrecordId" id="fionrecordId">
-                       <!--  <input type="hidden" value="" name="projectname" id="projectname">
-                        <input type="hidden" value="" name="projectcode" id="projectcode"> -->
                         <input type="file" id="uploadfile[]" name="uploadfile[]" multiple>
                       </form>
                     </div>
@@ -482,7 +480,7 @@
 
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.
@@ -507,8 +505,6 @@ return files[id];
   function OpenUploadWindow(id)
   {
     $('input[name="fionrecordId"]').val(id);
-    // $('input[name="projectname"]').val(projectname);
-    // $('input[name="projectcode"]').val(projectcode);
     $('#UploadModal').modal('show');
   }
 
@@ -545,8 +541,6 @@ return files[id];
                         $("#update-alert").fadeOut();
                       }, 6000);
                       $('input[name="fionrecordId"]').val(0);
-                      // $('input[name="projectcode"]').val(0);
-                      // $('input[name="projectname"]').val(0);
                       $('#uploadfile').empty();
                       $("#exist-alert").hide();
                       $('#UploadModal').modal('hide')

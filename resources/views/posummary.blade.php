@@ -163,12 +163,6 @@
       bPaginate:false,
       aaSorting:false,
       iDisplayLength:10,
-      //"order": [[ 3, "asc" ]],
-      // column:[
-      //   {data: null,"render":"", title:"No"},
-      //   {data: "Project_Name", title: "Project_Name"},
-      //   {data: "Pending", title: "Pending"}
-      // ],
       select: {
               style:    'os',
               selector: 'tr'
@@ -695,7 +689,7 @@
 
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

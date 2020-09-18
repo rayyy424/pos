@@ -117,12 +117,12 @@ class NoticeController extends Controller {
 		->first();
 
 
-		Mail::send('emails.notice', ['notice'=>$notice], function($message) use ($notice,$emails)
-		{
-				$emails = array_filter($emails);
-				array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-				$message->to($emails)->subject($notice->Title);
-		});
+		// Mail::send('emails.notice', ['notice'=>$notice], function($message) use ($notice,$emails)
+		// {
+		// 		$emails = array_filter($emails);
+		// 		array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+		// 		$message->to($emails)->subject($notice->Title);
+		// });
 
 	}
 

@@ -192,7 +192,7 @@
                                               { data: "staffloan.Id", title:"ID"},
                                               { data: "users.StaffId" , title:"Staff ID"},
                                               {data:'users.Name', editField: "staffloan.UserId",title:"Name"},
-                                              { data: "users.Department", title:"Department"},
+                                              { data: "users.Position", title:"Position"},
                                               { data: "staffloan.Reason", title:"Reason"},
                                               { data: "staffloan.Date_Approved", title:"Date Approved"},
                                               { data: "staffloan.Repayment_Start_On", title:"Repayment Start On"},
@@ -413,7 +413,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

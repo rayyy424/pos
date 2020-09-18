@@ -230,7 +230,7 @@
 						<p>DEPT</p>
 					</div>
 					<div class="col-xs-8">
-						<p>:&nbsp&nbsp GENSET</p>
+						<p>:&nbsp&nbsp SPEED FREAK</p>
 					</div>
 				</div>
 				<div class="row">

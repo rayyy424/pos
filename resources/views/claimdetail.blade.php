@@ -203,28 +203,6 @@ height: "";
                                        name: "claims.Id",
 
                                },{
-                                      label: "Project Code:",
-                                      name: "claims.Project_Code_Id",
-                                      type:  'select',
-                                      options: [
-                                          { label :"", value: "0" },
-                                          @foreach($projectcodes as $projectcode)
-                                              { label :"{{$projectcode->Project_Code}}", value: "{{$projectcode->Id}}" },
-                                          @endforeach
-
-                                      ],
-                               },{
-                                      label: "Project Name:",
-                                      name: "claims.ProjectId",
-                                      type:  'select',
-                                      options: [
-                                          { label :"", value: "0" },
-                                          @foreach($projects as $project)
-                                              { label :"{{$project->Project_Name}}", value: "{{$project->Id}}" },
-                                          @endforeach
-
-                                      ],
-                               },{
                                       label: "Depart_From:",
                                       name: "claims.Depart_From"
                                },{
@@ -451,7 +429,7 @@ height: "";
                                   "UserId": "{{ $user->Id }}"
                                 }
                               },
-                                   columnDefs: [{ "visible": false, "targets": [1,2,6] },{"className": "dt-center", "targets": "_all"}],
+                                   columnDefs: [{ "visible": false, "targets": [1,2] },{"className": "dt-center", "targets": "_all"}],
                                    rowId: 'claimstatuses.Id',
                                    colReorder: true,
                                    bAutoWidth: true,
@@ -585,7 +563,7 @@ height: "";
                                      { data: "claims.Date",title:"Date", Type: "date-moment",
                                      "render": function ( data, type, full, meta ) {
 
-                                            return '<a class ="buttonclaim" onclick="viewtimesheet(\''+full.claims.Date+'\',\''+full.claims.ProjectId+'\',\'{{$user->Id}}\')">'+full.claims.Date+'</a>';
+                                            return '<a class ="buttonclaim" onclick="viewtimesheet(\''+full.claims.Date+'\',\'{{$user->Id}}\')">'+full.claims.Date+'</a>';
                                         }
                                      },
                                      {
@@ -606,8 +584,6 @@ height: "";
                                            return n;
                                        }
                                     },
-                                     { data: "projectcodes.Project_Code", editField: "claims.Project_Code_Id" },
-                                     { data: "projects.Project_Name", editField: "claims.ProjectId" },
                                      { data: "claims.Depart_From"},
                                      { data: "claims.Destination"},
                                      { data: "claims.Site_Name"},
@@ -973,10 +949,6 @@ height: "";
                <div class="form-group">
 
                  <div class="col-lg-6">
-                   <label>Department : <i>{{$user->Department}}</i></label>
-                 </div>
-
-                 <div class="col-lg-6">
 
                    <label>Position : <i>{{$user->Position}}</i></label>
                  </div>
@@ -1311,7 +1283,7 @@ height: "";
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.
@@ -1351,11 +1323,9 @@ height: "";
 
   });
 
-  function viewtimesheet(date,projectid,userid)
+  function viewtimesheet(date,userid)
   {
-    // alert(date);
-    // alert(projectid);
-    // alert(nextperson);
+
     $('#ViewTimesheet').modal('show');
     $("#timesheet").html("");
 
@@ -1370,7 +1340,6 @@ height: "";
                 method: "POST",
                 data: {
                   Date:date,
-                  ProjectId:projectid,
                   UserId:userid
                 },
                 success: function(response){
@@ -1391,17 +1360,12 @@ height: "";
 
 
                     var display='<div id="table-wrapper"><div id="table-scroll"><table border="1" align="center" class="timetable" cellspacing="0" width="100%" padding="30px" style="font-size: 13px;">';
-                    display+='<tr class="timeheader"><td>Check_In_Type</td><td>Time_In</td><td>Time_Out</td><td>Project Name</td><td>Allowance</td><td>Leader_Member</td><td>Site_Name</td><td>State</td><td>Work_Description</td><td>Reason</td><td>Remarks</td><td>Approver</td><td>Status</td><td>Comment</td><td>Review_Date</td></tr>';
+                    display+='<tr class="timeheader"><td>Check_In_Type</td><td>Time_In</td><td>Time_Out</td><td>Allowance</td><td>Leader_Member</td><td>Site_Name</td><td>State</td><td>Work_Description</td><td>Reason</td><td>Remarks</td><td>Approver</td><td>Status</td><td>Comment</td><td>Review_Date</td></tr>';
 
                     $.each(myObject, function(i,item){
 
-                            if (item.Project_Name===null)
-                            {
-                              item.Project_Name=" - ";
-                            }
-
                             display+="<tr>";
-                            display+='<td>'+item.Check_In_Type+'</td><td>'+item.Time_In+'</td><td>'+item.Time_Out+'</td><td>'+item.Project_Name+'</td><td>'+item.Allowance+'</td><td>'+item.Leader_Member+'</td><td>'+item.Site_Name+'</td><td>'+item.State+'</td><td>'+item.Work_Description+'</td><td>'+item.Reason+'</td><td>'+item.Remarks+'</td><td>'+item.Approver+'</td><td>'+item.Status+'</td><td>'+item.Comment+'</td><td>'+item.updated_at+'</td>';
+                            display+='<td>'+item.Check_In_Type+'</td><td>'+item.Time_In+'</td><td>'+item.Time_Out+'</td><td>'+item.Allowance+'</td><td>'+item.Leader_Member+'</td><td>'+item.Site_Name+'</td><td>'+item.State+'</td><td>'+item.Work_Description+'</td><td>'+item.Reason+'</td><td>'+item.Remarks+'</td><td>'+item.Approver+'</td><td>'+item.Status+'</td><td>'+item.Comment+'</td><td>'+item.updated_at+'</td>';
                             display+="</tr>";
                     });
 

@@ -185,21 +185,6 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="col-md-3">
-                                            <label>Project Name</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <select id="project" class="form-control">
-                                                <option value="">None</option>
-                                                @foreach($projects as $project)
-                                                <option value="{{$project->Id}}" {{$mr->ProjectId== $project->Id ? "selected":""}}>{{$project->Project_Name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="col-md-3">
                                             <label>Site Name    </label>
                                         </div>
                                         <div class="col-md-6">
@@ -948,7 +933,7 @@
 </div>
 <footer class="main-footer">
 	<div class="pull-right hidden-xs">
-		<b>Version</b> 2.0.1
+		<b>Version</b> 1.0.0
 	</div>
 	<strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
 </footer>
@@ -993,8 +978,7 @@ var ajaxManager = (function() {
      };
 }());
  $(function () {
-    ajaxManager.run(); 
-    $('#project').select2();
+    ajaxManager.run();
     $('#site').select2();
     $("#item_code").select2();
     $("#item_desc").select2();
@@ -1262,31 +1246,7 @@ var ajaxManager = (function() {
             $("#edit_price").val($("#edit_item_code option:selected").data("price"));
         }
              
-    });
-    $('#project').on('change',function(){
-        $("#site").empty();
-        var check=false;
-        $.ajax({
-            type: "get",
-            url: "{{url('material/getSite')}}",
-            data: {
-              id:$('#project option:selected').val()  
-            },
-            success: function (response) {
-                for(var x=0,l=response.length;x<l;x++){
-                    $('#site').append($("<option></option>")
-                    .attr("value",response[x].Id)
-                    .text(response[x].site)
-                    );
-                    check=true;
-                }    
-                @if($mr->TrackerId)
-                    $("#site").val({{$mr->TrackerId}}).change();
-                @endif 
-            }
-        });
-    }).change();
-    
+    });   
 });
 var x=1;
 var itemArr=[];
@@ -1371,7 +1331,7 @@ async function removeRow(id){
 async function insertData()
 {
     $("#submit_btn").attr('disabled', true);
-    if(itemArr.length != 0 && $("#site option:selected").val() != "" && $("#project option:selected").val() != "")
+    if(itemArr.length != 0 && $("#site option:selected").val() != "")
     {   
         $.ajaxSetup({
             headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') }
@@ -1381,7 +1341,6 @@ async function insertData()
             url: "{{url('material/newRequest')}}",
             data: {
                 item:itemArr,
-                project:$('#project option:selected').val() ,
                 site:$("#site option:selected").val(),
                 savemr:$("#saveMr").val()
             },
@@ -1393,7 +1352,6 @@ async function insertData()
                     $('#qty').val("");
                     $("#price").empty();
                     $("#total").empty();
-                    $("#project").val('').change();
                     $("#site").val('').change();
                     itemArr=[];
                     updateVendor=[];
@@ -1956,7 +1914,6 @@ function saveMR(){
             url: "{{url('material/saveMR')}}",
             data: {
                 arr:itemArr,
-                project:$('#project option:selected').val() ,
                 site:$("#site option:selected").val(),
                 savemr:$("#saveMr").val()
             },

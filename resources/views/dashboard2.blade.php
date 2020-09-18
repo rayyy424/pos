@@ -115,24 +115,6 @@
             </div>
           </div>
 
-          <div class="col-md-2">
-
-            <div class="form-group">
-              <label>Project : </label>
-              <select class="form-control select2" id="Project" name="Project" style="width: 100%;">
-                <option value=all>All</option>
-
-                @foreach($projects as $p)
-
-                @if(str_contains($p->Project_Name,"DIGI") || str_contains($p->Project_Name,"SBC") ||str_contains($p->Project_Name,"UM"))
-                    <option value="{{$p->Id}}" <?php if($p->Id==$projectid) echo ' selected="selected" '; ?>>{{$p->Project_Name}}</option>
-                @endif
-                @endforeach
-
-                </select>
-              </div>
-          </div>
-
           <div class="col-md-1">
 
             <br>
@@ -2030,7 +2012,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.
@@ -2051,16 +2033,14 @@ $(function () {
 });
 function refresh()
 {
-  var project=$('#Project').val();
   var d=$('#range').val();
   var arr = d.split(" - ");
   var check=$("#dateRange").is(':checked');
   if(check)
     arr="&start="+arr[0]+"&end="+arr[1];
   else arr="";
-  if(project) project="&project="+project;
-  else project="";
-  window.location.href ="{{ url("/dashboard2") }}?check="+check+arr+project;
+
+  window.location.href ="{{ url("/dashboard2") }}?check="+check+arr;
 }
 </script>
 

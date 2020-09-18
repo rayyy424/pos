@@ -145,8 +145,6 @@ table#t01 td {
 
       <table class="main">
           <tr>
-              <td style="padding-left:50px;">Project Name :</td>
-              <td style="background-color:#3c8dbc; color:white;">Celcom RAN Project</td>
               <td>Engineering Code :</td>
               <td style="background-color:#3c8dbc; color:white;">0004581600810A</td>
           </tr>
@@ -293,10 +291,10 @@ table#t01 td {
             <td>Supplier</td>
         </tr>
         <tr>
-            <td>Name: ABD ZAKI MAT ISA</td>
+            <td>Name: MUHAMMAD ZAHIN BIN KAMAL</td>
         </tr>
         <tr>
-            <td>Title: Project Manager</td>
+            <td>Title: Director</td>
         </tr>
 
     </table>
@@ -313,7 +311,7 @@ table#t01 td {
               <td>________________________</td>
           </tr>
           <tr>
-              <td>HUAWEI TECHNOLOGIES (MALAYSIA) SDN BHD</td>
+              <td>Customer</td>
           </tr>
           <tr>
               <td>Name: </td>

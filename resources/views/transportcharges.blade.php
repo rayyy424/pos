@@ -93,7 +93,7 @@
         //                  } );
         
         summary = $('#summary').dataTable( {
-                         columnDefs: [{ "visible": false, "targets":[2,5,6,7,8,9]},{"className": "dt-right", "targets": [11,12,13,14]}],
+                         columnDefs: [{ "visible": false, "targets":[2,5,6,7]},{"className": "dt-right", "targets": [11,12,13,14]}],
                           responsive: false,
                           dom: "Bltp",
                           sScrollX: "100%",
@@ -132,8 +132,6 @@
                           { data: "users.Name", title:"Driver Name"},
                           { data: "deliveryform.DO_No", title:"DO Number"},
                           { data: "radius.Location_Name", title:"Site"},
-                          { data: "projects.Project_Name", title:"Project"},
-                          { data: "deliveryform.project_type", title:"Project Type"},
                           { data: "companies.Company_Name", title:"Company"},
                           { data: "deliverylocation.area", title:"Area"},
                           { data: "roadtax.Lorry_Size", title:"Lorry Size"},
@@ -239,7 +237,7 @@
                      });
 
                      summary2 = $('#summary2').dataTable( {
-                                     columnDefs: [{"className": "dt-right", "targets": [2]}],
+                                     columnDefs: [{"className": "dt-right", "targets": [1]}],
                                       responsive: false,
                                       dom: "Bltp",
                                       sScrollX: "100%",
@@ -254,7 +252,7 @@
                                         var api = this.api();
                                       var total = 0.0;
 
-                                      total = api.column(2).data().sum();
+                                      total = api.column(1).data().sum();
                                        $("#typetotal").html("RM" + total.toFixed(2));
 
                               },
@@ -262,14 +260,13 @@
 
                                     var api = this.api();
                                     total = 0.0;
-                                    total = api.column(2,{search:"applied"}).data().sum();
+                                    total = api.column(1,{search:"applied"}).data().sum();
 
                                    $("#typetotal").html("RM" + total.toFixed(2));
                                   },
                                       columns: [
                                       { data : null, "render":"", title: "No"},
 
-                            { data: "deliveryform.project_type", title:"Project Type"},
                             { data: "deliverylocation.transportcharges",title:"Total Charges (RM)","render": function ( data, type, full, meta ) {
                                               return parseFloat(data).toFixed(2);
                                                }
@@ -396,7 +393,7 @@
                     }} );
 
             detail = $('#detail').dataTable( {
-                           columnDefs: [{ "visible": false, "targets":[1,14]},{"className": "dt-right", "targets": [13,15,17]},{ "width": "200%", "targets": [16] }],
+                           columnDefs: [{ "visible": false, "targets":[1,12]},{"className": "dt-right", "targets": [11,13,15]},{ "width": "200%", "targets": [12] }],
                             responsive: false,
                             dom: "Bltp",
                             sScrollX: "100%",
@@ -435,27 +432,27 @@
                                }
                                if(d.deliveryform.trip.match("1 Way Trip") != null)
                                   {
-                                    this.cell(this,13).data(charges);
+                                    this.cell(this,11).data(charges);
                                   }
                                   else if(d.deliveryform.trip.match("2 Way Trip") != null)
                                   {
                                     charges = parseFloat(this.cell(this,13).data()).toFixed(2);
-                                    this.cell(this,13).data(charges);
+                                    this.cell(this,11).data(charges);
                                   }
                                   else
                                   {
                                     if(d.deliverylocation.area.match("Outstation") != null){
-                                      this.cell(this,13).data(charges);
+                                      this.cell(this,11).data(charges);
                                     }
                                     else if(d.deliverylocation.area.match("Zone") != null)
                                     {
                                       charges = parseFloat(this.cell(this,13).data()).toFixed(2);
-                                      this.cell(this,13).data(charges);
+                                      this.cell(this,11).data(charges);
                                     }
                                   }
 
                                   var incentive = charges*0.15;
-                                  this.cell(this,15).data(parseFloat(incentive).toFixed(2));
+                                  this.cell(this,13).data(parseFloat(incentive).toFixed(2));
 
                                   if(extra != "")
                                   {
@@ -465,7 +462,7 @@
                                   {
                                     var total = incentive;
                                   }
-                                  this.cell(this,17).data(parseFloat(total).toFixed(2));
+                                  this.cell(this,15).data(parseFloat(total).toFixed(2));
                             });                      
                             },
                             columns: [
@@ -476,8 +473,6 @@
                             { data: "users.Name", title:"Driver Name"},
                             { data: "deliveryform.DO_No", title:"DO Number"},
                             { data: "radius.Location_Name", title:"Site"},
-                            { data: "projects.Project_Name", title:"Project"},
-                            { data: "deliveryform.project_type", title:"Project Type"},
                             { data: "client.Company_Name", title:"Client"},
                             { data: "companies.Company_Name", title:"Company"},
                             { data: "deliveryform.trip", title:"Trip Type"},
@@ -569,9 +564,9 @@
                             data.each(function (value, index) {
                                 if(value.deliveryform.Id == id)
                                 {
-                                var totalincentive = table.api().cell(index,15).data();
+                                var totalincentive = table.api().cell(index,13).data();
                                 var update = parseFloat(val) + parseFloat(totalincentive);
-                                table.api().cell(index,17).data(parseFloat(update).toFixed(2));
+                                table.api().cell(index,15).data(parseFloat(update).toFixed(2));
                                 }
                             });
                             // console.log(totalincentive,update);
@@ -726,35 +721,6 @@
                    </div>
                  </div>
 
-                 <!-- <div class="col-md-2">
-                   <div class="input-group">
-                    <label><input type="checkbox" name="viewcompany" id="viewcompany">Group By Company</label> -->
-
-                     <!-- <select class="form-control" id="company" name="company">
-                      <option value="" selected=""></option>
-                      @foreach ($company as $c)
-                      <option value="{{$c->Id}}">{{$c->Company_Name}}</option>
-                      @endforeach
-                     </select> -->
-
-                   <!-- </div>
-                 </div> -->
-<!-- 
-                  <div class="col-md-2">
-                   <div class="input-group">
-                    <label><input type="checkbox" name="viewtype" id="viewtype">Group By Project Type</label> -->
-                     <!-- <select class="form-control" id="projecttype" name="projecttype">
-                      <option value="" selected=""></option>
-                      <option value="CME">CME</option>
-                      <option value="GSC">GSC</option>
-                      <option value="GST">GST</option>
-                      <option value="FAB">FAB</option>
-                      <option value="Others">Others</option>
-                     </select> -->
-
-                   <!-- </div>
-                 </div> -->
-
                  <div class="col-md-2">
                    <div class="input-group">
                     <label><input type="checkbox" name="all" id="all">All Details</label>
@@ -908,7 +874,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.
@@ -931,22 +897,10 @@
 
       var d=$('#range').val();
       var arr = d.split(" - ");
-      var projecttype = $('#projecttype').val();
       var company = $('#company').val();
-      console.log(projecttype,company)
+      console.log(company)
 
-      if((projecttype == null || projecttype == "") && (company == null || company == ""))
-      {
-        window.location.href ="{{ url("/transportcharges") }}/"+arr[0]+"/"+arr[1];
-      }
-      else if((company == null || company == ""))
-      {
-        window.location.href ="{{ url("/transportcharges") }}/"+arr[0]+"/"+arr[1]+"/"+projecttype;
-      }
-      else if((projecttype == null || projecttype == ""))
-      {
-        window.location.href ="{{ url("/transportcharges") }}/"+arr[0]+"/"+arr[1]+"/"+ null +"/"+company;
-      }
+        window.location.href ="{{ url("/transportcharges") }}/"+arr[0]+"/"+arr[1]+"/"+company;
     }
 
     function updateincentive(id,value)

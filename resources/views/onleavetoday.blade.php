@@ -306,7 +306,6 @@
                                     { data: "leaves.Medical_Paid_Month",title:"Medical_Paid_Month"},
 
                                      { data: "leaves.created_at",title:"Application_Date"},
-                                     { data: "projects.Project_Name",title:"Project_Name"},
                                      { data: "approver.Name",title:"Approver"},
                                      { data: "leavestatuses.Comment",title:"Comment"},
                                      { data: "leavestatuses.updated_at",title:"Review_Date"},
@@ -555,7 +554,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

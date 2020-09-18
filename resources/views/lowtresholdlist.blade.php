@@ -62,18 +62,18 @@
                             rowId:"tracker.Id",
                             columns: [
                             { data : null, "render":"", title: "No"},
-                            { data : 'gensetinventory.Id', title: "Id"},
-                            { data : 'gensetinventory.name', title: "Name"},
-                            { data : 'gensetinventory.type', title: "Type"},
-                            { data : 'gensetinventory.barcode', title: "Barcode"},
-                            { data : 'gensetinventory.model', title: "Model"},
+                            { data : 'speedfreakinventory.Id', title: "Id"},
+                            { data : 'speedfreakinventory.name', title: "Name"},
+                            { data : 'speedfreakinventory.type', title: "Type"},
+                            { data : 'speedfreakinventory.barcode', title: "Barcode"},
+                            { data : 'speedfreakinventory.model', title: "Model"},
                             { data : 'inventorypricehistory.price', title: "Price(RM)",
                                 "render": function ( data, type, full, meta ) {
-                                    return '<button class="history" id="'+full.gensetinventory.Id+'">'+data+'</button>'
+                                    return '<button class="history" id="'+full.speedfreakinventory.Id+'">'+data+'</button>'
                                 }
                             },
-                            { data : 'gensetinventory.balance_treshold', title: "Treshold"},
-                            { data : 'gensetinventory.qty_balance', title: "Balance"}
+                            { data : 'speedfreakinventory.balance_treshold', title: "Treshold"},
+                            { data : 'speedfreakinventory.qty_balance', title: "Balance"}
                                  ],
                                  select: true,
                                  buttons: [
@@ -118,11 +118,11 @@
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1>Low Treshold Items<small>Genset Inventory</small></h1>
+    <h1>Low Treshold Items<small>Speedfreak Inventory</small></h1>
 
     <ol class="breadcrumb">
       <li><a href="{{ url('/home') }}"><i class="fa fa-dashboard"></i>Home</a></li>
-      <li><a href="#">Genset Inventory</a></li>
+      <li><a href="#">Speedfreak Inventory</a></li>
       <li class="active">Low Treshold Item</li>
     </ol>
   </section>
@@ -258,7 +258,7 @@
 
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
   </footer>

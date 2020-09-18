@@ -51,9 +51,7 @@ class OptionController extends Controller {
 		if($type=="Report Store")
 		{
 			$options = DB::table('options')
-			->select('options.Id','options.Table','options.Field','options.Option','projects.Project_Name','options.Update_Column','options.Section','options.Description')
-			->leftJoin('optionprojects','options.Id','=','optionprojects.OptionId')
-			->leftJoin('projects','projects.Id','=','optionprojects.ProjectId')
+			->select('options.Id','options.Table','options.Field','options.Option','options.Update_Column','options.Section','options.Description')
 			->where('options.Field', '=','Document_Type')
 			->orderBy('options.Field', 'asc')
 			->get();
@@ -62,9 +60,7 @@ class OptionController extends Controller {
 		else {
 			// code...
 			$options = DB::table('options')
-			->select('options.Id','options.Table','options.Field','options.Option','projects.Project_Name','options.Update_Column','options.Section','options.Description')
-			->leftJoin('optionprojects','options.Id','=','optionprojects.OptionId')
-			->leftJoin('projects','projects.Id','=','optionprojects.ProjectId')
+			->select('options.Id','options.Table','options.Field','options.Option','options.Update_Column','options.Section','options.Description')
 			->where('options.Table', '=',$type)
 			->orderBy('options.Field', 'asc')
 			->get();

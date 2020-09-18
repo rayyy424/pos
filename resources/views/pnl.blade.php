@@ -148,32 +148,6 @@
       <div class="box box-success">
           <div class="box-body">
 
-            {{-- <br><br>
-              <div class="col-md-1">
-                Project Name:
-              </div>
-              <div class="col-md-3">
-                <select id="mySelect" class="form-control" onchange="searchbyproject()">
-
-                @foreach($projects as $project)
-
-                  @if($projectid==$project->Id)
-
-                     <option value="{{$project->Id}}" selected>{{$project->Project_Name}}</option>
-
-                  @else
-
-                     <option value="{{$project->Id}}">{{$project->Project_Name}}</option>
-
-                  @endif
-
-                @endforeach
-
-              </select>
-            </div> --}}
-
-
-
           <div class="tab-pane" id="requirement">
             <table id="pnltable" class="display" cellspacing="0" width="100%" padding="30px" style="font-size: 13px;">
               <thead>
@@ -221,12 +195,7 @@
                           <td></td>
                           @foreach($view as $key=>$value)
                             <td>
-                              @if ($key=="Project_Name")
-                                <a href="{{url('/PNL')}}/{{$view->Id}}" >{{ $value }}</a>
-                              @else
                                 {{ $value }}
-                              @endif
-
                             </td>
                           @endforeach
                       </tr>
@@ -253,19 +222,13 @@
 
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.
 </footer>
 
 <script>
-
-function searchbyproject(){
-  var projectid = document.getElementById("mySelect").value;
-  window.location.href ="{{ url("/PNL") }}/"+projectid;
-
-}
 
 </script>
 

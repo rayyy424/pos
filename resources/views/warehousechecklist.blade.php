@@ -223,97 +223,6 @@
                 iDisplayLength:10,
              });
 
-      //        oTable1=$("#approvedTable").dataTable({
-      //       ajax: {
-			// 	"url": "{{ asset('/Include/materialrequest.php') }}",
-			// 	"data":{
-					
-      //               @if(!$me->View_Material_Request)
-      //               id:{{$me->UserId}},
-      //               @endif
-      //               status:"%Approved%",
-      //               test:""
-			// 	}
-			// },
-			// columnDefs: [
-			// 	{ "visible": false, "targets": [1] },
-      //           {"className": "dt-center", "targets": [0,2,3,4,5,6,7,8,10]},
-      //           {"className": "dt-right", "targets": [9]}
-			// ],
-			// responsive: false,
-			// colReorder: false,
-			// sScrollX: "100%",
-			// bScrollCollapse: true,
-			// bAutoWidth: true,
-			// sScrollY: "100%",
-			// dom: "tip",
-			// iDisplayLength:10,
-      //       rowId:"material.Id",
-      //       order:[["8","desc"]],
-      //       fnInitComplete: function(oSettings, json) {
-      //           $('#approvedtab').html("Approved" + "[" + oTable1.api().rows().count() +"]")
-      //       },
-			// columns: [
-			// 	{ data: null,"render":"", title:"No"},
-      //           { data: "material.Id"},
-      //           // {
-      //           //     data:null,
-      //           //     title:"PO",
-      //           //     render:function(data){
-      //           //         // var f="";
-      //           //         if(data.material.generatePO == "PO")
-      //           //             return "<a class='btn btn-primary btn-sm' onclick='generatePO("+data.material.Id+")'>Generate PO</a>";
-      //           //         else if (data.material.generatePO == "generated")
-      //           //             return "<a class='btn btn-primary btn-sm' href='{{url('material/PO')}}/"+data.material.Id+"'>View PO</a>";
-      //           //         else
-      //           //             return "-";
-      //           //         //     f="<a class='btn btn-primary btn-sm'>Generate PO</a>";
-      //           //         // return "<a style='width:25%;' target='_blank' class='btn btn-info btn-sm' href='{{url('material/print')}}/"+data.material.Id+"'>Print</a> "+f;
-                        
-      //           //     }
-      //           // },
-      //           { data: null, title: "MR NO",
-      //             render:function(data){
-      //               if( data.material.MR_No == "")
-      //                   return "-"
-      //               else 
-      //                   return "<a style='color:blue;' target='_blank' href='{{url('material/print')}}/"+data.material.Id+"'>"+ data.material.MR_No+"</a>";
-      //           }},
-      //           { data:"users.Name" , title:"Requestor Name"},
-			// 	{ data: "projects.Project_Name", title:'Project'},
-      //           { data: "tracker.Project_Code", title: "Project Code"},
-      //           { data: "tracker.`Site Name`", title: "Site Name"},
-      //           { data: "materialstatus.Status", title: "Status"},
-      //           { data:"material.created_at",title:"Created At"},
-      //           { data: "material.Total", title: "Total",
-      //             render: function ( data, type, row, meta ) {
-      //               return "RM "+ data;
-      //           }},
-      //           { data:"view.Name",title:"View By",render:function(data){
-      //             if(data)
-      //               return data;
-      //             else return "-"
-      //           }},
-      //           { data:"mrviewlog.created_at",title:"View On",render:function(data){
-      //             if(data)
-      //               return data;
-      //             else return "-"
-      //           }},
-      //           {
-      //               data:null,
-      //               title:"Action",
-      //               render:function(data,type,row,meta){
-      //                   var f='viewMaterial('+data.material.Id+',"view")';
-      
-      //                   return "<a  class='btn btn-info btn-sm' onclick='"+f+"'>View Material</a>";
-      //               }
-      //           }
-			// ],
-			// // select: {
-      //       //     style:    'os',
-      //       //     selector: 'td'
-      //       // },
-      //   });
 
         oTable1.on( 'order.dt search.dt', function () {
           oTable1.api().column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
@@ -577,7 +486,6 @@
                   <tr>
                     <td>No</td>
                     <td>Form Id</td>
-                    <!-- <td>ProjectId</td> -->
                     <td>Purpose</td>
                     <td>DO No.</td>
                     <td>Delivery Date</td>
@@ -598,7 +506,6 @@
                   <tr>
                     <td>{{$i}}</td>
                     <td>{{$d->formid}}</td>
-                    <!-- <td>{{$d->ProjectId}}</td> -->
                     <td>{{$d->Option}}</td>
                     <td>{{$d->DO_No}}</td>
                     <td>{{$d->delivery_date}}</td>
@@ -713,9 +620,6 @@
                       <td>Delivery Date</td>
                       <td>Stock Insufficient Date</td>
                       <td>Site</td>
-                      <td>Project Name</td>
-                      <!-- <td>Item Code</td>
-                      <td>Requested Quantity</td> -->
                       <td>Purpose</td>
                       <td>Action</td>
                     </tr>
@@ -731,7 +635,6 @@
                       <td>{{$accept->delivery_date}}</td>
                       <td>{{$accept->updated_at}}</td>
                       <td>{{$accept->Location_Name}}</td>
-                      <td>{{$accept->Project_Name}}</td>
                       <td>{{$accept->Option}}</td>
                       <td>
                           <!-- <button class="btn btn-info" id="stockin" name="stockin">Stock-in</button> -->
@@ -766,8 +669,6 @@
                              <td>No</td>
                              <td>MR_NO</td>
                              <td>Name</td>
-                             <td>Project</td>
-                             <td>Project Code</td>
                              <td>Site Name</td>
                              <td>Created At</td>
                              <td>View By</td>
@@ -783,8 +684,6 @@
                               <td></td>
                               <td><a style='color:blue;' target='_blank' href='{{url('material/print')}}/{{$m->Id}}'>{{$m->MR_No}}</a></td>
                               <td>{{$m->Name}}</td>
-                              <td>{{$m->Project_Name}}</td>
-                              <td>{{$m->Project_Code}}</td>
                               <td>{{$m->sitename}}</td>
                               <td>{{$m->created_at}}</td>
                               <td>{{$m->viewon}}</td>
@@ -821,8 +720,6 @@
                                <td>DO NO</td>
                                <td>MR_NO</td>
                                <td>Name</td>
-                               <td>Project</td>
-                               <td>Project Code</td>
                                <td>Site Name</td>
                                <td>Created At</td>
                                <td>View By</td>
@@ -839,8 +736,6 @@
                                 <td>{{$m->DO_No}}</td>
                                 <td><a style='color:blue;' target='_blank' href='{{url('material/print')}}/{{$m->Id}}'>{{$m->MR_No}}</a></td>
                                 <td>{{$m->Name}}</td>
-                                <td>{{$m->Project_Name}}</td>
-                                <td>{{$m->Project_Code}}</td>
                                 <td>{{$m->sitename}}</td>
                                 <td>{{$m->created_at}}</td>
                                 <td>{{$m->viewon}}</td>
@@ -952,7 +847,7 @@
 
 <footer class="main-footer">
 	<div class="pull-right hidden-xs">
-		<b>Version</b> 2.0.1
+		<b>Version</b> 1.0.0
 	</div>
 	<strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
 </footer>

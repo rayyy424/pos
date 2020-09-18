@@ -420,12 +420,12 @@
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1>JDNI Summary<small>Sales Order</small></h1>
+    <h1>Stock Cost Summary<small>Sales Order</small></h1>
 
     <ol class="breadcrumb">
       <li><a href="{{ url('/home') }}"><i class="fa fa-dashboard"></i>Home</a></li>
       <li><a href="#">Sales Order</a></li>
-      <li class="active">JDNI Summary</li>
+      <li class="active">Stock Cost Summary</li>
     </ol>
   </section>
 
@@ -552,7 +552,7 @@
 
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
   </footer>

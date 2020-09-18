@@ -208,8 +208,6 @@
 
         <table class="main">
             <tr>
-                <td>Project Name :</td>
-                <td><input type="text" name="ProjectName" class="form-control" value="{{$podetail->Project}}" id=""></td>
                 <td>Engineering Code :</td>
                 <td><input type="text" name="EngineeringCode" class="form-control" value="{{$podetail->Engineering_No}}" id=""></td>
             </tr>
@@ -381,10 +379,10 @@
                 <td>Supplier</td>
             </tr>
             <tr>
-                <td>Name: ABD ZAKI MAT ISA</td>
+                <td>Name: MUHAMMAD ZAHIN BIN KAMAL</td>
             </tr>
             <tr>
-                <td>Title: Project Manager</td>
+                <td>Title: Director</td>
             </tr>
 
         </table>
@@ -401,7 +399,7 @@
                 <td>________________________</td>
             </tr>
             <tr>
-                <td>HUAWEI TECHNOLOGIES (MALAYSIA) SDN BHD</td>
+                <td>Customer</td>
             </tr>
             <tr>
                 <td>Name: </td>
@@ -451,7 +449,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

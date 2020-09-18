@@ -66,32 +66,32 @@
 	$(document).ready(function() {
 		editor = new $.fn.dataTable.Editor( {
 			ajax: {
-				"url": "{{ asset('/Include/gensetinventory.php') }}"
+				"url": "{{ asset('/Include/speedfreakinventory.php') }}"
 			},
-			idSrc: "gensetinventory.Id",
+			idSrc: "speedfreakinventory.Id",
 			table: "#inventorytable",
 			fields: [
 			{
 				label: "Name:",
-				name: "gensetinventory.name",
+				name: "speedfreakinventory.name",
 			},{
 				label:"Type",
-				name:"gensetinventory.type",
+				name:"speedfreakinventory.type",
 			},
 			{
 				label: "Barcode:",
-                name: "gensetinventory.barcode"
+                name: "speedfreakinventory.barcode"
 			},
 			{
 				label: "Model:",
-				name: "gensetinventory.model",
+				name: "speedfreakinventory.model",
 			},
 			{
 				label: "Cost Price(RM):",
-				name: "gensetinventory.price",
+				name: "speedfreakinventory.price",
 			},{
 				label:"Supplier:",
-				name:"gensetinventory.supplier",
+				name:"speedfreakinventory.supplier",
 				type: 'select2',
 	            options: [ { label :"", value: "" },
 		            @foreach($supplier as $c)
@@ -101,11 +101,11 @@
 			},
 			{
 				label: "Quantity Balance:",
-				name: "gensetinventory.qty_balance",
+				name: "speedfreakinventory.qty_balance",
             },
             {
                 label: "Status:",
-	            name: "gensetinventory.status",
+	            name: "speedfreakinventory.status",
 	            type: 'select2',
 	            options: [ { label :"", value: "" },
 		            @foreach($status as $c)
@@ -138,18 +138,18 @@
 			iDisplayLength:25,
 			columns: [
 				{ data: null,"render":"", title:"No"},
-				{ data: "gensetinventory.Id", title:'Id'},
-				{ data: "gensetinventory.name", title:'Name'},
-				{ data: "gensetinventory.type", title:'Type'},
-				{ data: "gensetinventory.barcode", title:'Barcode'},
-				{ data: "gensetinventory.model",title:"Model"},
-				{ data: "gensetinventory.price", title:'Cost Price (RM)'},			
-				{ data: "gensetinventory.price_yuan",title:"Cost Price (&yen)"},
-				{ data: "gensetinventory.maxTechhold", title: "Maximum Hold"},
-				{ data: "gensetinventory.balance", title:'Quantity Balance'},
+				{ data: "speedfreakinventory.Id", title:'Id'},
+				{ data: "speedfreakinventory.name", title:'Name'},
+				{ data: "speedfreakinventory.type", title:'Type'},
+				{ data: "speedfreakinventory.barcode", title:'Barcode'},
+				{ data: "speedfreakinventory.model",title:"Model"},
+				{ data: "speedfreakinventory.price", title:'Cost Price (RM)'},			
+				{ data: "speedfreakinventory.price_yuan",title:"Cost Price (&yen)"},
+				{ data: "speedfreakinventory.maxTechhold", title: "Maximum Hold"},
+				{ data: "speedfreakinventory.balance", title:'Quantity Balance'},
 				{ title:"Action", sortable: false,
 					render: function ( data, type, row, meta ) {
-							return "<a class='btn btn-default btn-sm' target='_blank' href='/technicianbag/details/"+row.gensetinventory.Id+"'>View</a>";
+							return "<a class='btn btn-default btn-sm' target='_blank' href='/technicianbag/details/"+row.speedfreakinventory.Id+"'>View</a>";
 						}
 				}
 			],
@@ -188,7 +188,7 @@
 			// Get the rows id value
 			//  var row=$(this).closest("tr");
 			//  var oTable = row.closest('table').dataTable();
-			userid = oTable.api().row( this ).data().gensetinventory.Id;
+			userid = oTable.api().row( this ).data().speedfreakinventory.Id;
 		});
 
 		oTable.api().on( 'order.dt search.dt', function () {
@@ -233,7 +233,7 @@
 		<h1>Technician Inventory Bag</h1>
 		<ol class="breadcrumb">
 	        <li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li>
-	        <li>GENSET Management</li>
+	        <li>SPEED FREAK Management</li>
 	        <li class="active">Technician Inventory Bag</li>
 	    </ol>
     </section>
@@ -314,7 +314,7 @@
 </div>
 <footer class="main-footer">
 	<div class="pull-right hidden-xs">
-		<b>Version</b> 2.0.1
+		<b>Version</b> 1.0.0
 	</div>
 	<strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights reserved.
 </footer>

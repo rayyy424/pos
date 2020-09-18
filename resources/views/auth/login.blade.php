@@ -49,7 +49,7 @@
 }
 .container-fluid{
 	min-height: 90%;
-	margin-right: 250px;
+	margin-left: 250px;
 	margin-top: 100px;
 }
 
@@ -57,7 +57,7 @@
 {
 	.container-fluid{
 		min-height: 90%;
-		margin-right: 72px;
+		margin-left: 72px;
 		margin-top: 100px;
 	}
 
@@ -241,7 +241,7 @@ body {
 <div class="container-fluid">
 	<div class="row">
 
-	<form class="form-horizontal pull-right" role="form" method="POST" action="{{ url('auth/login') }}">
+	<form class="form-horizontal pull-left" role="form" method="POST" action="{{ url('auth/login') }}">
 	<input type="hidden" name="_token" value="{{ csrf_token() }}">
 
 			@if (count($errors) > 0)
@@ -270,7 +270,7 @@ body {
 					<div class="pen-title">
 
 						 <div class="col-md-12">
-								<div class="imglogo"><img src="{{ URL::to('/') ."/img/logo.png"  }}" height="50px" alt="TOTG" style="border:0; margin:0;"></div>
+								<div class="imglogo"><img src="{{ URL::to('/') ."/img/logo.png"  }}" width="320px" height="100px" alt="Speed Freak Sdn Bhd" style="border:0; margin:0;"></div>
 								<br>
 								<br>
 						 </div>
@@ -315,7 +315,7 @@ body {
 
 <footer class="main-footer" id="footer" style="margin-left:0px;bottom">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

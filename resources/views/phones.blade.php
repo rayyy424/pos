@@ -130,13 +130,13 @@
                                    name: "phonebills.Current_Holder"
 
                            },{
-                                   label: "Department:",
-                                   name: "phonebills.Department",
+                                   label: "Position:",
+                                   name: "phonebills.Position",
                                    type:  'select2',
                                    options: [
                                       { label :"", value: "" },
-                                      @foreach($departments as $department)
-                                          { label :"{{$department->Project_Name}}", value: "{{$department->Project_Name}}" },
+                                      @foreach($position as $positions)
+                                          { label :"{{$positions->Position}}", value: "{{$positions->Position}}" },
                                       @endforeach
 
                                   ],
@@ -214,11 +214,11 @@
                                      opts: {
                                         data : [
                                           { text :"", id: "" },
-                                          @foreach($users as $department => $dept_users)
+                                          @foreach($users as $position => $position_users)
                                           {
-                                            text: "{{ $department }}",
+                                            text: "{{ $position }}",
                                             children: [
-                                            @foreach($dept_users as $user)
+                                            @foreach($position_users as $user)
                                             {
                                                 id: {{ $user->Id }},
                                                 text: "{{ $user->Name }}"
@@ -310,13 +310,13 @@
                                    name: "phonebills.Current_Holder"
 
                            },{
-                                   label: "Department:",
-                                   name: "phonebills.Department",
+                                   label: "Position:",
+                                   name: "phonebills.Position",
                                    type:  'select2',
                                    options: [
                                       { label :"", value: "" },
-                                      @foreach($departments as $department)
-                                          { label :"{{$department->Project_Name}}", value: "{{$department->Project_Name}}" },
+                                      @foreach($position as $positions)
+                                          { label :"{{$positions->Position}}", value: "{{$positions->Position}}" },
                                       @endforeach
 
                                   ],
@@ -419,9 +419,9 @@
 
                      {data:'phonebills.Phone_No', title:"Phone_No"},
                      {data:'users.Name',editField: "phonebills.UserId", title:"Current_Holder"},
-                     {data:'users.Department', title:"Department"},
+                     {data:'users.Position', title:"Position"},
                      {data:'phonebills.Current_Holder', title:"Current_Holder"},
-                     {data:'phonebills.Department', title:"Department"},
+                     {data:'phonebills.Position', title:"Position"},
 
                      {data:'phonebills.Package', title:"Package"},
                      {data:'phonebills.Amount', title:"Amount"},
@@ -636,13 +636,13 @@
                                    name: "phones.Current_Holder"
 
                            },{
-                                   label: "Department:",
-                                   name: "phones.Department",
+                                   label: "Position:",
+                                   name: "phones.Position",
                                    type:  'select2',
                                    options: [
                                       { label :"", value: "" },
-                                      @foreach($departments as $department)
-                                          { label :"{{$department->Project_Name}}", value: "{{$department->Project_Name}}" },
+                                      @foreach($position as $positions)
+                                          { label :"{{$positions->Position}}", value: "{{$positions->Position}}" },
                                       @endforeach
 
                                   ],
@@ -668,11 +668,11 @@
                                      opts: {
                                         data : [
                                           { text :"", id: "" },
-                                          @foreach($users as $department => $dept_users)
+                                          @foreach($users as $position => $position_users)
                                           {
-                                            text: "{{ $department }}",
+                                            text: "{{ $position }}",
                                             children: [
-                                            @foreach($dept_users as $user)
+                                            @foreach($position_users as $user)
                                             {
                                                 id: {{ $user->Id }},
                                                 text: "{{ $user->Name }}"
@@ -713,13 +713,13 @@
                                    name: "phones.Current_Holder"
 
                            },{
-                                   label: "Department:",
-                                   name: "phones.Department",
+                                   label: "Position:",
+                                   name: "phones.Position",
                                    type:  'select2',
                                    options: [
                                       { label :"", value: "" },
-                                      @foreach($departments as $department)
-                                          { label :"{{$department->Project_Name}}", value: "{{$department->Project_Name}}" },
+                                      @foreach($position as $positions)
+                                          { label :"{{$positions->Position}}", value: "{{$positions->Position}}" },
                                       @endforeach
 
                                   ],
@@ -784,9 +784,9 @@
 
                      {data:'phones.Phone_No', title:"Phone_No"},
                      {data:'users.Name',editField: "phones.UserId", title:"Current_Holder"},
-                     {data:'users.Department', title:"Department"},
+                     {data:'users.Position', title:"Position"},
                      {data:'phones.Current_Holder', title:"Current_Holder"},
-                     {data:'phones.Department', title:"Department"},
+                     {data:'phones.Position', title:"Position"},
 
                      {data:'phones.Package', title:"Package"},
                      {data:'phones.Remarks', title:"Remarks"}
@@ -1228,7 +1228,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.
@@ -1263,25 +1263,7 @@ function refresh()
   var boxes = $(".selectrow1:checkbox:checked");
   var ids="";
   var payment_type = [
-     { label :"SCCB - 2162", value: "SCCB - 2162" },
-     { label :"SCCB - 4464", value: "SCCB - 4464" },
-     { label :"HSBC - 2411", value: "HSBC - 2411" },
-     { label :"HLBB - 8200", value: "HLBB - 8200" },
-     { label :"PBB - 9111", value: "PBB - 9111" },
-     { label :"UOB - 1922", value: "UOB - 1922" },
-     { label :"CIMB - 3289", value: "CIMB - 3289" },
-     { label :"RHB - 9312", value: "RHB - 9312" },
-     { label :"", value: "" },
-     { label :"SCCB - 8079", value: "SCCB - 8079" },
-     { label :"SCCB - 9600", value: "SCCB - 9600" },
-     { label :"RHB - 1010N", value: "RHB - 1010N" },
-     { label :"CITI - 9228", value: "CITI - 9228" },
-     { label :"HLBB - 8200", value: "HLBB - 8200" },
-     { label :"PBB - 5108", value: "PBB - 5108" },
-     { label :"UOB - 4539", value: "UOB - 4539" },
-     { label :"CIMB - 7900", value: "CIMB - 7900" },
-     { label :"MBB - 2687 & 2679", value: "MBB - 2687 & 2679" },
-     { label :"MBB - 3803 & 3779", value: "MBB - 3803 & 3779" }
+     { label :"CIMB - 0539", value: "CIMB - 0539" }
   ];
   var payment_options = "<option></option>";
 
@@ -1380,7 +1362,7 @@ function newbill()
       ids+=boxes[i].value+",";
       var row = listtable.api().row('#row_' + boxes[i].value).data();
       tableRows += `<tr>
-                      <td>${row.phones.Phone_No}<input type="hidden" value="${row.phones.Phone_No}" name="Phone_No[${i}]"><input type="hidden" value="${row.phones.Registered_Name}" name="Registered_Name[${i}]"><input type="hidden" value="${row.phones.Current_Holder}" name="Current_Holder[${i}]"><input type="hidden" value="${row.phones.Department}" name="Department[${i}]"><input type="hidden" value="${row.phones.UserId}" name="UserId[${i}]"><input type="hidden" value="${row.phones.Package}" name="Package[${i}]"></td>
+                      <td>${row.phones.Phone_No}<input type="hidden" value="${row.phones.Phone_No}" name="Phone_No[${i}]"><input type="hidden" value="${row.phones.Registered_Name}" name="Registered_Name[${i}]"><input type="hidden" value="${row.phones.Current_Holder}" name="Current_Holder[${i}]"><input type="hidden" value="${row.phones.Position}" name="Position[${i}]"><input type="hidden" value="${row.phones.UserId}" name="UserId[${i}]"><input type="hidden" value="${row.phones.Package}" name="Package[${i}]"></td>
                       <td>${row.phones.Account_No}<input type="hidden" value="${row.phones.Account_No}" name="Account_No[${i}]"></td>
                       <td><input style="width:95px" id="amount_${i}" data-row-id="${i}" class="form-control amount" type="number" placeholder="0.00" required name="Amount[${i}]" min="0" value="0.00" step="0.01" title="Amount" pattern="^\d+(?:\.\d{1,2})?$" onblur="this.value = parseFloat(this.value).toFixed(2);"></td>
                       <td><input style="width:95px" id="total_${i}" class="form-control" type="number" placeholder="0.00" required name="Total[${i}]" min="0" value="0.00" readonly></td>

@@ -24,7 +24,7 @@ class OrgChartController extends Controller {
 		$me = (new CommonController)->get_current_user();
             //$users = DB::table('users')->select('Id','Name','Email','Contact No','Address','DOB','IC No','Gender','Marital Status','Position','Emergency Contact Person','Emergency Contact No','Emergency Contact Relationship',
 						//'Emergency Contact Address')
-						$orgchart = DB::table('users')->select('Id','Name','Department','Position','SuperiorId')
+						$orgchart = DB::table('users')->select('Id','Name','Position','SuperiorId')
 						->orderBy('Id')
 						->get();
 

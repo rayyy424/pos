@@ -80,18 +80,6 @@
                                         ],
                                 },
                                 {
-                                        label: "Project :",
-                                        name: "radius.ProjectId",
-                                        type:  'select',
-                                        options: [
-                                            { label :"", value: "" },
-                                            @foreach($projects as $p)
-                                                { label :"{{$p->Project_Name}}", value: "{{$p->Id}}" },
-                                            @endforeach
-
-                                        ],
-                                },
-                                {
                                         label: "Code :",
                                         name: "radius.Code",
                                         type:  'select',
@@ -163,7 +151,6 @@
                            { data: null, render:"", title:"No"},
                            { data: "radius.Id", title:"Id"},
                            { data: "radius.Client", title:"Client" },
-                           { data: "projects.Project_Name", title:"Project",editField:"radius.ProjectId" },
                            { data: "radius.Code", title:"Code" },
                            { data: "radius.Location_Name", title:"Location_Name" },
                            { data: "radius.Area", title:"Area" },
@@ -342,7 +329,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

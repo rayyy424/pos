@@ -125,7 +125,7 @@
                       },{
                                   label: "Date_Approved:",
                                   name: "staffloanstatuses.update_at",
-                                  type:   'datetime',
+                                  type:   'hidden',
                                   format: 'DD-MMM-YYYY',
                                   attr: {
                                     autocomplete: "off"
@@ -140,21 +140,19 @@
                        },{
                                   label: "Total Appproved:",
                                   name: "staffloans.Total_Approved",
-                                  attr: {
-                                     type: "number"
-                                   }
+                                  type: "hidden",
 
                        }
                        ,{
                                  label: "Approver:",
                                  name: "staffloans.Approver",
-                                 type:"textarea"
+                                 type: "hidden"
 
                      }
                      ,{
                                   label: "created_at:",
                                   name: "staffloans.created_at",
-                                  // type: "hidden",
+                                  type: "hidden",
                                   def: "{{ date("Y-m-d H:i:s") }}"
 
 
@@ -200,9 +198,11 @@
                                          var rows=this.api().rows( { search: 'applied' } ).data().toArray();
                                          var total_amount=0;
                                          var total_paid=0;
-
+                                         console.log(rows);
                                          for (var i = 0; i < rows.length; i++) {
-                                             total_amount=total_amount+parseFloat(rows[i].staffloans.Amount);
+                                             if (! isNaN(rows[i].staffloans.Total_Approved) && rows[i].staffloans.Total_Approved) {
+                                                total_amount=total_amount+parseFloat(rows[i].staffloans.Total_Approved);
+                                             }
                                              if (! isNaN(rows[i].paid_month.Total) && rows[i].paid_month.Total) {
                                                 total_paid=total_paid+parseFloat(rows[i].paid_month.Total);
                                              }
@@ -229,7 +229,7 @@
                                               { data: "staffloans.Id", title:"ID"},
                                               { data: "users.StaffId" , title:"Staff ID"},
                                               {data:'users.Name', editField: "staffloans.UserId",title:"Name"},
-                                              { data: "users.Department", title:"Department"},
+                                              { data: "users.Position", title:"Position"},
                                               { data: "staffloans.Purpose", title:"Purpose"},
                                               { data: "staffloans.Date", title:"Date"},
                                               { data: "staffloanstatuses.update_at", title:"Date_Approved"},
@@ -485,7 +485,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

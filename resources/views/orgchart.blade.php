@@ -36,9 +36,9 @@
         //start loop the json and form the html
         function loops(root) {
             if (root.SuperiorId == "-1") {
-                items.push("<li class='unic" + root.Id + " root' id='" + root.Id+ "'><span class='label_node'>" + root.Name + "</br><p>" + root.Department + "</p><p>" + root.Position + "</p></span>");
+                items.push("<li class='unic" + root.Id + " root' id='" + root.Id+ "'><span class='label_node'>" + root.Name  + "</p><p>" + root.Position + "</p></span>");
             } else {
-                items.push("<li class='child unic" + root.Id + "' id='" + root.Id + "'><span class='label_node'>" + root.Name + "</br><p>" + root.Department + "</p><p>" + root.Position + "</p></span>");
+                items.push("<li class='child unic" + root.Id + "' id='" + root.Id + "'><span class='label_node'>" + root.Name  + "</p><p>" + root.Position + "</p></span>");
             }
             var c = data({
                 "SuperiorId": root.Id
@@ -132,11 +132,10 @@
 
                     @if ($staff->SuperiorId==0)
 
-                    <li id="{{ $staff->Id }}" class="node child"><span class="label_node">{{ $staff->Name }}<br><p>{{ $staff->Department }}</p><p>{{ $staff->Position }}</p> </span>
-                    {{-- <li class='child unic" + root.Id + "' id='" + root.Id + "'><span class='label_node'>" + root.Name + "</br><p>" + root.Department + "</p><p>" + root.Position + "</p></span>" --}}
+                    <li id="{{ $staff->Id }}" class="node child"><span class="label_node">{{ $staff->Name }}<br><p>{{ $staff->Position }}</p> </span>
+                    {{-- <li class='child unic" + root.Id + "' id='" + root.Id + "'><span class='label_node'>" + root.Name + "</br><p>" + root.Position + "</p></span>" --}}
                       {{-- <div class="details">
                         <p><strong>Name : </strong>{{ $staff->Name }}</p><br>
-                        <p><strong>Department : </strong>{{ $staff->Department }}</p>
                         <p><strong>Position : </strong>{{ $staff->Position }}</p>
                       </div> --}}
                     </li>
@@ -157,7 +156,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.0.1
+      <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
     reserved.

@@ -72,11 +72,11 @@
 
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1>Service Ticket Details<small>Genset Management</small></h1>
+        <h1>Service Ticket Details<small>Speed Freak Management</small></h1>
 
         <ol class="breadcrumb">
             <li><a href="{{ url('/home') }}"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="#">Genset Management</a></li>
+            <li><a href="#">Speed Freak Management</a></li>
             <li class="active">Service Ticket Details</li>
         </ol>
     </section>
@@ -113,8 +113,8 @@
 		                                    <td>{{$ser->service_date}}</td>
 		                                </tr>
 		                                <tr>
-		                                    <th>Onsite GENSET</th>
-		                                    <td>{{$ser->genset_no}}</td>
+		                                    <th>Onsite SPEEDFREAK</th>
+		                                    <td>{{$ser->speedfreak_no}}</td>
 		                                </tr>
 		                                <tr>
 		                                    <th>Technician Name</th>

@@ -296,10 +296,6 @@
                             label: "GENSET_Status",
                             name: "deductions.GENSET_Status"
                      },{
-
-                            label: "Department",
-                            name: "deductions.Department"
-                     },{
                             label: "Remarks:",
                             name: "deductions.Remarks"
                      },{
@@ -357,7 +353,7 @@
                 sScrollY: "100%",
                 sScrollX: "100%",
                 aaSorting:[[1,'desc']],
-                columnDefs: [{ "visible": false, "targets": [1,11] },{"className": "dt-left", "targets": []},{"className": "dt-center", "targets": "_all"}],
+                columnDefs: [{ "visible": false, "targets": [1] },{"className": "dt-left", "targets": []},{"className": "dt-center", "targets": "_all"}],
                 bScrollCollapse: true,
                 columns: [
                   {data:null, "render":"", title:"No"},
@@ -371,7 +367,6 @@
                   {data:'summons.Offense', title:"Offense"},
                   {data:'summons.Amount' , title:"Final Amount (RM)"},
                   {data:'users.Name', editField:"summons.UserId", title:"Driver"},
-                  {data:'users.Department', title:"Department"},
                   {data:'summons.Company_Deduction', tititlele:"Company Staff Deduct by Employee"},
                   {data:'summons.Total_Deduction', title:"Total to be deduct by Employee"},
                   {data:'summons.Employer_Bare', title:"Bare by Employer"},
@@ -506,7 +501,7 @@
                             ajax: {
                                "url": "{{ asset('/Include/accidentdeduction.php') }}"
                              },
-                              columnDefs: [{ "visible": false, "targets": [1,3,5,7] },{"className": "dt-center", "targets": "_all"}],
+                              columnDefs: [{ "visible": false, "targets": [1,3,6] },{"className": "dt-center", "targets": "_all"}],
                               responsive: false,
                               colReorder: false,
                               dom: "Brt",
@@ -527,7 +522,6 @@
                                 { data: "deductions.Name", title:"Date"},
                                 { data: "deductions.Remarks",title:"Remarks"},
                                 { data: "submitter.Name", title: "Prepared By"},
-                                { data: "deductions.Department", title: "Department"},
                                 { data: "deductions.Status", title:"Status"},
                                 { data: "deductions.created_at" ,title:"created_at"},
                                 { data: "approver_HRA.Name" ,title:"Approve by HOD of LOG"},
@@ -557,21 +551,13 @@
 
                                       },
                                       {
-                                        text: 'Department : <select id="department" name="department" ><option value="CME" >CME</option><option value="LOG" >LOG</option><option value="GENSET" >GENSET</option></select>'
-
-                                      },
-                                      {
                                         text: 'New Deduction',
                                         action: function ( e, dt, node, config ) {
                                             // clearing all select/input options
 
                                             var current = moment("{{$current}}")
                                             var select = moment($('[name="Payment_Month1"]').val());
-                                            var department = $('[name="department"]').val();
                                             var naming="";
-
-                                            // alert(department);
-
 
                                             if(select<current)
                                             {
@@ -580,9 +566,8 @@
 
                                             accidenteditor
                                                .create( false )
-                                               .set( 'deductions.Name', $('[name="Payment_Month1"]').val()+"_Accident"+"_"+$('[name="department"]').val())
+                                               .set( 'deductions.Name', $('[name="Payment_Month1"]').val()+"_Accident")
                                                .set( 'deductions.UserId', {{ $me->UserId }} )
-                                               .set( 'deductions.Department',$('[name="department"]').val() )
                                                .set( 'deductions.Status', "Pending Submission" )
                                                .set( 'deductions.Admin_HOD', '{{ $HOD_LOG }}')
                                                .set( 'deductions.GENSET_HOD', {{$HOD_GST}})
@@ -996,7 +981,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

@@ -93,7 +93,6 @@
                       }
                     },
                     { data:'users.Company', title:"Company"},
-                    { data:'users.Department', title:"Department"},
                     { data:'Confirmation_Date', title:"Confirmation_Date"},
                     { data:'Resignation_Date', title:"Resignation_Date"},
                     { data:'Working_Days', title:"Working_Days"},
@@ -1001,7 +1000,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

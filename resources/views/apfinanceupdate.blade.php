@@ -89,10 +89,6 @@
                                name: "vendor.CreditorCode",
                                type:"readonly"
                     },{
-                               label: "ProjNo:",
-                               name: "tracker.Project_Code",
-                               type:"readonly"
-                    },{
                                label: "DeptNo:",
                                name: "company.Company_Name",
                                type:"readonly"
@@ -126,7 +122,6 @@
                			{ data: "materialpo.created_at",title:"DocDate"},
                			{ data: "vendor.CreditorCode",title:"CreditorCode"},
                			{ data: "materialpo.SupplierInvoiceNo",title:"SupplierInvoiceNo"},
-               			{ data: "tracker.Project_Code",title:"ProjNo"},
                			{ data: "company.Company_Name",title:"DeptNo"},
                     { data: "users.Name",title:"Created_By"},
                    ],
@@ -319,7 +314,7 @@
 
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

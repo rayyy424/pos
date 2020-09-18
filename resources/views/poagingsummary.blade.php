@@ -153,36 +153,6 @@
 
       <div class="row">
 
-        <div class="col-md-1">
-            <label>Project : </label>
-
-        </div>
-
-        <div class="col-md-2">
-
-          <div class="form-group">
-            <select class="form-control select2" id="mySelect">
-              <option></option>
-
-            @foreach($projects as $project)
-
-              @if($projectid==$project->Id)
-
-                 <option value="{{$project->Id}}" selected>{{$project->Project_Name}}</option>
-
-              @else
-
-                 <option value="{{$project->Id}}">{{$project->Project_Name}}</option>
-
-              @endif
-
-            @endforeach
-
-          </select>
-        </div>
-
-      </div>
-
       <div class="col-md-6">
           <div class="input-group">
             <button type="button" class="btn btn-success btn" data-toggle="modal" onclick="refresh();">Refresh</button>
@@ -280,7 +250,7 @@
 
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.
@@ -290,9 +260,8 @@
 
 function refresh()
 {
-  var projectid = document.getElementById("mySelect").value;
 
-  window.location.href ="{{ url("/POAgingSummary") }}/"+projectid;
+  window.location.href ="{{ url("/POAgingSummary") }}/";
 
 }
 

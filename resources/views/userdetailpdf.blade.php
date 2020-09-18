@@ -119,12 +119,6 @@ table#t01 td {
                 <th>Company</th><td colspan="3">{{$input["Company1"]}}</td>
               </tr>
               <tr>
-                <th>Department</th><td colspan="3">{{$input["Department1"]}}</td>
-              </tr>
-              <tr>
-                <th>Category</th><td colspan="3">{{$input["Category1"]}}</td>
-              </tr>
-              <tr>
                 <th>Holiday Territory</th><td colspan="3">{{$input["HolidayTerritoryId1"]}}</td>
               </tr>
               <tr>

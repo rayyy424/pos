@@ -129,7 +129,6 @@
 	<script type="text/javascript" language="javascript" class="init">
 	  $(document).ready(function() {
 
-			$("#contractorinfo").hide();
 			$("#interninfo").hide();
 			$("#companyemailfield").hide();
 			$("#personalemailfield").hide();
@@ -143,13 +142,8 @@
 
 			@if (Input::old('User_Type') == 'Assistant Engineer')
 				$("#interninfo").show();
-				$("#contractorinfo").hide();
-			@elseif (Input::old('User_Type') == 'Contractor')
-				$("#interninfo").hide();
-				$("#contractorinfo").show();
 			@else
-					$("#interninfo").hide();
-					$("#contractorinfo").hide();
+				$("#interninfo").hide();
 			@endif
 
 			@if (Input::old('Email_Type') == 'Company')
@@ -172,21 +166,6 @@
 				$("#nricfield").hide();
 				$("#passportfield").hide();
 				$('#unionfield').show();
-			@endif
-
-			@if (Input::old('Project') != '')
-				@foreach ($project as $item)
-
-					if ($('#Project').val()=="{{$item->ProjectId}}")
-					{
-						$('#Project_Manager').append($("<option/>", {
-							value: "{{$item->UserId}}",
-							text: "{{$item->Name}}"
-					}));
-					}
-
-				@endforeach
-
 			@endif
 
 		} );
@@ -234,18 +213,6 @@
 							<label class="col-md-4 control-label">Staff ID</label>
 							<div class="col-md-6">
 								<input type="text" class="form-control" name="StaffId" value="{{ old('StaffId') }}">
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-md-4 control-label">Department</label>
-							<div class="col-md-6">
-								<select class="select2 form-control" name="Department" value="{{ old('Department') }}">
-									<option></option>
-									@foreach ($project as $p)
-                                       <option <?php if(Input::old('Department') == $p->Project_Name) echo 'selected="selected" '; ?>>{{$p->Project_Name}}</option>
-                                    @endforeach
-								</select> 
 							</div>
 						</div>
 
@@ -430,7 +397,6 @@
 									 <option></option>
 									 <option <?php if(Input::old('User_Type') == 'Staff') echo ' selected="selected" '; ?>>Staff</option>
 									 <option <?php if(Input::old('User_Type') == 'Assistant Engineer') echo ' selected="selected" '; ?>>Assistant Engineer</option>
-									 <option value="Contractor" <?php if(Input::old('User_Type') == 'Contractor') echo ' selected="selected" '; ?>>Contractor (Project Basis)</option>
 								 </select>
 							</div>
 						</div>
@@ -474,35 +440,6 @@
 											<input type="text" class="form-control" id="Internship_End_Date" name="Internship_End_Date" value="{{ old('Internship_End_Date') }}">
 								</div>
 							</div>
-
-						</div>
-
-						<div id="contractorinfo">
-							<div class="form-group">
-								<label class="col-md-4 control-label">Project</label>
-								<div class="col-md-6">
-									 <select class="form-control select2" id="Project" name="Project" style="width: 100%;">
-										 <option></option>
-										 @foreach ($project as $item)
-												<option <?php if(Input::old('Project') == $item->ProjectId) echo ' selected="selected" '; ?> value="{{$item->ProjectId}}">{{$item->Project_Name}}</option>
-
-										 @endforeach
-
-									 </select>
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label class="col-md-4 control-label">Project Manager</label>
-								<div class="col-md-6">
-									 <select class="form-control select2" id="Project_Manager" name="Project_Manager" style="width: 100%;">
-
-
-									 </select>
-								</div>
-							</div>
-
-
 
 						</div>
 
@@ -743,19 +680,11 @@
     });
 
 		$('#User_Type').on('change', function() {
-		  if (this.value=="Contractor")
-			{
-				$("#contractorinfo").show();
-				$("#interninfo").hide();
-
-			}else if (this.value=="Assistant Engineer") {
-				$("#contractorinfo").hide();
+			if (this.value=="Assistant Engineer") {
 				$("#interninfo").show();
 			}
 			else {
-				$("#contractorinfo").hide();
 				$("#interninfo").hide();
-
 			}
 		});
 
@@ -787,25 +716,6 @@
 					$("#passportfield").hide();
 					$('#unionfield').show();
 				}
-
-			});
-
-			$('#Project').on('change', function() {
-				$('#Project_Manager')
-			    .find('option')
-			    .remove();
-
-				@foreach ($project as $item)
-
-					if ($('#Project').val()=="{{$item->ProjectId}}")
-					{
-						$('#Project_Manager').append($("<option/>", {
-			        value: "{{$item->UserId}}",
-			        text: "{{$item->Name}}"
-			    }));
-					}
-
-				@endforeach
 
 			});
 

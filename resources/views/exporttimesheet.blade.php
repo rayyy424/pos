@@ -109,11 +109,6 @@ table#t01 th {
         <tr>
           <td><b>Staff ID</b>  : {{$user->StaffId}}</td>
           <td><b>Name</b> : {{$user->Name}}</td>
-          @if($user->Department != "")
-            <td><b>Department</b> : {{$user->Department}}</td>
-          @else
-            <td><b>Department</b> : - </td>
-          @endif
           @if($user->Position != "")
             <td><b>Position</b> :  {{$user->Position}}</td>
           @else

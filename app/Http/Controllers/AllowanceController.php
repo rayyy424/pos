@@ -27,7 +27,7 @@ class AllowanceController extends Controller {
 
 		$accounts = DB::table('users')
 		->leftJoin('allowanceschemes', 'users.AllowanceSchemeId', '=', 'allowanceschemes.Id')
-		->select('users.Id','users.Name','users.Department','users.Position','allowanceschemes.Scheme_Name')
+		->select('users.Id','users.Name','users.Position','allowanceschemes.Scheme_Name')
 		->orderBy('users.Name','asc')
 		->get();
 

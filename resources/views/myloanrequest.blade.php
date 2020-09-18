@@ -108,7 +108,6 @@
                          { data: "staffloans.Purpose",title:"Purpose",editfield:"staffloans.Purpose"},
                          { data: "staffloans.Total_Requested",title:"Total Requested",editfield:"staffloans.Total_Requested"},
                          // { data: "staffloans.Total_Approved",title:"Total Approved",editfield:"staffloans.Total_Approved"},
-                         { data: "projects.Project_Name",title:"Project_Name"},
                          { data: "approver.Name",title:"Approver", editfield:"request.Approver"}
                   ],
                   fnInitComplete: function(oSettings, json) {
@@ -176,7 +175,6 @@
                      { data: "staffloans.Purpose",title:"Purpose",editfield:"staffloans.Purpose"},
                      { data: "staffloans.Total_Requested",title:"Total Requested",editfield:"staffloans.Total_Requested"},
                      // { data: "staffloans.Total_Approved",title:"Total Approved",editfield:"staffloans.Total_Approved"},
-                     { data: "projects.Project_Name",title:"Project_Name"},
                      { data: "approver.Name",title:"Approver", editfield:"request.Approver"}
               ],
               fnInitComplete: function(oSettings, json) {
@@ -248,7 +246,6 @@
                  { data: "staffloans.Purpose",title:"Purpose",editfield:"staffloans.Purpose"},
                  { data: "staffloans.Total_Requested",title:"Total Requested",editfield:"staffloans.Total_Requested"},
                  // { data: "staffloans.Total_Approved",title:"Total Approved",editfield:"staffloans.Total_Approved"},
-                 { data: "projects.Project_Name",title:"Project_Name"},
                  { data: "approver.Name",title:"Approver", editfield:"request.Approver"}
           ],
           fnInitComplete: function(oSettings, json) {
@@ -422,19 +419,6 @@
                         <div class="form-group">
 
                             <div class="col-lg-4">
-                                <label>Project : </label>
-
-                                <select class="form-control select2" id="ProjectId" name="ProjectId" style="width: 100%;">
-                                  <option></option>
-                                  @foreach ($projects as $project)
-
-                                      <option  value="{{$project->Id}}">{{$project->Project_Name}}</option>
-
-                                  @endforeach
-                                </select>
-                            </div>
-
-                            <div class="col-lg-4">
                                <label> Repayment (month) : </label>
                                <select class="form-control select2" id="Repayment" name="Repayment" style="width: 100%;">
                                   <option value=""></option>
@@ -540,7 +524,7 @@
 </div>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b>Version</b> 2.0.1
+    <b>Version</b> 1.0.0
   </div>
   <strong>Copyright &copy; 2014-2016 <a href="http://www.softoya.com">TrackerOnTheGo</a>.</strong> All rights
   reserved.

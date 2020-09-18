@@ -141,11 +141,6 @@ table#t01 td {
             <td>{{$user->DOB}}</td>
         </tr>
         <tr>
-            <td>Department</td>
-            <td>:</td>
-            <td>{{$user->Department}}</td>
-        </tr>
-        <tr>
             <td>Position</td>
             <td>:</td>
             <td>{{$user->Position}}</td>

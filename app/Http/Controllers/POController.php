@@ -26,54 +26,22 @@ class POController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index($projectcode=null,$workorderid=null,$projectid=null,$type=null,$template=null)
+	public function index($workorderid=null,$template=null)
     {
 		$me = (new CommonController)->get_current_user();
-
-		$projectids = explode("|",$me->ProjectIds);
-
-		if($projectcode=="null")
-		{
-			$projectcode=null;
-		}
 
 		if($workorderid=="null")
 		{
 			$workorderid=null;
 		}
 
-		$projects = DB::table('projects')
-		->whereIn('Id',$projectids)
-		->get();
-
-		if($projectid==null)
-		{
-			$projectid=0;
-			// if($projects)
-			// {
-			// 	$projectid=$projects[0]->Id;
-			// }
-		}
-
-		if($type=="No Project PO")
-		{
-			$projectid=0;
-		}
-
-		if($projectcode==null)
-		{
-
 			$po=DB::table('po')
 			->select(
 				'po.Id' ,
 				'po.Huawei_ID' ,
-				'projects.Project_Name' ,
-				'po.Project' ,
-				'po.Project_Code' ,
 				'po.PO_Status' ,
 				'po.Status' ,
 				'po.ROR_Status' ,
-				'po.ProjectCode' ,
 				'po.PO_No' ,
 				'po.PR_No' ,
 				'po.Cut' ,
@@ -172,135 +140,12 @@ class POController extends Controller {
 
 	      'users.Name',
 				'po.Remarks' )
-			->leftJoin('projects', 'po.ProjectId', '=', 'projects.Id')
 			->leftJoin('users', 'po.created_by', '=', 'users.Id')
 			->leftJoin('users as pm', 'po.PM_Accepted_By', '=', 'pm.Id')
 			->leftJoin('users as finance', 'po.Finance_Accepted_By', '=', 'finance.Id')
-			->where('po.ProjectId','=',$projectid)
 			->orderBy('po.PO_No','ASC')
 			->get();
 
-		}
-		else {
-
-			$po=DB::table('po')
-			->select(
-				'po.Id' ,
-				'po.Huawei_ID' ,
-				'projects.Project_Name' ,
-				'po.Project' ,
-				'po.Project_Code' ,
-				'po.PO_Status' ,
-				'po.Status' ,
-				'po.ROR_Status' ,
-				'po.ProjectCode' ,
-				'po.PO_No' ,
-				'po.PR_No' ,
-				'po.Cut' ,
-				'po.PO_Line_No' ,
-				'po.Shipment_Num' ,
-				'po.Item_Code' ,
-				'po.Credit_Note' ,
-
-				'po.PO_Date' ,
-				'po.PO_Type' ,
-
-				'po.PO_Description' ,
-				'po.Scope_of_Work' ,
-				'po.Item_Description' ,
-				'po.Company' ,
-				'po.Work_Order_ID' ,
-				'po.Site_ID' ,
-				'po.Site_Code' ,
-	      'po.Site_Name' ,
-				'po.Region' ,
-				'po.Payment_Term' ,
-				'po.Payment_Method' ,
-
-				'po.Engineering_No' ,
-
-				'po.Center_Area' ,
-				'po.Due_Quantity' ,
-				'po.Quantity_Request' ,
-				'po.Unit' ,
-	      'po.Unit_Price' ,
-				'po.Amount' ,
-				'po.Amount_With_GST' ,
-	      'po.Line_Account' ,
-				'po.Start_Date' ,
-				'po.End_Date' ,
-				'po.Acceptance_Date' ,
-				'po.Vendor_Code' ,
-				'po.Vendor_Name' ,
-				'po.Sub_Contract_No' ,
-
-				'po.ESAR_Document_Submitted_Date' ,
-				'po.ESAR_Date' ,
-	      'po.ESAR_Status' ,
-				'po.PAC_Document_Submitted_Date' ,
-	      'po.PAC_Date' ,
-	      'po.PAC_Status' ,
-
-				'pm.Name as PM',
-				'po.PM_Accepted_At',
-				'po.PM_Status',
-				'po.PM_Remarks',
-				'finance.Name as Finance',
-				'po.Finance_Accepted_At',
-				'po.Finance_Status',
-				'po.Finance_Remarks',
-
-				'po.First_Milestone_Percentage' ,
-	      'po.First_Milestone_Amount' ,
-				'po.First_Milestone_Amount_With_GST' ,
-	      'po.First_Milestone_Completed_Date' ,
-	      'po.First_Milestone_Invoice_No' ,
-				'po.First_Milestone_Invoice_Upload_Date' ,
-	      'po.First_Milestone_Forecast_Invoice_Date' ,
-
-				'po.Second_Milestone_Percentage' ,
-	      'po.Second_Milestone_Amount' ,
-				'po.Second_Milestone_Amount_With_GST' ,
-	      'po.Second_Milestone_Completed_Date' ,
-	      'po.Second_Milestone_Invoice_No' ,
-				'po.Second_Milestone_Invoice_Upload_Date' ,
-	      'po.Second_Milestone_Forecast_Invoice_Date' ,
-
-				'po.Third_Milestone_Percentage' ,
-	      'po.Third_Milestone_Amount' ,
-				'po.Third_Milestone_Amount_With_GST' ,
-	      'po.Third_Milestone_Completed_Date' ,
-	      'po.Third_Milestone_Invoice_No' ,
-				'po.Third_Milestone_Invoice_Upload_Date' ,
-	      'po.Third_Milestone_Forecast_Invoice_Date' ,
-
-				'po.Fourth_Milestone_Percentage' ,
-				'po.Fourth_Milestone_Amount' ,
-				'po.Fourth_Milestone_Amount_With_GST' ,
-				'po.Fourth_Milestone_Completed_Date' ,
-				'po.Fourth_Milestone_Invoice_No' ,
-				'po.Fourth_Milestone_Invoice_Upload_Date' ,
-				'po.Fourth_Milestone_Forecast_Invoice_Date' ,
-
-				'po.Fifth_Milestone_Percentage' ,
-				'po.Fifth_Milestone_Amount' ,
-				'po.Fifth_Milestone_Amount_With_GST' ,
-				'po.Fifth_Milestone_Completed_Date' ,
-				'po.Fifth_Milestone_Invoice_No' ,
-				'po.Fifth_Milestone_Invoice_Upload_Date' ,
-				'po.Fifth_Milestone_Forecast_Invoice_Date' ,
-
-	      'users.Name',
-				'po.Remarks' )
-			->leftJoin('projects', 'po.ProjectId', '=', 'projects.Id')
-			->leftJoin('users', 'po.created_by', '=', 'users.Id')
-			->leftJoin('users as pm', 'po.PM_Accepted_By', '=', 'pm.Id')
-			->leftJoin('users as finance', 'po.Finance_Accepted_By', '=', 'finance.Id')
-			->where('po.Project_Code','=',$projectcode)
-			->orderBy('po.PO_No','ASC')
-			->get();
-
-		}
 
 		$options= DB::table('options')
 		->whereIn('Table', ["purchaseorders"])
@@ -309,35 +154,18 @@ class POController extends Controller {
 		->get();
 
 		$invoices = DB::table('invoices')
-		->select('invoices.Id','invoices.Invoice_No','projects.Project_Name','invoices.Company','invoices.Invoice_Type','invoices.Invoice_Date','invoices.Invoice_Description','invoices.Invoice_Amount','invoices.Invoice_Status')
-				->leftJoin('projects', 'invoices.ProjectId', '=', 'projects.Id')
-		->where('invoices.ProjectId','=',$projectid)
+		->select('invoices.Id','invoices.Invoice_No','invoices.Company','invoices.Invoice_Type','invoices.Invoice_Date','invoices.Invoice_Description','invoices.Invoice_Amount','invoices.Invoice_Status')
 		->orderBy('invoices.Invoice_No','ASC')
 		->get();
 
-		$projectcodes = DB::table('projectcodes')
-		->select('projectcodes.Id','projectcodes.Project_Code','projectcodes.Site_ID')
-		->where('projectcodes.ProjectId','=',$projectid)
-		->orderBy('projectcodes.Project_Code','ASC')
-		->get();
 
 	if($template==null)
 	{
 		$template="General";
 	}
 
-	if($type==null)
-	{
-		$type="All PO";
-	}
-
-	if($type=="No Project PO")
-	{
-		$projectid=0;
-	}
 
 	$dependencyrules = DB::table('dependencyrules')
-	->where('dependencyrules.ProjectId','=',$projectid)
 	->get();
 
 	$poitem=array();
@@ -415,48 +243,24 @@ class POController extends Controller {
 
 	$Ids=null;
 
-			return view('pomanagement', ['me' => $me,'projects' =>$projects,'projectid' =>$projectid,'po' =>$po, 'projects' =>$projects,'options' =>$options,'projectids'=>$me->ProjectIds,'projectcode'=>$projectcode,
-			'invoices' =>$invoices,'workorderid'=>$workorderid,'type'=>$type,'template'=>$template,'projectcodes'=>$projectcodes,'poitem'=>$poitem,'Ids'=>$Ids]);
+			return view('pomanagement', ['me' => $me,'po' =>$po,'options' =>$options,
+			'invoices' =>$invoices,'workorderid'=>$workorderid,'type'=>$type,'template'=>$template,'poitem'=>$poitem,'Ids'=>$Ids]);
 
 	}
 
-	public function index2($ids=null,$projectid=null,$type=null,$template=null)
+	public function index2($ids=null,$template=null)
     {
 		$me = (new CommonController)->get_current_user();
 
-		$projectids = explode("|",$me->ProjectIds);
-
 		$Ids=explode(",",$ids);
-
-		$projects = DB::table('projects')
-		->whereIn('Id',$projectids)
-		->get();
-
-		if($projectid==null)
-		{
-			$projectid=0;
-			// if($projects)
-			// {
-			// 	$projectid=$projects[0]->Id;
-			// }
-		}
-
-		if($type=="No Project PO")
-		{
-			$projectid=0;
-		}
 
 			$po=DB::table('po')
 			->select(
 				'po.Id' ,
 				'po.Huawei_ID' ,
-				'projects.Project_Name' ,
-				'po.Project' ,
-				'po.Project_Code' ,
 				'po.PO_Status' ,
 				'po.Status' ,
 				'po.ROR_Status' ,
-				'po.ProjectCode' ,
 				'po.PO_No' ,
 				'po.PR_No' ,
 				'po.Cut' ,
@@ -555,7 +359,6 @@ class POController extends Controller {
 
 	      'users.Name',
 				'po.Remarks' )
-			->leftJoin('projects', 'po.ProjectId', '=', 'projects.Id')
 			->leftJoin('users', 'po.created_by', '=', 'users.Id')
 			->leftJoin('users as pm', 'po.PM_Accepted_By', '=', 'pm.Id')
 			->leftJoin('users as finance', 'po.Finance_Accepted_By', '=', 'finance.Id')
@@ -570,16 +373,8 @@ class POController extends Controller {
 		->get();
 
 		$invoices = DB::table('invoices')
-		->select('invoices.Id','invoices.Invoice_No','projects.Project_Name','invoices.Company','invoices.Invoice_Type','invoices.Invoice_Date','invoices.Invoice_Description','invoices.Invoice_Amount','invoices.Invoice_Status')
-				->leftJoin('projects', 'invoices.ProjectId', '=', 'projects.Id')
-		->where('invoices.ProjectId','=',$projectid)
+		->select('invoices.Id','invoices.Invoice_No','invoices.Company','invoices.Invoice_Type','invoices.Invoice_Date','invoices.Invoice_Description','invoices.Invoice_Amount','invoices.Invoice_Status')
 		->orderBy('invoices.Invoice_No','ASC')
-		->get();
-
-		$projectcodes = DB::table('projectcodes')
-		->select('projectcodes.Id','projectcodes.Project_Code','projectcodes.Site_ID')
-		->where('projectcodes.ProjectId','=',$projectid)
-		->orderBy('projectcodes.Project_Code','ASC')
 		->get();
 
 	if($template==null)
@@ -587,22 +382,11 @@ class POController extends Controller {
 		$template="General";
 	}
 
-	if($type==null)
-	{
-		$type="All PO";
-	}
-
-	if($type=="No Project PO")
-	{
-		$projectid=0;
-	}
-
-	$projectcode=null;
 	$workorderid=null;
 	$poitem=null;
 
-			return view('pomanagement', ['me' => $me,'projects' =>$projects,'projectid' =>$projectid,'po' =>$po, 'projects' =>$projects,'options' =>$options,'projectids'=>$me->ProjectIds,'projectcode'=>$projectcode,
-			'invoices' =>$invoices,'workorderid'=>$workorderid,'type'=>$type,'template'=>$template,'projectcodes'=>$projectcodes,'poitem'=>$poitem,'Ids'=>$Ids]);
+			return view('pomanagement', ['me' => $me,'po' =>$po,'options' =>$options,
+			'invoices' =>$invoices,'workorderid'=>$workorderid,'type'=>$type,'template'=>$template,'poitem'=>$poitem,'Ids'=>$Ids]);
 
 	}
 
@@ -611,14 +395,8 @@ class POController extends Controller {
 
     $me = (new CommonController)->get_current_user();
 
-		$projectids = explode("|",$me->ProjectIds);
-
-
-
 		$invoices = DB::table('invoices')
-		->select('invoices.Id','invoices.Invoice_No','projects.Project_Name','invoices.Company','invoices.Invoice_Type','invoices.Invoice_Date','invoices.Invoice_Description','invoices.Invoice_Amount','invoices.Invoice_Status')
-				->leftJoin('projects', 'invoices.ProjectId', '=', 'projects.Id')
-		->whereIn('invoices.ProjectId',$projectids)
+		->select('invoices.Id','invoices.Invoice_No','invoices.Company','invoices.Invoice_Type','invoices.Invoice_Date','invoices.Invoice_Description','invoices.Invoice_Amount','invoices.Invoice_Status')
 		->orderBy('invoices.Invoice_No','ASC')
 		->get();
 
@@ -636,13 +414,6 @@ class POController extends Controller {
 
 	$me = (new CommonController)->get_current_user();
 
-	$projectids = explode("|",$me->ProjectIds);
-
-	// $purchaseorder = DB::table('purchaseorders')
-	// ->select('Id','PO_No','PO_Date','PO_Type','purchaseorders.Company','purchaseorders.Job_Type','purchaseorders.Cut','purchaseorders.Payment_Term','PO_Description','purchaseorders.PO_Status','purchaseorders.ProjectId','purchaseorders.First_Cut','purchaseorders.Second_Cut','purchaseorders.Third_Cut','purchaseorders.Fourth_Cut','purchaseorders.Fifth_Cut','purchaseorders.Remarks')
-	// ->orderBy('purchaseorders.PO_No','desc')
-	// 		->where('purchaseorders.PO_No', '=', $PO)
-	// ->first();
 
 	$PO=explode(" | ",$PO)[0];
 
@@ -650,13 +421,9 @@ class POController extends Controller {
 	->select(
 		'po.Id' ,
 		'po.Huawei_ID' ,
-		'projects.Project_Name' ,
-		'po.Project' ,
-		'po.Project_Code' ,
 		'po.PO_Status' ,
 		'po.Status' ,
 		'po.ROR_Status' ,
-		'po.ProjectCode' ,
 		'po.PO_No' ,
 		'po.PR_No' ,
 		'po.Cut' ,
@@ -755,7 +522,6 @@ class POController extends Controller {
 
 		'users.Name',
 		'po.Remarks' )
-	->leftJoin('projects', 'po.ProjectId', '=', 'projects.Id')
 	->leftJoin('users', 'po.created_by', '=', 'users.Id')
 	->leftJoin('users as pm', 'po.PM_Accepted_By', '=', 'pm.Id')
 	->leftJoin('users as finance', 'po.Finance_Accepted_By', '=', 'finance.Id')
@@ -771,9 +537,7 @@ class POController extends Controller {
 	}
 
 		$invoices = DB::table('invoices')
-		->select('invoices.Id','invoices.Invoice_No','projects.Project_Name','invoices.Company','invoices.Invoice_Type','invoices.Invoice_Date','invoices.Invoice_Description','invoices.Invoice_Amount','invoices.Invoice_Status')
-				->leftJoin('projects', 'invoices.ProjectId', '=', 'projects.Id')
-		->whereIn('invoices.ProjectId',$projectids)
+		->select('invoices.Id','invoices.Invoice_No','invoices.Company','invoices.Invoice_Type','invoices.Invoice_Date','invoices.Invoice_Description','invoices.Invoice_Amount','invoices.Invoice_Status')
 		->orderBy('invoices.Invoice_No','ASC')
 		->get();
 
@@ -788,13 +552,7 @@ class POController extends Controller {
 		->orderBy('Option','asc')
 		->get();
 
-		$projectcodes = DB::table('projectcodes')
-		->select('projectcodes.Id','projectcodes.Project_Code','projectcodes.Site_ID')
-		->whereIn('projectcodes.ProjectId',$projectids)
-		->orderBy('projectcodes.Project_Code','ASC')
-		->get();
-
-	return view('podetails', ['me' => $me,'po' => $po,'po_no'=>$PO, 'invoices' =>$invoices,'projectcodes'=>$projectcodes, 'receipts' =>$receipts,'options'=>$options]);
+	return view('podetails', ['me' => $me,'po' => $po,'po_no'=>$PO, 'invoices' =>$invoices, 'receipts' =>$receipts,'options'=>$options]);
 
 }
 
@@ -903,37 +661,25 @@ class POController extends Controller {
 		 {
 
 			 $pendingpo = DB::select("
-				 SELECT projects.Project_Name,COUNT(*) As Pending
+				 SELECT tracker.Id,COUNT(*) As Pending
 				 FROM tracker
-				 LEFT JOIN projects on tracker.ProjectId=projects.Id
 				 WHERE ".$pendingpoquery."
-			 	 GROUP BY projects.Project_Name");
+			 	 GROUP BY tracker.State");
 
 		 }
 
     return view("posummary",['me'=>$me, 'summary'=>$summary, 'summary2'=>$summary2,'summary3'=>$summary3,'pendingpo'=>$pendingpo,'start'=>$start, 'end'=>$end]);
   }
 
-	public function poagingsummary($projctid=null)
+	public function poagingsummary()
 	{
 		$me = (new CommonController)->get_current_user();
 
-		$projectids = explode("|",$me->ProjectIds);
-
-		$projects = DB::table('projects')
-		->whereIn('Id',$projectids)
-		->get();
-
-		if ($projctid==null)
-		{
-			$projctid=0;
-
-		}
+		$pono="";
 
 		$summary = DB::select("SELECT
 		po.Id,
 		po.PO_No,
-		projects.Project_Name,
 		po.Site_Code,
 		po.Site_Name,
 		po.Item_Description,
@@ -951,10 +697,9 @@ class POController extends Controller {
 		DATEDIFF(str_to_date(po.PAC_Date,'%d-%M-%Y'),str_to_date(po.ESAR_Date,'%d-%M-%Y')) as 'ESAR_to_PAC (Aging)',
 		po.PAC_Date
 		FROM po
-		LEFT JOIN projects ON projects.Id=po.ProjectId
-		WHERE po.ProjectId=".$projctid);
+		WHERE po.PO_No!=".$pono);
 
-    return view("poagingsummary",['me'=>$me, 'summary'=>$summary,'projects'=>$projects, 'projectid'=>$projctid]);
+    return view("poagingsummary",['me'=>$me, 'summary'=>$summary]);
   }
 
 	public function pr()
@@ -987,13 +732,9 @@ class POController extends Controller {
 		->select(
 			'po.Id' ,
 			'po.Huawei_ID' ,
-			'projects.Project_Name' ,
-			'po.Project' ,
-			'po.Project_Code' ,
 			'po.PO_Status' ,
 			'po.Status' ,
 			'po.ROR_Status' ,
-			'po.ProjectCode' ,
 			'po.PO_No' ,
 			'po.PR_No' ,
 			'po.Cut' ,
@@ -1092,7 +833,6 @@ class POController extends Controller {
 
 			'users.Name',
 			'po.Remarks' )
-		->leftJoin('projects', 'po.ProjectId', '=', 'projects.Id')
 		->leftJoin('users', 'po.created_by', '=', 'users.Id')
 		->leftJoin('users as pm', 'po.PM_Accepted_By', '=', 'pm.Id')
 		->leftJoin('users as finance', 'po.Finance_Accepted_By', '=', 'finance.Id')
@@ -1122,7 +862,6 @@ class POController extends Controller {
 
 
       )
-		->leftJoin('projects', 'po.ProjectId', '=', 'projects.Id')
 		->leftJoin('users', 'po.created_by', '=', 'users.Id')
 		->leftJoin('users as pm', 'po.PM_Accepted_By', '=', 'pm.Id')
 		->leftJoin('users as finance', 'po.Finance_Accepted_By', '=', 'finance.Id')
@@ -1157,13 +896,9 @@ class POController extends Controller {
 		->select(
 			'po.Id' ,
 			'po.Huawei_ID' ,
-			'projects.Project_Name' ,
-			'po.Project' ,
-			'po.Project_Code' ,
 			'po.PO_Status' ,
 			'po.Status' ,
 			'po.ROR_Status' ,
-			'po.ProjectCode' ,
 			'po.PO_No' ,
 			'po.PR_No' ,
 			'po.Cut' ,
@@ -1262,7 +997,6 @@ class POController extends Controller {
 
 			'users.Name',
 			'po.Remarks' )
-		->leftJoin('projects', 'po.ProjectId', '=', 'projects.Id')
 		->leftJoin('users', 'po.created_by', '=', 'users.Id')
 		->leftJoin('users as pm', 'po.PM_Accepted_By', '=', 'pm.Id')
 		->leftJoin('users as finance', 'po.Finance_Accepted_By', '=', 'finance.Id')
@@ -1278,7 +1012,6 @@ class POController extends Controller {
       'po.Item_Description',
       'po.Due_Quantity',
       'po.Unit_Price')
-		->leftJoin('projects', 'po.ProjectId', '=', 'projects.Id')
 		->leftJoin('users', 'po.created_by', '=', 'users.Id')
 		->leftJoin('users as pm', 'po.PM_Accepted_By', '=', 'pm.Id')
 		->leftJoin('users as finance', 'po.Finance_Accepted_By', '=', 'finance.Id')
@@ -1309,13 +1042,9 @@ class POController extends Controller {
 		->select(
 			'po.Id' ,
 			'po.Huawei_ID' ,
-			'projects.Project_Name' ,
-			'po.Project' ,
-			'po.Project_Code' ,
 			'po.PO_Status' ,
 			'po.Status' ,
 			'po.ROR_Status' ,
-			'po.ProjectCode' ,
 			'po.PO_No' ,
 			'po.PR_No' ,
 			'po.Cut' ,
@@ -1414,7 +1143,6 @@ class POController extends Controller {
 
 			'users.Name',
 			'po.Remarks' )
-		->leftJoin('projects', 'po.ProjectId', '=', 'projects.Id')
 		->leftJoin('users', 'po.created_by', '=', 'users.Id')
 		->leftJoin('users as pm', 'po.PM_Accepted_By', '=', 'pm.Id')
 		->leftJoin('users as finance', 'po.Finance_Accepted_By', '=', 'finance.Id')
@@ -1442,7 +1170,6 @@ class POController extends Controller {
 
 
       )
-		->leftJoin('projects', 'po.ProjectId', '=', 'projects.Id')
 		->leftJoin('users', 'po.created_by', '=', 'users.Id')
 		->leftJoin('users as pm', 'po.PM_Accepted_By', '=', 'pm.Id')
 		->leftJoin('users as finance', 'po.Finance_Accepted_By', '=', 'finance.Id')
@@ -1469,8 +1196,6 @@ class POController extends Controller {
 		$me = (new CommonController)->get_current_user();
 
 		$input = $request->all();
-
-		$projectid=$input["projectid"];
 
 		$file = Input::file('import');
 
@@ -1519,8 +1244,6 @@ class POController extends Controller {
 										DB::table('po')
 												->where('Huawei_ID', '=',$row["id"])
 												->update(array(
-			 									 'Project' => $row["project_name"],
-			 									 'ProjectCode' => $row["project_code"],
 			 									 'Site_Code' => $row["site_code"],
 			 									 'Site_Name' => $row["site_name"],
 			 									 'Sub_Contract_No' => $row["sub_contract_no"],
@@ -1548,7 +1271,6 @@ class POController extends Controller {
 			 									 'Due_Quantity' => $row["due_qty"],
 			 									 'Shipment_Num' => $row["shipment_no"],
 			 									 'PO_Date' => $row["publish_date"],
-			 									 'Engineering_No' => $row["project_code"],
 											));
 
 							}
@@ -1557,8 +1279,6 @@ class POController extends Controller {
 								$insert=DB::table('po')->insertGetId(
 									['created_by' => $me->UserId,
 									 'Huawei_ID' => $row["id"],
-									 'Project' => $row["project_name"],
-									 'ProjectCode' => $row["project_code"],
 									 'Site_Code' => $row["site_code"],
 									 'Site_Name' => $row["site_name"],
 									 'Sub_Contract_No' => $row["sub_contract_no"],
@@ -1587,7 +1307,6 @@ class POController extends Controller {
 									 'Shipment_Num' => $row["shipment_no"],
 									 'PO_Date' => $row["publish_date"],
 									 'Company'=>env('APP_COMPANY'),
-									 'Engineering_No' => $row["project_code"],
 									 'PO_Type' => "Receive"
 
 									]
@@ -1661,7 +1380,6 @@ class POController extends Controller {
 			'finance.Name as Finance',
 			'po.Finance_Accepted_At',
 			'po.Finance_Status')
-		->leftJoin('projects', 'po.ProjectId', '=', 'projects.Id')
 		->leftJoin('users', 'po.created_by', '=', 'users.Id')
 		->leftJoin('users as pm', 'po.PM_Accepted_By', '=', 'pm.Id')
 		->leftJoin('users as finance', 'po.Finance_Accepted_By', '=', 'finance.Id')
@@ -1815,7 +1533,6 @@ class POController extends Controller {
 				'finance.Name as Finance',
 				'po.Finance_Accepted_At',
 				'po.Finance_Status')
-			->leftJoin('projects', 'po.ProjectId', '=', 'projects.Id')
 			->leftJoin('users', 'po.created_by', '=', 'users.Id')
 			->leftJoin('users as pm', 'po.PM_Accepted_By', '=', 'pm.Id')
 			->leftJoin('users as finance', 'po.Finance_Accepted_By', '=', 'finance.Id')

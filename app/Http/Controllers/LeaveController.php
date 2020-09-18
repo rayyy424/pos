@@ -96,8 +96,7 @@ class LeaveController extends Controller {
 
         ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
         ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-        ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
-        ->select('leaves.Id','leavestatuses.Id as StatusId','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','projects.Project_Name','approver.Name as Approver','leavestatuses.Leave_Status as Status','leavestatuses.updated_at as Review_Date','leavestatuses.Comment','files.Web_Path')
+        ->select('leaves.Id','leavestatuses.Id as StatusId','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','approver.Name as Approver','leavestatuses.Leave_Status as Status','leavestatuses.updated_at as Review_Date','leavestatuses.Comment','files.Web_Path')
         ->where('leaves.UserId', '=', $me->UserId)
         ->orderBy('leaves.Id','desc')
         ->get();
@@ -105,35 +104,26 @@ class LeaveController extends Controller {
         // select approver other than final approver
         $approver = DB::table('approvalsettings')
         ->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-        ->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-        ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+        ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
         ->where('approvalsettings.Type', '=', 'Leave')
-        ->where('projects.Project_Name', '=', $me->Department )
         ->where('approvalsettings.Level', 'NOT LIKE', '%Final Approval%')
         ->orderBy('approvalsettings.Country','asc')
-        ->orderBy('projects.Project_Name','asc')
         ->orderBy('approvalsettings.Level','asc')
-        ->groupBy('approvalsettings.Country','projects.Project_Name','users.Id')
+        ->groupBy('approvalsettings.Country','users.Id')
         ->get();
 
         // if no approver, select final approver
         if (! $approver) {
             $approver = DB::table('approvalsettings')
             ->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-            ->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-            ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+            ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
             ->where('approvalsettings.Type', '=', 'Leave')
-            ->where('projects.Project_Name', '=', $me->Department )
             ->orderBy('approvalsettings.Country','asc')
-            ->orderBy('projects.Project_Name','asc')
             ->orderBy('approvalsettings.Level','asc')
-            ->groupBy('approvalsettings.Country','projects.Project_Name','users.Id')
+            ->groupBy('approvalsettings.Country','users.Id')
             ->get();
         }
 
-        $projects = DB::table('projects')
-        ->where('projects.Project_Name', '=', $me->Department )
-        ->get();
 
         if ($me->Marital_Status == 'MARRIED') {
             if($me->Gender == 'MALE') {
@@ -210,7 +200,7 @@ class LeaveController extends Controller {
         // ->where('Leave_Final_Approval', '=', 1)
         // ->get();
 
-        return view('myleave', ['me' => $me,'showleave' => $showleave,'myleave' => $myleave,'approver' => $approver, 'options' =>$options, 'projects' =>$projects, 'leavebalance' => $leavebalance, 'leavesummary' => $leavesummary, 'leavetype' => $leavetype, 'start' => $start, 'end'=> $end, 'datediff' => $datediff]);
+        return view('myleave', ['me' => $me,'showleave' => $showleave,'myleave' => $myleave,'approver' => $approver, 'options' =>$options, 'leavebalance' => $leavebalance, 'leavesummary' => $leavesummary, 'leavetype' => $leavetype, 'start' => $start, 'end'=> $end, 'datediff' => $datediff]);
 
     }
 
@@ -869,7 +859,6 @@ class LeaveController extends Controller {
             ->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Leave"'))
             ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
             ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-            ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
             ->select('leaves.Id','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leave_terms.Terms','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','approver.Name as Approver','leavestatuses.Leave_Status as Status','leavestatuses.Comment','leavestatuses.updated_at as Review_Date')
             ->where('leavestatuses.Leave_Status', '<>','Cancelled')
             ->whereRaw('(str_to_date(leaves.Start_Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") OR str_to_date(leaves.End_Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y"))')
@@ -888,7 +877,6 @@ class LeaveController extends Controller {
             ->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Leave"'))
             ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
             ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-            ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
             ->select('leaves.Id','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leave_terms.Terms','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','approver.Name as Approver','leavestatuses.Leave_Status as Status','leavestatuses.Comment','leavestatuses.updated_at as Review_Date')
             ->where('leavestatuses.Leave_Status', '<>','Cancelled')
             ->where('leavestatuses.UserId', '=',$me->UserId)
@@ -908,8 +896,7 @@ class LeaveController extends Controller {
             ->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Leave"'))
             ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
             ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-            ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
-            ->select('leavestatuses.Id','leaves.Id as LeaveId','leavestatuses.Leave_Status as Status','applicant.StaffId as Staff_ID','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.Medical_Claim','leaves.Panel_Claim','leaves.Verified_By_HR','leaves.Medical_Paid_Month','leaves.created_at as Application_Date','projects.Project_Name','approver.Name as Approver','leavestatuses.Comment','leavestatuses.updated_at as Review_Date','files.Web_Path')
+            ->select('leavestatuses.Id','leaves.Id as LeaveId','leavestatuses.Leave_Status as Status','applicant.StaffId as Staff_ID','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.Medical_Claim','leaves.Panel_Claim','leaves.Verified_By_HR','leaves.Medical_Paid_Month','leaves.created_at as Application_Date','approver.Name as Approver','leavestatuses.Comment','leavestatuses.updated_at as Review_Date','files.Web_Path')
             ->orderBy('leaves.Id','desc')
             ->where('leavestatuses.UserId', '=',$me->UserId)
             ->get();
@@ -923,8 +910,7 @@ class LeaveController extends Controller {
             ->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Leave"'))
             ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
             ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-            ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
-            ->select('leavestatuses.Id','leaves.Id as LeaveId','leavestatuses.Leave_Status as Status','applicant.StaffId as Staff_ID','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.Medical_Claim','leaves.Panel_Claim','leaves.Verified_By_HR','leaves.Medical_Paid_Month','leaves.created_at as Application_Date','projects.Project_Name','approver.Name as Approver','leavestatuses.Comment','leavestatuses.updated_at as Review_Date','files.Web_Path')
+            ->select('leavestatuses.Id','leaves.Id as LeaveId','leavestatuses.Leave_Status as Status','applicant.StaffId as Staff_ID','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.Medical_Claim','leaves.Panel_Claim','leaves.Verified_By_HR','leaves.Medical_Paid_Month','leaves.created_at as Application_Date','approver.Name as Approver','leavestatuses.Comment','leavestatuses.updated_at as Review_Date','files.Web_Path')
             ->where(DB::raw('str_to_date(leaves.Start_Date,"%d-%M-%Y")'), '>=', DB::raw('str_to_date("'.$start.'","%d-%M-%Y")'))
             ->where(DB::raw('str_to_date(leaves.End_Date,"%d-%M-%Y")'), '<=', DB::raw('str_to_date("'.$end.'","%d-%M-%Y")'))
             ->orderBy('leaves.Id','desc')
@@ -937,30 +923,25 @@ class LeaveController extends Controller {
             ->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Leave"'))
             ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
             ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-            ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
-            ->select('leavestatuses.Id','leaves.Id as LeaveId','leavestatuses.Leave_Status as Status','applicant.StaffId as Staff_ID','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.Medical_Claim','leaves.Panel_Claim','leaves.Verified_By_HR','leaves.Medical_Paid_Month','leaves.created_at as Application_Date','projects.Project_Name','approver.Name as Approver','leavestatuses.Comment','leavestatuses.updated_at as Review_Date','files.Web_Path')
+            ->select('leavestatuses.Id','leaves.Id as LeaveId','leavestatuses.Leave_Status as Status','applicant.StaffId as Staff_ID','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.Medical_Claim','leaves.Panel_Claim','leaves.Verified_By_HR','leaves.Medical_Paid_Month','leaves.created_at as Application_Date','approver.Name as Approver','leavestatuses.Comment','leavestatuses.updated_at as Review_Date','files.Web_Path')
             ->where('leavestatuses.Leave_Status', 'like','%Final Approved%')
             ->orderBy('leaves.Id','desc')
             ->get();
 
             $approver = DB::table('approvalsettings')
             ->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-            ->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-            ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+            ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
             ->where('approvalsettings.Type', '=', 'Leave')
             ->orderBy('approvalsettings.Country','asc')
-            ->orderBy('projects.Project_Name','asc')
             ->orderBy('approvalsettings.Level','asc')
             ->get();
 
             $mylevel = DB::table('approvalsettings')
             ->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-            ->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-            ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+            ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
             ->where('approvalsettings.Type', '=', 'Leave')
             ->where('approvalsettings.UserId', '=', $me->UserId)
             ->orderBy('approvalsettings.Country','asc')
-            ->orderBy('projects.Project_Name','asc')
             // ->orderBy('approvalsettings.Level','Final Approval","5th Approval","4th Approval","3rd Approval","2nd Approval","1st Approval")
             ->orderByRaw("FIELD(approvalsettings.Level , 'Final Approval', '5th Approval', '4th Approval','3rd Approval','2nd Approval','1st Approval') ASC")
             ->first();
@@ -1020,8 +1001,7 @@ class LeaveController extends Controller {
                 ->leftJoin('leavestatuses', 'leaves.Id', '=', 'leavestatuses.LeaveId')
                 ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
                 ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-                ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
-                ->select('applicant.Id as UserId','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','projects.Project_Name','approver.Name as Approver')
+                ->select('applicant.Id as UserId','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','approver.Name as Approver')
                 ->orderBy('leavestatuses.Id','desc')
                 ->where('leaves.Id', '=',$Ids)
                 ->first();
@@ -1067,12 +1047,12 @@ class LeaveController extends Controller {
 
                 }
 
-                Mail::send('emails.leaveapplication', ['leavedetail' => $leavedetail], function($message) use ($emails,$me,$NotificationSubject)
-                {
-                        $emails = array_filter($emails);
-                        array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                        $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
-                });
+                // Mail::send('emails.leaveapplication', ['leavedetail' => $leavedetail], function($message) use ($emails,$me,$NotificationSubject)
+                // {
+                //         $emails = array_filter($emails);
+                //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                //         $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+                // });
 
                 return 1;
             }
@@ -1099,8 +1079,7 @@ class LeaveController extends Controller {
             ->leftJoin('leavestatuses', 'leaves.Id', '=', 'leavestatuses.LeaveId')
             ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
             ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-            ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
-            ->select('applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','projects.Project_Name','approver.Name as Approver')
+            ->select('applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','approver.Name as Approver')
             ->orderBy('leavestatuses.Id','desc')
             ->where('leaves.Id', '=',$input["Id"])
             ->first();
@@ -1157,12 +1136,12 @@ class LeaveController extends Controller {
 
                 }
 
-                Mail::send('emails.leavecancel', ['leavedetail' => $leavedetail], function($message) use ($emails,$me,$NotificationSubject)
-                {
-                        array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                        $emails = array_filter($emails);
-                        $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
-                });
+                // Mail::send('emails.leavecancel', ['leavedetail' => $leavedetail], function($message) use ($emails,$me,$NotificationSubject)
+                // {
+                //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                //         $emails = array_filter($emails);
+                //         $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+                // });
 
                 return 1;
             }
@@ -1199,33 +1178,18 @@ class LeaveController extends Controller {
         ->leftJoin('leavestatuses', 'leavestatuses.Id', '=', DB::raw('max.`maxid`'))
         ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
         ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-        ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
-        ->select('leavestatuses.Id','leaves.Id as LeaveId','leaves.UserId as ApplicantId','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','projects.Project_Name','approver.Id as ApproverId','approver.Name as Approver','leavestatuses.Leave_Status as Status','leavestatuses.Comment','leavestatuses.updated_at as Review_Date')
+        ->select('leavestatuses.Id','leaves.Id as LeaveId','leaves.UserId as ApplicantId','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','approver.Id as ApproverId','approver.Name as Approver','leavestatuses.Leave_Status as Status','leavestatuses.Comment','leavestatuses.updated_at as Review_Date')
         ->orderBy('leaves.Id','desc')
         ->whereIn('leaves.Id', $leaveIds)
         ->get();
 
         $approver = DB::table('approvalsettings')
         ->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-        ->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-        ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+        ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
         ->where('approvalsettings.Type', '=', 'Leave')
-        ->where('approvalsettings.ProjectId', '<>', '0')
         ->orderBy('approvalsettings.Country','asc')
-        ->orderBy('projects.Project_Name','asc')
         ->orderByRaw("FIELD(approvalsettings.Level , '1st Approval','2nd Approval','3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
         ->get();
-
-        // $countryapprover = DB::table('approvalsettings')
-        // ->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-        // ->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-        // ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
-        // ->where('approvalsettings.Type', '=', 'Leave')
-        // ->where('approvalsettings.ProjectId', '=', '0')
-        // ->orderBy('approvalsettings.Country','asc')
-        // ->orderBy('projects.Project_Name','asc')
-        // ->orderByRaw("FIELD(approvalsettings.Level , '1st Approval','2nd Approval','3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
-        // ->get();
 
         $final=false;
 
@@ -1248,7 +1212,7 @@ class LeaveController extends Controller {
 
                 foreach ($approver as $user) {
 
-                        if (!empty($user->Id) && $user->Project_Name==$leave->Project_Name && $leave->ApproverId != $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($leave->Status, FILTER_SANITIZE_NUMBER_INT))
+                        if (!empty($user->Id) && $leave->ApproverId != $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($leave->Status, FILTER_SANITIZE_NUMBER_INT))
                         {
 
                             DB::table('leavestatuses')->insert(
@@ -1263,14 +1227,14 @@ class LeaveController extends Controller {
 
                             break;
                         }
-                        elseif (!empty($user->Id) && $user->Project_Name==$leave->Project_Name && $leave->ApproverId == $user->Id  && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($leave->Status, FILTER_SANITIZE_NUMBER_INT))
+                        elseif (!empty($user->Id) && $leave->ApproverId == $user->Id  && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($leave->Status, FILTER_SANITIZE_NUMBER_INT))
                         {
                             # code...
                                 $submitted=true;
                                 array_push($emaillist,$user->Id);
                                 array_push($emaillist,$leave->ApplicantId);
                         }
-                        elseif (!empty($user->Id) && $user->Project_Name==$leave->Project_Name && $leave->ApproverId != $user->Id && $user->Level=="Final Approval")
+                        elseif (!empty($user->Id) && $leave->ApproverId != $user->Id && $user->Level=="Final Approval")
                         {
 
                             DB::table('leavestatuses')->insert(
@@ -1400,19 +1364,18 @@ class LeaveController extends Controller {
                 ->leftJoin('leavestatuses', 'leavestatuses.LeaveId', '=', 'leaves.Id')
                 ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
                 ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-                ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
-                ->select('applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','projects.Project_Name','approver.Name as Approver','leavestatuses.Leave_Status as Status','leavestatuses.Comment','leavestatuses.updated_at as Review_Date')
+                ->select('applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','approver.Name as Approver','leavestatuses.Leave_Status as Status','leavestatuses.Comment','leavestatuses.updated_at as Review_Date')
                 ->orderBy('leavestatuses.Id','desc')
                 ->where('leaves.Id', '=',$leave->LeaveId)
                 ->get();
 
-                Mail::send('emails.leavestatus', ['me' => $me,'leavedetail' => $leavedetail], function($message) use ($emails,$leavedetail,$NotificationSubject)
-                {
-                        array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                        $emails = array_filter($emails);
-                        $message->to($emails)->subject($NotificationSubject.' ['.$leavedetail[0]->Name.']');
+                // Mail::send('emails.leavestatus', ['me' => $me,'leavedetail' => $leavedetail], function($message) use ($emails,$leavedetail,$NotificationSubject)
+                // {
+                //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                //         $emails = array_filter($emails);
+                //         $message->to($emails)->subject($NotificationSubject.' ['.$leavedetail[0]->Name.']');
 
-                });
+                // });
 
                 return 1;
             }
@@ -1444,7 +1407,6 @@ class LeaveController extends Controller {
             ->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Leave"'))
             ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
             ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-            ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
             ->select('leaves.Id','leaves.UserId','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','approver.Name as Approver','leavestatuses.Leave_Status')
             ->orderBy('leavestatuses.Id','desc')
             ->whereIn('leaves.Id', $Ids)
@@ -1533,12 +1495,12 @@ class LeaveController extends Controller {
 
                 //array_push($emails,"latifah@pronetwork.com.my");
 
-                Mail::send('emails.leaveapprovalrequest', ['leavedetail' => $leavedetail,'from'=>$me->Name], function($message) use ($emails,$leavedetail,$NotificationSubject)
-                {
-                        array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                        $emails = array_filter($emails);
-                        $message->to($emails)->subject($NotificationSubject.' ['.$leavedetail->Name.']');
-                });
+                // Mail::send('emails.leaveapprovalrequest', ['leavedetail' => $leavedetail,'from'=>$me->Name], function($message) use ($emails,$leavedetail,$NotificationSubject)
+                // {
+                //         array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                //         $emails = array_filter($emails);
+                //         $message->to($emails)->subject($NotificationSubject.' ['.$leavedetail->Name.']');
+                // });
 
                 return 1;
             }
@@ -1561,7 +1523,6 @@ class LeaveController extends Controller {
                 'Start_Date'       => 'Required',
                 'End_Date'  =>'Required',
                 'Approver'  =>'Required',
-                'Project'  =>'Required',
                 // 'attachment' => 'required_unless:Leave_Type,Annual Leave,1 Hour Time Off,2 Hours Time Off'
                 );
 
@@ -1571,7 +1532,6 @@ class LeaveController extends Controller {
                     'Start_Date.required'       => 'The Start Date field is required',
                     'End_Date.required'  =>'The End Date field is required',
                     'Approver.required'  =>'The Approver field is required',
-                    'Project.required'  =>'The Project Name field is required',
                     ''
                 );
 
@@ -1971,7 +1931,6 @@ class LeaveController extends Controller {
                 'Leave_Type' => $input["Leave_Type"],
                 'Start_Date' => $input["Start_Date"],
                 'End_Date' => $input["End_Date"],
-                'ProjectId' => $input["Project"],
                 'No_Of_Days' => $No_of_Days,
                 'Reason' => "[LATE SUBMISSION] ".$input["Reason"]
              ]);
@@ -1983,7 +1942,6 @@ class LeaveController extends Controller {
                 'Leave_Type' => $input["Leave_Type"],
                 'Start_Date' => $input["Start_Date"],
                 'End_Date' => $input["End_Date"],
-                'ProjectId' => $input["Project"],
                 'No_Of_Days' => $No_of_Days,
                 'Reason' => $input["Reason"]
              ]);
@@ -2053,9 +2011,7 @@ class LeaveController extends Controller {
         ->leftJoin('leavestatuses', 'leaves.Id', '=', 'leavestatuses.LeaveId')
         ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
         ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-        ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
-        // ->select('applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','projects.Project_Name','leaves.created_at as Application_Date','approver.Name as Approver')
-        ->select('applicant.Name','leaves.Leave_Type','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','projects.Project_Name','leaves.created_at as Application_Date','approver.Name as Approver')
+        ->select('applicant.Name','leaves.Leave_Type','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','approver.Name as Approver')
         ->orderBy('leavestatuses.Id','desc')
         ->where('leaves.Id', '=',$id)
         ->first();
@@ -2096,12 +2052,12 @@ class LeaveController extends Controller {
 
         $periods = DB::table('leave_terms')->where('leave_terms.Leave_Id', $id)->get();
 
-        Mail::send('emails.leaveapplicationwithperiod', ['leavedetail' => $leavedetail,'periods'=>$periods, 'attachmentUrl' => $attachmentUrl], function($message) use ($emails,$me,$NotificationSubject)
-        {
-            array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-            $emails = array_filter($emails);
-            $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
-        });
+        // Mail::send('emails.leaveapplicationwithperiod', ['leavedetail' => $leavedetail,'periods'=>$periods, 'attachmentUrl' => $attachmentUrl], function($message) use ($emails,$me,$NotificationSubject)
+        // {
+        //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+        //     $emails = array_filter($emails);
+        //     $message->to($emails)->subject($NotificationSubject.' ['.$me->Name.']');
+        // });
 
         return 1;
     }
@@ -2742,20 +2698,16 @@ class LeaveController extends Controller {
 
         $approver = DB::table('approvalsettings')
         ->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-        ->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-        ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+        ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
         ->where('approvalsettings.Type', '=', 'Leave')
         ->orderBy('approvalsettings.Country','asc')
-        ->orderBy('projects.Project_Name','asc')
         ->orderBy('approvalsettings.Level','asc')
-        ->groupBy('approvalsettings.Country','projects.Project_Name','users.Id')
+        ->groupBy('approvalsettings.Country','users.Id')
         ->get();
 
         $entitlementLeaveTypes = DB::table('leaveentitlements')->select('Leave_Type')->where('Leave_Type','<>','')->groupBy('Leave_Type')->lists('Leave_Type');
         array_push($entitlementLeaveTypes, 'Replacement Leave');
 
-        $projects = DB::table('projects')
-        ->get();
 
         $options = DB::select("SELECT `Option` FROM  `options` WHERE  `Field` LIKE  'Leave_Type'");
 
@@ -2764,7 +2716,7 @@ class LeaveController extends Controller {
 
         $thisyear = date('Y');
         $stafflist = DB::table('users')
-        ->select('users.Id','users.StaffId','users.Name','users.Grade','users.Position','users.Department')
+        ->select('users.Id','users.StaffId','users.Name','users.Grade','users.Position')
         ->where('users.active',1)
         ->get();
 
@@ -2774,7 +2726,6 @@ class LeaveController extends Controller {
             'me' => $me,
             'approver' => $approver,
             'options' =>$options,
-            'projects' =>$projects,
             'stafflist' => $stafflist,
             'entitlementLeaveTypes' => $entitlementLeaveTypes
         ]);
@@ -2788,7 +2739,7 @@ class LeaveController extends Controller {
     {
         $me = (new CommonController)->get_current_user();
 
-        $userDetail = DB::table('users')->select('users.StaffId','users.Name','users.Grade','users.Position','users.Department')->where('Id', $userId)->first();
+        $userDetail = DB::table('users')->select('users.StaffId','users.Name','users.Grade','users.Position')->where('Id', $userId)->first();
 
         if ($leaveType) {
             $leaveadjustmentshistory = DB::table('leaveadjustmentshistory')
@@ -2877,7 +2828,7 @@ class LeaveController extends Controller {
         $query = implode(",",$queries);
         $adjustedLeave = DB::table('users')
         ->select(
-            'users.Id','users.StaffId','users.Name','users.Grade','users.Position','users.Department',
+            'users.Id','users.StaffId','users.Name','users.Grade','users.Position',
             DB::raw($query)
         )
         ->leftJoin(DB::raw("(SELECT users.Id as UserId,
@@ -3063,80 +3014,6 @@ class LeaveController extends Controller {
 
     }
 
-    public function checkdepartmentworkingdays()
-    {
-
-        $me=(new CommonController)->get_current_user();
-
-        // MY_Department_ACCT   5
-        // MY_Department_CME    6
-        // MY_Department_CMEOSU 5.5
-        // MY_Department_CMEPMO 5.5
-        // MY_Department_CMEPRO 5.5
-        // MY_Department_CMETSS 5.5
-        // MY_Department_FAB    6
-        // MY_Department_GST    6
-        // MY_Department_HOD    5
-        // MY_Department_HRA    5
-        // MY_Department_LOG    6
-        // MY_Department_MDO    6
-        // MY_Department_TI 6
-
-        if($me->Department=="MY_Department_ACCT")
-        {
-            return 5;
-        }
-        elseif ($me->Department=="MY_Department_CME")
-        {
-            return 6;
-        }
-        elseif ($me->Department=="MY_Department_CMEOSU")
-        {
-            return 5.5;
-        }
-        elseif ($me->Department=="MY_Department_CMEPMO")
-        {
-            return 5.5;
-        }
-        elseif ($me->Department=="MY_Department_CMEPRO")
-        {
-            return 5.5;
-        }
-        elseif ($me->Department=="MY_Department_CMETSS")
-        {
-            return 5.5;
-        }
-        elseif ($me->Department=="MY_Department_FAB")
-        {
-            return 6;
-        }
-        elseif ($me->Department=="MY_Department_GST")
-        {
-            return 6;
-        }
-        elseif ($me->Department=="MY_Department_HOD")
-        {
-            return 5;
-        }
-        elseif ($me->Department=="MY_Department_HRA")
-        {
-            return 5;
-        }
-        elseif ($me->Department=="MY_Department_LOG")
-        {
-            return 6;
-        }
-        elseif ($me->Department=="MY_Department_MDO")
-        {
-            return 6;
-        }
-        elseif ($me->Department=="MY_Department_TI")
-        {
-            return 6;
-        }
-
-    }
-
     public function onleavetoday()
     {
 
@@ -3171,7 +3048,6 @@ class LeaveController extends Controller {
         // ->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Leave"'))
         ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
         ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-        ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
         ->select('leaves.Id as LeaveId','leaves.UserId','applicant.Name','leavestatuses.Id as StatusId','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','approver.Id as ApproverId','approver.Name as Approver')
         ->whereIn('leaves.Id', $Ids)
         ->orderBy('leavestatuses.Id','desc')
@@ -3209,20 +3085,16 @@ class LeaveController extends Controller {
         ->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Leave"'))
         ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
         ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-        ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
-        ->select('leavestatuses.Id','leaves.Id as LeaveId','leaves.UserId as ApplicantId','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','projects.Project_Name','approver.Id as ApproverId','approver.Name as Approver','leavestatuses.Leave_Status as Status','leavestatuses.Comment','leavestatuses.updated_at as Review_Date','files.Id as FileId','files.Web_Path as FileUrl')
+        ->select('leavestatuses.Id','leaves.Id as LeaveId','leaves.UserId as ApplicantId','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','approver.Id as ApproverId','approver.Name as Approver','leavestatuses.Leave_Status as Status','leavestatuses.Comment','leavestatuses.updated_at as Review_Date','files.Id as FileId','files.Web_Path as FileUrl')
         ->orderBy('leaves.Id','desc')
         ->whereIn('leaves.Id', $Ids)
         ->get();
 
         $approver = DB::table('approvalsettings')
         ->leftJoin('users', 'users.Id', '=', 'approvalsettings.UserId')
-        ->leftJoin('projects', 'projects.Id', '=', 'approvalsettings.ProjectId')
-        ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country','projects.Project_Name')
+        ->select('users.Id','users.Name','approvalsettings.Level','approvalsettings.Country')
         ->where('approvalsettings.Type', '=', 'Leave')
-        ->where('approvalsettings.ProjectId', '<>', '0')
         ->orderBy('approvalsettings.Country','asc')
-        ->orderBy('projects.Project_Name','asc')
         ->orderByRaw("FIELD(approvalsettings.Level , '1st Approval','2nd Approval','3rd Approval','4th Approval','5th Approval','Final Approval') ASC")
         ->get();
 
@@ -3263,7 +3135,7 @@ class LeaveController extends Controller {
 
                 foreach ($approver as $user) {
 
-                        if (!empty($user->Id) && $user->Project_Name==$leave->Project_Name && $leave->ApproverId != $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($leave->Status, FILTER_SANITIZE_NUMBER_INT))
+                        if (!empty($user->Id) && $leave->ApproverId != $user->Id && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($leave->Status, FILTER_SANITIZE_NUMBER_INT))
                         {
 
                             DB::table('leavestatuses')->insert(
@@ -3278,14 +3150,14 @@ class LeaveController extends Controller {
 
                             break;
                         }
-                        elseif (!empty($user->Id) && $user->Project_Name==$leave->Project_Name && $leave->ApproverId == $user->Id  && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($leave->Status, FILTER_SANITIZE_NUMBER_INT))
+                        elseif (!empty($user->Id) && $leave->ApproverId == $user->Id  && filter_var($user->Level, FILTER_SANITIZE_NUMBER_INT)>filter_var($leave->Status, FILTER_SANITIZE_NUMBER_INT))
                         {
                             # code...
                                 $submitted=true;
                                 array_push($emaillist,$user->Id);
                                 array_push($emaillist,$leave->ApplicantId);
                         }
-                        elseif (!empty($user->Id) && $user->Project_Name==$leave->Project_Name && $leave->ApproverId == $user->Id && $user->Level=="Final Approval")
+                        elseif (!empty($user->Id) && $leave->ApproverId == $user->Id && $user->Level=="Final Approval")
                         {
 
                             DB::table('leavestatuses')->insert(
@@ -3299,7 +3171,7 @@ class LeaveController extends Controller {
                             array_push($emaillist,$leave->ApplicantId);
 
                         }
-                        elseif (!empty($user->Id) && $user->Project_Name==$leave->Project_Name && $leave->ApproverId != $user->Id && $user->Level=="Final Approval")
+                        elseif (!empty($user->Id) && $leave->ApproverId != $user->Id && $user->Level=="Final Approval")
                         {
 
                             DB::table('leavestatuses')->insert(
@@ -3391,8 +3263,7 @@ class LeaveController extends Controller {
                 ->leftJoin('leavestatuses', 'leavestatuses.LeaveId', '=', 'leaves.Id')
                 ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
                 ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-                ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
-                ->select('applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','projects.Project_Name','approver.Name as Approver','leavestatuses.Leave_Status as Status','leavestatuses.Comment','leavestatuses.updated_at as Review_Date')
+                ->select('applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','approver.Name as Approver','leavestatuses.Leave_Status as Status','leavestatuses.Comment','leavestatuses.updated_at as Review_Date')
                 ->orderBy('leavestatuses.Id','desc')
                 ->where('leaves.Id', '=',$leave->LeaveId)
                 ->get();
@@ -3406,12 +3277,12 @@ class LeaveController extends Controller {
 
                 $emails = array_filter($emails);
 
-                Mail::send('emails.leavestatuswithperiod', ['me' => $me,'leavedetail' => $leavedetail, 'periods' => $periods, 'attachmentUrl' => $attachmentUrl], function($message) use ($emails,$leavedetail,$NotificationSubject)
-                {
-                    array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-                    $emails = array_filter($emails);
-                    $message->to($emails)->subject($NotificationSubject.' ['.$leavedetail[0]->Name.']');
-                });
+                // Mail::send('emails.leavestatuswithperiod', ['me' => $me,'leavedetail' => $leavedetail, 'periods' => $periods, 'attachmentUrl' => $attachmentUrl], function($message) use ($emails,$leavedetail,$NotificationSubject)
+                // {
+                //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+                //     $emails = array_filter($emails);
+                //     $message->to($emails)->subject($NotificationSubject.' ['.$leavedetail[0]->Name.']');
+                // });
             }
             else {
                 return 0;
@@ -3422,460 +3293,6 @@ class LeaveController extends Controller {
         return 1;
 
     }
-
-    public function sgsimport($month=null,$year=null,$company=null,$department=null, $includeResigned = 'true', $includeInactive = 'true'){
-
-        $me=(new CommonController)->get_current_user();
-
-        if ($month==null)
-        {
-            $month=date('F');
-        }
-
-        if ($year==null)
-        {
-            $year=date('Y');
-        }
-
-        $start = strtotime('01 '.$month.' '.$year);
-        $start = date('d F Y', $start);
-        $start = date('d F Y', strtotime('-1 month',strtotime($start)));
-        $start = date('d-M-Y', strtotime($start . " +20 days"));
-
-        $end = strtotime('01 '.$month.' '.$year);
-        $end = date('d F Y', $end);
-        $end = date('d-M-Y', strtotime($end . " +19 days"));
-
-        $start2 = $start;
-        $end2 = $end;
-
-        $paidmonth=date('M Y', strtotime($month.' '.$year));
-
-        $years= DB::select("
-          SELECT Year(Now())-1 as yearname UNION ALL
-          SELECT Year(Now())
-          ");
-
-        $months = array (1=>'January',2=>'February',3=>'March',4=>'April',5=>'May',6=>'June',7=>'July',8=>'August',9=>'September',10=>'October',11=>'November',12=>'December');
-        $monthindex=array_search($month,$months);
-
-      // DED001	PHONE
-      // DED002	STAFF LOAN
-      // DED003	PRE-SAVING SCHEME
-      // DED004	STAFF WELFARE
-      // DED005	SUMMONS
-      // DED006	OTHERS - ACCIDENT
-      // DED007	SHELL CARD
-      // DED008	TOUCH N GO
-      // DED009	SAFETY SHOE
-      // DED010	PERSONAL LOAN
-      // DED011	PETTY CASH CME
-      // DED013	LATENESS
-      // DED014	ADVANCE  (REPAYMENT)
-      // DED017 CIDB
-      // DED018	PETTY CASH HRA
-      $cond="";
-
-      if($company && $company!="false")
-  		{
-  			$cond.=" AND Company='".$company."'";
-  		}
-
-      if($department && $department!="false")
-  		{
-  			$cond.=" AND Department='".$department."'";
-  		}
-
-        if ($includeResigned == 'false') {
-
-            $today = date('d-M-Y', strtotime('today'));
-            $cond.=' AND (users.Resignation_Date = "" OR str_to_date(users.Resignation_Date,"%d-%M-%Y") >= str_to_date("'.$today.'","%d-%M-%Y"))';
-
-        } else {
-
-            $cond.=' AND (users.Resignation_Date = "" OR str_to_date(users.Resignation_Date,"%d-%M-%Y") >= str_to_date("'.$start.'","%d-%M-%Y"))';
-        }
-
-        if ($includeInactive == 'false') {
-
-            $cond.=' AND users.Active = 1';
-
-        }
-
-            $sgsimport = DB::select("
-            SELECT
-
-              StaffId as '1. Employee Number',
-              Name as '2. Employee Name',
-              (select sum(OT1) from timesheets where OT_Verified = 1 AND OT_HOD_Verified = 1 AND str_to_date(timesheets.Date,'%d-%M-%Y') >= str_to_date('$start2','%d-%M-%Y')
-              AND str_to_date(timesheets.Date,'%d-%M-%Y') <= str_to_date('$end2','%d-%M-%Y') and timesheets.UserId=users.Id) as '3. Overtime Hours #1',
-              (select sum(OT2) from timesheets where OT_Verified = 1 AND OT_HOD_Verified = 1 AND str_to_date(timesheets.Date,'%d-%M-%Y') >= str_to_date('$start2','%d-%M-%Y')
-              AND str_to_date(timesheets.Date,'%d-%M-%Y') <= str_to_date('$end2','%d-%M-%Y') and timesheets.UserId=users.Id) as '4. Overtime Hours #2',
-              (select sum(OT3) from timesheets where OT_Verified = 1 AND OT_HOD_Verified = 1 AND str_to_date(timesheets.Date,'%d-%M-%Y') >= str_to_date('$start2','%d-%M-%Y')
-              AND str_to_date(timesheets.Date,'%d-%M-%Y') <= str_to_date('$end2','%d-%M-%Y') and timesheets.UserId=users.Id) as '5. Overtime Hours #3',
-              '' as '6. Overtime Hours #4',
-              '' as '7. Overtime Hours #5',
-              '' as '8. Overtime Hours #6',
-              '' as '9. Overtime Hours #7',
-              '' as '10. Overtime Hours #8',
-              '' as '11. Overtime Hours #9',
-              '' as '12. Overtime Hours #10',
-              '' as '13. Additional Pay Day #1',
-              '' as '14. Additional Pay Day #2',
-              '' as '15. Additional Pay Day #3',
-              '' as '16. Additional Pay Day #4',
-              '' as '17. Additional Pay Day #5',
-
-              'STAFF LOAN' as '18. Allowance Code #1',
-              -(select sum(FinalAmount) from staffdeductions where str_to_date(staffdeductions.Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(staffdeductions.Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y') and staffdeductions.UserId=users.Id and staffdeductions.Type='STAFF LOAN') as '19. Allowance Amount #1',
-
-              'PRE SV DED' as '20. Allowance Code #2',
-              -(select sum(FinalAmount) from staffdeductions where str_to_date(staffdeductions.Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(staffdeductions.Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y') and staffdeductions.UserId=users.Id and staffdeductions.Type='PRE-SAVING SCHEME') as '21. Allowance Amount #2',
-
-              'SUMMONS' as '22. Allowance Code #3',
-              -(select sum(FinalAmount) from staffdeductions where str_to_date(staffdeductions.Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(staffdeductions.Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y') and staffdeductions.UserId=users.Id and staffdeductions.Type='SUMMONS') as '23. Allowance Amount #3',
-
-              'ACCIDNT' as '24. Allowance Code #4',
-              -(select sum(FinalAmount) from staffdeductions where str_to_date(staffdeductions.Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(staffdeductions.Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y') and staffdeductions.UserId=users.Id and staffdeductions.Type='ACCIDENT') as '25. Allowance Amount #4',
-
-              'SHELL' as '26. Allowance Code #5',
-              -(select sum(FinalAmount) from staffdeductions where str_to_date(staffdeductions.Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(staffdeductions.Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y') and staffdeductions.UserId=users.Id and staffdeductions.Type='SHELL CARD') as '27. Allowance Amount #5',
-
-              'TNGO' as '28. Allowance Code #6',
-              -(select sum(FinalAmount) from staffdeductions where str_to_date(staffdeductions.Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(staffdeductions.Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y') and staffdeductions.UserId=users.Id and staffdeductions.Type='TOUCH N GO') as '29. Allowance Amount #6',
-
-              'SAFETY' as '30. Allowance Code #7',
-              -(select sum(FinalAmount) from staffdeductions where str_to_date(staffdeductions.Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(staffdeductions.Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y') and staffdeductions.UserId=users.Id and staffdeductions.Type='SAFETY SHOES') as '31. Allowance Amount #7',
-
-              'PC SABAH' as '32. Allowance Code #8',
-              -(select sum(FinalAmount) from staffdeductions where str_to_date(staffdeductions.Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(staffdeductions.Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y') and staffdeductions.UserId=users.Id and staffdeductions.Type='PETTY CASH SABAH (FKA PETTY CASH CME)') as '33. Allowance Amount #8',
-
-              'LATE_NIR' as '34. Allowance Code #9',
-              -(select sum(FinalAmount) from staffdeductions where str_to_date(staffdeductions.Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(staffdeductions.Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y') and staffdeductions.UserId=users.Id and (staffdeductions.Type='Late' or staffdeductions.Type='Not In Radius')) as '35. Allowance Amount #9',
-
-              'ADV SALRY' as '36. Allowance Code #10',
-              -(select sum(FinalAmount) from staffdeductions where str_to_date(staffdeductions.Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(staffdeductions.Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y') and staffdeductions.UserId=users.Id and staffdeductions.Type='ADVANCE SALARY DEDUCTION') as '37. Allowance Amount #10',
-
-              'MAX CARD' as 'Allowance Code #11',
-              -(select sum(FinalAmount) from staffdeductions where str_to_date(staffdeductions.Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(staffdeductions.Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y') and staffdeductions.UserId=users.Id and staffdeductions.Type='MAX CARD') as 'Allowance Amount #11',
-
-              'NIOSH' as 'Allowance Code #12',
-              -(select sum(FinalAmount) from staffdeductions where str_to_date(staffdeductions.Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(staffdeductions.Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y') and staffdeductions.UserId=users.Id and staffdeductions.Type='NIOSH') as 'Allowance Amount #12',
-
-              'CIDB' as 'Allowance Code #13',
-              -(select sum(FinalAmount) from staffdeductions where str_to_date(staffdeductions.Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(staffdeductions.Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y') and staffdeductions.UserId=users.Id and staffdeductions.Type='CIDB CARD') as 'Allowance Amount #13',
-
-              'LOSS OF EQ' as 'Allowance Code #14',
-              -(select sum(FinalAmount) from staffdeductions where str_to_date(staffdeductions.Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(staffdeductions.Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y') and staffdeductions.UserId=users.Id and staffdeductions.Type='LOSS OF EQUIPMENT') as 'Allowance Amount #14',
-
-              'FION' as 'Allowance Code #15',
-              -(select sum(FinalAmount) from staffdeductions where str_to_date(staffdeductions.Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(staffdeductions.Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y') and staffdeductions.UserId=users.Id and staffdeductions.Type='PETTY CASH FION') as 'Allowance Amount #15',
-
-              'ERIC' as 'Allowance Code #16',
-              -(select sum(FinalAmount) from staffdeductions where str_to_date(staffdeductions.Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(staffdeductions.Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y') and staffdeductions.UserId=users.Id and staffdeductions.Type='PAY BACK TO ERIC') as 'Allowance Amount #16',
-
-              'LICENSE' as 'Allowance Code #17',
-              -(select sum(FinalAmount) from staffdeductions where str_to_date(staffdeductions.Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(staffdeductions.Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y') and staffdeductions.UserId=users.Id and staffdeductions.Type='DRIVING LICENSE DEDUCTION') as 'Allowance Amount #17',
-
-              'MED CLAIM' as 'Allowance Code #18',
-              (select sum(Medical_claim) from leaves where Medical_Paid_Month='$paidmonth' and leaves.UserId=users.Id and leaves.Leave_Type='Medical Leave') as 'Allowance Amount #18',
-
-              SUM(IF(leavestatuses.Leave_Status like '%Final Approved%' AND leaves.Leave_Type='Unpaid Leave' AND str_to_date(leaves.Start_Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(leaves.End_Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y'),No_of_Days,0)) as '38. NPL Days',
-
-              '' as '39. NPL Hours',
-              '' as '40. Work Days',
-              '' as '41. Work Hours',
-              SUM(IF(leavestatuses.Leave_Status like '%Final Approved%' AND leaves.Leave_Type='Annual Leave' AND str_to_date(leaves.Start_Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(leaves.End_Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y'),No_of_Days,0)) as '42. Leave Day #1',
-
-              SUM(IF(leavestatuses.Leave_Status like '%Final Approved%' AND leaves.Leave_Type='Medical Leave' AND str_to_date(leaves.Start_Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(leaves.End_Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y'),No_of_Days,0)) as '43. Leave Day #2',
-
-              SUM(IF(leavestatuses.Leave_Status like '%Final Approved%' AND leaves.Leave_Type='Compassionate Leave' AND str_to_date(leaves.Start_Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(leaves.End_Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y'),No_of_Days,0)) as '44. Leave Day #3',
-
-              SUM(IF(leavestatuses.Leave_Status like '%Final Approved%' AND leaves.Leave_Type='Marriage Leave' AND str_to_date(leaves.Start_Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(leaves.End_Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y'),No_of_Days,0)) as '45. Leave Day #4',
-
-              SUM(IF(leavestatuses.Leave_Status like '%Final Approved%' AND leaves.Leave_Type='Paternity Leave' AND str_to_date(leaves.Start_Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(leaves.End_Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y'),No_of_Days,0)) as '46. Leave Day #5',
-
-              SUM(IF(leavestatuses.Leave_Status like '%Final Approved%' AND leaves.Leave_Type='Maternity Leave' AND str_to_date(leaves.Start_Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(leaves.End_Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y'),No_of_Days,0)) as '47. Leave Day #6',
-
-              SUM(IF(leavestatuses.Leave_Status like '%Final Approved%' AND leaves.Leave_Type='Replacement Leave' AND str_to_date(leaves.Start_Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-              AND str_to_date(leaves.End_Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y'),No_of_Days,0)) as '48. Leave Day #7',
-
-              '' as '49. Leave Day #8',
-              '' as '50. Leave Day #9',
-              '' as '51. Leave Day #10',
-              '' as '52. Shift Hours #1',
-              '' as '53. Shift Hours #2',
-              '' as '54. Shift Hours #3',
-              '' as '55. Shift Hours #4',
-              '' as '56. Shift Hours #5',
-              '' as '57. Shift Hours #6',
-              '' as '58. Shift Hours #7',
-              '' as '59. Shift Hours #8',
-              '' as '60. Shift Hours #9',
-              '' as '61. Shift Hours #10',
-              '' as '62. Previous Overtime Hours #1',
-              '' as '63. Previous Overtime Hours #2',
-              '' as '64. Previous Overtime Hours #3',
-              '' as '65. Previous Overtime Hours #4',
-              '' as '66. Previous Overtime Hours #5',
-              '' as '67. Previous Overtime Hours #6',
-              '' as '68. Previous Overtime Hours #7',
-              '' as '69. Previous Overtime Hours #8',
-              '' as '70. Previous Overtime Hours #9',
-              '' as '71. Previous Overtime Hours #10',
-              '' as '72. Previous Additional Pay Day #1',
-              '' as '73. Previous Additional Pay Day #2',
-              '' as '74. Previous Additional Pay Day #3',
-              '' as '75. Previous Additional Pay Day #4',
-              '' as '76. Previous Additional Pay Day #5'
-
-            from users
-            LEFT JOIN leaves ON users.Id = leaves.UserId
-            LEFT JOIN (select Max(Id) as maxid,LeaveId from leavestatuses Group By LeaveId) as max ON  max.LeaveId=leaves.Id
-            LEFT JOIN leavestatuses ON leavestatuses.Id=max.`maxid`
-            WHERE 1
-            ".$cond."
-            GROUP BY users.Id
-            Order By users.StaffId
-            ");
-
-            $companies= DB::table('options')
-        		->whereIn('Table', ["users"])
-        		->where('Field','=','Company')
-        		->orderBy('Table','asc')
-        		->orderBy('Option','asc')
-        		->get();
-
-            $departments = DB::table('projects')
-        		->where('projects.Project_Name','like','%department%')
-        		->get();
-
-        return view('sgsimport',['me'=>$me, 'month'=>$month, 'years'=>$years,'year'=>$year, 'sgsimport'=>$sgsimport,'companies'=>$companies,'departments'=>$departments,'company'=>$company,'department'=>$department, 'includeResigned' => $includeResigned, 'includeInactive' => $includeInactive]);
-
-    }
-
-    public function departmentleavesummary($month=null,$year=null,$company=null,$department=null, $includeResigned = 'true', $includeInactive = 'true'){
-		$me=(new CommonController)->get_current_user();
-    if ($month==null)
-		{
-			$month=date('F');
-		}
-		if ($year==null)
-		{
-			$year=date('Y');
-		}
-		$months = array (1=>'January',2=>'February',3=>'March',4=>'April',5=>'May',6=>'June',7=>'July',8=>'August',9=>'September',10=>'October',11=>'November',12=>'December');
-		$monthindex=array_search($month,$months);
-		// $start=date('d-M-Y', strtotime(date($year.'-'.$monthindex.'-01')));
-		// $end=date('t-M-Y', strtotime(date($year.'-'.$monthindex.'-01')));
-
-		if ($month==null)
-		{
-
-			$month=date('F');
-
-		}
-
-			$start = strtotime('01 '.$month.' '.$year);
-			$start = date('d F Y', $start);
-			$start = date('d F Y', strtotime('-1 month',strtotime($start)));
-			$start = date('d-M-Y', strtotime($start . " +20 days"));
-
-			$end = strtotime('01 '.$month.' '.$year);
-			$end = date('d F Y', $end);
-            $end = date('d-M-Y', strtotime($end . " +19 days"));
-
-      $today = strtotime(date('d-M-Y'));
-
-      $monthnames = array (1=>'January',2=>'February',3=>'March',4=>'April',5=>'May',6=>'June',7=>'July',8=>'August',9=>'September',10=>'October',11=>'November',12=>'December');
-
-      if($today<=strtotime($end))
-      {
-
-        $end=date('d-M-Y');
-        $monthindex2 = array_search($month,$monthnames);
-        array_splice($monthnames, $monthindex2);
-
-      } else {
-        if ($year == date('Y')) {
-
-            $end2 = strtotime('01 '.date('F Y'));
-            $end2 = date('d F Y', $end2);
-            $end2 = date('d-M-Y', strtotime($end2 . " +19 days"));
-
-            if ($today > strtotime($end2)) {
-                $monthindex2 = array_search(date('F'),$monthnames);
-                $monthnames = array_slice($monthnames, 0,$monthindex2+1, TRUE);
-
-            } else {
-                $monthindex2 = array_search(date('F'),$monthnames);
-                $monthnames = array_slice($monthnames, 0,$monthindex2, TRUE);
-            }
-        }
-      }
-
-    $end3 = strtotime('21 December '.date('Y'));
-
-    if ($today >= $end3) {
-        $years= DB::select("
-          SELECT Year(Now())-1 as yearname UNION ALL
-          SELECT Year(Now()) UNION ALL
-          SELECT Year(Now())+1
-          ");
-    } else {
-        $years= DB::select("
-          SELECT Year(Now())-1 as yearname UNION ALL
-          SELECT Year(Now())
-          ");
-    }
-
-
-		$months = array (1=>'January',2=>'February',3=>'March',4=>'April',5=>'May',6=>'June',7=>'July',8=>'August',9=>'September',10=>'October',11=>'November',12=>'December');
-		$monthindex=array_search($month,$months);
-
-    $holidays = DB::table('holidays')
-		->select('holidays.Id','holidays.Holiday','holidays.Start_Date','holidays.End_Date','holidays.State','holidays.Country')
-		->whereRaw('str_to_date(holidays.Start_Date,"%d-%M-%Y") >= str_to_date("'.$start.'","%d-%M-%Y")
-		AND str_to_date(holidays.End_Date,"%d-%M-%Y") <= str_to_date("'.$end.'","%d-%M-%Y")')
-		->orderBy('holidays.Start_Date','asc')
-		->get();
-		$leaves = DB::select("
-		SELECT leaves.Start_Date As Start,leaves.End_Date,leaves.Leave_Type,'Leave' as Type,No_Of_Days,Leave_Term
-		FROM leaves
-		LEFT JOIN (select Max(Id) as maxid,LeaveId from leavestatuses Group By LeaveId) as max ON  max.LeaveId=leaves.Id
-		LEFT JOIN leavestatuses ON leavestatuses.Id=max.`maxid` and leavestatuses.Leave_Status like '%Final Approved%'
-		WHERE str_to_date(leaves.Start_Date,'%d-%M-%Y') >= str_to_date('$start','%d-%M-%Y')
-		AND str_to_date(leaves.End_Date,'%d-%M-%Y') <= str_to_date('$end','%d-%M-%Y')
-		UNION All
-		SELECT holidays.Start_Date as Start,holidays.End_Date,holidays.Holiday,'Holiday' as Type,'',''
-		FROM holidays
-		WHERE right(Start_Date,4)=".date('Y')."
-		ORDER BY Start ASC
-		");
-		$arrdepartment=array();
-		$hod = DB::table('users')
-		->distinct('Department')
-		->select('Department')
-		->where('Department','!=','')
-		->orderBy('Department','ASC')
-		->get();
-    array_push($arrdepartment,"");
-		foreach ($hod as $dept) {
-			# code...
-			array_push($arrdepartment,$dept->Department);
-		}
-		$cond="1";
-		if($company=='false')
-		{
-				$company=null;
-		}
-		if($department=='false')
-		{
-				$department=null;
-		}
-		if($company)
-		{
-				$cond.=" AND Company='".$company."'";
-		}
-		if($department)
-		{
-			$cond.=" AND Department='".$department."'";
-		}
-
-        if ($includeResigned == 'false') {
-
-            $today2 = date('d-M-Y', strtotime('today'));
-            $cond.=' AND (users.Resignation_Date = "" OR str_to_date(users.Resignation_Date,"%d-%M-%Y") >= str_to_date("'.$today2.'","%d-%M-%Y"))';
-
-        } else {
-            $cond.=' AND (users.Resignation_Date = "" OR str_to_date(users.Resignation_Date,"%d-%M-%Y") >= str_to_date("'.$start.'","%d-%M-%Y"))';
-        }
-
-        if ($includeInactive == 'false') {
-
-            $cond.=' AND users.Active = 1';
-
-        }
-
-		$timesheetdetail = DB::table('timesheets')
-		->select('users.Name','users.Company','users.Department','users.Working_Days','timesheets.Date',DB::raw('DAYOFWEEK(str_to_date(timesheets.Date,"%d-%M-%Y")) as dayofweek'),'timesheets.Time_In','timesheets.Time_Out',DB::raw("GROUP_CONCAT(leaves.Leave_Term) as Leave_Term"),DB::raw("GROUP_CONCAT(leave_terms.Leave_Period) as Leave_Period"),DB::raw("GROUP_CONCAT(TRIM(leaves.Leave_Type)) as Leave_Type"),DB::raw("GROUP_CONCAT(TRIM(leaves.Reason)) as Reason"),'holidayterritorydays.Holiday')
-		->leftJoin('users', 'timesheets.UserId', '=', DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(timesheets.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")'))
-		->leftJoin( DB::raw('(select Max(Id) as maxid,TimesheetId from timesheetstatuses Group By TimesheetId) as max'), 'max.TimesheetId', '=', 'timesheets.Id')
-		// ->leftJoin('leaves','leaves.UserId','=',DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y") Between str_to_date(leaves.Start_Date,"%d-%M-%Y") and str_to_date(leaves.End_Date,"%d-%M-%Y")'))
-        ->leftJoin(DB::raw("
-            (SELECT leaves.Id, leaves.UserId, leaves.Leave_Type, leaves.Leave_Term, leaves.Reason,  leaves.Start_Date, leaves.End_Date, leavestatuses.Leave_Status FROM leaves
-                LEFT JOIN (select Max(Id) as maxid,LeaveId from leavestatuses Group By LeaveId) as maxleave ON maxleave.LeaveId = leaves.Id
-                LEFT JOIN leavestatuses ON leavestatuses.Id = maxleave.maxid
-                WHERE leavestatuses.Leave_Status LIKE '%Final Approved%'
-            ) as leaves"), 'leaves.UserId','=',DB::raw('users.Id AND str_to_date(timesheets.Date,"%d-%M-%Y") Between str_to_date(leaves.Start_Date,"%d-%M-%Y") and str_to_date(leaves.End_Date,"%d-%M-%Y")'))
-    ->leftJoin('leave_terms','leave_terms.Leave_Id','=',DB::raw('leaves.Id and leave_terms.Leave_Date = timesheets.Date'))
-  //   ->leftJoin(DB::raw('(select Max(Id) as maxid,LeaveId from leavestatuses Group By LeaveId) as maxleave'), 'maxleave.LeaveId', '=', 'leaves.Id')
-		// ->leftJoin('leavestatuses', 'leavestatuses.Id', '=', DB::raw('maxleave.`maxid`'))
-		->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as maxuser'), 'maxuser.TargetId', '=', 'users.Id')
-		->leftJoin('files', 'files.Id', '=', DB::raw('maxuser.`maxid` and files.`Type`="User"'))
-		->leftJoin('holidayterritorydays',DB::raw('1'),'=',DB::raw('1 AND str_to_date(timesheets.Date,"%d-%M-%Y") Between str_to_date(holidayterritorydays.Start_Date,"%d-%M-%Y") and str_to_date(holidayterritorydays.End_Date,"%d-%M-%Y") AND holidayterritorydays.HolidayTerritoryId = users.HolidayTerritoryId'))
-		->where('users.Name','<>','')
-		->whereIn('users.Department',$arrdepartment)
-		->whereNotIn('users.Id',array(855, 883,902,562,1193))
-		->whereRaw($cond)
-        // ->where('users.Id',645)
-		// ->whereIn('users.Id',array(1189,1190))
-		// ->whereIn('users.Name',['ELLYAS BIN MOHD HANIFIAH','DESMOND GANI ANAK CHRISTOPHER','ELNAZIR BIN LIPAIE'])
-		// ->where('users.Resignation_Date','=','')
-		// ->where('users.Id','=','774')
-		->groupBy('users.StaffId')
-		->groupBy('timesheets.Date')
-		->orderBy('users.Company','asc')
-		->orderBy('users.Department','asc')
-		->orderBy('users.Name','asc')
-		->orderByRaw('str_to_date(timesheets.Date,"%d-%M-%Y") ASC')
-		->get();
-
-// dd($timesheetdetail);
-		$arrdays = DB::table('timesheets')
-		->distinct('timesheets.Date')
-		->select('timesheets.Date')
-		->whereRaw('str_to_date(timesheets.Date,"%d-%M-%Y")>=str_to_date("'.$start.'","%d-%M-%Y") AND str_to_date(timesheets.Date,"%d-%M-%Y")<=str_to_date("'.$end.'","%d-%M-%Y")')
-		->orderByRaw('str_to_date(timesheets.Date,"%d-%M-%Y") ASC')
-		->get();
-		$companies= DB::table('options')
-		->whereIn('Table', ["users"])
-		->where('Field','=','Company')
-		->orderBy('Table','asc')
-		->orderBy('Option','asc')
-		->get();
-		$departments = DB::table('projects')
-		->where('projects.Project_Name','like','%department%')
-		->get();
-
-		$months=array("01"=>"January","02"=>"Febraury","03"=>"March","04"=>"April","05"=>"May","06"=>"June","07"=>"July","08"=>"August","09"=>"September","10"=>"October","11"=>"November","12"=>"December");
-		$nodays=cal_days_in_month(CAL_GREGORIAN, $monthindex, $year);
-		return view('departmentleavesummary',['me'=>$me, 'month'=>$month,'years'=>$years, 'year'=>$year, 'holidays'=>$holidays,'months'=>$months,'leaves'=>$leaves,'timesheetdetail'=>$timesheetdetail,'nodays'=>$nodays,'arrdays'=>$arrdays,'companies'=>$companies,'departments'=>$departments,'company'=>$company,'department'=>$department, 'includeInactive' => $includeInactive, 'includeResigned' => $includeResigned, 'monthnames' => $monthnames]);
-	}
 
     public function leavesummary($start=null,$end=null){
 
@@ -3990,28 +3407,8 @@ class LeaveController extends Controller {
             //     5*ROUND(leaveentitlements.Days/12*service.Months_of_Service/5 ,1)
             // END as Current_Entitlement,
 
-            $hod = DB::table('projects')
-            ->select('Project_Name')
-            ->where('projects.Project_Manager', '=', $me->UserId)
-            ->get();
-
-            $arrdepartment=array();
-            $cond = "1";
-            $cond2 = "1";
-
-            if(count($hod) && !$me->Admin)
-            {
-                foreach ($hod as $department) {
-                    # code...
-                    array_push($arrdepartment,$department->Project_Name);
-                }
-
-                $cond = "1 AND users.Department IN ('" . implode("','", $arrdepartment) . "')";
-                $cond2 = "1 AND applicant.Department IN ('" . implode("','", $arrdepartment) . "')";
-            }
-
             $leavesummary = DB::select("
-            SELECT users.Id, users.StaffId,users.Name,users.Company,users.Department,users.Confirmation_Date,users.Resignation_Date,
+            SELECT users.Id, users.StaffId,users.Name,users.Company,users.Confirmation_Date,users.Resignation_Date,
             Working_Days,
             'Total_Working_Days',
             'Staff_Working_Days',
@@ -4084,7 +3481,6 @@ class LeaveController extends Controller {
                 ) OR str_to_date(users.Resignation_Date,'%d-%M-%Y') >= str_to_date('$end','%d-%M-%Y')
 
             )
-            AND $cond
             GROUP BY users.Id
             ");
 
@@ -4095,10 +3491,8 @@ class LeaveController extends Controller {
             ->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Leave"'))
             ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
             ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-            ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
             ->select('applicant.StaffID','applicant.Name','leaves.Leave_Type','leaves.Start_Date','leaves.End_Date','leaves.No_Of_Days','leaves.Reason')
             ->orderBy('leaves.Id','desc')
-            ->whereRaw($cond2)
             ->whereRaw('str_to_date(leaves.Start_Date,"%d-%M-%Y") >= str_to_date("'.$start.'","%d-%M-%Y")
             AND str_to_date(leaves.End_Date,"%d-%M-%Y") <= str_to_date("'.$end.'","%d-%M-%Y")')
             ->where('leavestatuses.Leave_Status', 'like','%Final Approved%')
@@ -4194,7 +3588,6 @@ class LeaveController extends Controller {
                 AND leaveentitlements.Leave_Type = 'Annual Leave'
             LEFT JOIN (SELECT * FROM leavecarryforwards GROUP BY Year, UserId) as leavecarryforwards ON leavecarryforwards.UserId=users.Id AND leavecarryforwards.Year = $lastyear
             WHERE users.Active=1 AND (users.Resignation_Date='' OR (MONTH(str_to_date(users.Resignation_Date,'%d-%M-%Y')) >= MONTH(now()) AND YEAR(str_to_date(users.Resignation_Date,'%d-%M-%Y')) = $thisyear))
-            AND $cond
             GROUP BY users.Id
             -- ORDER BY users.Id DESC
         ");
@@ -4214,7 +3607,6 @@ class LeaveController extends Controller {
             LEFT JOIN leaveadjustments ON users.Id = leaveadjustments.UserId AND leaveadjustments.Adjustment_Leave_Type = 'Medical Leave' AND leaveadjustments.Adjustment_Year = $thisyear
             LEFT JOIN leavecarryforwards ON leavecarryforwards.UserId=users.Id AND leavecarryforwards.Year=".$thisyear."
             WHERE users.Active=1 AND (users.Resignation_Date='' OR (MONTH(str_to_date(users.Resignation_Date,'%d-%M-%Y')) >= MONTH(now()) AND YEAR(str_to_date(users.Resignation_Date,'%d-%M-%Y')) = $thisyear))
-            AND $cond
             GROUP BY users.Id
             ");
 
@@ -4334,26 +3726,6 @@ class LeaveController extends Controller {
                  }
             }
 
-            $hod = DB::table('projects')
-            ->select('Project_Name')
-            ->where('projects.Project_Manager', '=', $me->UserId)
-            ->get();
-
-            $arrdepartment=array();
-            $cond = "1";
-            $cond2 = "1";
-
-            if(count($hod) && !$me->Admin)
-            {
-                foreach ($hod as $department) {
-                    # code...
-                    array_push($arrdepartment,$department->Project_Name);
-                }
-
-                $cond = "1 AND users.Department IN ('" . implode("','", $arrdepartment) . "')";
-                $cond2 = "1 AND applicant.Department IN ('" . implode("','", $arrdepartment) . "')";
-            }
-
         if($userid == null)
         {
             $leavetaken = DB::table('leaves')
@@ -4363,10 +3735,8 @@ class LeaveController extends Controller {
             ->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Leave"'))
             ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
             ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-            ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
             ->select('applicant.StaffID','applicant.Name','leaves.Leave_Type','leaves.Start_Date','leaves.End_Date','leaves.No_Of_Days','leaves.Reason')
             ->orderBy('leaves.Id','desc')
-            ->whereRaw($cond2)
             ->whereRaw('str_to_date(leaves.Start_Date,"%d-%M-%Y") >= str_to_date("'.$start.'","%d-%M-%Y")
             AND str_to_date(leaves.End_Date,"%d-%M-%Y") <= str_to_date("'.$end.'","%d-%M-%Y")')
             ->where('leavestatuses.Leave_Status', 'like','%Final Approved%')
@@ -4381,10 +3751,8 @@ class LeaveController extends Controller {
             ->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Leave"'))
             ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
             ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-            ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
             ->select('applicant.StaffID','applicant.Name','leaves.Leave_Type','leaves.Start_Date','leaves.End_Date','leaves.No_Of_Days','leaves.Reason')
             ->orderBy('leaves.Id','desc')
-            ->whereRaw($cond2)
             ->whereRaw('leaves.UserId = "'.$userid.'" AND (str_to_date(leaves.Start_Date,"%d-%M-%Y") >= str_to_date("'.$start.'","%d-%M-%Y")
             AND str_to_date(leaves.End_Date,"%d-%M-%Y") <= str_to_date("'.$end.'","%d-%M-%Y"))')
             ->where('leavestatuses.Leave_Status', 'like','%Final Approved%')
@@ -4400,7 +3768,7 @@ class LeaveController extends Controller {
         $me=(new CommonController)->get_current_user();
 
         $user = DB::table('users')
-        ->select('users.Id','StaffId','Name','Password','User_Type','Joining_Date','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Department','Position','Emergency_Contact_Person',
+        ->select('users.Id','StaffId','Name','Password','User_Type','Joining_Date','Company_Email','Personal_Email','Contact_No_1','Contact_No_2','Nationality','Permanent_Address','Current_Address','Home_Base','DOB','NRIC','Passport_No','Gender','Marital_Status','Position','Emergency_Contact_Person',
         'Emergency_Contact_No','Emergency_Contact_Relationship','Emergency_Contact_Address','files.Web_Path','Working_Days')
         // ->leftJoin('files', 'files.TargetId', '=', DB::raw('users.`Id` and files.`Type`="User"'))
         ->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="User" Group By Type,TargetId) as max'), 'max.TargetId', '=', 'users.Id')
@@ -4804,19 +4172,6 @@ class LeaveController extends Controller {
             ->where('users.StaffId', '=',$input["StaffId"])
             ->where('leaves.Leave_Type','=','Medical Leave')
             ->whereRaw('Year(str_to_date(leaves.Start_Date,"%d-%M-%Y"))='.date("Y"))
-            // ->where('leavestatuses.Leave_Status', 'like','%Final Approved%')
-        // ->leftJoin( DB::raw('(select Max(Id) as maxid,LeaveId from leavestatuses Group By LeaveId) as max'), 'max.LeaveId', '=', 'leaves.Id')
-        // ->leftJoin('leavestatuses', 'leavestatuses.Id', '=', DB::raw('max.`maxid`'))
-        // ->leftJoin( DB::raw('(select Max(Id) as maxid,TargetId from files where Type="Leave" Group By Type,TargetId) as max2'), 'max2.TargetId', '=', 'leaves.Id')
-        // ->leftJoin('files', 'files.Id', '=', DB::raw('max2.`maxid` and files.`Type`="Leave"'))
-        // ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
-        // ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-        // ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
-        // ->select('leavestatuses.Id','leaves.Id as LeaveId','leavestatuses.Leave_Status as Status','applicant.StaffId as Staff_ID','applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.Medical_Claim','leaves.created_at as Application_Date','projects.Project_Name','approver.Name as Approver','leavestatuses.Comment','leavestatuses.updated_at as Review_Date','files.Web_Path')
-        // ->orderBy('leaves.Id','desc')
-        // ->where('applicant.StaffId', '=',$input["StaffId"])
-        // ->where('leaves.Leave_Type', '=','Medical Leave')
-        // ->where('leavestatuses.Leave_Status', '<>','Cancelled')
         ->get();
 
         return json_encode($viewmedicalclaim);
@@ -4888,7 +4243,6 @@ class LeaveController extends Controller {
             'Start_Date'       => 'Required',
             'End_Date'  =>'Required',
             // 'Approver'  =>'Required',
-            'Project'  =>'Required',
             // 'attachment' => 'required_unless:Leave_Type,Annual Leave,1 Hour Time Off,2 Hours Time Off'
             );
 
@@ -4897,7 +4251,6 @@ class LeaveController extends Controller {
                 'Start_Date.required'       => 'The Start Date field is required',
                 'End_Date.required'  =>'The End Date field is required',
                 'Approver.required'  =>'The Approver field is required',
-                'Project.required'  =>'The Project Name field is required',
                 'Leave_Period.required' => 'The Leave Period is required.'
             );
 
@@ -5014,7 +4367,6 @@ class LeaveController extends Controller {
             'Leave_Type' => $leaveType,
             'Start_Date' => $input["Start_Date"],
             'End_Date' => $input["End_Date"],
-            'ProjectId' => $input["Project"],
             'No_Of_Days' => $No_Of_Days,
             'Reason' => $input["Reason"]
         ]);
@@ -5084,8 +4436,7 @@ class LeaveController extends Controller {
         ->leftJoin('leavestatuses', 'leaves.Id', '=', 'leavestatuses.LeaveId')
         ->leftJoin('users as applicant', 'leaves.UserId', '=', 'applicant.Id')
         ->leftJoin('users as approver', 'leavestatuses.UserId', '=', 'approver.Id')
-        ->leftJoin('projects', 'leaves.ProjectId', '=', 'projects.Id')
-        ->select('applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','projects.Project_Name','leaves.created_at as Application_Date','approver.Name as Approver','leavestatuses.Leave_Status as Status','leavestatuses.Comment','leavestatuses.updated_at as Review_Date')
+        ->select('applicant.Name','leaves.Leave_Type','leaves.Leave_Term','leaves.Start_Date','leaves.End_Date','leaves.No_of_Days','leaves.Reason','leaves.created_at as Application_Date','approver.Name as Approver','leavestatuses.Leave_Status as Status','leavestatuses.Comment','leavestatuses.updated_at as Review_Date')
         ->orderBy('leavestatuses.Id','desc')
         ->where('leaves.Id', '=',$id)
         ->get();
@@ -5114,11 +4465,11 @@ class LeaveController extends Controller {
         }
 
         $periods = DB::table('leave_terms')->where('leave_terms.Leave_Id', $id)->get();
-        Mail::send('emails.leavestatuswithperiod', ['leavedetail' => $leavedetail, 'periods'=>$periods, 'attachmentUrl' => $attachmentUrl], function($message) use ($emails,$NotificationSubject, $user) {
-            $emails = array_filter($emails);
-            array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
-            $message->to($emails)->subject($NotificationSubject.' ['.$user->Name.']');
-        });
+        // Mail::send('emails.leavestatuswithperiod', ['leavedetail' => $leavedetail, 'periods'=>$periods, 'attachmentUrl' => $attachmentUrl], function($message) use ($emails,$NotificationSubject, $user) {
+        //     $emails = array_filter($emails);
+        //     array_push($emails,env('MAIL_DEFAULT_RECIPIENT'));
+        //     $message->to($emails)->subject($NotificationSubject.' ['.$user->Name.']');
+        // });
     }
 
     /**
