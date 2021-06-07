@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="_token" content="{!! csrf_token() !!}"/>
 	<title>{{ env('APP_NAME') }}</title>
+	<link rel="shortcut icon" href="{{ URL::asset('/img/speedfreak.png') }}" type="image/png"/>
 
 
 	<link href="{{ asset('/css/app.css') }}" rel="stylesheet">
